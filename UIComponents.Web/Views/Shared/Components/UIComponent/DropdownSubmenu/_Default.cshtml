@@ -1,0 +1,55 @@
+﻿@model UICDropdownSubMenu
+
+
+@{
+    string id = Model.GetOrGenerateId();
+
+    Model.AssignCollectionForChildren();
+
+    Model.AddAttribute("class", "dropdown-toggle dropdown-item")
+    .AddAttribute("role", "button")
+    .AddAttribute("href", "#")
+    .AddAttribute("aria-haspopup", "true");
+
+
+    var subItems = Model.Items.Where(x => x.HasValue()).ToList();
+}
+
+@if(subItems.Count == 1 && Model.ReplaceBySingleItem)
+{
+    @await subItems.First().InvokeAsync(Component)
+}
+else
+{
+    Model.AddScript(
+            @<text>
+            $('#@id').click(function(e){
+                e.stopPropagation();
+                e.preventDefault();
+            });
+            </text>);
+
+    <li class="dropdown-submenu dropdown-hover">
+        <a @Html.Raw(Model.GetHtmlAttributes())>
+            @if (Model.Icon.HasValue())
+            {
+                @await Model.Icon.InvokeAsync(Component)
+            }
+            else
+            {
+                <span class="icon"></span>
+            }
+            @L.GetResourceValue(Model.Content)
+        </a>
+        <ul class="dropdown-menu">
+            @foreach (var item in subItems)
+            {
+                @await item.InvokeAsync(Component)
+            }
+        </ul>
+
+    </li>
+}
+
+
+@await Model.RenderStylesAndScripts(Component)

@@ -1,0 +1,5 @@
+﻿@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Web.Extensions;
+@model IUIComponent
+
+@await Model.InvokeAsync(Component)

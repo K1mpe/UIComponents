@@ -1,0 +1,59 @@
+﻿@using CDCPortal.DA.UIComponents.Models.Actions;
+
+@model UICActionDisableSaveButtonOnValidationErrors
+
+@{
+    string buttonId = $"#{Model.SaveButton.GetOrGenerateId()}";
+    string formId = "body";
+    if (Model.Form.HasValue())
+        formId = $"#{Model.Form.GetOrGenerateId()}";
+}
+
+<script>
+    $(document).ready(function(){
+        var button = $('@buttonId');
+
+        //Script will not work if button is already disabled
+        if(button.attr('disabled'))
+            return;
+
+        var form = $('@formId');
+        var buttonTooltip = button.attr('title');
+
+        var validationSpans = form.find('span.field-validation-valid');
+        form.find('input, select').on('keyup', function(){
+            CheckButton();
+        });
+        form.find('input, select').on('blur', function(){
+            CheckButton();
+        });
+        form.find('input, select').on('change', function(){
+            CheckButton();
+        });
+
+        button.hover(function(){
+            CheckButton();
+        });
+
+        function CheckButton(){
+            var validationMessages= "";
+            validationSpans.each(function(){
+                if($(this).text().length){
+                    validationMessages += $(this).text();
+                    validationMessages += '\r\n';
+                }
+            });
+
+            
+
+            if(validationMessages.length){
+                console.log('savebutton has been disabled');
+                button.attr('title', validationMessages);
+                button.attr('disabled',true);
+            } else{
+                button.attr('title', buttonTooltip);
+                button.attr('disabled',false);
+            }
+        }
+    });
+</script>

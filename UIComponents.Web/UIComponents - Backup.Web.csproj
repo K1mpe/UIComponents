@@ -1,0 +1,95 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="_ViewImports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <EmbeddedResource Include="Views\**\*.cshtml" Pack="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Shared\Components\UIComponent\ActionCloseCard\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionCompareObjects\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionDisableSaveButtonOnValidationErrors\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionGetPost\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionNavigate\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionNotYetImplemented\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionOpenResultAsModal\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionRefreshCard\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionSetEdit\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionSetReadonly\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionSetValue\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionSubmit\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Actions\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ActionTriggerSubmit\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ButtonEdit\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ButtonGroup\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ButtonToggle\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ButtonToolbar\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Button\_CardButton.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Button\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\CardWithTabs\_HorizontalTab.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\CardWithTabs\_VerticalTab.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Card\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\ContextMenuItem\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Custom\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Div\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\DropdownDivider\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\DropdownHeader\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\DropdownItem\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\DropdownSubmenu\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Dropdown\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Form\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Group\_ContentOnly.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Group\_Div.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Icon\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputCheckboxThreeState\_Checkbox.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputCheckboxThreeState\_ToggleSwitch.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputCheckbox\_Checkbox.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputCheckbox\_ToggleSwitch.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputColor\_Coloris.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputCustom\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputDaterange\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputDatetime\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputGroup\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputGroup\_Grid.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputMultilineText\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputMultiSelect\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputNumber\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputSelectlist\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputText\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputTimespan\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\JsTree\JsTree.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\JsTree\JsTreeItem.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\JsTree\JsTreeItems.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\JsTree\JsTreeLoadAjaxData.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Label\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\QuestionYesNo\_Modal.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\QuestionYesNo\_SweetAlert.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\SidePanel\_Left.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\SignalR\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\SingleRow\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Span\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Upload\_Dropzone1.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\_NoRender.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.26" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UICOmponents.BaseModels\UIComponents.Generators.csproj" />
+  </ItemGroup>
+
+</Project>

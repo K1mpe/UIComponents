@@ -1,0 +1,113 @@
+﻿@using CDCPortal.DA.UIComponents.Enums;
+@using CDCPortal.Web.Validators;
+
+@model UICInputDatetime
+
+
+
+@inject ValidationMessages messages;
+
+@{
+    Model.AddAttribute("class", "form-control");
+
+
+
+
+    string step="";
+
+    string dateTimeFormat = "yyyy-MM-ddTHH:mm";
+    switch (Model.Precision)
+    {
+        case UICDatetimeStep.Date:
+            step = "86400";
+            dateTimeFormat = "yyyy-MM-dd";
+            break;
+        case UICDatetimeStep.Minute:
+            step = "60";
+            dateTimeFormat = "yyyy-MM-ddTHH:mm";
+            break;
+        case UICDatetimeStep.Second:
+            step = "any";
+            dateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
+            break;
+    }
+    Model.AddAttribute("step", step);
+
+    string id = Model.GetOrGenerateId();
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id}");
+    }
+
+    bool hasClientValidation = Model.ValidationRequired || Model.ValidationMaximumDate != null || Model.ValidationMaximumDate != null;
+
+    if (Model.ValidationMinimumDate.HasValue)
+        Model.AddAttribute("min", Model.ValidationMinimumDate.Value.ToString(dateTimeFormat));
+
+    if (Model.ValidationMaximumDate.HasValue)
+        Model.AddAttribute("max", Model.ValidationMaximumDate.Value.ToString(dateTimeFormat));
+
+    if (Model.Value != null)
+        Model.AddAttribute("value", Model.Value.Value.ToString(dateTimeFormat));
+}
+
+
+
+<input type="@((Model.Precision == UICDatetimeStep.Date)?"date":"datetime-local")" @Html.Raw(Model.GetHtmlAttributes()) />
+ 
+
+@if (hasClientValidation)
+{
+
+    string propertyName = Model.PropertyName;
+    if (Model.DisplayName != null)
+        propertyName = L.GetResourceValue(Model.DisplayName);
+
+        <script>
+
+        $(document).ready(function(){
+            function validateInput(element){
+                var currentValue = new moment(element.val());
+                var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+                span.text("");
+
+                @if (Model.ValidationMaximumDate != null)
+                {
+                    <text>
+                        if (currentValue > new moment(@Json.Serialize(Model.ValidationMaximumDate.Value)))
+                            span.text('@messages.MaxValue(propertyName, Model.ValidationMaximumDate.Value)');
+                    </text>
+                }
+
+                @if (Model.ValidationMinimumDate != null)
+                {
+                    <text>
+                        if (new moment(@Json.Serialize(Model.ValidationMinimumDate.Value)) > currentValue)
+                            span.text('@messages.MinValue(propertyName, Model.ValidationMinimumDate.Value)');
+                    </text>
+                }
+                @if (Model.ValidationRequired)
+                {
+                    <text>
+                        if (currentValue.length == 0)
+                            span.text('@messages.Required(propertyName)');
+                    </text>
+                }
+            }
+
+            $('#@id').keyup(function(){
+                validateInput($(this));
+            });
+            $('#@id').change(function(){
+                validateInput($(this));
+            });
+            $('#@id').blur(function () {
+                validateInput($(this));
+            });
+
+        });
+    </script>
+}
+
+
+@await Model.Actions.InvokeAsync(Component)

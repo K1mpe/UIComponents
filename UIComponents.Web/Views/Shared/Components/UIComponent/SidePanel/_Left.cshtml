@@ -1,0 +1,36 @@
+﻿@model UICSidePanel
+
+@{
+    string id = Model.GetOrGenerateId();
+
+
+    Model.AssignCollectionForChildren();
+
+    Model.Initialize();
+
+
+
+    Model.AddScript(
+    @<text>
+        sidePanel.Initialize($('#@id'), @((int)Model.DefaultState));
+        
+    </text>);
+}
+
+
+<div id="@id" class="side-panel-container horizontal row" data-sidebar-name="@Html.JsEncode(Model.SidePanelIdentifier)">
+    <div class="side-panel col col-1 fit-content p-0 d-none">
+        <div class="card">
+            @await Model.ButtonToolbar.InvokeAsync(Component)
+            <div class="card-body p-1">
+                @await Model.SidePanelContent.InvokeAsync(Component)
+            </div>
+        </div>
+    </div>
+    @await Model.OpenSidebarButton.InvokeAsync(Component)
+    <div class="side-panel-content col">
+        @await Model.MainContent.InvokeAsync(Component)
+    </div>
+</div>
+
+@await Model.RenderStylesAndScripts(Component)

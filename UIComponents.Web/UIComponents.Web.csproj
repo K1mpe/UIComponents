@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="_ViewImports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <EmbeddedResource Include="Views\**\*.cshtml" Pack="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\Shared\Components\UIComponent\**" />
+    <Content Remove="Views\Shared\Components\UIComponent\**" />
+    <EmbeddedResource Remove="Views\Shared\Components\UIComponent\**" />
+    <None Remove="Views\Shared\Components\UIComponent\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.26" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UICOmponents.BaseModels\UIComponents.Generators.csproj" />
+  </ItemGroup>
+
+ 
+</Project>

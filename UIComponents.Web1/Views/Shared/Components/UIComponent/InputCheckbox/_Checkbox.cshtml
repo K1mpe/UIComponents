@@ -1,0 +1,19 @@
+﻿@model UICInputCheckbox
+
+@{
+    Model.AddAttribute("class", "form-checkbox");
+
+    string id = Model.GetOrGenerateId();
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id}");
+    }
+    Model.AddAttribute("style", $"accent-color: {Model.Color.ToHex()}");
+    if (Model.Value)
+        Model.AddAttribute("checked", "true");
+}
+
+<input type="checkbox" @Html.Raw(Model.GetHtmlAttributes())/>
+
+
+@await Model.Actions.InvokeAsync(Component)

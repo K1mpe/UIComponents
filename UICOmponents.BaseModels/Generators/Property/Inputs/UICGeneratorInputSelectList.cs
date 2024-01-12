@@ -1,0 +1,30 @@
+﻿using System.Web.Mvc;
+using UIComponents.Generators.Helpers;
+using UIComponents.Generators.Interfaces;
+
+namespace UIComponents.Generators.Generators.Property.Inputs;
+
+public class UICGeneratorInputSelectList : UICGeneratorProperty
+{
+    public UICGeneratorInputSelectList()
+    {
+        UICPropertyType = Abstractions.Attributes.UICPropertyType.SelectList;
+        HasExistingResult = false;
+    }
+
+    public override double Priority { get; set; } = 1000;
+    public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
+    {
+        bool showButtonAdd = args.Options.ShowAddButtonIfAllowed;
+        var input = new UICInputSelectlist(args.PropertyName, new());
+        input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
+        input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input)?? true;
+
+        input.SelectListItems = await args.Configuration.GetSelectListItems(args, input)?? new();
+
+        input.Searchable = input.SelectListItems.Count > args.Options.SelectlistSearableForItems;
+
+        return GeneratorHelper.Success<IUIComponent>(input, true);
+        
+    }
+}

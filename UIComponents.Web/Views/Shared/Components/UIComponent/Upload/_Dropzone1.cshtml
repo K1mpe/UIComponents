@@ -1,0 +1,77 @@
+﻿@using CDCPortal.DA.UIComponents.Models;
+
+@model UICUpload
+
+@{
+    string id = Model.GetOrGenerateId();
+}
+
+<link rel="stylesheet" href="~/lib/dropzone/dropzone.min.css" />
+<style>
+    .dropzone {
+        min-height: auto;
+        padding: 1.5rem 1.75rem;
+        text-align: center;
+        cursor: pointer;
+        border: 1px dashed var(--primary);
+        background-color: var(--light);
+        border-radius: 0.475rem !important;
+    }
+</style>
+
+<form id="@id" class="form" action="#" method="post" enctype="multipart/form-data">
+    <!--begin::Input group-->
+    <div class="fv-row">
+        <!--begin::Dropzone-->
+        <div class="dropzone">
+            <!--begin::Message-->
+            <div class="dz-message needsclick">
+                <i class="ki-duotone ki-file-up fs-3x text-primary"><span class="path1"></span><span class="path2"></span></i>
+
+                <!--begin::Info-->
+                <div class="ms-4">
+                    <h3 class="fs-5 fw-bold text-gray-900 mb-1">@L.GetResourceValue(Model.Text)</h3>
+                    @if (Model.DisplayFileCountMessage)
+                    {
+                        if(Model.MaxFileCount == 1)
+                        {
+                            <span class="fs-7 fw-semibold text-gray-400">@L.GetResourceValue("Upload.OneFile", "Upload only 1 file", Model.MaxFileCount)</span>
+                        }
+                        else
+                        {
+                            <span class="fs-7 fw-semibold text-gray-400">@L.GetResourceValue("Upload.MaxCount", "Upload up to {0} files", Model.MaxFileCount)</span>
+                        }
+                        
+                    }
+                    
+                </div>
+                <!--end::Info-->
+            </div>
+        </div>
+        <!--end::Dropzone-->
+    </div>
+    <!--end::Input group-->
+</form>
+
+
+<script src="/lib/dropzone/dropzone.js"></script>
+<script>
+    Dropzone.autoDiscover = false;
+    $(document).ready(function(){
+        console.log('upload script');
+        var myDropzone = new Dropzone("#@id .dropzone", {
+            url: @Json.Serialize(Model.PostUrl), // Set the url for your upload script location
+            paramName: "files", // The name that will be used to transfer the file
+            uploadMultiple: @Json.Serialize(Model.MaxFileCount>1),
+            maxFiles: @Model.MaxFileCount,
+            maxFilesize: @Model.MaxFileSize, // MB
+    @if (!string.IsNullOrEmpty(Model.AcceptedFiles))
+    {
+        <text>
+            acceptedFiles: @Json.Serialize(Model.AcceptedFiles),
+        </text>
+    }
+
+        });
+    });
+</script>

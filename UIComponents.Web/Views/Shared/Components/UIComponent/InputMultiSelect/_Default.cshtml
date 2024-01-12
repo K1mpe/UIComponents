@@ -1,0 +1,66 @@
+﻿@model UICInputMultiSelect
+
+@{
+    Model.AssignCollectionForChildren();
+    Model.AddAttribute("class", "form-control");
+    string id = Model.GetOrGenerateId();
+
+    string placeholder = Model.GetAttribute("placeholder");
+
+    var style = Model.GetAttribute("style");
+    Model.Attributes["style"] = "";
+    if (Model.Color.HasValue)
+    {
+     
+        Model.AddStyle(
+    @<text>
+                #@id + span .select2-selection__choice{
+                background-color: @Model.Color.Value.ToHex() !important;
+                border-color: @Model.Color.Value.ToHex() !important;
+                }
+                #@id + span.select2-container--focus .select2-selection--multiple {
+                border-color: @Model.Color.Value.ToHex() !important;
+                }
+                .select2-container--open[data-for=@id] .select2-results__option--highlighted{
+                background-color: @Model.Color.Value.ToHex() !important;
+                }
+            </text>
+        );
+    }
+}
+
+<select @Html.Raw(Model.GetHtmlAttributes())>
+    @foreach(var item in Model.SelectListItems)
+    {
+        <option value="@item.Value">@item.Text</option>
+    }
+</select>
+
+@{
+    Model.AddScript(@<text>
+            $('#@id').select2({
+                multiple: true,
+                closeOnSelect: @JsonSerializer.Serialize(Model.CloseOnSelect),
+                @if (!string.IsNullOrEmpty(placeholder))
+                    {
+                    <text>
+                    placeholder: @Html.JsEncode(placeholder, "'"),
+                    </text>
+                    }
+            });
+
+            $('#@id').data('select2').$dropdown.attr('data-for', '@id').addClass('include-items');
+            $('#@id').on('SetValue', function(event, ...values){
+               
+                $('#@id').val(values).change();
+            });
+
+            $('#@id').val(@JsonSerializer.Serialize(Model.Value)).change();
+
+            $('#@id').next().attr('style', @Html.JsEncode(style, "'"));
+        </text>
+    );
+}
+
+@*Als script doorgeschoven wordt naar parent, doet deze functie niets*@
+@await Model.RenderStylesAndScripts(Component)

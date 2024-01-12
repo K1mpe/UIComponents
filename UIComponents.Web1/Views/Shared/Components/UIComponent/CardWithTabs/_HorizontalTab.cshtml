@@ -1,0 +1,62 @@
+﻿@using CDCPortal.DA.UIComponents.Abstract;
+@using CDCPortal.DA.UIComponents.Models;
+@model UICCardWithTabs
+
+@{
+    string id = Model.GetOrGenerateId();
+    Model.AddAttribute("class", "card card-tabs");
+    Model.AddBodyAttribute("class", "card-body");
+}
+
+@if(Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent)
+{
+    @await Model.Tabs.First().InvokeAsync(Component)
+}
+else
+{
+    <div @Html.Raw(Model.GetHtmlAttributes())>
+        <div class="card-header">
+            <div class="card-header-tabs nav nav-justified nav-tabs" role="tablist" aria-orientation="horizontal">
+                @for (int i = 0; i < Model.Tabs.Count; i++)
+                {
+                    var tab = Model.Tabs[i];
+                    var title = tab.Title;
+                    tab.Title = null;
+
+                    if (tab is UICCard card)
+                    {
+                        card.OnlyDisplayContent = true;
+                        card.DefaultClosed = true;
+                    }
+                    if (tab is Card card2)
+                    {
+                        card2.HideHeader = true;
+                        card2.RemoveCardClass = true;
+                    }
+                    <a class="nav-link" data-toggle="tab" role="tab" href="@($"#{id}-tab{i+1}")">
+                        @L.GetResourceValue(title)
+                    </a>
+                }
+            </div>
+
+        </div>
+        <div @Html.Raw(Model.BodyAttributes.GetHtmlAttributes())>
+            <div class="tab-content">
+                @for (int i = 0; i < Model.Tabs.Count; i++)
+                {
+                    var tab = Model.Tabs[i];
+                    <div class="tab-pane fade" role="tabpanel" id="@($"{id}-tab{i+1}")">
+                        @await tab.InvokeAsync(Component)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+
+<script>
+    $(document).ready(function(){
+        taghelper.card.openFirstTabCard($('#@id'), true);
+    })
+</script>

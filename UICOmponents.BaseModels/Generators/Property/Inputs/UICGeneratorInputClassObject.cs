@@ -1,0 +1,37 @@
+﻿using UIComponents.Generators.Helpers;
+
+namespace UIComponents.Generators.Generators.Property.Inputs;
+
+/// <summary>
+/// Convert the PropertyGroup request to a Classobject Request
+/// </summary>
+public class UICGeneratorInputClassObject : UICGeneratorProperty
+{
+    public UICGeneratorInputClassObject()
+    {
+        RequiredCaller = UICGeneratorPropertyCallType.PropertyGroup;
+        HasExistingResult= false;
+    }
+
+    public override double Priority { get; set; }
+
+    public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
+    {
+        if (args.PropertyType == null)
+            return GeneratorHelper.Next<IUIComponent>();
+
+        if (args.PropertyValue == null)
+            return GeneratorHelper.Next<IUIComponent>();
+
+        if(args.PropertyType == typeof(string) || !args.PropertyType.IsClass)
+            return GeneratorHelper.Next<IUIComponent>();
+
+        var cc = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, null, args.CallCollection);
+        var newArgs = new UICPropertyArgs(args.PropertyValue, null, null, args.Options, cc, args.Configuration);
+        
+        var result =await args.Configuration.GetGeneratedResultAsync<UICPropertyArgs, IUIComponent>($"Object for {args.PropertyType.Name}", newArgs, args.Options);
+        if (result is UIComponent component)
+            component.AddAttribute("name", args.PropertyName);
+        return GeneratorHelper.Success<IUIComponent>(result, true);
+    }
+}

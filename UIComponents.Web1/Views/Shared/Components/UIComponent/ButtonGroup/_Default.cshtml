@@ -1,0 +1,20 @@
+﻿@model UICButtonGroup
+
+@{
+    if (Model.VerticalButtons)
+        Model.AddAttribute("class", "btn-group-vertical");
+    else
+        Model.AddAttribute("class", "btn-group");
+
+    Model.AddAttribute("role", "group");
+}
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    @foreach(var button in Model.Buttons)
+    {
+        if (button is UICDropdown dropdown)
+            dropdown.AddAttribute("class", "btn-group");
+        @await button.InvokeAsync(Component)
+    }
+</div>
+

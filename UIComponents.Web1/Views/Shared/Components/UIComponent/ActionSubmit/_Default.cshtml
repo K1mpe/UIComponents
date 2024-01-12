@@ -1,0 +1,59 @@
+﻿@using CDCPortal.DA.UIComponents.Models.Actions;
+
+
+@model UICActionSubmit
+
+@{
+    Model.AssignCollectionForChildren();
+    string formid = Model.GetAttribute("formidentifier");
+    if (string.IsNullOrEmpty(formid))
+        throw new Exception("Identifier for Actions not defined");
+
+    bool hideDocReadyTag = !string.IsNullOrEmpty(Model.GetAttribute("HideDocReady"));
+
+
+    Model.AddScript(
+    @<text>
+        $('@formid').closest('form').off("submit");
+        $('@formid').closest('form').on("submit", async function(args) {
+        args.preventDefault();
+
+
+        var data = {};
+        @if (string.IsNullOrWhiteSpace(Model.PostFormAsProperty))
+                {
+        <text>
+            data = uic.GetValue($(this));
+        </text>
+                }
+                else
+                {
+        <text>
+            data.@Model.PostFormAsProperty = uic.GetValue($(this));
+        </text>
+                }
+
+        var overrideData = @Json.Serialize(Model.AdditionalPost??new{})
+        data = $.extend({}, data, overrideData);
+        let url = $(this).prop("action");
+        @if (!string.IsNullOrEmpty(Model.PostLocation))
+                {
+        <text>
+            url = @Json.Serialize(Model.PostLocation);
+        </text>
+                }
+
+        console.log('Form post', url, data);
+        var result = await Crud.Post(url, data);
+
+        if(result != false){
+        @await Model.OnSuccess.InvokeAsync(Component)
+        }
+        });
+    </text>);
+}
+
+
+
+
+@await Model.RenderStylesAndScripts(Component)

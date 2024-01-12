@@ -1,0 +1,15 @@
+﻿@using CDCPortal.DA.UIComponents.Models.Actions;
+
+@model UICActionCloseCard
+
+@{
+    string identifier = Model.GetAttribute("identifier");
+    if (string.IsNullOrEmpty(identifier))
+        identifier = Model.GetAttribute("formidentifier");
+    if(string.IsNullOrEmpty(identifier))
+        throw new Exception("Identifier for Actions not defined");
+}
+
+if(!taghelper.card.closeCard($('@identifier'))){
+    @await Model.OnFailed.InvokeAsync(Component)
+}

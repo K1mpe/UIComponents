@@ -1,0 +1,21 @@
+﻿@using CDCPortal.DA.UIComponents.Models.Dropdown;
+
+@model UICDropdownHeader
+
+@{
+    Model.AddAttribute("class", "dropdown-header");
+}
+
+<li>
+    <h6 @Html.Raw(Model.GetHtmlAttributes())>
+        @if (Model.Icon.HasValue())
+        {
+            @await Model.Icon.InvokeAsync(Component)
+        }
+        else
+        {
+            <span class="icon"></span>
+        }
+        @L.GetResourceValue(Model.Content)
+        </h6>
+</li>

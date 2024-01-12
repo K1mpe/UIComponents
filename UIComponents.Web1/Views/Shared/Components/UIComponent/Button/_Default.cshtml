@@ -1,0 +1,96 @@
+﻿@using CDCPortal.DA.UIComponents.Abstract;
+@using CDCPortal.DA.UIComponents.Enums;
+
+
+@model UICButton
+
+@{
+    string type = Model.GetAttribute("type")??"button";
+
+    string id = Model.GetOrGenerateId();
+    Model.AssignCollectionForChildren();
+
+    if(Model.OnClick != null)
+    {
+        var onClickType = Model.OnClick.GetType();
+        if (Model.OnClick is UICActionSubmit submit)
+        {
+            type = "submit";
+            submit.AddAttribute("HideDocReady", "true");
+        }
+        else if (onClickType == typeof(UICActionSetReadonly))
+        {
+            type = "reset";
+
+            //when clicking the reset button, remove all validation fields from the current form
+            Model.AddScript(
+            @<text>
+            
+                $('#@id').click(function(){
+                    var form = $(this).closest('form');
+
+                    form.find('.field-validation-valid').text('');
+                })
+            </text>);
+        }
+        
+
+        if(Model.OnClick is UIComponent onClickElement)
+        {
+            onClickElement.AddAttribute("identifier", $"#{id}");
+        }
+
+    }
+    if (Model.Disabled)
+        Model.AddAttribute("disabled", "true");
+
+    Model.AddAttribute("class", "btn ");
+
+    if(Model.Color.HasValue)
+        Model.AddAttribute("class", $"btn-{Model.Color?.ToLower()??Color.Default.ToLower()}");
+
+    
+}
+
+
+@if (Model.OnClick != null && Model.OnClick is UICActionNavigate navigate)
+{
+    <a href="@navigate.Href" @Html.Raw(Model.GetHtmlAttributes())>
+        @await Model.PrependButtonIcon.InvokeAsync(Component)
+        @L.GetResourceValue(Model.ButtonText)
+        @await Model.AppendButtonIcon.InvokeAsync(Component)
+    </a>
+}
+else
+{
+    <button type="@type" @Html.Raw(Model.GetHtmlAttributes())>
+        @await Model.PrependButtonIcon.InvokeAsync(Component)
+        @L.GetResourceValue(Model.ButtonText)
+        @await Model.AppendButtonIcon.InvokeAsync(Component)
+
+        @if (Model.OnClick != null)
+        {
+            Model.AddScript(@<text>
+            
+                @if (type == "submit")
+                {
+                    <text>
+                        @await Model.OnClick.InvokeAsync(Component)
+                    </text>
+                }
+                else
+                {
+                    <text>
+                            $('#@id').click(async function (args) {
+                        @await Model.OnClick.InvokeAsync(Component)
+                                            });
+                    </text>
+                }
+
+                            </text>);
+
+        }
+    </button>
+    
+}
+@await Model.RenderStylesAndScripts(Component)

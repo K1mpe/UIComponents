@@ -1,0 +1,89 @@
+﻿@using CDCPortal.Web.UIComponents.JsTree;
+@model JsTreeItem
+@{
+    if (Model.Tooltip != null)
+        Model.Li_Attr.Add("title", @L.GetResourceValue(Model.Tooltip));
+}
+{
+@if (!string.IsNullOrEmpty(Model.Id))
+{
+    <text>
+        id: '@JavaScriptEncoder.Default.Encode(Model.Id)',
+    </text>
+}
+@if (Model.Text != null)
+{
+    <text>
+        text: '@JavaScriptEncoder.Default.Encode(L.GetResourceValue(Model.Text))',
+    </text>
+}
+@if (Model.Icon != null)
+{
+    <text>
+        icon: '@JavaScriptEncoder.Default.Encode(Model.Icon)',
+    </text>
+}
+
+@if (Model.State != null)
+{
+    <text>
+        state: {
+            opened: @JsonSerializer.Serialize(Model.State.Opened),
+            disabled: @JsonSerializer.Serialize(Model.State.Disabled),
+            selected: @JsonSerializer.Serialize(Model.State.Selected),
+        },
+    </text>
+}
+
+@if (Model.Children.Any())
+{
+    <text>
+        children: [
+        @foreach(var child in Model.Children)
+        {
+            @await child.InvokeAsync(Component)
+        }
+        ],
+    </text>
+}
+else if(Model.HasAjaxChildren)
+{
+     <text>
+        children: true,
+    </text>
+}
+else
+{
+    <text>
+        children: [],
+    </text>
+}
+
+@if (Model.Li_Attr.Any())
+{
+    <text>
+        li_attr: {
+        @foreach (var item in Model.Li_Attr)
+        {
+            <text>
+                '@JavaScriptEncoder.Default.Encode(item.Key)' : '@JavaScriptEncoder.Default.Encode(item.Value)',
+            </text>
+        }
+        },
+    </text>
+}
+@if (Model.A_Attr.Any())
+{
+    <text>
+        a_attr: {
+        @foreach (var item in Model.A_Attr)
+        {
+            <text>
+                '@JavaScriptEncoder.Default.Encode(item.Key)' : '@JavaScriptEncoder.Default.Encode(item.Value)',
+            </text>
+        }
+        },
+    </text>
+}
+
+},

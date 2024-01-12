@@ -1,0 +1,45 @@
+﻿@using CDCPortal.SBL.Models.ToastModels.QuestionNotifications;
+
+
+@model YesNoQuestion
+
+@{
+    var span = new UICSpan(Model.Message);
+    var modal = new Modal()
+    {
+        Title = L.GetResourceValue(Model.Title),
+        DisableCloseOnClickOut = Model.DisableCloseOnClickOut,
+        ShowCloseButton = !Model.DisableCloseOnClickOut,
+        HeaderColor = Model.HeaderColor
+    };
+}
+
+@if (Model.RemoveNotification)
+{
+    <text>
+        taghelper.card.closeCard($('#@Model.Id'));
+    </text>
+}
+else
+{
+    <cdc-modal cs="@modal">
+        <div id="@Model.Id">
+            @await span.InvokeAsync(Component)
+
+            <div class="btn-toolbar justify-content-center gap-5">
+                @if (Model.InvertButtons)
+                {
+                    @await Model.ButtonNo.InvokeAsync(Component)
+                    @await Model.ButtonYes.InvokeAsync(Component)
+                }
+                else
+                {
+                    @await Model.ButtonYes.InvokeAsync(Component)
+                    @await Model.ButtonNo.InvokeAsync(Component)
+                }
+            </div>
+
+        </div>
+    </cdc-modal>
+}
+

@@ -1,0 +1,87 @@
+﻿@using CDCPortal.Web.Validators;
+
+
+@inject ValidationMessages messages;
+@model UICInputMultiline
+
+@{
+    Model.AddAttribute("class", "form-control");
+
+    string id = Model.GetOrGenerateId();
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id}");
+    }
+
+
+    var rows = Model.Value?.Split("\n").Count() ?? 1;
+    Model.AddAttribute("rows", rows.ToString());
+}
+
+<textarea value="@Model.Value" @Html.Raw(Model.GetHtmlAttributes())>@Model.Value</textarea>
+    
+<script>
+    
+    $(document).ready(function(){
+        //add a new line on enter in a textarea
+        $('#@id').keydown(function (e) {
+            if (e.keyCode == '13') { //enter
+                var currentRows = $(this).attr('rows');
+                currentRows = +currentRows + 1;
+                $(this).attr('rows', currentRows);
+            }
+        });
+        
+        @if (Model.HasClientSideValidation)
+{
+
+    string propertyName = Model.PropertyName;
+    if (Model.DisplayName != null)
+        propertyName = L.GetResourceValue(Model.DisplayName);
+
+    <text>
+        function validateInput(element){
+            var currentValue = element.val();
+            var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+            span.text("");
+            @if (Model.ValidationMaxLength != null)
+            {
+                <text>
+                    if (currentValue.length > @Model.ValidationMaxLength.Value)
+                        span.text('@messages.MaxLength(propertyName, Model.ValidationMaxLength.Value)');
+                </text>
+            }
+
+            @if (Model.ValidationMinLength != null)
+            {
+                <text>
+                    if (@(Model.ValidationMinLength.Value) > currentValue.length && currentValue.length > 0)
+                        span.text('@messages.MinLength(propertyName, Model.ValidationMinLength.Value)');
+                </text>
+            }
+
+            @if (Model.ValidationRequired)
+            {
+                <text>
+                    if (currentValue.length == 0)
+                        span.text('@messages.Required(propertyName)');
+                </text>
+            }
+
+        }
+        $('#@id').keyup(function(){
+            validateInput($(this));
+        });
+
+        $('#@id').blur(function () {
+            validateInput($(this));
+        });
+    </text>
+
+           
+}
+    });
+
+</script>
+
+@await Model.Actions.InvokeAsync(Component)

@@ -1,0 +1,40 @@
+﻿@model UICInputCheckboxThreeState
+
+@{
+    Model.AddAttribute("class", "form-checkbox");
+
+    string id = Model.GetOrGenerateId();
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id}");
+    }
+    Model.AddAttribute("style", $"accent-color: {Model.Color.ToHex()}");
+    if (Model.Value == true)
+        Model.AddAttribute("checked", "true");
+    else if (Model.Value == null)
+        Model.AddAttribute("data-value", Model.Value?.ToString().ToLower() ?? "null");
+
+    Model.AddAttribute("class", "three-state-checkbox");
+}
+
+<input type="checkbox" @Html.Raw(Model.GetHtmlAttributes()) />
+
+
+<script>
+$(document).ready(function(){
+        uic.SetThreeState($('#@id'));
+
+        $('#@id').click(function(){
+            e.preventDefault;
+            var oldVal = $(this).data('value');
+            if (oldVal === "null" || oldVal === "")
+                $(this).data('value', "true");
+            else if (oldVal === "false")
+                $(this).data('value', "null");
+            else
+                $(this).data('value', "false");
+
+            uic.SetThreeState($(this));
+        })
+})
+</script>

@@ -1,0 +1,57 @@
+﻿@using CDCPortal.DA.UIComponents.Extentions;
+@using CDCPortal.DA.UIComponents.Models;
+
+@model UICForm
+
+@{
+    string id = Model.GetOrGenerateId();
+    bool isSubForm = !string.IsNullOrEmpty(Model.GetAttribute("formidentifier"));
+    
+    if(!isSubForm)
+        Model.GetAllChildren().AddAttribute("formidentifier", $"#{id}");
+
+}
+
+
+@if (isSubForm)
+{
+    <div @Html.Raw(Model.GetHtmlAttributes())>
+        @foreach (var element in Model.FormElements)
+        {
+            @await element.InvokeAsync(Component)
+        }
+    </div>
+}
+else
+{
+    <form id="@id">
+    
+    @foreach(var element in Model.FormElements)
+    {
+        @await element.InvokeAsync(Component)
+    }
+    
+</form>
+
+@if(Model.Readonly)
+{
+    <script>
+        $(document).ready(function(){
+            uic.FormReadonly($('#@id'));
+        })
+    </script>
+}
+
+@if(Model.SetFocusOnFirstInput)
+{
+    <script>
+        @*This function has a small timeout, this is to insure that animations of modals are finished before trying to set focus*@
+        $(document).ready(function(){
+            setTimeout(() => {
+                console.log('focussing first input');
+                $('#@id input, #@id select')[0].focus();
+            }, 500);
+        });
+    </script>
+}
+}

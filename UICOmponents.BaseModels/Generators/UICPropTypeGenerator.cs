@@ -1,0 +1,109 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using UIComponents.Generators.Helpers;
+
+namespace UIComponents.Generators.Generators;
+
+public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyType?>
+{
+    public override double Priority { get; set; } = 1000;
+
+    public override async Task<IUICGeneratorResponse<UICPropertyType?>> GetResponseAsync(PropertyInfo propertyInfo, UICPropertyType? existingResult)
+    {
+        if (existingResult != null)
+            GeneratorHelper.Next<UICPropertyType?>();
+        UICPropertyType uicPropertyType = UICPropertyType.String;
+
+        //Get from attribute
+        var uicPropertyAttribute = propertyInfo.GetCustomAttribute<UICPropertyTypeAttribute>();
+        if (uicPropertyAttribute != null)
+            uicPropertyType = uicPropertyAttribute.Type;
+        else
+        {
+            var type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+            bool nullable = type != propertyInfo.PropertyType;
+
+            var dataTypeAttr = propertyInfo.GetCustomAttribute<DataTypeAttribute>();
+            if (dataTypeAttr != null)
+            {
+                switch (dataTypeAttr.DataType)
+                {
+                    case DataType.Custom:
+                        break;
+                    case DataType.DateTime:
+                        return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.DateTime, true);
+                    case DataType.Date:
+                        return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.DateOnly, true);
+                    case DataType.Time:
+                        break;
+                    case DataType.Duration:
+                        return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.Timespan, true);
+                    case DataType.PhoneNumber:
+                        break;
+                    case DataType.Currency:
+                        break;
+                    case DataType.Text:
+                        break;
+                    case DataType.Html:
+                        break;
+                    case DataType.MultilineText:
+                        break;
+                    case DataType.EmailAddress:
+                        break;
+                    case DataType.Password:
+                        break;
+                    case DataType.Url:
+                        break;
+                    case DataType.ImageUrl:
+                        break;
+                    case DataType.CreditCard:
+                        break;
+                    case DataType.PostalCode:
+                        break;
+                    case DataType.Upload:
+                        break;
+                }
+            }
+            switch (type.Name.ToLower())
+            {
+                case "string":
+                case "icomparable":
+                    uicPropertyType = UICPropertyType.String;
+                    if (propertyInfo.Name.ToLower().EndsWith("color"))
+                        uicPropertyType = UICPropertyType.HexColor;
+                    break;
+                case "int32":
+                case "int64":
+                case "byte":
+                case "long":
+                    uicPropertyType = UICPropertyType.Number;
+                    break;
+                case "single":
+                case "double":
+                case "decimal":
+                    uicPropertyType = UICPropertyType.Decimal;
+                    break;
+                case "timespan":
+                    uicPropertyType = UICPropertyType.Timespan;
+                    break;
+                case "datetime":
+                    uicPropertyType = UICPropertyType.DateTime;
+                    break;
+                case "boolean":
+                    uicPropertyType = UICPropertyType.Boolean;
+                    if (nullable)
+                        uicPropertyType = UICPropertyType.ThreeStateBoolean;
+                    break;
+                default:
+                    if (type.BaseType?.Name == "Enum")
+                    {
+                        uicPropertyType = UICPropertyType.SelectList;
+                        break;
+                    }
+                    break;
+            }
+        }
+        await Task.Delay(0);
+        return GeneratorHelper.Success<UICPropertyType?>(uicPropertyType, true);
+    }
+}

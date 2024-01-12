@@ -1,0 +1,58 @@
+﻿@model UICInputTimespan
+
+@{
+    string id = Model.GetOrGenerateId();
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id} input");
+    }
+    Model.AssignCollectionForChildren();
+    Model.AddAttribute("class", "d-flex");
+    Model.AddScript(
+    @<text>
+    $('#@id').on('GetValue', function() {
+        console.log('check Timespan', @Json.Serialize(new TimeSpan(1, 2, 3,4,567)));
+
+        var ticks = 0;
+        ticks += ($('#@id .timespan-days').val() * 86400000) || 0;
+        ticks += ($('#@id .timespan-hours').val() * 3600000) || 0;
+        ticks += ($('#@id .timespan-minutes').val() * 60000) || 0;
+        ticks += ($('#@id .timespan-seconds').val() * 1000) || 0;
+        ticks += ($('#@id .timespan-miliseconds').val()) || 0;
+        //return ticks
+
+        var days = $('#@id .timespan-days').val()||0;
+        var hours= $('#@id .timespan-hours').val()||0;
+        var minutes= $('#@id .timespan-minutes').val()||0;
+        var seconds= $('#@id .timespan-seconds').val()||0;
+        var miliseconds = $('#@id .timespan-miliseconds').val()||0;
+        var value = `${days}:${hours}:${minutes}:${seconds}.${miliseconds}`;
+        return value;
+    })
+    </text>);
+}
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    @if (Model.ShowDays)
+    {
+        <input type="number" class="form-control uic-timespan-input timespan-days" min="0" max="30" value="@(Model.Value?.Days??null)" title="@L.GetResourceValue("Timespan.Days")" />
+    }
+    @if (Model.ShowHours)
+    {
+        <input type="number" class="form-control uic-timespan-input timespan-hours" min="0" max="23" value="@(Model.Value?.Hours??null)" title="@L.GetResourceValue("Timespan.Hours")" />
+    }
+    @if (Model.ShowMinutes)
+    {
+        <input type="number" class="form-control uic-timespan-input timespan-minutes" min="0" max="59" value="@(Model.Value?.Minutes??null)" title="@L.GetResourceValue("Timespan.Minutes")" />
+    }
+    @if (Model.ShowSeconds)
+    {
+        <input type="number" class="form-control uic-timespan-input timespan-seconds" min="0" max="59" value="@(Model.Value?.Seconds??null)" title="@L.GetResourceValue("Timespan.Seconds")" />
+    }
+    @if (Model.ShowMilliseconds)
+    {
+        <input type="number" class="form-control uic-timespan-input timespan-miliseconds" min="0" max="999" value="@(Model.Value?.Milliseconds??null)" title="@L.GetResourceValue("Timespan.Miliseconds")" />
+    }
+</div>
+
+@await Model.RenderStylesAndScripts(Component)

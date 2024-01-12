@@ -1,0 +1,12 @@
+﻿@model UICGroup
+
+@{
+    Model.AssignCollectionForChildren();
+}
+<div @Html.Raw(Model.GetHtmlAttributes())>
+@foreach(var element in Model.Components)
+{
+    @await element.InvokeAsync(Component)
+}
+</div>
+@await Model.RenderStylesAndScripts(Component)

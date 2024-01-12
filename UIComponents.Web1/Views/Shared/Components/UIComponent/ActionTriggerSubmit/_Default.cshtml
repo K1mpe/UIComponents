@@ -1,0 +1,8 @@
+﻿@model UICActionTriggerSubmit
+@{
+    string formid = Model.GetAttribute("formidentifier");
+    if (string.IsNullOrEmpty(formid))
+        throw new Exception("Identifier for Actions not defined");
+}
+
+$('@formid').closest('form').trigger('submit');

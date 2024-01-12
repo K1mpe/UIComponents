@@ -1,0 +1,67 @@
+﻿@using CDCPortal.DA.UIComponents.Abstract;
+@using CDCPortal.DA.UIComponents.Interfaces;
+@using CDCPortal.DA.UIComponents.Models;
+
+
+@model UICSingleRow
+
+@{
+    string id = Model.GetOrGenerateId();
+    Model.AssignCollectionForChildren();
+
+    List<Type> SupportedTypes = new() { typeof(UICInputGroup) };
+
+
+    foreach(var child in Model.Components)
+    {
+        if(child is IUISingleRowSupport singleRowSupport)
+        {
+            singleRowSupport.TransformToSingleRow();
+        }
+    }
+
+
+    bool lastHadSupport = false;
+    Model.AddStyle(
+    @<text>
+        #@id .singlerow-groups{
+            display: grid;
+            grid-template-columns: minmax(@(Model.MinLabelWidth ?? "100px"), auto) minmax(@(Model.MinInputWidth ?? "auto"), 1fr);
+            grid-template-rows: 1fr;
+            grid-row-gap: @(Model.MarginBetweenRows ?? "1rem");
+            grid-column-gap: @(Model.MarginBetweenColumns ?? "1rem");
+            padding-bottom: @(Model.MarginBetweenRows ?? "1rem");
+        }
+    </text>);
+}
+
+
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+@foreach(var element in Model.Components)
+{
+    if (element == null)
+        continue;
+    if(element is UIComponent component)
+    {
+        if (!component.Render)
+            continue;
+    }
+    bool hasSingleRowSupport = (element is IUISingleRowSupport supportsSingleRow && supportsSingleRow.RendersInSingleRow());
+
+    if(!lastHadSupport && hasSingleRowSupport)
+    {
+        @Html.Raw("<div class=\"singlerow-groups\">")
+    } else if(lastHadSupport && !hasSingleRowSupport)
+    {
+        @Html.Raw("</div>")
+    }
+    lastHadSupport = hasSingleRowSupport;
+    @await element.InvokeAsync(Component)
+}
+@if(lastHadSupport)
+    @Html.Raw("</div>")
+    
+</div>
+    
+@await Model.RenderStylesAndScripts(Component)
