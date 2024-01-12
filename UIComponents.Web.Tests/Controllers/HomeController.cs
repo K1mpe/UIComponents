@@ -17,7 +17,7 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View();
+            //return View();
             var testModel = new TestModel();
             var component = await _uic.CreateComponentAsync(testModel);
             return View("ComponentRender", component);

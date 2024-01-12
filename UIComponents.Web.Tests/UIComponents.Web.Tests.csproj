@@ -10,4 +10,9 @@
     <ProjectReference Include="..\UIComponents.Web\UIComponents.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Views\Shared\Components\UIComponent\InputGroup\_Default.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\InputText\_Default.cshtml" />
+  </ItemGroup>
+
 </Project>

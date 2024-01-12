@@ -12,5 +12,7 @@ namespace UIComponents.Web.Tests.Models
     {
         [UICSpan("Test", "Dit is een test")]
         public string TestString { get; set; }  
+
+        public DateTime Date { get; set; } = DateTime.Now;
     }
 }

@@ -40,5 +40,11 @@
     <None Include="Views\Shared\Components\UIComponent\Group\_Div.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="UIComponents\Group\Div.cshtml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
  
 </Project>
