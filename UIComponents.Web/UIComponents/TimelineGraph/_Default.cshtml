@@ -1,0 +1,561 @@
+﻿@model UICTimeLineGraph
+
+@using CDCPortal.DA.UIComponents.Models;
+@using CDCPortal.DA.UIComponents.Models.Graphs;
+@using CDCPortal.DA.UIComponents.Models.Graphs.TimeLineGraph;
+
+@{
+    string guid = Model.GetOrGenerateId();
+
+    Model.AssignCollectionForChildren();
+
+    (string BackgroundColor, string LineColor) GetColors(int index)
+    {
+        if (!Model.LineColors.Any())
+            return (null, null);
+
+        int colorPresetCount = Model.LineColors.Count();
+
+        int presetIndex = index % colorPresetCount;
+
+        return Model.LineColors[presetIndex];
+    }
+    //Model.AddAttribute("style", $"width:{Model.Width}; height: {Model.Height};");
+
+
+    Model.AddScript(
+    @<text>
+
+
+    $('#@guid').on('help', function(){
+        console.log(".trigger('reload', 'graphId')", "Reload this graph");
+        console.log(".trigger('reloadAll')", "Reload all data in this chart");
+        console.log(".trigger('resize')", "ReRender the graph to scale for the available space")
+
+        console.log(".triggerHandler('getChart')", "Returns the current graph config");
+        console.log(".triggerHandler('getGraphs')", "Returns a array of all current graphs");
+
+        console.log(".trigger('addGraph', graph)", "Add a new chart clientSide, Example:", {
+            Id: 'Unique string',
+            Label: 'string',
+            Points:[{
+                Value: 123,
+                DateValue:"DateTime.ToString('s')",
+                Id: 'Optional string'
+            }],
+            Source: '/Home/GetData',
+
+        });
+        console.log(".trigger('removeGraph', 'graphId')", "Remove a graph from chart based on its Id");
+        console.log(".trigger('enableGraph', 'graphId')", "If this graph is off, turn it on");
+        console.log(".trigger('disableGraph', 'graphId')", "If this graph is on, turn it off");
+        console.log(".trigger('toggleGraph', 'graphId')", "Turn this graph on or off");
+
+
+        console.log(".on('chartMoved', (ev, movedData) => {})", "Triggered if the chart moves or scales");
+        console.log(".on('loaded', (ev, loadedData) => {})", "Triggered after one or more graphs have loaded data");
+        console.log(".on('graphChanged', (ev, changedData) => {})", "Triggered after a chart has been turned on or off");
+    });
+
+    $('#@guid').on('reloadAll', function(){
+        reloadAllGraphData();
+    });
+    $('#@guid').on('getChart', function(){
+        console.log('chart', chart);
+        return chart;
+    })
+    $('#@guid').on('resize', function(){
+        OnWindowResized();
+    })
+
+    log('Start script');
+
+    function log(...rest){
+        if(@Json.Serialize(Model.EnableConsoleLog))
+            console.log('TimelineGraph @Model.GetOrGenerateId()', rest);
+    }
+    let liveUpdate = @Json.Serialize(Model.EnableLiveData);
+    @if (Model.EnableLiveData)
+    {
+        if(!Model.LineGraphs.Where(x=>!string.IsNullOrWhiteSpace(x.Source) && x.DisableFutureLoading).Any())
+        {
+            <text>
+            liveUpdate = false;
+            log('Live update disabled - No graphs with "@nameof(UICTimeLineGraph.LineGraph.Source)" and "@nameof(UICTimeLineGraph.LineGraph.DisableFutureLoading)");
+
+            </text>      
+        }
+    }
+
+
+    let graphs = {};
+    let autoInterval = @Model.LoadLiveDataMinInterval.TotalMilliseconds;
+    @for(int i=0; i<Model.LineGraphs.Count; i++)
+    {
+        var graph = Model.LineGraphs[i];
+
+        var colors = GetColors(i);
+
+        if (string.IsNullOrEmpty(graph.BackgroundColor))
+            graph.BackgroundColor = colors.BackgroundColor;
+        if (string.IsNullOrEmpty(graph.LineColor))
+            graph.LineColor = colors.LineColor;
+
+
+        if (string.IsNullOrEmpty(graph.Source))
+            continue;
+        if (string.IsNullOrWhiteSpace(graph.LineGraphId))
+            throw new Exception($"Id is required for linegraph - {L.GetResourceValue(graph.Label)}");
+
+        <text>
+        graphs[@Html.JsEncode(graph.LineGraphId, "'")] = {
+            LineGraphId: @Html.JsEncode(graph.LineGraphId,"'"),
+            Index: @i,
+            Enabled: @Json.Serialize(graph.Enabled),
+            Cached: @Json.Serialize(graph.CacheData),
+            Source: @Html.JsEncode(graph.Source,"'"),
+            DisableFutureLoading: @Json.Serialize(graph.DisableFutureLoading),
+            AdditionalPostData: @Json.Serialize(graph.AdditionalPostData),
+            Ranges: []
+        };
+
+        </text>
+        if (graph.Points.Any())
+        {
+            DateTime firstPoint = graph.Points.Select(x => x.DateTime).Min();
+            DateTime lastPoint = graph.Points.Select(x => x.DateTime).Max();
+            <text>
+            graphs[@Html.JsEncode(graph.LineGraphId, "'")].Ranges.push({
+                start: moment(@Html.JsEncode(firstPoint.ToString("s"), "'")),
+                end: moment(@Html.JsEncode(lastPoint.ToString("s"), "'"))
+            });
+        </text>
+        }
+    }
+                
+    let minDateTime; //The smallest position on the current timeline
+    let maxDateTime; //The largest position on the current timeline
+    let chart;
+
+    function Initialize(){
+        chart = new Chart($('#@guid')[0], {
+        type: 'line',
+        
+        
+        data:{
+            datasets:[
+                @for(int i=0; i < Model.LineGraphs.Count; i++)
+                {
+                    var graph = Model.LineGraphs[i];
+                    <text>
+                    {
+                        label: @Html.JsEncode(L.GetResourceValue(graph.Label), "'"),
+                        data:@Html.Raw(Json.Serialize(graph.Points)),
+                        stepped: @Json.Serialize(graph.Stepped),
+                        fill: @Json.Serialize(graph.Fill),
+                        pointRadius: @graph.PointRadius,
+                        borderColor: @Html.JsEncode(graph.LineColor, "'"),
+                        backgroundColor: @Html.JsEncode(graph.BackgroundColor, "'"),
+                        tension: @graph.Tension
+                    },
+                    </text>
+                }
+            ]
+        },
+
+        options:{
+            responsive: true,
+            maintainAspectRatio: true,
+
+            parsing: {
+                xAxisKey: 'DateValue',
+                yAxisKey: 'Value'
+            },
+
+            animation: {
+                duration: 0
+            },
+            scales: {
+                x: {
+                    min: @Model.Start.ToMoment(Html),
+                    max: @Model.End.ToMoment(Html),
+                    type: 'time',
+                    time: {
+                        displayFormats:{
+                            @if (!string.IsNullOrEmpty(Model.DisplayFormatDay))
+                            {
+                            <text>
+                                day: @Html.JsEncode(Model.DisplayFormatDay, "'"),
+                            </text>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.DisplayFormatHour))
+                            {
+                            <text>
+                                hour: @Html.JsEncode(Model.DisplayFormatHour, "'"),
+                            </text>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.DisplayFormatMinute))
+                        {
+                        <text>
+                            minute: @Html.JsEncode(Model.DisplayFormatMinute, "'"),
+                        </text>
+                        }
+                            @if (!string.IsNullOrEmpty(Model.DisplayFormatSecond))
+                        {
+                        <text>
+                            second: @Html.JsEncode(Model.DisplayFormatSecond, "'"),
+                        </text>
+                        }
+                        }
+                    },
+                    ticks: {
+                        major: {
+                            enabled: true
+                        },
+                        color: (context) => context.tick && context.tick.major && '#FF0000',
+                        font: function (context) {
+                            if (context.tick && context.tick.major) {
+                                return {
+                                    weight: 'bold'
+                                };
+                            }
+                        }
+                    }
+
+                },
+            },
+
+        
+            plugins:{
+                legend: {
+                    display: @Json.Serialize(Model.ShowLegend),
+                    position: @Html.JsEncode(Model.LegendPosition.ToString().ToLower(), "'")
+                },
+                title:{
+                    display: false,
+                },
+                zoom:
+                {
+                    limits:{
+                        x:{
+                            @if (Model.MinStart.HasValue)
+                            {
+                                <text>min: @Model.MinStart.Value.ToMoment(Html),</text>
+                            }
+                            @if (Model.MaxEnd.HasValue)
+                            {
+                                <text>max: @Model.MaxEnd.Value.ToMoment(Html),</text>
+                            }
+                        }
+                    },
+                    pan: {
+                        enabled: true,
+                        mode: 'x',
+                        onPanComplete: startFetch,
+                    },
+                    zoom: {
+
+                        wheel: {
+                            enabled: true,
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'x',
+                        onZoomComplete: startFetch,
+                        onZoomStart: (args)=>{
+                            var range = args.chart.scales.x.max - args.chart.scales.x.min
+                            console.log('checkzoom');
+                            @*args.deltaY is the scroll direction*@
+                            @if (Model.ZoomInLimit.HasValue)
+                            {
+                                <text> 
+                                if(0 > args.event.deltaY  && @Model.ZoomInLimit.Value.TotalMilliseconds >= range)
+                                    return false;
+                                </text>
+                            }
+                            @if (Model.ZoomOutLimit.HasValue)
+                            {
+                                <text>
+                                    if(args.event.deltaY > 0 && range >= @Model.ZoomOutLimit.Value.TotalMilliseconds)
+                                    return false;
+                                </text>
+                            }
+
+                            return true;
+                        }
+                    },
+                },
+                
+            },
+        },
+    });
+    }
+    
+    Initialize();
+
+    minDateTime = moment(chart.scales.x.min);
+    maxDateTime = moment(chart.scales.x.max);
+
+    let timer;
+    var graphsIds;
+    async function startFetch({ chart }) {
+        let { min, max } = chart.scales.x;
+
+        minDateTime= moment(min);
+        maxDateTime= moment(max);
+
+        clearTimeout(timer);
+        timer = setTimeout(async function() {
+            var startdate = moment(min);
+            var enddate = moment(max);
+            chart.stop(); // make sure animations are not running
+            await LoadNewData(startdate, enddate);
+        }, 1000);
+
+    };
+
+    function LoadNewData(newMin, newMax) {
+        if(liveUpdate){
+            if (newMax > moment()) {
+                var newDelay = (newMax - newMin) / 100; //set miliseconds for autoupdate
+                if(@Model.LoadLiveDataMinInterval.TotalMilliseconds > newDelay)
+                    newDelay = @Model.LoadLiveDataMinInterval.TotalMilliseconds;
+                if (newDelay != autoInterval) {
+                    autoInterval = newDelay;
+                    log('Autoupdate data will happen every ' + autoInterval / 1000 + ' seconds');
+                }
+
+                AutoloadData();
+
+            }
+            else if (autoInterval != 0) {
+                console.log('Data will not automatically update');
+            }
+        }
+        
+        EachGraph(function(graph){
+            LoadNewGraphData(graph.LineGraphId, newMin, newMax);
+        });
+    }
+
+    function AutoloadData() {
+        if (autoInterval > 0) {
+            setTimeout(async function() {
+                await LoadNewData(moment(chart.scales.x.min), moment(chart.scales.x.max));
+            }, autoInterval);
+        }
+    }
+
+    function reloadAllGraphData(){
+        EachGraph((graph) => {
+
+            if(!graph.Source.length)
+                return;
+
+            graph.Ranges = [];
+            LoadNewGraphData(graph.LineGraphId);
+        });
+    }
+
+    function LoadNewGraphData(graphId, newMin, newMax){
+        
+        let graphData = graphs[graphId];
+        
+        if(graphData == undefined){
+            console.error(`graph ${graphId} does not exist`);
+            return;
+        }
+
+        if (!graphData.Source.length)
+            return;
+
+        if(!graphData.Enabled)
+            return;
+
+        if(newMin == null || minDateTime > moment(newMin))
+            newMin = minDateTime;
+
+        if(newMax == null || moment(newMax) > maxDateTime)
+        newMax = maxDateTime;
+
+        //Set the max time to now if futureloading is disabled
+        if(graphData.DisableFutureLoading && newMax > moment())
+            newMax = moment();
+
+        //add a list of request ranges
+        let requestRanges = [];
+
+        let existingDataRanges = graphData.Ranges;
+
+        if(graphData.Cached){
+            console.error('cache linegraph is not yet implemented')
+        }
+        else{
+            chart.data.datasets[graphData.Index].data = [];
+            requestRanges.push({
+                start: newMin,
+                end: newMax
+            });
+        }
+
+        
+        //Todo : generate requestRanges
+
+        requestRanges.forEach(async function(range){
+            let sendData= {
+                StartUTC: range.start.format(),
+                EndUTC: range.end.format(),
+                LineGraphId: graphData.LineGraphId,
+                _scaleInMilliseconds: Math.floor(chart.scales.x.ticks[1].value - chart.scales.x.ticks[0].value),
+                AdditionalPostData: graphData.AdditionalPostData
+            };
+            let result = await Crud.Post(graphData.Source, sendData);
+
+            log('fetch data', {
+                start: range.start.format(),
+                end: range.end.format(),
+                data: result});
+
+            let dataset = chart.data.datasets[graphData.Index].data;
+            let dataBeforeRange = dataset.filter(x => range.start > x.DateValue);
+            let dataAfterRange = dataset.filter(x => range.end > x.DateValue);
+
+            let newData = [];
+            newData = newData.concat(dataBeforeRange);
+            newData = newData.concat(result);
+            newData = newData.concat(dataAfterRange);
+
+            chart.data.datasets[graphData.Index].data = newData;
+
+            graphData.Ranges.push(range);
+            chart.update('none');
+        });
+    }
+
+    function EachGraph(func){
+        let propNames = Object.getOwnPropertyNames(graphs);
+        propNames.forEach(function(prop){
+            let graph = graphs[prop];
+            func(graph);
+        });
+    }
+
+    reloadAllGraphData();
+
+        let resizeHandle = null;
+        $(window).resize(() => {
+            clearTimeout(resizeHandle);
+            resizeHandle = setTimeout(OnWindowResized, 250);
+        });
+
+        function OnWindowResized() {
+            DestroyChart();
+            InitializeChart();
+        }
+
+    async function oldCode(){
+
+        if (!(newMin < minValue || newMax > maxValue))
+            return;
+
+        var objects = [];
+        graphsIds.forEach(item => {
+            var timespans = []
+            if (newMin < minValue) {
+                timespans.push({ start: newMin.toISOString(true), end: minValue.toISOString(true) });
+            }
+            if (newMax > maxValue) {
+                timespans.push({ start: maxValue.toISOString(true), end: newMax.toISOString(true) });
+            }
+            objects.push({ Id: item.id, Timespans: timespans });
+        });
+
+        if (newMin < minValue) {
+            minValue = newMin;
+            $('#daterange-start').data('daterangepicker').setStartDate(minValue);
+        }
+
+        if (newMax > maxValue) {
+            maxValue = newMax;
+            $('#daterange-start').data('daterangepicker').setEndDate(maxValue);
+        }
+
+
+        await GetGraphData(objects);
+
+        let tHandle = null;
+        $(window).resize(function() {
+            if (tHandle)
+                clearTimeout(tHandle);
+            tHandle = setTimeout(() => {
+                tHanle = null;
+                Resize();
+            }, 100);
+        });
+
+        function Resize(){
+            createChart();
+        }
+
+
+        async function GetGraphData(objects, fullReload) {
+            if (objects.length === 0)
+        return;
+
+        let data = {
+            Requests: objects
+        };
+
+
+        if (fullReload)
+        
+        var response = await $.post('@Url.Action("LoadData", "WashingMachine")', data);
+        
+
+        if (fullReload === true)
+        chart.data.datasets = response;
+        else {
+        chart.data.datasets.forEach(dataset => {
+        var firstLoaded = dataset.data[0];
+        var lastLoaded = dataset.data[dataset.data.length - 1];
+        var current = response.filter(x => x.label == dataset.label)[0];
+
+        var olderData = current.data.filter(x => x.d < firstLoaded.d);
+        var newData = current.data.filter(x => x.d > lastLoaded.d);
+        dataset.data = olderData.concat(dataset.data);
+        dataset.data = dataset.data.concat(newData);
+        });
+        }
+        chart.update();
+    }
+    //#endregion
+
+    //Buttons
+    //#region
+    $('.btn-reload').click(async function() {
+        toggleSidebar(false);
+        Resize();
+        await ReloadData();
+    });
+
+    
+
+    //#endregion
+    }
+    </text>);
+}
+
+<div class="flex-grow-1" width="@Html.JsEncode(Model.Width)" height="@Html.JsEncode(Model.Height)">
+    <canvas @Html.Raw(Model.GetHtmlAttributes())>
+    </canvas>
+</div>
+
+
+
+<script src="~/lib/chart.js/dist/chart.umd.js"></script>
+<script src="~/lib/hammerjs/hammer.min.js"></script>
+<script src="~/lib/chartjs-adapter-moment/dist/chartjs-adapter-moment.js"></script>
+<script src="~/lib/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.js"></script>
+
+@await Model.RenderStylesAndScripts(Component)

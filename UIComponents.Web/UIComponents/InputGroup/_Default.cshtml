@@ -17,9 +17,15 @@
     if (Model.Input.TryGetPropertyValue<object>(nameof(UICInput<string>.Value), out var value))
     {
         //If value is null, add classes to make the input hidden in readonly
-        if (value == null)
+        if (string.IsNullOrEmpty(value?.ToString() ?? null))
         {
             Model.AddAttribute("class", "input-no-value");
+        }
+        else if (Model.Input is UICInputSelectlist selectlist)
+        {
+            if (selectlist.Value == "0")
+                Model.AddAttribute("class", "input-no-value");
+
         }
         
     }

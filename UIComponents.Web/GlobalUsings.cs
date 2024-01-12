@@ -2,12 +2,6 @@
 global using UIComponents.Abstractions.Models;
 global using UIComponents.Abstractions.Extensions;
 global using UIComponents.Models.Models;
-global using UIComponents.Models.Models.Actions;
-global using UIComponents.Models.Models.Buttons;
-global using UIComponents.Models.Models.Dropdown;
-global using UIComponents.Models.Models.Icons;
-global using UIComponents.Models.Models.Inputs;
-global using UIComponents.Models.Models.Texts;
 global using UIComponents.Abstractions;
 global using UIComponents.Abstractions.Attributes;
 global using UIComponents.Abstractions.Enums;

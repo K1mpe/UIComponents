@@ -1,0 +1,116 @@
+﻿@using CDCPortal.DA.UIComponents.Models.Table;
+@using CDCPortal.DA.UIComponents.Models.Table.Args;
+
+
+@model UICTable
+@{
+    string id = Model.GetOrGenerateId();
+
+    List<TableCellRendererArgs> ColumnArgs = new();
+    for(int i=0; i<Model.Columns.Count; i++)
+    {
+        var column = Model.Columns[i];
+
+        var columnArg = new TableCellRendererArgs()
+        {
+            PropertyInfo = column.PropertyInfo,
+            CellIndex = i,
+        };
+        ColumnArgs.Add(columnArg);
+    }
+}
+
+
+<table @Html.Raw(Model.GetHtmlAttributes())>
+    <thead>
+
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function(){
+        var data = @Json.Serialize(Model.Data);
+        var filter = {};
+        var orderBy = [];
+        var tableColumns = @Json.Serialize(Model.Columns);
+        var columnArgs = @Json.Serialize(ColumnArgs);
+        var cellRenderers = [];
+
+        @for(int i=0; i<Model.Columns.Count; i++)
+        {
+            <text>
+                cellRenderers[@i] = @await Model.Columns[i].CellRenderer.InvokeAsync(Component)||CellRenderer;
+            </text>
+        }
+
+        $('#@id').on('oldData', function(){
+            return data;
+        });
+
+
+        $('#@id').on('SetValue', function(e, data){
+            data = data;
+            LoadTableData();
+        })
+
+        $('#@id').on('LoadData', async function(){
+            @if (string.IsNullOrWhiteSpace(Model.GetDataUrl))
+            {
+                <text>
+                    taghelper.card.refreshCard($('#@id'));
+                </text>
+            }
+            else
+            {
+                <text>
+                    data = await Crud.Post('@Model.GetDataUrl');
+                    LoadTableData();
+                </text>   
+            }
+        });
+
+        function LoadTableData(){
+            
+            
+            
+            for(var i=0; i< data.length; i++){
+                var args = {
+                    @nameof(TableRowRendererArgs.RowIndex): i, 
+                    @nameof(TableRowRendererArgs.RowData): data[i]
+                };
+
+            }
+        }
+
+
+        async function RowRenderer = function(args){
+            @if (Model.RowRenderer == null)
+            {
+                <text>
+                    var row = $('<tr>');
+                    for(j=0; args.Columns.length > j; j++){
+                        var column = columnArgs[j];
+                        column.@nameof(TableCellRendererArgs.RowData) = args.@nameof(TableRowRendererArgs.RowData);
+                        column.@nameof(TableCellRendererArgs.RowIndex) = args.@nameof(TableRowRendererArgs.RowIndex);
+                        column.@nameof(TableCellRendererArgs.DataCollection) = data;
+
+                        row.append(await CellRenderer(column));
+                    }
+                    return row;
+                </text>
+            }
+            else
+            {
+                <text>
+                    return @await Model.RowRenderer.InvokeAsync(Component)
+                </text>
+                
+            }
+        }
+        
+
+    })
+</script>

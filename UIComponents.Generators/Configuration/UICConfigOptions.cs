@@ -33,6 +33,13 @@ public partial class UICConfigOptions
        
     }
 
+    #region Properties
+    /// <summary>
+    /// Replace the wwwroot/uic files
+    /// </summary>
+    public bool ReplaceRootFolder { get; set; } = true;
+    #endregion
+
     #region Add Generators
     public UICConfigOptions AddGenerator<TArgs, TResult>(string name, double priority, Func<TArgs, TResult?, Task<IUICGeneratorResponse<TResult>>> func)
     {

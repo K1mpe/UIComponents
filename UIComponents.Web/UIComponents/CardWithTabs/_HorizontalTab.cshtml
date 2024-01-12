@@ -3,9 +3,38 @@
 @model UICCardWithTabs
 
 @{
+    if (Model.RememberTabState)
+        Model.RememberTabState = Model.Attributes.ContainsKey("id");
+
     string id = Model.GetOrGenerateId();
     Model.AddAttribute("class", "card card-tabs");
     Model.AddBodyAttribute("class", "card-body");
+
+    Model.AssignCollectionForChildren();
+
+    Model.AddScript(
+    @<text>
+
+    @if (Model.RememberTabState)
+    {
+        <text>
+        let openTabId= localStorage.getItem('tabs-lastState-@id');
+        if(openTabId != null)
+            taghelper.card.openTab($(openTabId));
+        
+
+            taghelper.card.openFirstTabCard($('#@id'), true);
+
+
+        $('#@id').on('tabChanged', (ev, tabs)=>{
+            console.log(`Saving tab ${$(tabs.newTab).attr('href')}`);
+            localStorage.setItem('tabs-lastState-@id', $(tabs.newTab).attr('href'));
+        })
+        </text>
+    }
+
+        
+    </text>);
 }
 
 @if(Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent)
@@ -27,11 +56,18 @@ else
                     {
                         card.OnlyDisplayContent = true;
                         card.DefaultClosed = true;
+                        card.AddAttribute("class", "tab-card");
                     }
                     if (tab is Card card2)
                     {
                         card2.HideHeader = true;
                         card2.RemoveCardClass = true;
+                        card2.DefaultClosed = true;
+                        card2.AddCardAttribute("class", "tab-card");
+                    }
+                    if (tab is UICCardWithTabs subTabs)
+                    {
+                        subTabs.AddBodyAttribute("class", "p-0 pt-2");
                     }
                     <a class="nav-link" data-toggle="tab" role="tab" href="@($"#{id}-tab{i+1}")">
                         @L.GetResourceValue(title)
@@ -54,9 +90,4 @@ else
     </div>
 }
 
-
-<script>
-    $(document).ready(function(){
-        taghelper.card.openFirstTabCard($('#@id'), true);
-    })
-</script>
+@await Model.RenderStylesAndScripts(Component)

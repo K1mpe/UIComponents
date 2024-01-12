@@ -1,0 +1,76 @@
+﻿/*#region Timespan*/
+
+
+.uic-timespan-input {
+    min-width: 50px;
+}
+
+.uic-timespan-input:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left-style: dashed;
+}
+
+.uic-timespan-input:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right-style: none;
+}
+/*#endregion Timespan*/
+
+
+
+
+.custom-control-input[disabled] ~ .custom-control-label ::after, .custom-control-input:disabled ~ .custom-control-label::after {
+    opacity: 0.25;
+}
+
+
+.btn-toolbar-sm {
+    .btn {
+        @extend .btn-sm;
+    }
+}
+
+
+
+.side-panel-container {
+    &.horizontal {
+        > .side-panel {
+            //transition: width $transition-speed ease-in-out;
+
+            > .card {
+                height: 100%;
+                overflow: auto;
+            }
+
+            &.collapsed {
+                width: 0px;
+            }
+
+            &.overlay {
+            }
+
+            &.fixed {
+            }
+        }
+    }
+
+    > .side-panel {
+        &.overlay {
+            position: absolute;
+            opacity: 0.95;
+            z-index: 50;
+        }
+
+        > .side-panel-content {
+            height: fit-content;
+        }
+    }
+
+    .btn-sidebar-open.position-absolute {
+        position: absolute;
+        z-index: 49;
+        margin-left: -5px;
+    }
+}

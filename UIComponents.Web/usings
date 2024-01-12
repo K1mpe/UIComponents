@@ -8,5 +8,3 @@
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
-
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers;

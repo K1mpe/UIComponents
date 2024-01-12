@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponents.Web", "UICompo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponents.Web.Tests", "UIComponents.Web.Tests\UIComponents.Web.Tests.csproj", "{1004B843-94C2-46B3-B6F2-4C5CFC11018C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIComponents.Generators", "UIComponents.Generators\UIComponents.Generators.csproj", "{38EF9A3F-DE83-4512-82D6-4C917594CA2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponents.Generators", "UIComponents.Generators\UIComponents.Generators.csproj", "{38EF9A3F-DE83-4512-82D6-4C917594CA2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIComponents.Models", "UIComponents.Models\UIComponents.Models.csproj", "{9F846688-87AA-4001-BE41-C1BBB13BA576}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponents.Models", "UIComponents.Models\UIComponents.Models.csproj", "{9F846688-87AA-4001-BE41-C1BBB13BA576}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

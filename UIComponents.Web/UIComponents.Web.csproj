@@ -5,23 +5,19 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="_ViewImports.cshtml" />
-  </ItemGroup>
-
-	
 	
   <ItemGroup>
 	  <EmbeddedResource Include="UIComponents\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="Views\**\*.cshtml" Pack="true" />
+	  <EmbeddedResource Include="Root\**" Pack="true" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\Shared\Components\UIComponent\**" />
-    <Content Remove="Views\Shared\Components\UIComponent\**" />
-    <EmbeddedResource Remove="Views\Shared\Components\UIComponent\**" />
-    <None Remove="Views\Shared\Components\UIComponent\**" />
+    <Content Remove="Views\_Imports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Root\css\uic.scss" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,14 +32,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Shared\Components\UIComponent\Group\_ContentOnly.cshtml" />
-    <None Include="Views\Shared\Components\UIComponent\Group\_Div.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Update="UIComponents\Group\Div.cshtml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Css\" />
   </ItemGroup>
 
  

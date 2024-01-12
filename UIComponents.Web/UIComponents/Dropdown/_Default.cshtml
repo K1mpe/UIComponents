@@ -1,0 +1,88 @@
+﻿@using CDCPortal.DA.UIComponents.Interfaces;
+@using CDCPortal.DA.UIComponents.Models;
+@model UICDropdown
+
+@{
+    string id = Model.GetOrGenerateId();
+    Model.AssignCollectionForChildren();
+
+    async Task DropdownMenu(List<IDropdownItem> dropdownItems, bool submenu, string id="")
+    {
+        <ul id="@id" class="dropdown-menu" style="min-width: max-content">
+            @foreach (var item in dropdownItems)
+            {
+                @await item.InvokeAsync(Component)
+            }
+        </ul>
+    }
+}
+
+@if (Model.ReplaceDropdownByButtonIfSingleDropdownItem && Model.DropdownItems.Where(x => x.GetType().IsAssignableTo(typeof(UICDropdownItem)) && x.HasValue()).Count() == 1)
+{
+    var newButton = new UICButton();
+    if(Model.Button is UICButton modelButton)
+    {
+        newButton = modelButton;
+    }
+    var dropDownItem = Model.DropdownItems.Where(x => x.GetType().IsAssignableTo(typeof(UICDropdownItem)) && x.HasValue()).Single() as UICDropdownItem;
+
+    newButton.ButtonText = dropDownItem.Content;
+    
+    if(dropDownItem is UICDropdownSubMenu submenu)
+    {
+        Model.DropdownItems = submenu.Items;
+    }
+    else
+    {
+        newButton.OnClick = dropDownItem.OnClick;
+        @await newButton.InvokeAsync(Component)
+        return;
+    }
+}
+
+    <div class="dropdown @Model.GetAttribute("class")">
+        @if (Model.Button is UICButton button)
+        {
+            if (button.OnClick.HasValue())
+            {
+                <div class="btn-group">
+                    @await button.InvokeAsync(Component)
+                    <button id="@id" type="button" class="btn @($"btn-{button.Color?.ToLower()??Color.Default.ToLower()}") dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    @{
+
+                        await DropdownMenu(Model.DropdownItems, false);
+                    }
+                </div>
+            }
+            else
+            {
+                button.AddAttribute("class", "dropdown-toggle");
+                button.AddAttribute("data-toggle", "dropdown");
+                button.AddAttribute("aria-haspopup", "true");
+                button.AddAttribute("aria-expanded", "false");
+                @await button.InvokeAsync(Component)
+                await DropdownMenu(Model.DropdownItems, false);
+
+            }
+
+        }
+        else
+        {
+            <span id="@id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+                @await Model.Button.InvokeAsync(Component)
+            </span>
+
+
+
+            await DropdownMenu(Model.DropdownItems, false);
+        }
+
+
+
+    </div>
+
+
+
+@await Model.RenderStylesAndScripts(Component)
