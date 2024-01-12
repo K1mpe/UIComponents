@@ -13,7 +13,8 @@ namespace UIComponents.Web.Extensions
 
         public static IServiceCollection AddWebComponents(this IServiceCollection services, Action<UICConfigOptions> config)
         {
-            services.AddMvcCore().AddRazorRuntimeCompilation(options =>
+            services.AddMvcCore()
+            .AddRazorRuntimeCompilation(options =>
             {
                 options.FileProviders.Add(new EmbeddedFileProvider(typeof(UICViewComponent)
                     .GetTypeInfo().Assembly));
