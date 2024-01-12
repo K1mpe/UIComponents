@@ -1,6 +1,4 @@
-﻿using UIComponents.Models.Models;
-
-namespace UIComponents.Models.Models.Actions;
+﻿namespace UIComponents.Models.Models.Actions;
 
 public class UICActionGoBack : UICCustom
 {

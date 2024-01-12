@@ -1,4 +1,4 @@
-﻿using UIComponents.Models.Extensions;
+﻿using UIComponents.Abstractions.Extensions;
 
 namespace UIComponents.Models.Models.Actions;
 

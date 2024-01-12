@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
-using UIComponents.Models.Models.UITexts;
+using UIComponents.Models.Models.Texts;
 
 namespace UIComponents.Generators.Configuration;
 

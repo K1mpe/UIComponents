@@ -1,8 +1,6 @@
-﻿using UIComponents.Models.Abstract;
-using UIComponents.Models.Models.Dropdown;
-using UIComponents.Models.Varia;
+﻿using UIComponents.Abstractions.Varia;
 
-namespace UIComponents.Models.Models;
+namespace UIComponents.Abstractions.Models;
 
 /// <summary>
 /// A custom component, requires <see cref="Content"/> to render. 

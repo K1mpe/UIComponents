@@ -1,5 +1,5 @@
 ﻿using UIComponents.Abstractions.Interfaces;
-using UIComponents.Models.Abstract;
+using UIComponents.Abstractions.Models;
 
 namespace UIComponents.Models.Models;
 

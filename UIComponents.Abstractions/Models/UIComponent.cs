@@ -1,6 +1,4 @@
-﻿using UIComponents.Models.Extensions;
-
-namespace UIComponents.Models.Abstract;
+﻿namespace UIComponents.Abstractions.Models;
 
 
 /// <summary>

@@ -1,6 +1,6 @@
-﻿using UIComponents.Generators.Helpers;
-using UIComponents.Models.Abstract;
-using UIComponents.Models.Extensions;
+﻿using UIComponents.Abstractions.Extensions;
+using UIComponents.Abstractions.Models;
+using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
 

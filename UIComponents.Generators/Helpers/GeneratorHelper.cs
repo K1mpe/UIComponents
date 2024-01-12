@@ -7,7 +7,7 @@ using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Models.UICGeneratorResponses;
-using UIComponents.Models.Models.UITexts;
+using UIComponents.Models.Models.Texts;
 
 namespace UIComponents.Generators.Helpers;
 

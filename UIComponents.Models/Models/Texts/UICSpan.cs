@@ -1,6 +1,6 @@
-﻿using UIComponents.Models.Abstract;
+﻿using UIComponents.Abstractions.Models;
 
-namespace UIComponents.Models.Models.UITexts;
+namespace UIComponents.Models.Models.Texts;
 
 /// <summary>
 /// A normal span text

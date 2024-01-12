@@ -1,4 +1,4 @@
-﻿using UIComponents.Models.Abstract;
+﻿using UIComponents.Abstractions.Models;
 using UIComponents.Models.Models.Buttons;
 
 namespace UIComponents.Models.Models;

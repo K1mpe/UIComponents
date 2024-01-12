@@ -1,5 +1,5 @@
 ﻿using UIComponents.Abstractions.Interfaces;
-using UIComponents.Models.Abstract;
+using UIComponents.Abstractions.Models;
 using UIComponents.Models.Extensions;
 
 namespace UIComponents.Models.Models;
@@ -10,7 +10,7 @@ namespace UIComponents.Models.Models;
 public class UICGroup : UIComponent, IUIAction
 {
     #region Fields
-    public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
+    public override string RenderLocation => "/UIComponents/Group/Div";//this.CreateDefaultIdentifier(Renderer);
     #endregion
 
     #region Ctor

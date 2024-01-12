@@ -1,4 +1,4 @@
-﻿namespace UIComponents.Models.Extensions;
+﻿namespace UIComponents.Abstractions.Extensions;
 
 public static class UICChildExtensions
 {

@@ -1,6 +1,6 @@
-﻿using UIComponents.Models.Abstract;
-using UIComponents.Models.Extensions;
-using UIComponents.Models.Models.UITexts;
+﻿using UIComponents.Abstractions.Extensions;
+using UIComponents.Abstractions.Models;
+using UIComponents.Models.Models.Texts;
 
 namespace UIComponents.Models.Models.Inputs;
 

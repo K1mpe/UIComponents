@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Html;
-using UIComponents.Models.Extensions;
-using UIComponents.Models.Varia;
+using UIComponents.Abstractions.Extensions;
+using UIComponents.Abstractions.Models;
+using UIComponents.Abstractions.Varia;
 using UIComponents.Web.Components;
 using TagBuilder = Microsoft.AspNetCore.Mvc.Rendering.TagBuilder;
 

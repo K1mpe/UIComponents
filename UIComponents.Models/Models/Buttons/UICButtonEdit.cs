@@ -1,6 +1,6 @@
-﻿using UIComponents.Models.Abstract;
+﻿using UIComponents.Abstractions.Extensions;
+using UIComponents.Abstractions.Models;
 using UIComponents.Models.Defaults;
-using UIComponents.Models.Extensions;
 
 namespace UIComponents.Models.Models.Buttons;
 

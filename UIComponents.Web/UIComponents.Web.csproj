@@ -13,6 +13,7 @@
 	
 	
   <ItemGroup>
+	  <EmbeddedResource Include="UIComponents\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="Views\**\*.cshtml" Pack="true" />
   </ItemGroup>
 
@@ -32,6 +33,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UIComponents.Generators\UIComponents.Generators.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Shared\Components\UIComponent\Group\_ContentOnly.cshtml" />
+    <None Include="Views\Shared\Components\UIComponent\Group\_Div.cshtml" />
   </ItemGroup>
 
  

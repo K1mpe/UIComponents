@@ -1,8 +1,6 @@
-﻿using UIComponents.Models.Interfaces;
+﻿namespace UIComponents.Abstractions.Extensions;
 
-namespace UIComponents.Models.Extensions;
-
-public static class DropdownExtensions
+public static class IconExtensions
 {
     public static bool HasIcon(IHasIcon dropdownWithIcon)
     {

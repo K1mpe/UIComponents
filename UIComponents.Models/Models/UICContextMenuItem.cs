@@ -1,5 +1,4 @@
-﻿using UIComponents.Models.Abstract;
-using UIComponents.Models.Models.Dropdown;
+﻿using UIComponents.Abstractions.Models;
 
 namespace UIComponents.Models.Models;
 

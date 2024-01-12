@@ -1,6 +1,4 @@
-﻿using UIComponents.Models.Abstract;
-
-namespace UIComponents.Models.Models.Actions;
+﻿namespace UIComponents.Abstractions.Models;
 
 /// <summary>
 /// These are the actions available for Inputs

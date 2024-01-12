@@ -1,4 +1,4 @@
-﻿namespace UIComponents.Models.Models;
+﻿namespace UIComponents.Abstractions.Models;
 
 public class UICScriptCollection : IUICScriptCollection
 {

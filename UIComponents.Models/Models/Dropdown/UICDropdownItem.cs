@@ -1,5 +1,4 @@
-﻿using UIComponents.Models.Abstract;
-using UIComponents.Models.Interfaces;
+﻿using UIComponents.Abstractions.Models;
 using UIComponents.Models.Models.Icons;
 
 namespace UIComponents.Models.Models.Dropdown;
@@ -7,7 +6,7 @@ namespace UIComponents.Models.Models.Dropdown;
 /// <summary>
 /// A item inside the dropdown
 /// </summary>
-public class UICDropdownItem : UIComponent, IDropdownItem, IHasIcon
+public class UICDropdownItem : UIComponent, IDropdownItem, IHasIcon<UICIcon>
 {
 
 
@@ -42,6 +41,7 @@ public class UICDropdownItem : UIComponent, IDropdownItem, IHasIcon
     /// </remarks>
     public IUIAction OnClick { get; set; } = new UICCustom();
     public UICIcon Icon { get; set; }
+
 
 
 

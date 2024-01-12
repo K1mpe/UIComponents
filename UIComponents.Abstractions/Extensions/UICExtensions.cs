@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Reflection;
-using UIComponents.Models.Abstract;
-using UIComponents.Models.Models.Inputs;
+using UIComponents.Abstractions.Models;
 
-namespace UIComponents.Models.Extensions;
+namespace UIComponents.Abstractions.Extensions;
 
 public static class UICExtensions
 {
@@ -156,17 +155,6 @@ public static class UICExtensions
         return typeResults.Where(x => x.PropertyName.ToLower() == propertyName.ToLower()).FirstOrDefault();
     }
 
-    public static UICInputGroup FindInputGroupByPropertyName(this IUIComponent element, string propertyName)
-    {
-        return element.FindInputGroupsByPropertyName(propertyName).FirstOrDefault();
-    }
-    public static List<UICInputGroup> FindInputGroupsByPropertyName(this IUIComponent element, string propertyName)
-    {
-        if (element == null)
-            return null;
-        var typeResults = element.GetAllChildren().Where(x => x.GetType().IsAssignableTo(typeof(UICInputGroup))).OfType<UICInputGroup>().ToList();
-        return typeResults.Where(x => x.Input != null && x.Input.PropertyName != null && x.Input.PropertyName.ToLower() == propertyName.ToLower()).ToList();
-    }
 
     public static string GetOrGenerateId(this IUIHasAttributes element)
     {
@@ -222,7 +210,11 @@ public static class UICExtensions
     /// </summary>
     public static string CreateDefaultIdentifier(this IUIComponent component, object renderer = null)
     {
-        return UIComponent.DefaultIdentifier(component.GetType().Name, renderer);
+        string name = component.GetType().Name;
+        if (name.StartsWith("UIC"))
+            name = name.Substring(3);
+
+        return UIComponent.DefaultIdentifier(name, renderer);
     }
 
     public static bool TryGetPropertyValue<T>(this object obj, string propertyName, out T value)

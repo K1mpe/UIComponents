@@ -1,9 +1,9 @@
-﻿using UIComponents.Models.Abstract;
+﻿using UIComponents.Abstractions.Models;
 using UIComponents.Models.Defaults;
 using UIComponents.Models.Models.Icons;
 using UIComponents.Models.Models.Inputs;
 
-namespace UIComponents.Models.Models.UITexts;
+namespace UIComponents.Models.Models.Texts;
 
 /// <summary>
 /// A label, used in a <see cref="UICInputGroup"/>

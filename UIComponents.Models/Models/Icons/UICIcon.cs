@@ -1,4 +1,4 @@
-﻿using UIComponents.Models.Abstract;
+﻿using UIComponents.Abstractions.Models;
 
 namespace UIComponents.Models.Models.Icons;
 
@@ -8,7 +8,7 @@ namespace UIComponents.Models.Models.Icons;
 /// <remarks>
 /// This has some static functions like UICIcon.Delete(), UICIcon.Edit(), etc
 /// </remarks>
-public class UICIcon : UIComponent
+public class UICIcon : UIComponent, IUICIcon
 {
 
     #region Ctor

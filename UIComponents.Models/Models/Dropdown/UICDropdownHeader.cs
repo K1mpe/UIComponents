@@ -1,5 +1,4 @@
-﻿using UIComponents.Models.Abstract;
-using UIComponents.Models.Interfaces;
+﻿using UIComponents.Abstractions.Models;
 using UIComponents.Models.Models.Icons;
 
 namespace UIComponents.Models.Models.Dropdown;
@@ -7,7 +6,7 @@ namespace UIComponents.Models.Models.Dropdown;
 /// <summary>
 /// A title in a dropdownlist
 /// </summary>
-public class UICDropdownHeader : UIComponent, IDropdownItem, IHasIcon
+public class UICDropdownHeader : UIComponent, IDropdownItem, IHasIcon<UICIcon>
 {
 
 
@@ -28,6 +27,7 @@ public class UICDropdownHeader : UIComponent, IDropdownItem, IHasIcon
     public string Content { get; set; }
     public ITranslationModel Tooltip { get; set; }
     public UICIcon Icon { get; set; }
+
 
 
     #endregion
