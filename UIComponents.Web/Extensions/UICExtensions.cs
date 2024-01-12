@@ -1,18 +1,6 @@
 ﻿using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using UIComponents.Abstractions.Interfaces;
-using UIComponents.ComponentModels.Extentions;
-using UIComponents.ComponentModels.Models;
-using UIComponents.ComponentModels.Varia;
-using UIComponents.Generators.Interfaces;
-using UIComponents.Generators.Models;
+using UIComponents.Models.Extensions;
+using UIComponents.Models.Varia;
 using UIComponents.Web.Components;
 using TagBuilder = Microsoft.AspNetCore.Mvc.Rendering.TagBuilder;
 

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
-using UIComponents.ComponentModels.Abstract;
-using UIComponents.ComponentModels.Extentions;
-using UIComponents.ComponentModels.Models;
 using UIComponents.Generators.Configuration;
+using UIComponents.Models.Abstract;
+using UIComponents.Models.Extensions;
 
 namespace UIComponents.Web.Components;
 

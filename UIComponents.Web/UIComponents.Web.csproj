@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UICOmponents.BaseModels\UIComponents.Generators.csproj" />
+    <ProjectReference Include="..\UIComponents.Generators\UIComponents.Generators.csproj" />
   </ItemGroup>
 
  

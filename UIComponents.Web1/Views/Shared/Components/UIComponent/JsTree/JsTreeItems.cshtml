@@ -1,9 +1,0 @@
-﻿@using CDCPortal.Web.UIComponents.JsTree;
-@model JsTreeItems
-
-[
-@foreach(var item in Model.Items)
-{
-    @await item.InvokeAsync(Component)
-}
-]

@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Html;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
-namespace UIComponents.Abstractions.Varia;
+namespace UIComponents.Models.Varia;
 
 /// <summary>
 /// In cshtml, use <example>`@<text>...</text>`</example> to write html or javascript in this object.

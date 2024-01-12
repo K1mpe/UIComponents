@@ -19,4 +19,3 @@ global using UIComponents.Generators.Models;
 global using UIComponents.Generators.Models.Arguments;
 global using System.Reflection;
 global using System.Web.Mvc;
-global using Microsoft.AspNetCore.Mvc;
