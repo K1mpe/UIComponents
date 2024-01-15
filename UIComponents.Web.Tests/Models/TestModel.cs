@@ -25,5 +25,13 @@ namespace UIComponents.Web.Tests.Models
 
         public TimeSpan TimeSpan { get; set; }
 
+        public TestEnum Enum { get; set; }
+    }
+
+    public enum TestEnum
+    {
+        None = 0,
+        One = 1, 
+        Two = 2,
     }
 }

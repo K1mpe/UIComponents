@@ -36,7 +36,7 @@ public static class TranslateExtensions
         return content;
     }
 
-    public static async Task<IHtmlContent>Translate(this IHtmlHelper htmlHelper, UICLanguageService languageService, ITranslateable translateable, string brackets = "'")
+    public static async Task<IHtmlContent>Translate(this IHtmlHelper htmlHelper, IUICLanguageService languageService, ITranslateable translateable, string brackets = "'")
     {
         var translated = await languageService.Translate(translateable);
         return htmlHelper.JsEncode(translated, brackets);

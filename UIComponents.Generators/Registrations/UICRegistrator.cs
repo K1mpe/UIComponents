@@ -25,7 +25,7 @@ public static class UICConfigure
         services.TryAddScoped<IUIComponentService, UICService>();
         services.TryAddSingleton<UICConfigOptions>(configuration);
         services.TryAddScoped<UICConfig>();
-        services.TryAddSingleton<UICLanguageService, LanguageService>();
+        services.TryAddSingleton<IUICLanguageService, LanguageService>();
 
         config(configuration);
 
@@ -75,6 +75,7 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorInputSelectList>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputBool>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputThreeStateBool>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorInputTimespan>(serviceCollection);
 
         return configOptions;
     }

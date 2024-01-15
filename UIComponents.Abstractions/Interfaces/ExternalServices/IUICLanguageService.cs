@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Abstractions.Interfaces.ExternalServices;
 
-public interface UICLanguageService
+public interface IUICLanguageService
 {
     Task<string> Translate(ITranslateable translationModel);
 }

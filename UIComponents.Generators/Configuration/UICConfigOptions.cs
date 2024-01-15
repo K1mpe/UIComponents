@@ -141,12 +141,12 @@ public partial class UICConfigOptions
 
     public UICConfigOptions SetPermissionService(Type permissionServiceType)
     {
-        InternalGeneratorHelper.CheckType<UICPermissionService>(permissionServiceType);
+        InternalGeneratorHelper.CheckType<IUICPermissionService>(permissionServiceType);
 
         PermissionServiceType = permissionServiceType;
         return this;
     }
-    public UICConfigOptions SetPermissionService<T>() where T: class, UICPermissionService
+    public UICConfigOptions SetPermissionService<T>() where T: class, IUICPermissionService
     {
         PermissionServiceType = typeof(T);
         return this;

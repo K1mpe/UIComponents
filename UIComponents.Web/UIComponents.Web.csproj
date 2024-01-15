@@ -67,6 +67,7 @@
     <None Include="UIComponents\InputGroup\Default.cshtml" />
     <None Include="UIComponents\InputGroup\Grid.cshtml" />
     <None Include="UIComponents\InputText\Default.cshtml" />
+    <None Include="UIComponents\InputTimespan\Default.cshtml" />
     <None Include="UIComponents\Label\Default.cshtml" />
     <None Include="UIComponents\SingleRow\Default.cshtml" />
     <None Include="UIComponents\Span\Default.cshtml" />
