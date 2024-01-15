@@ -2,7 +2,7 @@
 
 
 //Transform input elements to make the inputs of this form not look like input fields
-uic.FormReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonly = true, showDeleteButton = false) {
+uic.formReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonly = true, showDeleteButton = false) {
     form = $(form);
     form.find('[readonly]')
         .addClass("always-readonly");
@@ -39,7 +39,7 @@ uic.FormReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonl
 
 
 //This function is to undo the uic.FormReadonly function, usefull for a edit button
-uic.FormEditable = function (form) {
+uic.formEditable = function (form) {
     form = $(form);
     form.find('.form-control-plaintext:not(.always-readonly)')
         .addClass("form-control")
@@ -71,14 +71,14 @@ uic.FormEditable = function (form) {
 }
 
 //This function will remove all "." from the input value
-uic.RemoveDecimals = function (element) {
+uic.removeDecimals = function (element) {
     element = $(element);
     var value = element.val();
     element.val(value.replaceAll(".", ""));
 }
 
 //This function will set a treestateboolean in the correct state according to its data-value attribute (true, false, null)
-uic.SetThreeState = function (item){
+uic.setThreeState = function (item){
     var value = item.data('value');
     if (value == null)
         value = "null";
@@ -97,7 +97,7 @@ uic.SetThreeState = function (item){
 }
 
 
-uic.GetValue = function (element) {
+uic.getValue = function (element) {
 
     //If you create a function on a element like this
     //  $().on('GetValue', function () {
@@ -153,7 +153,7 @@ uic.GetValue = function (element) {
 }
 
 
-uic.SetValue = function (element, value) {
+uic.setValue = function (element, value) {
     //If you create a function on a element like this
     //  $().on('SetValue', function (e, value) {
     //      ...;
@@ -205,7 +205,7 @@ uic.SetValue = function (element, value) {
     }
 }
 
-uic.ClearValues = function (object) {
+uic.clearValues = function (object) {
     for (let [key, val] of Object.entries(object)) {
         if (val instanceof Object) {
             object[key] = uic.ClearValues(val);
@@ -217,7 +217,7 @@ uic.ClearValues = function (object) {
 }
 
 //This function gets all child elements with the name property, but not recusivly
-uic.GetProperties = function (element) {
+uic.getProperties = function (element) {
     $(element).addClass('uic-find-subnames');
     var results = $(element).find('[name]');
 
@@ -237,7 +237,7 @@ uic.GetProperties = function (element) {
 // comparison => The object you would like to check
 // objectMatch => results in true if all equal properties with comparison have the same value.
 // objectMissMatch => results in false if any property has a match with comparison. 
-uic.CompareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
+uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
 
     var comparisonProps = Object.getOwnPropertyNames(objectMissMatch);
 
@@ -339,7 +339,7 @@ uic.CompareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
 //This function disables all the selectlistitems that have the same value as the other selects.
 // Warning: Do not use this function on diffrent selectlists, since they can disable eachothers ids.
 // Warning: Do not use this function if some selectlistoptions are already disabled, if these values are not used in any of the selects, the become enabled again.
-uic.DisableUsedListItems = function (...selects) {
+uic.disableUsedListItems = function (...selects) {
 
     updateListItems = function (selects) {
         $(selects).find('option').removeAttr('disabled');

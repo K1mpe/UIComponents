@@ -40,46 +40,46 @@ public static class UICBuilderExtensions
         string sourceRoute = $"{currentAssemblyName}.Root.";
         if (!Directory.Exists(targetRoote))
         {
-            Directory.CreateDirectory(targetRoote+"\\js");
-            Directory.CreateDirectory(targetRoote+"\\css");
+            Directory.CreateDirectory(targetRoote);
         }
-            
-        foreach(var manifestName in manifestNames)
+
+        var scripts = manifestNames.Where(x => x.EndsWith(".js"));
+        var styles = manifestNames.Where(x => x.EndsWith(".css") || x.EndsWith(".scss"));
+
+
+        var jsDestination = $"{targetRoote}\\uic.js";
+        if (File.Exists(jsDestination))
+            File.Delete(jsDestination);
+
+        using (var jsFile = File.Create(jsDestination))
         {
-            try
+
+            foreach (var script in scripts)
             {
-
-                string targetFile = null;
-                if (!manifestName.StartsWith(sourceRoute))
-                    continue;
-                string filename = manifestName.Substring(sourceRoute.Length);
-
-                if (filename.StartsWith("js."))
-                    targetFile = filename.Replace("js.", "js\\");
-                else if (filename.StartsWith("css."))
-                    targetFile = filename.Replace("css.", "css\\");
-                else
-                    targetFile = filename;
-
-
-                string fullDestinationFile = $"{targetRoote}\\{targetFile}";
-                if (File.Exists(fullDestinationFile))
-                    File.Delete(fullDestinationFile);
-
-                using (var resourceStream = currentAssembly.GetManifestResourceStream(manifestName))
+                using (var resourceStream = currentAssembly.GetManifestResourceStream(script))
                 {
-                    using (var fileStream = File.Create(fullDestinationFile))
-                    {
-                        resourceStream!.CopyTo(fileStream);
-                    }
+                    resourceStream!.CopyTo(jsFile);
                 }
             }
-            catch(Exception ex) 
-            {
-                Console.WriteLine($"UIC Unable to write manifest file {manifestName}");
-            }
-
         }
+
+        var cssDestination = $"{targetRoote}\\uic.scss";
+        if (File.Exists(cssDestination))
+            File.Delete(cssDestination);
+
+        using (var cssFile = File.Create(cssDestination))
+        {
+
+            foreach (var style in styles)
+            {
+                using (var resourceStream = currentAssembly.GetManifestResourceStream(style))
+                {
+                    resourceStream!.CopyTo(cssFile);
+                }
+            }
+        }
+
+
 
         return services;
     }

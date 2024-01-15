@@ -1,8 +1,232 @@
 ﻿var uic = uic || {};
 
+uic.getpost = uic.getpost || {
+    defaultOptions : {
+        get : {
+            cancelPreviousRequests: true,
+            handlers : []
+        },
+
+        post : {
+            cancelPreviousRequests: false,
+            handlers : []
+        },
+    },
+    defaultHandlers: {
+        get : [],
+        post : [],
+        both : [
+            (response) => {
+                if (response.type == "ValidationErrors") {
+                    $('span.text-danger').each(function () {
+                        if ($(this).text() != "*")
+                            $(this).text("");
+                    });
+                    response.errors.forEach((item) => {
+                        var propertyName = item.PropertyName;
+                        var errors = item.Errors;
+
+                        var spanElement = $(`span.field-validation-valid[data-valmsg-for="${propertyName}"]`);
+                        if (!spanElement.length)
+                            spanElement = $(`span.field-validation-valid[data-valmsg-for$=".${propertyName}"]`);
+                        if (!spanElement.length) {
+                            var spanElement = $(`span[for=${propertyName}]`);
+                            spanElement.removeClass();
+                            spanElement.addClass("text-danger");
+                        }
+                        spanElement.text(errors);
+                        makeToast('error', null, errors, { timeOut: 60000, closeButton: true, progressBar: true, extendedTimeOut: 10000 });
+                    })
+                    return false;
+                }
+            },
+            (response) => {
+                if (response.type == "ToastResponse") {
+                    var level;
+                    switch (response.notification.Type) {
+                        case 1:
+                            level = "Success";
+                            break;
+                        case 2:
+                            level = "Info";
+                            break;
+                        case 3:
+                            level = "Warning";
+                            break;
+                        case 4:
+                            level = "Error";
+                            console.error(response.data);
+                            break;
+                    }
+                    let message = response.notification.Message.DefaultValue.format(response.notification.Message.Arguments);
+                    if (message == "null")
+                        message = "";
+                    let title = response.notification.Title.DefaultValue.format(response.notification.Title.Arguments);
+                    if (title == "null")
+                        title = "";
+
+                    makeToast(level, message, title, { timeOut: response.Duration * 1000, closeButton: true, progressBar: true, preventDuplicates: true, }); //TOASTR
+                    if (level === 'Success') {
+                        if (response.data != null)
+                            return response.data;
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            (response) => {
+                if (response.type == "AccessDenied") {
+                    makeToast("Error", "", response.Message)
+                    return false;
+                }
+            }
+        ],
+    },
+
+    
+
+    //Perform a get request
+    //url => the url where to get the data
+    //data => data added in the request
+    //additional options. This extends the uic.getpost.defaultOptions
+    get : async function (url, data, options = {}) {
+        options = $.extend({}, uic.getpost.defaultOptions.get, options);
+
+        try {
+            if (options.cancelPreviousRequests && _getRequests[url] != undefined) {
+                _getRequests[url].abort();
+            }
+        } catch { }
+
+        _getRequests[url] = $.get(url, data).catch(function (...ex) {
+            console.log('Failed! Server error', ex);
+            return { type: 'Exception', exception: ex };
+        });
+
+        let response = await _getRequests[url];
+        _getRequests[url] = undefined;
+
+        let handlers = options.handlers.concat(defaultHandlers.get).concat(defaultHandlers.both);
+
+        return await handleResponse(handlers, response);
+    },
+
+    post : async function (url, data, options = {}) {
+        options = $.extend({}, uic.getpost.defaultOptions.get, options);
+
+        var data = formatNumbersForDecimalStrings(data);
+
+        try {
+            if (options.cancelPreviousRequests && _postRequests[url] != undefined) {
+                _postRequests[url].abort();
+            }
+        } catch { }
+
+        _postRequests[url] = $.get(url, data).catch(function (...ex) {
+            console.log('Failed! Server error', ex);
+            return { type: 'Exception', exception: ex };
+        });
+
+        let response = await _postRequests[url];
+        _postRequests[url] = undefined;
+
+        let handlers = options.handlers.concat(defaultHandlers.post).concat(defaultHandlers.both);
+
+        return await handleResponse(handlers, response);
+    },
+
+    handleResponse : async function (handlers, response) {
+        for (var i = 0; i < handlers.length; i++) {
+            let handler = handlers[i];
+            var handlerResult = await handler(response);
+            if(handlerResult != null && handlerResult != undefined)
+                return handlerResult;
+        };
+        return response;
+    },
+
+    formatNumbersForDecimalStrings : function (data) {
+        if (data == null)
+            return null;
+        if (typeof data == "string") {
+            //data = data.replaceAll(".", ",");
+        } else {
+            var postProperties = Object.getOwnPropertyNames(data);
+            for (var i = 0; i < postProperties.length; i++) {
+                var prop = postProperties[i];
+                var val = data[prop];
+                if (!isNaN(val) && val !== null)
+                    data[prop] = val.toString().replace(".", ",");
+                else if (typeof val == "object")
+                    data[prop] = formatNumbersForDecimalStrings(val);
+            }
+        }
+        return data;
+    },
+
+    _getRequests :{},
+    _postRequests : {},
+
+
+
+};
+
+
+
+
+﻿var uic = uic || {};
+
+uic.modal = uic.modal || {
+    help: function () {
+        console.log(".trigger('uic-hide') => triggers the modal to hide");
+        console.log(".on('uic-before-hide', function()) => runs before the modal can hide, returning false will disable de modal to hide");
+        console.log(".on('uic-hidden', function()) => triggered after the modal has hidden.");
+    },
+
+    closeParent: function (element) {
+        var modal = $(item).closest('.uic.modal');
+        if (modal.length) {
+            modal.trigger('uic-hide');
+            return true;
+        }
+        modal = $(item).closest('.modal');
+        if (modal.length) {
+            modal.modal('hide');
+            return true;
+        }
+
+        var popup = $(item).closest('.uic-can-hide');
+        if (popup.length) {
+            window.close();
+            return true;
+        }
+
+        return false;
+    },
+
+};
+
+
+$(document).ready(function () {
+    $(document).on('uic-help', '.uic.modal', function () {
+        uic.modal.help();
+    });
+
+    $(document).on('uic-hide', '.uic.modal', async function () {
+        let beforeHideResult = await $(this).on('uic-before-hide');
+        if (beforeHideResult === false)
+            return;
+
+        $(this).modal('hide');
+        $(this).trigger('uic-hidden');
+    })
+});
+
+﻿var uic = uic || {};
+
 
 //Transform input elements to make the inputs of this form not look like input fields
-uic.FormReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonly = true, showDeleteButton = false) {
+uic.formReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonly = true, showDeleteButton = false) {
     form = $(form);
     form.find('[readonly]')
         .addClass("always-readonly");
@@ -39,7 +263,7 @@ uic.FormReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonl
 
 
 //This function is to undo the uic.FormReadonly function, usefull for a edit button
-uic.FormEditable = function (form) {
+uic.formEditable = function (form) {
     form = $(form);
     form.find('.form-control-plaintext:not(.always-readonly)')
         .addClass("form-control")
@@ -71,14 +295,14 @@ uic.FormEditable = function (form) {
 }
 
 //This function will remove all "." from the input value
-uic.RemoveDecimals = function (element) {
+uic.removeDecimals = function (element) {
     element = $(element);
     var value = element.val();
     element.val(value.replaceAll(".", ""));
 }
 
 //This function will set a treestateboolean in the correct state according to its data-value attribute (true, false, null)
-uic.SetThreeState = function (item){
+uic.setThreeState = function (item){
     var value = item.data('value');
     if (value == null)
         value = "null";
@@ -97,7 +321,7 @@ uic.SetThreeState = function (item){
 }
 
 
-uic.GetValue = function (element) {
+uic.getValue = function (element) {
 
     //If you create a function on a element like this
     //  $().on('GetValue', function () {
@@ -153,7 +377,7 @@ uic.GetValue = function (element) {
 }
 
 
-uic.SetValue = function (element, value) {
+uic.setValue = function (element, value) {
     //If you create a function on a element like this
     //  $().on('SetValue', function (e, value) {
     //      ...;
@@ -205,7 +429,7 @@ uic.SetValue = function (element, value) {
     }
 }
 
-uic.ClearValues = function (object) {
+uic.clearValues = function (object) {
     for (let [key, val] of Object.entries(object)) {
         if (val instanceof Object) {
             object[key] = uic.ClearValues(val);
@@ -217,7 +441,7 @@ uic.ClearValues = function (object) {
 }
 
 //This function gets all child elements with the name property, but not recusivly
-uic.GetProperties = function (element) {
+uic.getProperties = function (element) {
     $(element).addClass('uic-find-subnames');
     var results = $(element).find('[name]');
 
@@ -237,7 +461,7 @@ uic.GetProperties = function (element) {
 // comparison => The object you would like to check
 // objectMatch => results in true if all equal properties with comparison have the same value.
 // objectMissMatch => results in false if any property has a match with comparison. 
-uic.CompareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
+uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
 
     var comparisonProps = Object.getOwnPropertyNames(objectMissMatch);
 
@@ -339,7 +563,7 @@ uic.CompareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
 //This function disables all the selectlistitems that have the same value as the other selects.
 // Warning: Do not use this function on diffrent selectlists, since they can disable eachothers ids.
 // Warning: Do not use this function if some selectlistoptions are already disabled, if these values are not used in any of the selects, the become enabled again.
-uic.DisableUsedListItems = function (...selects) {
+uic.disableUsedListItems = function (...selects) {
 
     updateListItems = function (selects) {
         $(selects).find('option').removeAttr('disabled');

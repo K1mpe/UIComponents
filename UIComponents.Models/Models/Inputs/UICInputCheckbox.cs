@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Models;
+﻿using UIComponents.Abstractions.Extensions;
+using UIComponents.Abstractions.Models;
 
 namespace UIComponents.Models.Models.Inputs;
 
@@ -10,6 +11,7 @@ public class UICInputCheckbox : UICInput<bool>
 {
     #region Fields
     public override bool HasClientSideValidation => false;
+    public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
     #endregion
 
     #region Ctor

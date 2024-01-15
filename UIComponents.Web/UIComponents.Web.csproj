@@ -59,6 +59,10 @@
     <None Include="UIComponents\Group\ContentOnly.cshtml" />
     <None Include="UIComponents\Group\Div.cshtml" />
     <None Include="UIComponents\Icon\Default.cshtml" />
+    <None Include="UIComponents\InputCheckboxThreeState\Checkbox.cshtml" />
+    <None Include="UIComponents\InputCheckboxThreeState\ToggleSwitch.cshtml" />
+    <None Include="UIComponents\InputCheckbox\Checkbox.cshtml" />
+    <None Include="UIComponents\InputCheckbox\ToggleSwitch.cshtml" />
     <None Include="UIComponents\InputGroup\Default.cshtml" />
     <None Include="UIComponents\InputGroup\Grid.cshtml" />
     <None Include="UIComponents\InputText\Default.cshtml" />

@@ -19,7 +19,10 @@ namespace UIComponents.Web.Tests.Controllers
         {
             //return View();
             var testModel = new TestModel();
-            var component = await _uic.CreateComponentAsync(testModel);
+            var component = await _uic.CreateComponentAsync(testModel, new()
+            {
+                CheckboxRenderer = UIComponents.Models.Models.Inputs.CheckboxRenderer.ToggleSwitch
+            });
             return View("ComponentRender", component);
         }
 

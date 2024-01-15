@@ -1,31 +1,35 @@
 ﻿var uic = uic || {};
 
-uic.modal = uic.modal || {};
+uic.modal = uic.modal || {
+    help: function () {
+        console.log(".trigger('uic-hide') => triggers the modal to hide");
+        console.log(".on('uic-before-hide', function()) => runs before the modal can hide, returning false will disable de modal to hide");
+        console.log(".on('uic-hidden', function()) => triggered after the modal has hidden.");
+    },
 
-uic.modal.help = function () {
-    console.log(".trigger('uic-hide') => triggers the modal to hide");
-    console.log(".on('uic-before-hide', function()) => runs before the modal can hide, returning false will disable de modal to hide");
-    console.log(".on('uic-hidden', function()) => triggered after the modal has hidden.");
-}
+    closeParent: function (element) {
+        var modal = $(item).closest('.uic.modal');
+        if (modal.length) {
+            modal.trigger('uic-hide');
+            return true;
+        }
+        modal = $(item).closest('.modal');
+        if (modal.length) {
+            modal.modal('hide');
+            return true;
+        }
 
+        var popup = $(item).closest('.uic-can-hide');
+        if (popup.length) {
+            window.close();
+            return true;
+        }
 
+        return false;
+    },
 
+};
 
-uic.modal.closeParent = function(element){
-    var modal = $(item).closest('.modal');
-    if (modal.length) {
-        modal.modal('hide');
-        return true;
-    }
-
-    var popup = $(item).closest('.uic-can-hide');
-    if (popup.length) {
-        window.close();
-        return true;
-    }
-
-    return false;
-}
 
 $(document).ready(function () {
     $(document).on('uic-help', '.uic.modal', function () {

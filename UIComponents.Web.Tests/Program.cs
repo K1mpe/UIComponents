@@ -48,14 +48,15 @@ builder.Services.AddUIComponentWeb(config =>
 });
 
 var app = builder.Build();
+app.UseWebOptimizer();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
-app.UseWebOptimizer();
 app.UseRouting();
 
 app.UseAuthorization();
