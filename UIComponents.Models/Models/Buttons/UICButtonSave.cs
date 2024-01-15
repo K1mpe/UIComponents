@@ -1,6 +1,4 @@
 ﻿using UIComponents.Abstractions.Extensions;
-using UIComponents.Models.Defaults;
-using UIComponents.Models.Models.Actions;
 
 namespace UIComponents.Models.Models.Buttons;
 
@@ -13,19 +11,12 @@ public class UICButtonSave : UICButton
     public UICButtonSave()
     {
         ButtonText = TranslationDefaults.ButtonSave;
-        Color = Colors.ButtonSave;
+        Color = Colors.ButtonSave?? Colors.ButtonDefault;
         this.AddAttribute("class", "btn-save");
     }
-    public UICButtonSave(string postLocation) : this()
+    public UICButtonSave(UICForm form) : this()
     {
-
-        OnClick = new UICActionSubmit(postLocation)
-        {
-            OnSuccess = new UICActionCloseCard()
-            {
-
-            }
-        };
+        OnClick = form.TriggerSubmit();
 
     }
 }

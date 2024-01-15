@@ -1,5 +1,4 @@
 ﻿using UIComponents.Generators.Helpers;
-using UIComponents.Models.Defaults;
 
 namespace UIComponents.Generators.Generators.FormButtons;
 
@@ -21,19 +20,14 @@ public class UICGeneratorButtonSave : UICGeneratorProperty
                 return GeneratorHelper.Success<IUIComponent>(null, false);
         }
 
-
-        var submitAction = new UICActionSubmit(args.Options.FormPostUrl ?? $"/{args.ClassObject.GetType().Name}/Update")
-        {
-            OnSuccess = new UICActionCloseCard()
-        };
-
-        if (args.ClassObject is IDbEntity dbEntity)
-            submitAction.AdditionalPost = new { Id = dbEntity.Id };
+        var form = args.CallCollection.Components.Where(c => c is UICForm).OfType<UICForm>().FirstOrDefault();
+        if (form == null || form.TriggerSubmit() == null)
+            return GeneratorHelper.Next();
 
         var button = new UICButtonSave()
         {
-            ButtonText = TranslationDefaults.ButtonCreate,
-            OnClick = submitAction
+            ButtonText = TranslationDefaults.ButtonSave,
+            OnClick = form.TriggerSubmit()
         };
 
         

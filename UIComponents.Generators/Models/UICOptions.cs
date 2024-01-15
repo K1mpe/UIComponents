@@ -1,4 +1,5 @@
-﻿using UIComponents.Models.Models;
+﻿using UIComponents.Defaults;
+using UIComponents.Models.Models;
 using UIComponents.Models.Models.Inputs;
 
 namespace UIComponents.Generators.Models;
@@ -36,10 +37,6 @@ public class UICOptions
     #region Overrides
     public List<IUICGenerator> Generators { get; set; } = new();
 
-    /// <summary>
-    /// A dictionary with additional options you can use for custom Generators
-    /// </summary>
-    public Dictionary<string, object> AdditionalOptions { get; set; } = new();
 
     #endregion
 
@@ -53,12 +50,12 @@ public class UICOptions
     /// <summary>
     /// Hide all properties with name "Id"
     /// </summary>
-    public bool IdHidden { get; set; } = true;
+    public bool IdHidden { get; set; } = OptionDefaults.IdHidden;
 
     /// <summary>
     /// Hide all readonly properties
     /// </summary>
-    public bool HideReadonlyProperties { get; set; }
+    public bool HideReadonlyProperties { get; set; } = OptionDefaults.HidereadonlyProperties;
 
     /// <summary>
     /// A list with properties shown in the form, this is not case-sensitive.
@@ -76,7 +73,7 @@ public class UICOptions
     /// <remarks>
     /// Default: "IsDeleted"
     /// </remarks>
-    public string ExcludedProperties { get; set; } = "IsDeleted";
+    public string ExcludedProperties { get; set; } = OptionDefaults.ExcludedProperties;
 
     #endregion
 
@@ -87,7 +84,7 @@ public class UICOptions
     /// <summary>
     /// If the form is in readonly modus, hide all inputs that do not have a value
     /// </summary>
-    public bool HideEmptyInReadonly { get; set; }
+    public bool HideEmptyInReadonly { get; set; } = OptionDefaults.HideEmptyInReadonly;
 
     public string FormPostUrl { get; set; }
 
@@ -99,18 +96,18 @@ public class UICOptions
     /// <summary>
     /// As long as there are validation errors, disable the save button.
     /// </summary>
-    public bool DisableSaveButtonOnValidationErrors { get; set; } = true;
+    public bool DisableSaveButtonOnValidationErrors { get; set; } = OptionDefaults.DisableSaveButtonOnValidationErrors;
 
     #region Buttons
-    public ButtonPosition ButtonPosition { get; set; } = ButtonPosition.Right;
-    public ButtonDistance ButtonDistance { get; set; } = ButtonDistance.Medium;
+    public ButtonPosition ButtonPosition { get; set; } = OptionDefaults.ButtonPosition;
+    public ButtonDistance ButtonDistance { get; set; } = OptionDefaults.ButtonDistance;
 
-    public bool ReverseButtonOrder { get; set; }
+    public bool ReverseButtonOrder { get; set; } = OptionDefaults.ReverseButtonOrder;
 
-    public bool ShowEditButton { get; set; } = true;
-    public bool ShowDeleteButton { get; set; } = true;
+    public bool ShowEditButton { get; set; } = OptionDefaults.ShowEditButton;
+    public bool ShowDeleteButton { get; set; } = OptionDefaults.ShowDeleteButton;
 
-    public bool ShowCancelButton { get; set; }
+    public bool ShowCancelButton { get; set; } = OptionDefaults.ShowCancelButton;
     #endregion
     #endregion
 

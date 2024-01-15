@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <Title>UIComponents.Abstractions</Title>
     <Version>0.0.1</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>

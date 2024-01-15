@@ -4,7 +4,7 @@
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Models;
-@using UIComponents.Models.Defaults;
+
 @using UIComponents.Models.Models;
 @using UIComponents.Models.Models.Actions;
 @using UIComponents.Models.Models.Buttons;
@@ -67,4 +67,18 @@ else
         }, 500);
     </text>);
     }
+
+    @if(Model.Submit != null)
+    {
+        Model.AddScript(
+@<text>
+$('#@id').off('submit');
+$('#@id').on('submit', async function(){
+    @await Model.Submit.InvokeAsync(Component)
+});
+</text>
+        );
+    }
 }
+
+@await Model.RenderStylesAndScripts(Component)

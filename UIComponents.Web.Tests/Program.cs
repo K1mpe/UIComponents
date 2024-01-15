@@ -1,4 +1,5 @@
 
+using UIComponents.Abstractions;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
 using UIComponents.Generators.Registrations;
 using UIComponents.Web.Extensions;
@@ -18,8 +19,31 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddMvc();
 
+// Add optimizer to minify CSS and JavaScript files at runtime.
+builder.Services.AddWebOptimizer(pipeline =>
+{
+    var inProduction = builder.Environment.IsProduction();
+    if (inProduction ||true )
+    {
+        pipeline.MinifyHtmlFiles();
+        pipeline.MinifyCssFiles();
+        //pipeline.MinifyJsFiles();
+
+        // Bundle all files in the css folder and its subfolders.
+        pipeline.AddScssBundle("/css/site.css", "/css/**/*");
+    }
+
+    var options = new WebOptimizer.Sass.WebOptimizerScssOptions { MinifyCss = inProduction };
+    pipeline.CompileScssFiles(options);
+});
+
 builder.Services.AddUIComponentWeb(config =>
 {
+
+    UIComponents.Defaults.Colors.DefaultColor = new UICColor("Secondary");
+    UIComponents.Defaults.Colors.ButtonDefault = new UICColor("Secondary");
+    UIComponents.Defaults.Colors.ButtonSave = new UICColor("Primary");
+    UIComponents.Defaults.OptionDefaults.ReverseButtonOrder = false;
     config.AddDefaultGenerators(builder.Services);
 });
 
@@ -31,7 +55,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
-
+app.UseWebOptimizer();
 app.UseRouting();
 
 app.UseAuthorization();

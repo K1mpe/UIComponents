@@ -32,7 +32,7 @@ $(document).ready(function () {
         uic.modal.help();
     });
 
-    $(document).on('uic-hide', '.uic.modal', function () {
+    $(document).on('uic-hide', '.uic.modal', async function () {
         let beforeHideResult = await $(this).on('uic-before-hide');
         if (beforeHideResult === false)
             return;

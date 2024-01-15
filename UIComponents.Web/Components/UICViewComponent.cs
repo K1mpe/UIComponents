@@ -37,7 +37,8 @@ public class UICViewComponent : ViewComponent
                 if (UIC.TryGetPropertyValue<ITranslateable>(nameof(UICInput<string>.Placeholder), out ITranslateable placeholder))
                     UIC.AddAttribute("placeholder", await languageService.Translate(placeholder));
             }
-            
+
+            UIC.AddAttribute("class", "uic");
 
 
             if (UIC.TryGetPropertyValue<string>(nameof(UICInput.PropertyName), out string propertyName))

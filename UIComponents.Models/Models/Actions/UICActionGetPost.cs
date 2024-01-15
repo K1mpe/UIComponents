@@ -5,7 +5,7 @@ namespace UIComponents.Models.Models.Actions;
 /// <summary>
 /// Get or post something to a controller. This post cannot be infected by clientside values.
 /// </summary>
-public class UICActionGetPost : UIComponent, IUIAction
+public class UICActionGetPost : UIComponent, ISubmitAction
 {
 
     #region Ctor
@@ -33,11 +33,10 @@ public class UICActionGetPost : UIComponent, IUIAction
     public object Data { get; set; }
 
     /// <summary>
-    /// This is the serialized data that will be send with the ajax request.
+    /// Before sending the request, this action is called client side to get additional properties.
     /// </summary>
-    /// <remarks>
-    /// If <see cref="Data"/> has value, this will replace the <see cref="RawData"/></remarks>
-    public string RawData { get; set; }
+    /// If this result has the same properties as <see cref="Data"/>, the <see cref="Data"/> takes priority.
+    public IUIAction? GetVariableData { get; set; } = null;
 
     /// <summary>
     /// This is the name of the responsevalue
@@ -50,13 +49,22 @@ public class UICActionGetPost : UIComponent, IUIAction
     /// <remarks>
     /// ResultName is available for this action
     /// </remarks>
-    public IUIAction After { get; set; }
+    public IUIAction OnSuccess { get; set; }
 
+    /// <summary>
+    /// This will be triggered after failing the request
+    /// </summary>
+    public IUIAction OnFailed { get; set; }
     #endregion
 
     public enum ActionTypeEnum
     {
         Get,
         Post
+    }
+
+    public IUIAction TriggerSubmit()
+    {
+        return this;
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System.Reflection;
 
-namespace UIComponents.Models.Defaults;
+namespace UIComponents.Defaults;
 
 public static class TranslationDefaults
 {
+
     public static ITranslateable ButtonEdit = new TranslationModel("Button.Edit");
     public static ITranslateable ButtonReadonly = new TranslationModel("Button.Readonly");
 

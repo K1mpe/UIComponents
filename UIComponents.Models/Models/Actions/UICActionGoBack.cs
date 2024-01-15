@@ -5,6 +5,5 @@ public class UICActionGoBack : UICCustom
     public UICActionGoBack()
     {
         Content = "history.back();";
-
     }
 }

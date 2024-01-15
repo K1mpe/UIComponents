@@ -55,6 +55,7 @@ public enum UICGeneratorPropertyCallType
     ButtonEditReadonly,
     ButtonReadonly,
     ButtonDelete,
+    ButtonToolbar,
 
     /// <summary>
     /// When the given Property is a class (except string)

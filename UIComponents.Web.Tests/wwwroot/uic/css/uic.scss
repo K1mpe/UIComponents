@@ -1,4 +1,6 @@
-﻿/*#region Timespan*/
+﻿
+
+/*#region Timespan*/
 
 
 .uic-timespan-input {
@@ -18,7 +20,42 @@
 }
 /*#endregion Timespan*/
 
+/*#region ButtonToolbar */
+.uic.btn-toolbar {
+    background-color:green;
+    > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right {
 
+        &.dist-none {
+            @extend .btn-group;
+        }
+
+        &.dist-short {
+            gap: map-get($spacers, 1);
+        }
+
+        &.dist-medium {
+            gap: map-get($spacers, 3);
+        }
+
+        &.dist-long {
+            gap: map-get($spacers, 5);
+        }
+    }
+
+    > .btn-toolbar-left {
+        margin-right:auto;
+    }
+
+    > .btn-toolbar-right {
+        margin-left:auto;
+    }
+    > .btn-toolbar-center{
+        margin-left:auto;
+        margin-right:auto;
+    }
+}
+
+/*#endregion ButtonToolbar*/
 
 
 .custom-control-input[disabled] ~ .custom-control-label ::after, .custom-control-input:disabled ~ .custom-control-label::after {

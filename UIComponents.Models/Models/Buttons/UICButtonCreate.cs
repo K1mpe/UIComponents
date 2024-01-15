@@ -1,6 +1,4 @@
-﻿using UIComponents.Models.Defaults;
-using UIComponents.Models.Models.Actions;
-
+﻿
 namespace UIComponents.Models.Models.Buttons;
 
 public class UICButtonCreate : UICButton
@@ -18,7 +16,7 @@ public class UICButtonCreate : UICButton
         {
             OnClick = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Get, type.Name, "Create", new { modalTitle = "" })
             {
-                After = new UICActionOpenResultAsModal()
+                OnSuccess = new UICActionOpenResultAsModal()
             };
         }
         else

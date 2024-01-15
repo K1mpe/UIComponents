@@ -1,14 +1,10 @@
-﻿using UIComponents.Abstractions.Extensions;
-using UIComponents.Abstractions.Models;
-using UIComponents.Models.Models.Icons;
-
-namespace UIComponents.Models.Models.Buttons;
+﻿namespace UIComponents.Models.Models.Buttons;
 
 [PrependAppendInputGroupClass("")]
 public class UICButton : UIComponent
 {
     #region Fields
-    public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
+    public override string RenderLocation => UIComponent.DefaultIdentifier("Button", Renderer);
     #endregion
 
     #region Ctor

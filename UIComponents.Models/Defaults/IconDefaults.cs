@@ -1,6 +1,6 @@
 ﻿using UIComponents.Models.Models.Icons;
 
-namespace UIComponents.Models.Defaults;
+namespace UIComponents.Defaults;
 
 public partial class IconDefaults
 {

@@ -3,8 +3,8 @@
 @using UIComponents.Abstractions.Interfaces.ExternalServices;
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
 @using UIComponents.Models;
-@using UIComponents.Models.Defaults;
 @using UIComponents.Models.Models;
 @using UIComponents.Models.Models.Actions;
 @using UIComponents.Models.Models.Buttons;

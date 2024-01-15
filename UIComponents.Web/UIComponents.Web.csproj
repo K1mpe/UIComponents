@@ -17,10 +17,7 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <Compile Remove="UIComponents\Form\**" />
-    <Content Remove="UIComponents\Form\**" />
-    <EmbeddedResource Remove="UIComponents\Form\**" />
-    <None Remove="UIComponents\Form\**" />
+    <Content Remove="UIComponents\ActionGetValue\Default.cshtml" />
   </ItemGroup>
 
   <!--<ItemGroup>
@@ -29,6 +26,7 @@
 
   <ItemGroup>
     <None Remove="Root\css\uic.scss" />
+    <None Remove="Root\js\getpost.js" />
     <None Remove="Root\js\modal.js" />
   </ItemGroup>
 
@@ -46,8 +44,18 @@
   <ItemGroup>
     <None Include="UIComponents\ActionCloseCard\Default.cshtml" />
     <None Include="UIComponents\ActionCompareObjects\Default.cshtml" />
+    <None Include="UIComponents\ActionDisableSaveButtonOnValidationErrors\Default.cshtml" />
+    <None Include="UIComponents\ActionGetPost\Default.cshtml" />
+    <None Include="UIComponents\ActionSetEdit\Default.cshtml" />
+    <None Include="UIComponents\ActionSetReadonly\Default.cshtml" />
+    <None Include="UIComponents\ActionSetValue\Default.cshtml" />
     <None Include="UIComponents\Actions\Default.cshtml" />
+    <None Include="UIComponents\ButtonEdit\Default.cshtml" />
+    <None Include="UIComponents\ButtonToolbar\Default.cshtml" />
+    <None Include="UIComponents\Button\CardButton.cshtml" />
+    <None Include="UIComponents\Button\Default.cshtml" />
     <None Include="UIComponents\Custom\Default.cshtml" />
+    <None Include="UIComponents\Form\Default.cshtml" />
     <None Include="UIComponents\Group\ContentOnly.cshtml" />
     <None Include="UIComponents\Group\Div.cshtml" />
     <None Include="UIComponents\Icon\Default.cshtml" />

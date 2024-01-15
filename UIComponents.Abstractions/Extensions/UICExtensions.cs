@@ -91,6 +91,16 @@ public static class UICExtensions
         return true;
     }
 
+    public static bool AnyHasValue(this IEnumerable<IUIComponent> elements)
+    {
+        foreach (var element in elements)
+        {
+            if(element.HasValue()) 
+                return true;
+        }
+        return false;
+    }
+
     /// <summary>
     /// Find the first element on its type
     /// </summary>

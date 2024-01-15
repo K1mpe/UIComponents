@@ -1,0 +1,98 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Models;
+
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@inject ILanguageService L
+@model UICButton
+
+@{
+    string type = Model.GetAttribute("type")??"button";
+
+    string id = Model.GetOrGenerateId();
+    Model.AssignCollectionForChildren();
+
+    if(Model.OnClick != null)
+    {
+        var onClickType = Model.OnClick.GetType();
+        if (Model.OnClick is ISubmitAction submit)
+        {
+            type = "submit";
+            //submit.AddAttribute("HideDocReady", "true");
+        }
+        else if (onClickType == typeof(UICActionSetReadonly))
+        {
+            type = "reset";
+
+            //when clicking the reset button, remove all validation fields from the current form
+            Model.AddScript(
+            @<text>
+            
+                $('#@id').click(function(){
+                    var form = $(this).closest('form');
+
+                    form.find('.field-validation-valid').text('');
+                })
+            </text>);
+        }
+        
+
+        if(Model.OnClick is UIComponent onClickElement)
+        {
+            onClickElement.AddAttribute("identifier", $"#{id}");
+        }
+
+    }
+    if (Model.Disabled)
+        Model.AddAttribute("disabled", "true");
+
+    Model.AddAttribute("class", "btn ");
+
+    if(Model.Color != null)
+        Model.AddAttribute("class", $"btn-{Model.Color.ToLower()}");
+
+    
+}
+
+
+@if (Model.OnClick != null && Model.OnClick is UICActionNavigate navigate)
+{
+    <a href="@navigate.Href" @Html.Raw(Model.GetHtmlAttributes())>
+        @await Model.PrependButtonIcon.InvokeAsync(Component)
+        @await Html.Translate(L, Model.ButtonText, null)
+        @await Model.AppendButtonIcon.InvokeAsync(Component)
+    </a>
+}
+else
+{
+    <button type="@type" @Html.Raw(Model.GetHtmlAttributes())>
+        @await Model.PrependButtonIcon.InvokeAsync(Component)
+        @await Html.Translate(L, Model.ButtonText, null)
+        @await Model.AppendButtonIcon.InvokeAsync(Component)
+
+        @if (Model.OnClick != null)
+        {
+            Model.AddScript(
+            @<text>
+            
+                $('#@id').click(async function (args) {
+                    @await Model.OnClick.InvokeAsync(Component)
+                });
+            </text>);
+
+        }
+    </button>
+    
+}
+@await Model.RenderStylesAndScripts(Component)

@@ -1,0 +1,11 @@
+﻿// Variables and mixins
+// ---------------------------------------------------
+@import '../lib/bootstrap/scss/functions';
+@import '../lib/bootstrap/scss/mixins';
+
+// Bootstrap + AdminLTE
+// ---------------------------------------------------
+@import '../lib/bootstrap/scss/bootstrap';
+@import '../uic/css/uic.scss';
+
+body {color:red}

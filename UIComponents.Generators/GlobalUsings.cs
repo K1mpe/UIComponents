@@ -1,4 +1,4 @@
-﻿global using UIComponents;
+﻿global using UIComponents.Defaults;
 global using UIComponents.Models.Models;
 global using UIComponents.Models.Models.Actions;
 global using UIComponents.Models.Models.Buttons;

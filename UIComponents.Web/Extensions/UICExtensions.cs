@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
 using UIComponents.Abstractions.Varia;
@@ -15,7 +16,7 @@ public static class UICExtensions
     /// <param name="UIC"></param>
     /// <param name="component">Component should be available in cshtml</param>
     /// <returns></returns>
-    public static async Task<Microsoft.AspNetCore.Html.IHtmlContent> InvokeAsync(this IUIComponent UIC, IViewComponentHelper component)
+    public static async Task<Microsoft.AspNetCore.Html.IHtmlContent> InvokeAsync(this IUIComponent? UIC, IViewComponentHelper component)
     {
         if (UIC == null)
             return null;
@@ -96,7 +97,13 @@ public static class UICExtensions
         action.AddAttribute("identifier", identifier);
     }
 
+    public static IHtmlContent IncludeScript(this IHtmlHelper html, Scripts script)
+    {
+        HtmlContentBuilder htmlContentBuilder = new HtmlContentBuilder();
 
+
+        return htmlContentBuilder;
+    }
 
     #region ScriptCollection
 
@@ -248,4 +255,10 @@ public static class UICExtensions
     }
     #endregion
 
+}
+public enum Scripts
+{
+    UIC,
+    Modal,
+    GetPost,
 }

@@ -12,7 +12,6 @@ namespace UIComponents.Web.Tests.Services
     {
         public Task<string> Translate(ITranslateable translationModel)
         {
-            return Task.FromResult("Blub");
             if (string.IsNullOrEmpty(translationModel.DefaultValue))
                 return Task.FromResult(translationModel.ResourceKey.Split(".").Last());
 

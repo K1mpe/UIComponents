@@ -51,7 +51,7 @@ public class UICCustom : UIComponent, IUIAction, IDropdownItem
         get
         {
             if (string.IsNullOrEmpty(_renderLocation))
-                return base.RenderLocation;
+                return UIComponent.DefaultIdentifier("Custom");
             return _renderLocation;
         }
     }

@@ -16,6 +16,9 @@
   <ItemGroup>
     <ProjectReference Include="..\UIComponents.Web\UIComponents.Web.csproj" />
   </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="LigerShark.WebOptimizer.Sass" Version="3.0.91" />
+	</ItemGroup>
 
   <ItemGroup>
     <None Include="Views\Shared\Components\UIComponent\InputGroup\_Default.cshtml" />

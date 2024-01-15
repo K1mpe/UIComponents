@@ -82,6 +82,11 @@ public static class UICConfigure
     public static UICConfigOptions AddDefaultButtons(this UICConfigOptions configOptions, IServiceCollection serviceCollection)
     {
         configOptions.AddAndRegisterGenerator<UICGeneratorButtonCreate>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorButtonCancel>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorButtonDelete>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorButtonEditReadonly>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorButtonSave>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorButtonToolbar>(serviceCollection);
 
         return configOptions;
     }

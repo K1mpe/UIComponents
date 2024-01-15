@@ -1,4 +1,4 @@
-﻿global using UIComponents;
+﻿global using UIComponents.Defaults;
 global using UIComponents.Abstractions.Models;
 global using UIComponents.Abstractions.Extensions;
 global using UIComponents.Models.Models;

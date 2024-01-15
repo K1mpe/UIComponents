@@ -1,6 +1,4 @@
-﻿using UIComponents.Models.Defaults;
-
-namespace UIComponents.Models.Models.Buttons;
+﻿namespace UIComponents.Models.Models.Buttons;
 
 public class UICButtonCancel : UICButton
 {

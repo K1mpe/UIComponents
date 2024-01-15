@@ -1,8 +1,4 @@
-﻿using UIComponents.Abstractions.Extensions;
-using UIComponents.Abstractions.Models;
-using UIComponents.Models.Defaults;
-
-namespace UIComponents.Models.Models.Buttons;
+﻿namespace UIComponents.Models.Models.Buttons;
 
 public class UICButtonEdit : UIComponent
 {
@@ -25,13 +21,15 @@ public class UICButtonEdit : UIComponent
     /// Create a button to make a form readonly
     /// </summary>
     /// <param name="formId">example: #my-form</param>
-    public UICButtonEdit(string formId) : this()
+    public UICButtonEdit(UICForm form) : this()
     {
-        this.AddAttribute("formidentifier", formId);
+        Form = form;
     }
     #endregion
 
     #region Properties
+
+    public UICForm Form { get; set; }
 
     public bool ReadonlyOnLoad { get; set; } = true;
 

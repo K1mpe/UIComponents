@@ -1,5 +1,6 @@
 ﻿var uic = uic || {};
 
+
 //Transform input elements to make the inputs of this form not look like input fields
 uic.FormReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonly = true, showDeleteButton = false) {
     form = $(form);
