@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using UIComponents.Generators.Helpers;
 
@@ -64,6 +65,16 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
                         break;
                 }
             }
+
+
+            var foreignKey = propertyInfo.GetCustomAttribute<ForeignKeyAttribute>();
+            if(foreignKey != null)
+                return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.SelectList, true);
+
+            var fakeForeignKey = propertyInfo.GetCustomAttribute<FakeForeignKeyAttribute>();
+            if (fakeForeignKey != null)
+                return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.SelectList, true);
+
             switch (type.Name.ToLower())
             {
                 case "string":

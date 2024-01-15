@@ -63,6 +63,7 @@
     <None Include="UIComponents\InputCheckboxThreeState\ToggleSwitch.cshtml" />
     <None Include="UIComponents\InputCheckbox\Checkbox.cshtml" />
     <None Include="UIComponents\InputCheckbox\ToggleSwitch.cshtml" />
+    <None Include="UIComponents\InputDatetime\Default.cshtml" />
     <None Include="UIComponents\InputGroup\Default.cshtml" />
     <None Include="UIComponents\InputGroup\Grid.cshtml" />
     <None Include="UIComponents\InputText\Default.cshtml" />

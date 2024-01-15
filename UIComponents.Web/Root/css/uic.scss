@@ -1,5 +1,53 @@
 ﻿
 
+
+
+/*#region ButtonToolbar */
+.uic.btn-toolbar {
+    &.dist-none {
+        @extend .btn-group;
+    }
+
+    &.dist-short {
+        > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right {
+            display: flex;
+            gap: map-get($spacers, 1);
+        }
+    }
+
+    &.dist-medium {
+        > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right {
+            display: flex;
+            gap: map-get($spacers, 3);
+        }
+    }
+
+    &.dist-long {
+        > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right {
+            display: flex;
+            gap: map-get($spacers, 5);
+        }
+    }
+
+
+    > .btn-toolbar-left {
+        margin-right: auto;
+    }
+
+    > .btn-toolbar-right {
+        margin-left: auto;
+    }
+
+    > .btn-toolbar-center {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/*#endregion ButtonToolbar*/
+
+/*#region Inputs*/
+
 /*#region Timespan*/
 
 
@@ -20,43 +68,19 @@
 }
 /*#endregion Timespan*/
 
-/*#region ButtonToolbar */
-.uic.btn-toolbar {
-    background-color:green;
-    > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right {
+/*#region ToggleSwitch*/
 
-        &.dist-none {
-            @extend .btn-group;
-        }
-
-        &.dist-short {
-            gap: map-get($spacers, 1);
-        }
-
-        &.dist-medium {
-            gap: map-get($spacers, 3);
-        }
-
-        &.dist-long {
-            gap: map-get($spacers, 5);
-        }
+.custom-control-input.indeterminate ~ .custom-control-label {
+    &::before {
+        background-color: var(--secondary, $custom-control-indicator-bg);
     }
 
-    > .btn-toolbar-left {
-        margin-right:auto;
-    }
-
-    > .btn-toolbar-right {
-        margin-left:auto;
-    }
-    > .btn-toolbar-center{
-        margin-left:auto;
-        margin-right:auto;
+    &::after {
+        transform: translateX(($custom-switch-width - $custom-control-indicator-size)/2);
     }
 }
-
-/*#endregion ButtonToolbar*/
-
+/*#endregion ToggleSwitch*/
+/*#endregion Inputs*/
 
 .custom-control-input[disabled] ~ .custom-control-label ::after, .custom-control-input:disabled ~ .custom-control-label::after {
     opacity: 0.25;

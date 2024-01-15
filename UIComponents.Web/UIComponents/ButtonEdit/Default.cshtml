@@ -24,22 +24,23 @@
     string formId = Model.GetAttribute("formidentifier");
     if (Model.Form != null)
         formId = Model.Form.GetOrGenerateId();
+
+    Model.AssignCollectionForChildren();
+
+    Model.AddScript(
+    @<text>
+        @if (Model.ReadonlyOnLoad)
+        {
+            @await Model.ButtonSetReadonly.OnClick.InvokeAsync(Component)
+        }
+        else
+        {
+            @await Model.ButtonSetEdit.OnClick.InvokeAsync(Component)
+        }
+    </text>);
 }
 
 @await Model.ButtonSetEdit.InvokeAsync(Component)
 @await Model.ButtonSetReadonly.InvokeAsync(Component)
 
-
-<script>
-    $(document).ready(function(args){
-        //Trigger one of the 2 buttons on load
-    @if (Model.ReadonlyOnLoad)
-    {
-        @await Model.ButtonSetReadonly.OnClick.InvokeAsync(Component)
-    }
-    else
-    {
-        @await Model.ButtonSetEdit.OnClick.InvokeAsync(Component)
-    }
-    });
-</script>
+@await Model.RenderStylesAndScripts(Component)

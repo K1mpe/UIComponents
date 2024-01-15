@@ -17,13 +17,13 @@ namespace UIComponents.Web.Tests.Models
 
         public bool? ThreeStateBool { get; set; }
 
-        //public int Number { get; set; }
+        public int Number { get; set; }
 
-        //public double Decimal { get; set; }
+        public double Decimal { get; set; }
 
-        //public DateTime Date { get; set; }
+        public DateTime Date { get; set; }
 
-        //public TimeSpan TimeSpan { get; set; }
+        public TimeSpan TimeSpan { get; set; }
 
     }
 }

@@ -25,7 +25,7 @@ public static class UICConfigure
         services.TryAddScoped<IUIComponentService, UICService>();
         services.TryAddSingleton<UICConfigOptions>(configuration);
         services.TryAddScoped<UICConfig>();
-        services.TryAddSingleton<ILanguageService, LanguageService>();
+        services.TryAddSingleton<UICLanguageService, LanguageService>();
 
         config(configuration);
 
@@ -48,7 +48,7 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorGroup>(serviceCollection);
         configOptions.AddDefaultPropertyGenerators(serviceCollection);
         configOptions.AddDefaultButtons(serviceCollection);
-
+        configOptions.AddAndRegisterGenerator<UICGeneratorRequired>(serviceCollection);
 
         return configOptions;
 

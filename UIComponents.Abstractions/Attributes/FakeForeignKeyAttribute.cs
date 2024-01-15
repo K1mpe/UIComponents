@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace UIComponents.Abstractions.Attributes
 {
-    /// <summary>
-    /// Used for cdc-Grid to replace id with items
-    /// </summary>
     public class FakeForeignKeyAttribute : Attribute
     {
         public FakeForeignKeyAttribute(Type type, bool isRequired = true)

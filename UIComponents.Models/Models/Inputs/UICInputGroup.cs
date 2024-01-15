@@ -17,7 +17,7 @@ public class UICInputGroup : UIComponent, IUISingleRowSupport
     #region Ctor
     public UICInputGroup() : base()
     {
-
+        RenderConditions.Add(() => Input.HasValue());
     }
     public UICInputGroup(ITranslateable label, UICInput input) : this(new UICLabel(label), input)
     {

@@ -8,7 +8,7 @@ using UIComponents.Abstractions.Interfaces.ExternalServices;
 
 namespace UIComponents.Generators.Services
 {
-    internal class LanguageService : ILanguageService
+    internal class LanguageService : UICLanguageService
     {
         public Task<string> Translate(ITranslateable translationModel)
         {

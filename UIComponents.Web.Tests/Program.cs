@@ -20,10 +20,23 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
 
 // Add optimizer to minify CSS and JavaScript files at runtime.
+
+
+builder.Services.AddUIComponentWeb(config =>
+{
+
+    UIComponents.Defaults.Colors.DefaultColor = new UICColor("Secondary");
+    UIComponents.Defaults.Colors.ButtonDefault = new UICColor("Secondary");
+    UIComponents.Defaults.Colors.ButtonSave = new UICColor("Primary");
+    UIComponents.Defaults.OptionDefaults.ReverseButtonOrder = false;
+    config.AddDefaultGenerators(builder.Services);
+});
+
+
 builder.Services.AddWebOptimizer(pipeline =>
 {
     var inProduction = builder.Environment.IsProduction();
-    if (inProduction ||true )
+    if (inProduction || true)
     {
         pipeline.MinifyHtmlFiles();
         pipeline.MinifyCssFiles();
@@ -36,17 +49,6 @@ builder.Services.AddWebOptimizer(pipeline =>
     var options = new WebOptimizer.Sass.WebOptimizerScssOptions { MinifyCss = inProduction };
     pipeline.CompileScssFiles(options);
 });
-
-builder.Services.AddUIComponentWeb(config =>
-{
-
-    UIComponents.Defaults.Colors.DefaultColor = new UICColor("Secondary");
-    UIComponents.Defaults.Colors.ButtonDefault = new UICColor("Secondary");
-    UIComponents.Defaults.Colors.ButtonSave = new UICColor("Primary");
-    UIComponents.Defaults.OptionDefaults.ReverseButtonOrder = false;
-    config.AddDefaultGenerators(builder.Services);
-});
-
 var app = builder.Build();
 app.UseWebOptimizer();
 

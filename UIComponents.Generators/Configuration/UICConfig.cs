@@ -22,15 +22,15 @@ public class UICConfig
 
     public ButtonGenerator ButtonGenerators { get; }
 
-    public ILanguageService LanguageService
+    public UICLanguageService LanguageService
     {
         get
         {
-            return _serviceProvider.GetService<ILanguageService>();
+            return _serviceProvider.GetService<UICLanguageService>();
         }
     }
 
-    public IPermissionCurrentUserService? PermissionService
+    public UICPermissionService? PermissionService
     {
         get
         {
@@ -44,17 +44,17 @@ public class UICConfig
                 return null;
             }
             
-            return (IPermissionCurrentUserService?)_serviceProvider.GetService(_options.PermissionServiceType);
+            return (UICPermissionService?)_serviceProvider.GetService(_options.PermissionServiceType);
         }
     }
 
 
-    public bool TryGetLanguageService(out ILanguageService? languageService)
+    public bool TryGetLanguageService(out UICLanguageService? languageService)
     {
         languageService = LanguageService;
         return languageService != null;
     }
-    public bool TryGetPermissionService(out IPermissionCurrentUserService? permissionService)
+    public bool TryGetPermissionService(out UICPermissionService? permissionService)
     {
         permissionService = PermissionService;
         return permissionService != null;
