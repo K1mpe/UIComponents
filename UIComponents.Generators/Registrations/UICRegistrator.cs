@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.ComponentModel.Design;
+using UIComponents.Abstractions.Interfaces.ExternalServices;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Generators.FormButtons;
 using UIComponents.Generators.Generators.Property.Inputs;
@@ -24,6 +25,7 @@ public static class UICConfigure
         services.TryAddScoped<IUIComponentService, UICService>();
         services.TryAddSingleton<UICConfigOptions>(configuration);
         services.TryAddScoped<UICConfig>();
+        services.TryAddSingleton<ILanguageService, LanguageService>();
 
         config(configuration);
 

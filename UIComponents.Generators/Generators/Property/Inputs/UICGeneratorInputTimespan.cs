@@ -8,6 +8,7 @@ public class UICGeneratorInputTimespan : UICGeneratorProperty
 
     public UICGeneratorInputTimespan()
     {
+        RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         UICPropertyType = Abstractions.Attributes.UICPropertyType.Timespan;
         HasExistingResult= false;
     }

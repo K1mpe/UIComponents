@@ -12,5 +12,5 @@ public class UICSpanAttribute : Attribute
 		TranslationModel = new TranslationModel(defaultText, translationKey);
 	}
 
-	public ITranslationModel TranslationModel { get; init; }
+	public ITranslateable TranslationModel { get; init; }
 }

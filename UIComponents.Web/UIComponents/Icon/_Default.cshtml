@@ -1,9 +1,0 @@
-﻿@model UICIcon
-
-@{
-    Model.AddAttribute("class", Model.Icon);
-
-    if (Model.Color.HasValue)
-        Model.AddAttribute("class", $"text-{Model.Color.Value.ToLower()}");
-}
-<i @Html.Raw(Model.GetHtmlAttributes())></i>

@@ -26,6 +26,12 @@ public class UICGeneratorGroup : UICGeneratorProperty
             group.Components.Add(await args.Configuration.GetChildComponentAsync(args.ClassObject, prop, args.Options, cc));
         }
 
+        if(args.Options.InputGroupSingleRow)
+        {
+            var singleRow = new UICSingleRow(group.Components.ToList());
+            group.Components.Clear();
+            group.Components.Add(singleRow);
+        }
 
 
         return new UICGeneratorResponseSuccess<IUIComponent>(group, true);

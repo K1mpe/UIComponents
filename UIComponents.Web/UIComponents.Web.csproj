@@ -4,6 +4,10 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+	<Title>UIComponents.Web</Title>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Version>0.0.1</Version>
   </PropertyGroup>
 	
   <ItemGroup>
@@ -11,13 +15,21 @@
 	  <EmbeddedResource Include="Views\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="Root\**" Pack="true" />
   </ItemGroup>
-
+	
   <ItemGroup>
-    <Content Remove="Views\_Imports.cshtml" />
+    <Compile Remove="UIComponents\Form\**" />
+    <Content Remove="UIComponents\Form\**" />
+    <EmbeddedResource Remove="UIComponents\Form\**" />
+    <None Remove="UIComponents\Form\**" />
   </ItemGroup>
+
+  <!--<ItemGroup>
+    <Content Remove="Views\_Imports.cshtml" />
+  </ItemGroup>-->
 
   <ItemGroup>
     <None Remove="Root\css\uic.scss" />
+    <None Remove="Root\js\modal.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,13 +44,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="UIComponents\Group\Div.cshtml">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Css\" />
+    <None Include="UIComponents\ActionCloseCard\Default.cshtml" />
+    <None Include="UIComponents\ActionCompareObjects\Default.cshtml" />
+    <None Include="UIComponents\Actions\Default.cshtml" />
+    <None Include="UIComponents\Custom\Default.cshtml" />
+    <None Include="UIComponents\Group\ContentOnly.cshtml" />
+    <None Include="UIComponents\Group\Div.cshtml" />
+    <None Include="UIComponents\Icon\Default.cshtml" />
+    <None Include="UIComponents\InputGroup\Default.cshtml" />
+    <None Include="UIComponents\InputGroup\Grid.cshtml" />
+    <None Include="UIComponents\InputText\Default.cshtml" />
+    <None Include="UIComponents\Label\Default.cshtml" />
+    <None Include="UIComponents\SingleRow\Default.cshtml" />
+    <None Include="UIComponents\Span\Default.cshtml" />
   </ItemGroup>
 
  

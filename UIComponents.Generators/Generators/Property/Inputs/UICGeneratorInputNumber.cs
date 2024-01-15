@@ -10,6 +10,7 @@ public class UICGeneratorInputNumber : UICGeneratorProperty
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult = false;
+        UICPropertyType = Abstractions.Attributes.UICPropertyType.Number;
     }
 
     public override double Priority { get; set; } = 1000;

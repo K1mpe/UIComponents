@@ -202,16 +202,16 @@ public static class GeneratorHelper
         };
     }
 
-    public static UICCustomGenerator<UICPropertyArgs, ITranslationModel> PropertyToolTip(string name, double priority, Func<UICPropertyArgs, ITranslationModel?, Task<IUICGeneratorResponse<ITranslationModel>>> func)
+    public static UICCustomGenerator<UICPropertyArgs, ITranslateable> PropertyToolTip(string name, double priority, Func<UICPropertyArgs, ITranslateable?, Task<IUICGeneratorResponse<ITranslateable>>> func)
     {
-        return new UICCustomGenerator<UICPropertyArgs, ITranslationModel>()
+        return new UICCustomGenerator<UICPropertyArgs, ITranslateable>()
         {
             Name = name,
             Priority = priority,
             GetResult = async (args, existing) =>
             {
                 if(args.CallCollection.CurrentCallType != UICGeneratorPropertyCallType.PropertyTooltip)
-                    return Next<ITranslationModel>();
+                    return Next<ITranslateable>();
 
                 return await func(args, existing);
             }
@@ -272,6 +272,14 @@ public static class GeneratorHelper
     {
         return new UICGeneratorResponseNext<T>();
     }
+    public static UICGeneratorResponseNext<IUIComponent> Next()
+    {
+        return Next<IUIComponent>();
+    }
+    public static Task<UICGeneratorResponseNext<IUIComponent>> NextAsync()
+    {
+        return Task.FromResult(Next<IUIComponent>());
+    }
 
     /// <summary>
     /// A generator response that has successfully generated a response
@@ -282,6 +290,14 @@ public static class GeneratorHelper
     public static UICGeneratorResponseSuccess<T> Success<T>(T result, bool allowContinue)
     {
         return new UICGeneratorResponseSuccess<T>(result, allowContinue);
+    }
+    public static UICGeneratorResponseSuccess<IUIComponent> Success(IUIComponent result, bool allowContinue)
+    {
+        return Success<IUIComponent>(result, allowContinue);
+    }
+    public static Task<UICGeneratorResponseSuccess<IUIComponent>> SuccessAsync(IUIComponent result, bool allowContinue)
+    {
+        return Task.FromResult(Success(result, allowContinue));
     }
 
     public enum ButtonType

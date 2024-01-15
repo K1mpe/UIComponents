@@ -96,7 +96,7 @@ public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScr
 
     public static string DefaultIdentifier(string UICType, object renderer = null)
     {
-        return $"/Views/Shared/Components/UIComponent/{UICType}/_{renderer ?? "Default"}";
+        return $"/UIComponents/{UICType}/{renderer ?? "Default"}";
     }
 
     #endregion

@@ -8,7 +8,7 @@ namespace UIComponents.Generators.Generators.Property;
 /// <summary>
 /// Create a tooltip based on the <see cref="UICTooltipAttribute"/>
 /// </summary>
-public class UICGeneratorTooltip : UICGeneratorBase<UICPropertyArgs, ITranslationModel>
+public class UICGeneratorTooltip : UICGeneratorBase<UICPropertyArgs, ITranslateable>
 {
 
     public UICGeneratorTooltip()
@@ -17,24 +17,24 @@ public class UICGeneratorTooltip : UICGeneratorBase<UICPropertyArgs, ITranslatio
 
     public override double Priority { get; set; } = 1000;
 
-    public override async Task<IUICGeneratorResponse<ITranslationModel>> GetResponseAsync(UICPropertyArgs args, ITranslationModel? existingResult)
+    public override async Task<IUICGeneratorResponse<ITranslateable>> GetResponseAsync(UICPropertyArgs args, ITranslateable? existingResult)
     {
         if (args.PropertyInfo == null)
-            return GeneratorHelper.Next<ITranslationModel>();
+            return GeneratorHelper.Next<ITranslateable>();
 
         if (args.CallCollection.CurrentCallType != UICGeneratorPropertyCallType.PropertyTooltip)
-            return GeneratorHelper.Next<ITranslationModel>();
+            return GeneratorHelper.Next<ITranslateable>();
 
         if (existingResult != null)
-            return GeneratorHelper.Next<ITranslationModel>();
+            return GeneratorHelper.Next<ITranslateable>();
 
         var tooltipAttr = args.PropertyInfo.GetCustomAttribute<UICTooltipAttribute>();
         if (tooltipAttr != null)
         {
-            return GeneratorHelper.Success<ITranslationModel>(tooltipAttr.TranslationModel, true);
+            return GeneratorHelper.Success<ITranslateable>(tooltipAttr.TranslationModel, true);
         }
 
         await Task.Delay(0);
-        return GeneratorHelper.Next<ITranslationModel>();
+        return GeneratorHelper.Next<ITranslateable>();
     }
 }

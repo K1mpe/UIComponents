@@ -2,7 +2,7 @@
 
 public interface IUITabCard : IUIComponent
 {
-    public ITranslationModel Title { get; set; }
+    public ITranslateable Title { get; set; }
 
     public IColor? HeaderColor { get; }
 }

@@ -11,6 +11,7 @@ public class UICGeneratorInputText : UICGeneratorProperty
     public UICGeneratorInputText()
     {
         UICPropertyType = Abstractions.Attributes.UICPropertyType.String;
+        RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult= false;
     }
     public override double Priority { get; set; }

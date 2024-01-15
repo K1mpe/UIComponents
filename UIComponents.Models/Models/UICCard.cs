@@ -29,7 +29,7 @@ public class UICCard : UIComponent, IUITabCard, IUICHasChildren<IUIComponent>
     /// <summary>
     /// Title for this card (hides header if no header is selected
     /// </summary>
-    public ITranslationModel Title { get; set; }
+    public ITranslateable Title { get; set; }
 
     public IColor? HeaderColor { get; set; } = Colors.CardHeaderDefault;
 

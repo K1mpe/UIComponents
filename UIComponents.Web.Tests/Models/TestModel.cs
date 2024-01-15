@@ -10,9 +10,8 @@ namespace UIComponents.Web.Tests.Models
 {
     public class TestModel
     {
-        [UICSpan("Test", "Dit is een test")]
+        [UICTooltip("Test", "Dit is een test")]
         public string TestString { get; set; }  
 
-        public DateTime Date { get; set; } = DateTime.Now;
     }
 }

@@ -22,21 +22,11 @@ public class UICConfig
 
     public ButtonGenerator ButtonGenerators { get; }
 
-    public ILanguageService? LanguageService
+    public ILanguageService LanguageService
     {
         get
         {
-            if (!_options.CheckLanguageServiceType)
-                return null;
-
-            if (_options.LanguageServiceType == null)
-            {
-                _logger.LogError($"There is no {nameof(ILanguageService)} provided in {nameof(UICConfigOptions)}. Assign a {nameof(ILanguageService)} or set {nameof(UICConfigOptions)}.{nameof(UICConfigOptions.CheckLanguageServiceType)} to false");
-                _options.CheckLanguageServiceType = false;
-                return null;
-            }
-
-            return (ILanguageService?)_serviceProvider.GetService(_options.LanguageServiceType);
+            return _serviceProvider.GetService<ILanguageService>();
         }
     }
 
@@ -162,9 +152,9 @@ public class UICConfig
         return GetGeneratedResultAsync<IUIComponent, UICSpan>(UICGeneratorPropertyCallType.PropertyGroupSpan, caller, args);
     }
 
-    public Task<ITranslationModel?> GetToolTipAsync(UICPropertyArgs args, IUIComponent caller)
+    public Task<ITranslateable?> GetToolTipAsync(UICPropertyArgs args, IUIComponent caller)
     {
-        return GetGeneratedResultAsync<ITranslationModel?>(UICGeneratorPropertyCallType.PropertyTooltip, caller, args);
+        return GetGeneratedResultAsync<ITranslateable?>(UICGeneratorPropertyCallType.PropertyTooltip, caller, args);
     }
 
     /// <summary>
@@ -186,6 +176,8 @@ public class UICConfig
 
     public static string ClassAndPropertyString(PropertyInfo propertyInfo)
     {
+        if (propertyInfo == null)
+            return string.Empty;
         return $"{propertyInfo.DeclaringType?.Name} => {propertyInfo.Name}";
     }
 

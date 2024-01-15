@@ -13,3 +13,23 @@
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
+
+@inject ILanguageService L
+@model UICLabel
+@{
+    string labelText = await L.Translate(Model.LabelText);
+
+
+}
+<label @Html.Raw(Model.GetHtmlAttributes())>
+    @Html.JsEncode(labelText)
+    @if (Model.Required)
+    {
+        <span class="text-danger" title="@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(labelText), null)">*</span>
+    }
+    @if(!string.IsNullOrWhiteSpace(Model.GetAttribute("title")))
+    {
+        @await Model.TooltipIcon.InvokeAsync(Component)
+    }
+        
+</label>

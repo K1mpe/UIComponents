@@ -10,6 +10,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
     {
         UICPropertyType = Abstractions.Attributes.UICPropertyType.SelectList;
         HasExistingResult = false;
+        RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
     }
 
     public override double Priority { get; set; } = 1000;

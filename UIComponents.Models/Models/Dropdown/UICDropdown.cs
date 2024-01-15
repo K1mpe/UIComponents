@@ -16,7 +16,7 @@ public class UICDropdown : UIComponent
         DropdownItems = dropdownItems ?? new();
     }
 
-    public UICDropdown(ITranslationModel dropdownText, List<IDropdownItem> dropdownItems = null)
+    public UICDropdown(ITranslateable dropdownText, List<IDropdownItem> dropdownItems = null)
     {
         Button = new UICButton(dropdownText);
         DropdownItems = dropdownItems ?? new();

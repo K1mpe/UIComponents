@@ -1,3 +1,4 @@
+
 using UIComponents.Abstractions.Interfaces.ExternalServices;
 using UIComponents.Generators.Registrations;
 using UIComponents.Web.Extensions;
@@ -14,13 +15,11 @@ builder.Host.ConfigureLogging(logging =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<ILanguageService, LanguageService>();
 
 builder.Services.AddMvc();
 
-builder.Services.AddWebComponents(config =>
+builder.Services.AddUIComponentWeb(config =>
 {
-    config.SetLanguageService(typeof(LanguageService));
     config.AddDefaultGenerators(builder.Services);
 });
 

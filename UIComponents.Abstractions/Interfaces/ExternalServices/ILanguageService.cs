@@ -2,5 +2,5 @@
 
 public interface ILanguageService
 {
-    Task<string> Translate(ITranslationModel translationModel);
+    Task<string> Translate(ITranslateable translationModel);
 }

@@ -9,15 +9,16 @@
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
 
-@model UICGroup
+@model UICActionCloseCard
 
 @{
-    Model.AssignCollectionForChildren();
+    string identifier = Model.GetAttribute("identifier");
+    if (string.IsNullOrEmpty(identifier))
+        identifier = Model.GetAttribute("formidentifier");
+    if(string.IsNullOrEmpty(identifier))
+        throw new Exception("Identifier for Actions not defined");
 }
-<div @Html.Raw(Model.GetHtmlAttributes())>
-@foreach(var element in Model.Components)
-{
-    @await element.InvokeAsync(Component)
+
+if(!uic.modal.closeParent($('@identifier'))){
+    @await Model.OnFailed.InvokeAsync(Component)
 }
-</div>
-@await Model.RenderStylesAndScripts(Component)

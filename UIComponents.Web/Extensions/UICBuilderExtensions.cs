@@ -9,7 +9,14 @@ namespace UIComponents.Web.Extensions;
 
 public static class UICBuilderExtensions
 {
-    public static IServiceCollection AddWebComponents(this IServiceCollection services, Action<UICConfigOptions> config)
+
+    /// <summary>
+    /// Required for adding web elements for UICComponents. This method already includes <see cref="UIComponents.Generators.Registrations.UICConfigure.AddUIComponent(IServiceCollection, Action{UICConfigOptions})"/>
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="config"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddUIComponentWeb(this IServiceCollection services, Action<UICConfigOptions> config)
     {
         services.AddMvcCore()
         .AddRazorRuntimeCompilation(options =>

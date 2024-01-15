@@ -23,7 +23,7 @@ public class UICGeneratorForm : UICGeneratorProperty
         if (args.Options.FormReadonly)
             return GeneratorHelper.Next<IUIComponent>();
 
-        if(!args.CallCollection.Components.Any(x=>x.GetType().IsAssignableTo(typeof(UICForm))))
+        if(args.CallCollection.Components.Any(x=>x.GetType().IsAssignableTo(typeof(UICForm))))
             return GeneratorHelper.Next<IUIComponent>();
 
         if (args.Configuration.TryGetPermissionService(out var permissionService))

@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Abstractions;
 
-public partial class TranslationModel : ITranslationModel
+public partial class TranslationModel : ITranslateable
 {
     public TranslationModel() { }
     public TranslationModel(string resourceKey, string defaultValue = null, params object[] args)
@@ -28,7 +28,7 @@ public partial class TranslationModel : ITranslationModel
 }
 
 /// <summary>
-/// This is a override on ITranslationModel that will not create a new resourceKey
+/// This is a override on ITranslateable that will not create a new resourceKey
 /// </summary>
 public class Untranslated : TranslationModel
 {

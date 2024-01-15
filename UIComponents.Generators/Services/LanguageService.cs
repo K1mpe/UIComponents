@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
 
-namespace UIComponents.Web.Tests.Services
+namespace UIComponents.Generators.Services
 {
-    public class LanguageService2 : ILanguageService
+    internal class LanguageService : ILanguageService
     {
         public Task<string> Translate(ITranslateable translationModel)
         {
-            return Task.FromResult("Blub");
+            if (translationModel == null)
+                return Task.FromResult(string.Empty);
             if (string.IsNullOrEmpty(translationModel.DefaultValue))
                 return Task.FromResult(translationModel.ResourceKey.Split(".").Last());
 

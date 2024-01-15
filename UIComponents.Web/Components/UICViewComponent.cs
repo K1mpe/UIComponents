@@ -22,7 +22,7 @@ public class UICViewComponent : ViewComponent
         if (element.TryGetPropertyValue<bool>(nameof(UIComponent.Render), out bool render))
         {
             if (!render)
-                return View($"/Views/Shared/Components/UIComponent/_NoRender.cshtml", element);
+                return View($"/UIComponents/NoRender.cshtml", element);
         }
 
         if (element is UIComponent UIC)
@@ -31,10 +31,10 @@ public class UICViewComponent : ViewComponent
                 UIC.AddAttribute("hidden", "true");
             if(_uicConfig.TryGetLanguageService(out var languageService))
             {
-                if (UIC.TryGetPropertyValue<ITranslationModel>("Tooltip", out ITranslationModel tooltip))
+                if (UIC.TryGetPropertyValue<ITranslateable>("Tooltip", out ITranslateable tooltip) && tooltip != null)
                     UIC.AddAttribute("title", await languageService.Translate(tooltip));
 
-                if (UIC.TryGetPropertyValue<ITranslationModel>(nameof(UICInput<string>.Placeholder), out ITranslationModel placeholder))
+                if (UIC.TryGetPropertyValue<ITranslateable>(nameof(UICInput<string>.Placeholder), out ITranslateable placeholder))
                     UIC.AddAttribute("placeholder", await languageService.Translate(placeholder));
             }
             

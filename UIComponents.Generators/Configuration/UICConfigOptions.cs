@@ -12,8 +12,7 @@ public partial class UICConfigOptions
 
     private List<IUICGenerator> _generators= new();
     private List<Type> _generatorTypes= new();
-        
-    
+
     #endregion
 
     #region Ctor
@@ -139,18 +138,6 @@ public partial class UICConfigOptions
     #endregion
 
     #region Set Services
-    public UICConfigOptions SetLanguageService(Type languageServiceType)
-    {
-        InternalGeneratorHelper.CheckType<ILanguageService>(languageServiceType);
-
-        LanguageServiceType= languageServiceType;
-        return this;
-    }
-    public UICConfigOptions SetLanguageService<T>() where T: class, ILanguageService
-    {
-        LanguageServiceType = typeof(T);
-        return this;
-    }
 
     public UICConfigOptions SetPermissionService(Type permissionServiceType)
     {

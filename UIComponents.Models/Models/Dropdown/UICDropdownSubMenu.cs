@@ -8,7 +8,7 @@ public class UICDropdownSubMenu : UICDropdownItem
 
     }
 
-    public UICDropdownSubMenu(ITranslationModel content, List<IDropdownItem> items) : base(content, null)
+    public UICDropdownSubMenu(ITranslateable content, List<IDropdownItem> items) : base(content, null)
     {
         Items = items ?? new();
     }

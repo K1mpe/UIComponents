@@ -4,18 +4,18 @@ namespace UIComponents.Models.Defaults;
 
 public static class TranslationDefaults
 {
-    public static ITranslationModel ButtonEdit = new TranslationModel("Button.Edit");
-    public static ITranslationModel ButtonReadonly = new TranslationModel("Button.Readonly");
+    public static ITranslateable ButtonEdit = new TranslationModel("Button.Edit");
+    public static ITranslateable ButtonReadonly = new TranslationModel("Button.Readonly");
 
-    public static ITranslationModel ButtonCreate = new TranslationModel("Button.Create");
-    public static Func<Type, ITranslationModel> ButtonCreateTooltip = (type) => new TranslationModel("Button.Create.Tooltip", "Create a new {0}", TranslateType(type));
+    public static ITranslateable ButtonCreate = new TranslationModel("Button.Create");
+    public static Func<Type, ITranslateable> ButtonCreateTooltip = (type) => new TranslationModel("Button.Create.Tooltip", "Create a new {0}", TranslateType(type));
 
-    public static ITranslationModel ButtonSave = new TranslationModel("Button.Save");
+    public static ITranslateable ButtonSave = new TranslationModel("Button.Save");
 
-    public static ITranslationModel ButtonCancel = new TranslationModel("Button.Cancel");
+    public static ITranslateable ButtonCancel = new TranslationModel("Button.Cancel");
 
-    public static ITranslationModel ButtonDelete = new TranslationModel("Button.Delete");
-    public static Func<object, ITranslationModel> ButtonDeleteToolTip = (obj) => new TranslationModel("Button.Delete.Tooltip", "Delete this {0}", TranslateObject(obj));
+    public static ITranslateable ButtonDelete = new TranslationModel("Button.Delete");
+    public static Func<object, ITranslateable> ButtonDeleteToolTip = (obj) => new TranslationModel("Button.Delete.Tooltip", "Delete this {0}", TranslateObject(obj));
 
 
     /// <summary>
@@ -25,12 +25,12 @@ public static class TranslationDefaults
     /// Type: the type of the enum
     /// string: the value of this enum as string
     /// </remarks>
-    public static Func<Type, string, ITranslationModel> TranslateEnums = (type, value) => new TranslationModel($"Enum.{type.Name}.{value}");
+    public static Func<Type, string, ITranslateable> TranslateEnums = (type, value) => new TranslationModel($"Enum.{type.Name}.{value}");
 
     /// <summary>
-    /// A Function that creates a ITranslationModel for a object
+    /// A Function that creates a ITranslateable for a object
     /// </summary>
-    public static Func<object, ITranslationModel> TranslateObject = (obj) =>
+    public static Func<object, ITranslateable> TranslateObject = (obj) =>
     {
         string toString = obj.ToString();
         if (toString != obj.GetType().FullName)
@@ -43,7 +43,7 @@ public static class TranslationDefaults
         return translatedType;
     };
 
-    public static Func<PropertyInfo, UICPropertyType, ITranslationModel> TranslateProperty = (prop, uicPropType) =>
+    public static Func<PropertyInfo, UICPropertyType, ITranslateable> TranslateProperty = (prop, uicPropType) =>
     {
         if (uicPropType == UICPropertyType.SelectList && prop.Name.EndsWith("Id") && prop.Name != "Id")
             return new TranslationModel($"{prop.DeclaringType!.Name}.Field.{prop.Name.Substring(0, prop.Name.Length - 2)}");
@@ -51,7 +51,14 @@ public static class TranslationDefaults
         return new TranslationModel($"{prop.DeclaringType!.Name}.Field.{prop.Name}");
     };
 
-    public static Func<Type, ITranslationModel> TranslateType = (type) => new TranslationModel(type.Name);
+    public static Func<Type, ITranslateable> TranslateType = (type) => new TranslationModel(type.Name);
 
-    public static Func<string, ITranslationModel> ValidationIsRequired = (propertyName) => new TranslationModel("Validation.Required", "{0} is required", propertyName);
+
+    public static Func<string, ITranslateable> ValidationIsRequired = (translatedPropertyName) => new TranslationModel("Validation.Required", "{0} is required", translatedPropertyName);
+
+    public static Func<string, int, ITranslateable> ValidateMinLength = (translatedPropertyName, minLenght) => new TranslationModel("Validation.MinLength", "The value of {0} must be longer than {1}", translatedPropertyName, minLenght);
+    public static Func<string, int, ITranslateable> ValidateMaxLength = (translatedPropertyName, maxLength) => new TranslationModel("Validation.MaxLength", "The value of {0} must be shorter than {1}", translatedPropertyName, maxLength);
+    public static Func<string, object, ITranslateable> ValidateMinValue = (translatedPropertyName, minValue) => new TranslationModel("Validation.MinValue", "The value of {0} must be higher than or equal to {1}", translatedPropertyName, minValue);
+    public static Func<string, object, ITranslateable> ValidateMaxValue = (translatedPropertyName, maxValue) => new TranslationModel("Validation.MaxValue", "The value of {0} must be lower or equal to {1}", translatedPropertyName, maxValue);
+    
 }
