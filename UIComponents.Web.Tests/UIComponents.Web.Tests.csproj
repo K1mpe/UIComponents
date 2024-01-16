@@ -23,6 +23,18 @@
   <ItemGroup>
     <None Include="Views\Shared\Components\UIComponent\InputGroup\_Default.cshtml" />
     <None Include="Views\Shared\Components\UIComponent\InputText\_Default.cshtml" />
+    <None Include="wwwroot\lib\select2\js\i18n\de.js" />
+    <None Include="wwwroot\lib\select2\js\i18n\de.min.js" />
+    <None Include="wwwroot\lib\select2\js\i18n\en.js" />
+    <None Include="wwwroot\lib\select2\js\i18n\en.min.js" />
+    <None Include="wwwroot\lib\select2\js\i18n\fr.js" />
+    <None Include="wwwroot\lib\select2\js\i18n\fr.min.js" />
+    <None Include="wwwroot\lib\select2\js\i18n\nl.js" />
+    <None Include="wwwroot\lib\select2\js\i18n\nl.min.js" />
+    <None Include="wwwroot\lib\select2\js\select2.full.js" />
+    <None Include="wwwroot\lib\select2\js\select2.full.min.js" />
+    <None Include="wwwroot\lib\select2\js\select2.js" />
+    <None Include="wwwroot\lib\select2\js\select2.min.js" />
   </ItemGroup>
 
 </Project>

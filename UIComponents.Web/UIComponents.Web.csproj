@@ -18,6 +18,7 @@
 	
   <ItemGroup>
     <Content Remove="UIComponents\ActionGetValue\Default.cshtml" />
+    <Content Remove="UIComponents\InputSelectlist\Select2.cshtml" />
   </ItemGroup>
 
   <!--<ItemGroup>
@@ -26,6 +27,7 @@
 
   <ItemGroup>
     <None Remove="Root\css\uic.scss" />
+    <None Remove="Root\js\delayedAction.js" />
     <None Remove="Root\js\getpost.js" />
     <None Remove="Root\js\modal.js" />
   </ItemGroup>

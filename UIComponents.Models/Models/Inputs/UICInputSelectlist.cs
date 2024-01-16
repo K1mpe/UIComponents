@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
 
 namespace UIComponents.Models.Models.Inputs;
@@ -7,7 +8,16 @@ public class UICInputSelectlist : UICInput<string>
 {
     #region Fields
     public override bool HasClientSideValidation => ValidationRequired;
-
+    public override string RenderLocation
+    { 
+        get
+        {
+            var renderer = Renderer;
+            if (SearchableIfMinimimResults<= SelectListItems.Count)
+                renderer = SelectListRenderer.Select2;
+            return this.CreateDefaultIdentifier(renderer);
+        }
+    }
     #endregion
 
     #region Ctor
@@ -24,9 +34,12 @@ public class UICInputSelectlist : UICInput<string>
     #region Properties
 
     /// <summary>
-    /// Get a searchfield inside the selectlist
+    /// Get a searchfield inside the if there are at least this numer of selectlistitems.
     /// </summary>
-    public bool Searchable { get; set; }
+    /// <remarks>
+    /// 0 => always on
+    /// <br> -1 => never on</br></remarks>
+    public int SearchableIfMinimimResults { get; set; } = -1;
 
     /// <summary>
     /// If the user has permission, show a button to add a item
@@ -47,5 +60,14 @@ public class UICInputSelectlist : UICInput<string>
     /// Action that is triggered on opening the selectlist
     /// </summary>
     public IUIAction? OnListOpen { get; set; }
+
+    public SelectListRenderer Renderer { get; set; } = SelectListRenderer.Select2;
     #endregion
+
+
+    public enum SelectListRenderer
+    {
+        Default,
+        Select2
+    }
 }

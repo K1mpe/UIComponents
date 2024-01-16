@@ -24,7 +24,8 @@ namespace UIComponents.Web.Tests.Controllers
             var testModel = new TestModel();
             var component = await _uic.CreateComponentAsync(testModel, new()
             {
-                CheckboxRenderer = UIComponents.Models.Models.Inputs.CheckboxRenderer.ToggleSwitch
+                CheckboxRenderer = UIComponents.Models.Models.Inputs.CheckboxRenderer.ToggleSwitch,
+                SelectlistSearableForItems = 2
             });
             component.FindFirstChildOnType<UICInputText>().Placeholder = new TranslationModel("blub");
             return View("ComponentRender", component);

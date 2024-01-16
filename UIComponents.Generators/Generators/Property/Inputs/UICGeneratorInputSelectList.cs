@@ -23,7 +23,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
         input.Placeholder = new TranslationModel("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));
         input.SelectListItems = await args.Configuration.GetSelectListItems(args, input)?? new();
 
-        input.Searchable = input.SelectListItems.Count > args.Options.SelectlistSearableForItems;
+        input.SearchableIfMinimimResults = args.Options.SelectlistSearableForItems;
 
         return GeneratorHelper.Success<IUIComponent>(input, true);
         
