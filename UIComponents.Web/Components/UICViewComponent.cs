@@ -9,7 +9,7 @@ public class UICViewComponent : ViewComponent
 {
     private readonly UICConfig _uicConfig;
 
-    public UICViewComponent(IUICLanguageService languageService, UICConfig uicConfig)
+    public UICViewComponent(IUicLanguageService languageService, UICConfig uicConfig)
     {
         _uicConfig = uicConfig;
     }

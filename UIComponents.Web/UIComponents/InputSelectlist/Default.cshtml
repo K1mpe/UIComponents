@@ -1,0 +1,104 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@inject IUicLanguageService L
+
+@model UICInputSelectlist
+
+@{
+    Model.AddAttribute("class", "form-control");
+
+
+    string id = Model.GetOrGenerateId();
+
+    if (!string.IsNullOrEmpty(Model.Value))
+        Model.AddAttribute("value", Model.Value);
+
+    Model.Actions.SetIdentifier($"#{id}");
+
+    if (Model.Readonly)
+        Model.AddAttribute("class", "form-control-plaintext");
+
+
+Model.AddScript(
+@<text>
+    $('#@id').on('uic-help', ()=>{
+        console.log("$('#@id').on('uic-open', ()=>{...}) Triggered when opening the selectlist");
+    });
+    $('#@id').on('setValue', function (event, value) {
+        $(this).val(value).change();
+    });
+
+    $('#@id').on('focus', ()=>{
+        $('#@id').trigger('uic-open');
+    });
+
+    @if (Model.HasClientSideValidation)
+    {
+
+        string propertyName = Model.PropertyName;
+        if (Model.DisplayName != null)
+            propertyName = await L.Translate(Model.DisplayName);
+
+    <text>
+        function validateInput(element) {
+        var currentValue = element.val();
+        var span = element.parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+        span.text("");
+
+
+        @if (Model.ValidationRequired)
+        {
+        <text>
+            if (currentValue == null || currentValue =='')
+            span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+        </text>
+        }
+    }
+
+    $('#@id').change(function () {
+        validateInput($(this));
+    });
+    $('#@id').blur(function () {
+        validateInput($(this));
+    });
+    </text>
+    }
+</text>);
+}
+
+<select @Html.Raw(Model.GetHtmlAttributes())>
+    @if (Model.Placeholder != null)
+    {
+            <option disabled hidden selected>@await Html.Translate(L, Model.Placeholder, null)</option>
+    }
+    @if (Model.SelectListItems.Any())
+    {
+
+        
+
+        foreach (var item in Model.SelectListItems)
+        {
+            <option value="@item.Value" @(item.Disabled?"Disabled":"")>@item.Text</option>
+        }
+    }
+    else if(Model.NoItemsText != null)
+    {
+        <option disabled>@await Html.Translate(L, Model.NoItemsText, null)</option>
+    }
+</select>
+
+@await Model.Actions.InvokeAsync(Component)

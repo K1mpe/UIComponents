@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using UIComponents.Abstractions;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Generators.Interfaces;
+using UIComponents.Models.Models.Inputs;
 using UIComponents.Web.Tests.Models;
 
 namespace UIComponents.Web.Tests.Controllers
@@ -23,6 +26,7 @@ namespace UIComponents.Web.Tests.Controllers
             {
                 CheckboxRenderer = UIComponents.Models.Models.Inputs.CheckboxRenderer.ToggleSwitch
             });
+            component.FindFirstChildOnType<UICInputText>().Placeholder = new TranslationModel("blub");
             return View("ComponentRender", component);
         }
 

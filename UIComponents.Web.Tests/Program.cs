@@ -29,9 +29,9 @@ builder.Services.AddUIComponentWeb(config =>
     UIComponents.Defaults.Colors.ButtonDefault = new UICColor("Secondary");
     UIComponents.Defaults.Colors.ButtonSave = new UICColor("Primary");
     UIComponents.Defaults.OptionDefaults.ReverseButtonOrder = false;
+    
     config.AddDefaultGenerators(builder.Services);
 });
-
 
 builder.Services.AddWebOptimizer(pipeline =>
 {

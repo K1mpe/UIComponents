@@ -25,7 +25,7 @@ public static class UICConfigure
         services.TryAddScoped<IUIComponentService, UICService>();
         services.TryAddSingleton<UICConfigOptions>(configuration);
         services.TryAddScoped<UICConfig>();
-        services.TryAddSingleton<IUICLanguageService, LanguageService>();
+        services.TryAddSingleton<IUicLanguageService, LanguageService>();
 
         config(configuration);
 

@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>0.0.1</Version>
+	<Version>0.0.2</Version>
   </PropertyGroup>
 	
   <ItemGroup>
@@ -66,6 +66,8 @@
     <None Include="UIComponents\InputDatetime\Default.cshtml" />
     <None Include="UIComponents\InputGroup\Default.cshtml" />
     <None Include="UIComponents\InputGroup\Grid.cshtml" />
+    <None Include="UIComponents\InputSelectListSource\Default.cshtml" />
+    <None Include="UIComponents\InputSelectlist\Default.cshtml" />
     <None Include="UIComponents\InputText\Default.cshtml" />
     <None Include="UIComponents\InputTimespan\Default.cshtml" />
     <None Include="UIComponents\Label\Default.cshtml" />

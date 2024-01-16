@@ -61,5 +61,6 @@ public static class TranslationDefaults
     public static Func<string, int, ITranslateable> ValidateMaxLength = (translatedPropertyName, maxLength) => new TranslationModel("Validation.MaxLength", "The value of {0} must be shorter than {1}", translatedPropertyName, maxLength);
     public static Func<string, object, ITranslateable> ValidateMinValue = (translatedPropertyName, minValue) => new TranslationModel("Validation.MinValue", "The value of {0} must be higher than or equal to {1}", translatedPropertyName, minValue);
     public static Func<string, object, ITranslateable> ValidateMaxValue = (translatedPropertyName, maxValue) => new TranslationModel("Validation.MaxValue", "The value of {0} must be lower or equal to {1}", translatedPropertyName, maxValue);
-    
+
+    public static ITranslateable SelectListNoItems = new TranslationModel("SelectList.NoItemsAvailable", "No items available");
 }

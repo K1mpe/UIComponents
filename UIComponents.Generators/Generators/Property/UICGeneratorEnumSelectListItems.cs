@@ -22,6 +22,8 @@ public class UICGeneratorEnumSelectListItems : UICGeneratorBase<UICPropertyArgs,
         var type = args.PropertyType!;
         List<SelectListItem> items = new();
         var enumItems = args.PropertyType.GetEnumNames();
+        if (args.Options.SelectlistAddEmptyItem)
+            items.Add(new());
         foreach(var item in enumItems)
         {
             int value = (int)Enum.Parse(type, item);

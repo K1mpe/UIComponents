@@ -42,8 +42,8 @@
                 {
         <text>
             console.log('OnChange', $('@Html.Raw(identifier)'));
-            $('@Html.Raw(identifier)').keydown(async function (args) {
-            @await Model.OnChange.InvokeAsync(Component)
+            $('@Html.Raw(identifier)').keyup(async function (args) {
+                @await Model.OnChange.InvokeAsync(Component)
             });
         </text>
                 }
@@ -53,7 +53,7 @@
         <text>
             console.log('AfterChange', $('@Html.Raw(identifier)'));
             $('@Html.Raw(identifier)').change(async function (args) {
-            @await Model.AfterChange.InvokeAsync(Component)
+                @await Model.AfterChange.InvokeAsync(Component)
             });
         </text>
                 }
@@ -63,7 +63,7 @@
         <text>
             console.log('OnFocus', $('@Html.Raw(identifier)'));
             $('@Html.Raw(identifier)').focus(async function (args) {
-            @await Model.OnFocus.InvokeAsync(Component)
+                @await Model.OnFocus.InvokeAsync(Component)
             });
         </text>
                 }
@@ -73,7 +73,7 @@
         <text>
             console.log('OnLoseFocus', $('@Html.Raw(identifier)'));
             $('@Html.Raw(identifier)').blur(async function (args) {
-            @await Model.OnLoseFocus.InvokeAsync(Component)
+                @await Model.OnLoseFocus.InvokeAsync(Component)
             });
         </text>
                 }

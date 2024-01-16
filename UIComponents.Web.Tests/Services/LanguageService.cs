@@ -8,7 +8,7 @@ using UIComponents.Abstractions.Interfaces.ExternalServices;
 
 namespace UIComponents.Web.Tests.Services
 {
-    public class LanguageService2 : IUICLanguageService
+    public class LanguageService2 : IUicLanguageService
     {
         public Task<string> Translate(ITranslateable translationModel)
         {

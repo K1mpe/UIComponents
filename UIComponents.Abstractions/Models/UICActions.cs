@@ -43,12 +43,12 @@ public class UICActions : UIComponent, IUIAction
     public IUIAction OnClick { get; set; } = new UICCustom();
 
     /// <summary>
-    /// Action triggered on each change (key-down)
+    /// Action triggered on each change (key-up)
     /// </summary>
     public IUIAction OnChange { get; set; } = new UICCustom();
 
     /// <summary>
-    /// Action triggered after the value has updated
+    /// Action triggered after the value has updated (focus out & change)
     /// </summary>
     public IUIAction AfterChange { get; set; } = new UICCustom();
 

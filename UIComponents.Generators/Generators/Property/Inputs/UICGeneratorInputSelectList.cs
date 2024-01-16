@@ -20,7 +20,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
         var input = new UICInputSelectlist(args.PropertyName, new());
         input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
         input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input)?? true;
-
+        input.Placeholder = new TranslationModel("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));
         input.SelectListItems = await args.Configuration.GetSelectListItems(args, input)?? new();
 
         input.Searchable = input.SelectListItems.Count > args.Options.SelectlistSearableForItems;

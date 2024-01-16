@@ -1,6 +1,10 @@
 ﻿
 
-
+/*#region Buttons*/
+.btn[disabled]{
+    cursor: not-allowed;
+}
+/*#endregion Buttons*/
 
 /*#region ButtonToolbar */
 .uic.btn-toolbar {

@@ -1,7 +1,7 @@
 ﻿namespace UIComponents.Abstractions.Interfaces.ExternalServices;
 
 
-public interface IUICPermissionService : IViewPermissionCurrentUserService, ICreatePermissionCurrentUserService, IEditPermissionCurrentUserService, IDeletePermissionCurrentUserService
+public interface IUicPermissionService : IViewPermissionCurrentUserService, ICreatePermissionCurrentUserService, IEditPermissionCurrentUserService, IDeletePermissionCurrentUserService
 {
 }
 
