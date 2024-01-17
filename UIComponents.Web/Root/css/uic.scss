@@ -49,7 +49,14 @@
         margin-right: auto;
     }
 }
+
+.btn-toolbar-sm {
+    .btn {
+        @extend .btn-sm;
+    }
+}
 /*#endregion ButtonToolbar*/
+
 /*#region Inputs*/
 
     /*#region Color*/
@@ -96,16 +103,23 @@
     /*#endregion ToggleSwitch*/
 /*#endregion Inputs*/
 
+/*#region SidePanel*/
+.side-panel-container.horizontal{
+    .side-panel{
+        min-width: fit-content;
+        padding: 0;
+
+    }
+}
+
+/*#endregion SidePanel*/
+
 .custom-control-input[disabled] ~ .custom-control-label ::after, .custom-control-input:disabled ~ .custom-control-label::after {
     opacity: 0.25;
 }
 
 
-.btn-toolbar-sm {
-    .btn {
-        @extend .btn-sm;
-    }
-}
+
 
 
 

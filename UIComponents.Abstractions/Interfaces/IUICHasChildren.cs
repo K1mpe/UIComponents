@@ -3,6 +3,6 @@
 
 public interface IUICHasChildren<TChildItem>
 {
-    List<TChildItem> Children { get; set; }
+    List<TChildItem> Children { get; }
 
 }

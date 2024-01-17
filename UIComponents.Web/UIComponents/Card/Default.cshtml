@@ -123,11 +123,7 @@
 <div @Html.Raw(Model.GetHtmlAttributes())>
     @if(Model.Header != null)
     {
-        if (Model.Header is UIComponent headerComponent)
-            headerComponent.AddAttribute("class", "card-header");
-        if (Model.DisableClosing && Model.Header is UICCardHeader cardHeader)
-            cardHeader.CollapseCardOnClick = false;
-
+        await Model.Header.Transformer(Model, Model.Header);
         @await Model.Header.InvokeAsync(Component)
     }
 

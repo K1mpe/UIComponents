@@ -1,23 +1,36 @@
 ﻿using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
 
-namespace UIComponents.Models.Models;
+namespace UIComponents.Models.Models.Card;
 
-public class UICCardWithTabs : UIComponent
+public class UICTabs : UIComponent, IUICHasChildren<IUICTab>
 {
     #region Fields
     public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
     #endregion
 
     #region Ctor
-    public UICCardWithTabs(string id)
+    public UICTabs(string id)
     {
         Id = id;
     }
     #endregion
 
     #region Properties
-    public List<IUITabCard> Tabs { get; set; } = new();
+    public List<IUICTab> Tabs { get; set; } = new();
+
+    public List<IUIComponent> BeforeTabs { get; set; } = new();
+    public List<IUIComponent> AfterTabs { get; set; } = new();  
+
+    /// <summary>
+    /// Allow each tab button to have content
+    /// </summary>
+    public bool ColorTabs { get; set; }
+
+    /// <summary>
+    /// Remember what tab was last accessed. Requires <see cref="Id"/> to be assigned
+    /// </summary>
+    public bool RememberTabState { get; set; }
 
     /// <summary>
     /// If only one tab is available, only render the content from that single tab
@@ -45,32 +58,18 @@ public class UICCardWithTabs : UIComponent
     #endregion
 
     #region Methods
-    public UICCardWithTabs AddBodyAttribute(string key, string value)
+    public UICTabs AddBodyAttribute(string key, string value)
     {
         AddAttributeToDictionary(key, value, BodyAttributes);
         return this;
     }
 
 
-    /// <summary>
-    /// Add a item to the collection and return the <paramref name="item"/>
-    /// </summary>
-    /// <returns><paramref name="item"/></returns>
-    public T Add<T>(T item) where T : class, IUITabCard
-    {
-        Tabs.Add(item);
-        return item;
-    }
+    #endregion
 
-    /// <summary>
-    /// Add a item to the collection and return the current <see cref="UICCardWithTabs"/>
-    /// </summary>
-    /// <returns><see cref="UICCardWithTabs"/></returns>
-    public UICCardWithTabs Add2(IUITabCard item)
-    {
-        Tabs.Add(item);
-        return this;
-    }
+    #region Interface
+
+    List<IUICTab> IUICHasChildren<IUICTab>.Children => Tabs;
     #endregion
 }
 

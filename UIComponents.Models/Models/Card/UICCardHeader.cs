@@ -1,4 +1,7 @@
-﻿namespace UIComponents.Models.Models.Card
+﻿using System.Reflection;
+using UIComponents.Abstractions.Extensions;
+
+namespace UIComponents.Models.Models.Card
 {
     public class UICCardHeader : UIComponent, IHeader
     {
@@ -24,7 +27,10 @@
         /// <br>Does not affect clickinig <see cref="Buttons"/></br>
         /// <br>Can be disabled with ev.stopPropagation()</br>
         /// </summary>
-        public bool CollapseCardOnClick { get; set; } = new();
+        public bool CollapseCardOnClick { get; set; }
+        public Func<object, IHeader, Task> Transformer { get; set; } = DefaultTransformer;
+
+        public CardHeaderRenderer Renderer { get; set; } = CardHeaderRenderer.CardHeader;
 
         #region Methods
 
@@ -61,6 +67,31 @@
             return AddAppendTitle(item);
         }
 
+        public static Task DefaultTransformer(object sender, IHeader iheader)
+        {
+            var header = iheader as UICCardHeader;
+            if(sender is UICCard card)
+            {
+                header.Renderer = CardHeaderRenderer.CardHeader;
+                header.AddAttribute("class", "card-header");
+                if (card.DefaultClosed)
+                    header.CollapseCardOnClick = false;
+            }
+            else if(sender is UICTabs tabs)
+            {
+                header.Renderer = CardHeaderRenderer.TabHeader;
+            }
+
+
+            return Task.CompletedTask;
+        }
         #endregion
+
+        public enum CardHeaderRenderer
+        {
+            CardHeader,
+
+            TabHeader
+        }
     }
 }

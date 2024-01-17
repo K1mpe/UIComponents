@@ -33,6 +33,14 @@
             
         });
         $('#@id').on('uic-reload', async() =>{
+            @if (!Model.ReloadIfHidden)
+            {
+            <text>
+                if(uic.isHidden($(this)))
+                    return;
+            </text>
+            }
+
             uic.partial._reloadPartial($('#@id'), @Json.Serialize(Model.ShowOverlay), async() =>{
                 return @await Model.GetHtml.InvokeAsync(Component);
             });
@@ -56,6 +64,12 @@
             $('#@id').on('uic-reloaded', async () =>{
             @await Model.AfterFetch.InvokeAsync(Component);
             })
+        </text>
+        }
+        @if (Model.ReloadIfParentOpens)
+        {
+        <text>
+            $('#@id').parents('.card').on('uic-open', ()=> $(this).trigger('uic-reload'));
         </text>
         }
 
