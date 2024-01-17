@@ -43,7 +43,7 @@ public static class UICBuilderExtensions
             Directory.CreateDirectory(targetRoote);
         }
 
-        var scripts = manifestNames.Where(x => x.EndsWith(".js"));
+        var scripts = manifestNames.Where(x => x.EndsWith(".js")).OrderBy(x=>x);
         var styles = manifestNames.Where(x => x.EndsWith(".css") || x.EndsWith(".scss"));
 
 

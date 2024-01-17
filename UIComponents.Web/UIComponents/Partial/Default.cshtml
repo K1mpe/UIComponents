@@ -1,0 +1,72 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICPartial
+
+@{
+    string id = Model.GetOrGenerateId();
+
+    if(Model.GetHtml != null)
+    {
+        Model.AddAttribute("class", "partial-source");
+
+        Model.AddScript(
+    @<text>
+        $('#@id').on('uic-help', ()=>{
+            console.log("$('#@id').triggerHandler('uic-reload') => reload the content of this card");
+            console.log("$('#@id').triggerHandler('uic-source') => returns the controller and action of this request")
+            console.log("$('#@id').on('uic-reload', () => {...}) => triggered before the reload starts");
+            console.log("$('#@id').on('uic-reloaded', () => {...}) => triggered after the reload has finished");
+            
+        });
+        $('#@id').on('uic-reload', async() =>{
+            uic.partial._reloadPartial($('#@id'), @Json.Serialize(Model.ShowOverlay), async() =>{
+                return @await Model.GetHtml.InvokeAsync(Component);
+            });
+        });
+        $('#@id').on('uic-source', ()=>{
+            return '@Json.Serialize($"/{Model.GetHtml.Controller}/{Model.GetHtml.Action}")';
+        });
+        
+        @if(Model.BeforeFetch != null)
+        {
+        <text>
+            $('#@id').on('uic-reload', async () =>{
+                @await Model.BeforeFetch.InvokeAsync(Component);
+            })
+        </text> 
+        }
+
+        @if (Model.AfterFetch != null)
+        {
+        <text>
+            $('#@id').on('uic-reloaded', async () =>{
+            @await Model.AfterFetch.InvokeAsync(Component);
+            })
+        </text>
+        }
+
+    </text>);
+
+    }
+}
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    @foreach(var child in Model.Children)
+    {
+        @await child.InvokeAsync(Component)
+    }
+</div>

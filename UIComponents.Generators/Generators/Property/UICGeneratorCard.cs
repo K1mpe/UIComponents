@@ -1,5 +1,6 @@
 ﻿using UIComponents.Abstractions.Extensions;
 using UIComponents.Generators.Helpers;
+using UIComponents.Models.Models.Card;
 
 namespace UIComponents.Generators.Generators.Property;
 
@@ -16,18 +17,39 @@ public class UICGeneratorCard : UICGeneratorProperty
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
         if (args.CallCollection.Caller is UICCard)
-            return GeneratorHelper.Next<IUIComponent>();
+            return GeneratorHelper.Next();
 
-        var card = new UICCard();
+        if (args.CallCollection.Caller is UICForm)
+            return GeneratorHelper.Next();
+
+        UICCard card = null;
+        if (args.CallCollection.Caller == null && args.Options.StartInCard != null)
+            card = CommonHelper.CopyObject(args.Options.StartInCard);
+        else if (args.CallCollection.Caller != null && args.Options.SubClassesInCard != null)
+            card = CommonHelper.CopyObject(args.Options.SubClassesInCard);
+        if (card == null)
+            return GeneratorHelper.Next();
+
+        
         if (args.Options.ShowCardHeaders)
-            card.Title = TranslationDefaults.TranslateObject(args.ClassObject);
+            card.Header = new UICCardHeader(TranslationDefaults.TranslateObject(args.ClassObject));
 
 
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, card, args.CallCollection);
         var newArgs = new UICPropertyArgs(args.ClassObject, null, null, args.Options, cc, args.Configuration);
         var result = await args.Configuration.GetGeneratedResultAsync<UICPropertyArgs, IUIComponent>($"Content for card {args.ClassObject.GetType().Name}", newArgs, args.Options);
         card.Add(result);
+        if(result is UICForm form)
+        {
+            var toolbars = form.Children.Where(x => x is UICButtonToolbar);
+            if(toolbars.Count() == 1)
+            {
+                var toolbar = toolbars.FirstOrDefault();
+                card.Footer = new UICGroup().Add(toolbar);
+                form.Children = form.Children.Where(x=>x is not UICButtonToolbar).ToList();
+            }
+        }
 
-        return GeneratorHelper.Success<IUIComponent>(card, true);
+        return GeneratorHelper.Success(card, true);
     }
 }

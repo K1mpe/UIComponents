@@ -1,0 +1,43 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@inject IUicLanguageService L
+
+@model UICCardHeader
+@{
+    string id = Model.GetOrGenerateId();
+}
+
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    <div class="card-title">
+        @await Model.PrependTitle.InvokeAsync(Component)
+        @await Html.Translate(L, Model.Title, null)
+        @await Model.AppendTitle.InvokeAsync(Component)
+    </div>
+    @if (Model.Buttons.AnyHasValue())
+    {
+        <div class="card-tools">
+            @foreach(var button in Model.Buttons)
+            {
+                if (button is UICButton b2)
+                    b2.Renderer = UICButton.ButtonRenderer.CardButton;
+                @await button.InvokeAsync(Component)
+            }
+        </div>
+    }
+</div>

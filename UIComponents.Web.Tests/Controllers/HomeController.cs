@@ -2,7 +2,11 @@
 using System.Diagnostics;
 using UIComponents.Abstractions;
 using UIComponents.Abstractions.Extensions;
+using UIComponents.Abstractions.Interfaces;
 using UIComponents.Generators.Interfaces;
+using UIComponents.Models.Models;
+using UIComponents.Models.Models.Buttons;
+using UIComponents.Models.Models.Card;
 using UIComponents.Models.Models.Inputs;
 using UIComponents.Web.Tests.Models;
 
@@ -25,9 +29,17 @@ namespace UIComponents.Web.Tests.Controllers
             var component = await _uic.CreateComponentAsync(testModel, new()
             {
                 CheckboxRenderer = UIComponents.Models.Models.Inputs.CheckboxRenderer.ToggleSwitch,
-                SelectlistSearableForItems = 2
+                SelectlistSearableForItems = 2,
+                ShowCardHeaders = true,
+                StartInCard = new()
+                {
+                    MinWidth="400px",
+                    MaxWidth="1000px"
+                }
             });
-            component.FindFirstChildOnType<UICInputText>().Placeholder = new TranslationModel("blub");
+            var toolbar = component.FindFirstChildOnType<UICButtonToolbar>();
+            var card = component.FindFirstOnType<UICCard>();
+
             return View("ComponentRender", component);
         }
 

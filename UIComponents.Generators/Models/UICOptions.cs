@@ -1,5 +1,5 @@
 ﻿using UIComponents.Defaults;
-using UIComponents.Models.Models;
+using UIComponents.Models.Models.Card;
 using UIComponents.Models.Models.Inputs;
 
 namespace UIComponents.Generators.Models;
@@ -113,7 +113,7 @@ public class UICOptions
 
     #region Card
     public bool ShowCardHeaders { get; set; }
-    public UICCard? StartInCard { get; set; }
+    public UICCard? StartInCard { get; set; } 
     public CardTitleOverride StartCardTitleOverride { get; set; }
 
     public UICCard? SubClassesInCard { get; set; } = new();

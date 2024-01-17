@@ -1,0 +1,61 @@
+﻿namespace UIComponents.Models.Models.Card
+{
+    public class UICCardHeader : UIComponent, IHeader
+    {
+        public UICCardHeader(ITranslateable title): this()
+        {
+            Title = title;
+        }
+        public UICCardHeader()
+        {
+
+        }
+
+        public ITranslateable Title { get; set; }
+        public IColor? Color { get; set; } = UIComponents.Defaults.Colors.CardHeaderDefault;
+
+        public List<IUIComponent> PrependTitle { get; set; } = new();
+        public List<IUIComponent> AppendTitle { get; set; } = new();
+
+        public List<IUIComponent> Buttons { get; set; } = new();
+
+
+
+        #region Methods
+
+        public UICCardHeader AddButton(IUIComponent button)
+        {
+            Buttons.Add(button);
+            return this;
+        }
+        public UICCardHeader AddButton<T>(out T addedButton, T button) where T : IUIComponent
+        {
+            addedButton = button;
+            return AddButton(button);
+        }
+
+        public UICCardHeader AddPrependTitle(IUIComponent item)
+        {
+            PrependTitle.Add(item);
+            return this;
+        }
+        public UICCardHeader AddPrependTitle<T>(out T addedItem, T item) where T : IUIComponent
+        {
+            addedItem = item;
+            return AddPrependTitle(item);
+        }
+
+        public UICCardHeader AddAppendTitle(IUIComponent item)
+        {
+            AppendTitle.Add(item);
+            return this;
+        }
+        public UICCardHeader AddAppendTitle<T>(out T addedItem, T item) where T : IUIComponent
+        {
+            addedItem = item;
+            return AddAppendTitle(item);
+        }
+
+        #endregion
+    }
+}

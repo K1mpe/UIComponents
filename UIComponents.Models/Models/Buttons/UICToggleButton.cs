@@ -19,7 +19,7 @@ public class UICToggleButton : UIComponent
     public bool Value { get; set; }
 
     /// <summary>
-    /// When true, you will not automatically change the state.
+    /// When true, you will not automatically change when clicking the button
     /// </summary>
     public bool DisableAutoChange { get; set; }
 

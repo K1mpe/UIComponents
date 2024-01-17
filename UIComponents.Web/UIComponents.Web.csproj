@@ -14,11 +14,14 @@
 	  <EmbeddedResource Include="UIComponents\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="Views\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="Root\**" Pack="true" />
+	  <EmbeddedResource Include="Taghelper\**" Pack="true" />
   </ItemGroup>
 	
   <ItemGroup>
     <Content Remove="UIComponents\ActionGetValue\Default.cshtml" />
+    <Content Remove="UIComponents\Card\Default.cshtml" />
     <Content Remove="UIComponents\InputSelectlist\Select2.cshtml" />
+    <Content Remove="UIComponents\Partial\Default.cshtml" />
   </ItemGroup>
 
   <!--<ItemGroup>
@@ -30,6 +33,7 @@
     <None Remove="Root\js\delayedAction.js" />
     <None Remove="Root\js\getpost.js" />
     <None Remove="Root\js\modal.js" />
+    <None Remove="Root\js\partial.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -75,6 +79,10 @@
     <None Include="UIComponents\Label\Default.cshtml" />
     <None Include="UIComponents\SingleRow\Default.cshtml" />
     <None Include="UIComponents\Span\Default.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Taghelper\" />
   </ItemGroup>
 
  

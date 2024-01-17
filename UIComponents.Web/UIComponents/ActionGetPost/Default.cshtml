@@ -27,18 +27,33 @@ let variableContent = null
 }
 
 let data = $.extend({}, variableContent, @Json.Serialize(Model.Data));
+let options = {};
+@if(Model.Options != null)
+{
+    <text>
+        options.cancelPreviousRequests = @Json.Serialize(Model.Options.CancelPreviousRequests);
+        options.handlers = [];
+
+        @foreach(var handler in Model.Options.Handlers)
+        {
+            <text>
+            options.handlers.push(@await handler.InvokeAsync(Component))
+            </text>
+        }
+    </text>
+}
 
 try{
 @switch (Model.ActionType)
 {
     case UICActionGetPost.ActionTypeEnum.Get:
         <text>
-            var @Model.ResultName = await uic.getpost.get('@Url.Action(Model.Action, Model.Controller)', data);
+            var @Model.ResultName = await uic.getpost.get('@Url.Action(Model.Action, Model.Controller)', data, options);
         </text>
         break;
     case UICActionGetPost.ActionTypeEnum.Post:
         <text>
-            var @Model.ResultName = await uic.getpost.post('@Url.Action(Model.Action, Model.Controller)', data);
+            var @Model.ResultName = await uic.getpost.post('@Url.Action(Model.Action, Model.Controller)', data, options);
         </text>
         break;
     default:

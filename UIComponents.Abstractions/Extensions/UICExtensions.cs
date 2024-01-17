@@ -171,7 +171,7 @@ public static class UICExtensions
         string id = element.GetAttribute("id");
         if (string.IsNullOrWhiteSpace(id))
         {
-            id = $"guid{Guid.NewGuid().ToString().Replace("-", "").Substring(0, 4)}";
+            id = $"uic{Guid.NewGuid().ToString("N").Substring(0, 4)}";
             element.AddAttribute("id", id);
         }
         return id;
