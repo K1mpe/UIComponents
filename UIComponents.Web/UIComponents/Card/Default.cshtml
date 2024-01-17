@@ -18,6 +18,9 @@
 @model UICCard
 
 @{
+    if(Model.RememberCollapsedState)
+        Model.RememberCollapsedState= !string.IsNullOrEmpty(Model.GetAttribute("id"));
+
     var id = Model.GetOrGenerateId();
     Model.AssignCollectionForChildren();
     Model.AddAttribute("class", "card");
@@ -51,9 +54,13 @@
     {
         <text>
             $('#@id').on('uic-help', ()=>{
-                console.log("$('#@id').trigger('uic-open', ()=>{...}) Open the card")
-                console.log("$('#@id').trigger('uic-close', ()=>{...}) Close the card")
-                console.log("$('#@id').trigger('uic-toggle', ()=>{...}) Open or Close the card")
+                console.log("Card $('#@id').trigger('uic-open') Open the card");
+                console.log("Card $('#@id').trigger('uic-close') Close the card");
+                console.log("Card $('#@id').trigger('uic-toggle') Open or Close the card");
+                console.Log("Card $('#@id').on('uic-before-open', ()=>{...}) Triggered before the card starts opening");
+                console.Log("Card $('#@id').on('uic-before-close', ()=>{...}) Triggered before the card starts closing");
+                console.Log("Card $('#@id').on('uic-opened', () =>{...}) Triggered when the opening animation is complete");
+                console.Log("Card $('#@id').on('uic-closed', () =>{...}) Triggered when the clsoing animation is complete");
             });
 
             $('#@id').on('uic-open', async ()=>{
@@ -61,14 +68,12 @@
                 await card.triggerHandler('uic-before-open');
 
                 card.CardWidget('expand');
-                card.triggerHandler('uic-opening');
             })
             $('#@id').on('uic-close', async ()=>{
                 let card = $(this);
                 await card.triggerHandler('uic-before-close');
 
                 card.CardWidget('collapse');
-                card.triggerHandler('uic-closing');
             });
             $('#@id').on('uic-toggle', async ()=>{
                 let card = $(this);
@@ -77,7 +82,39 @@
                 else
                 card.trigger('uic-close');
             });
+
+            $('#@id').on('expanded.lte.cardwidget', ()=> $(this).trigger('uic-opened'));
+            $('#@id').on('collapsed.lte.cardwidget', ()=> $(this).trigger('uic-opened'));
         </text>
+
+        @if (Model.RememberCollapsedState)
+        {
+            <text>
+                try{
+                    let collapsed = localStorage.getItem("uic.card.collapsedState.@id");
+                    if(collapsed == 'true'){
+                        if(!$('#@id').hasClass('collapsed-card'))
+                        {
+                            $('#@id').addClass('collapsed-card');
+                            $('#@id').trigger('uic-close');
+                        }
+                    } else if(collapsed =='false'){
+                        if($('#@id').hasClass('collapsed-card'))
+                        {
+                            $('#@id').removeClass('collapsed-card');
+                            $('#@id').trigger('uic-open');
+                        }
+                    }
+                }catch{}
+                $('#@id').on('uic-opened', ()=>{
+                    localStorage.setItem("uic.card.collapsedState.@id", false);
+                });
+                $('#@id').on('uic-closed' ()=>{
+                    localStorage.setItem("uic.card.collapsedState.@id", true);
+                });
+
+            </text>
+        }
     }
     
     </text>);
@@ -88,6 +125,9 @@
     {
         if (Model.Header is UIComponent headerComponent)
             headerComponent.AddAttribute("class", "card-header");
+        if (Model.DisableClosing && Model.Header is UICCardHeader cardHeader)
+            cardHeader.CollapseCardOnClick = false;
+
         @await Model.Header.InvokeAsync(Component)
     }
 

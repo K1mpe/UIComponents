@@ -19,7 +19,7 @@ public class UICGeneratorCard : UICGeneratorProperty
         if (args.CallCollection.Caller is UICCard)
             return GeneratorHelper.Next();
 
-        if (args.CallCollection.Caller is UICForm)
+        if (args.CallCollection.Caller is UICForm && !args.Options.FormToolbarInCardFooter)
             return GeneratorHelper.Next();
 
         UICCard card = null;
@@ -39,16 +39,7 @@ public class UICGeneratorCard : UICGeneratorProperty
         var newArgs = new UICPropertyArgs(args.ClassObject, null, null, args.Options, cc, args.Configuration);
         var result = await args.Configuration.GetGeneratedResultAsync<UICPropertyArgs, IUIComponent>($"Content for card {args.ClassObject.GetType().Name}", newArgs, args.Options);
         card.Add(result);
-        if(result is UICForm form)
-        {
-            var toolbars = form.Children.Where(x => x is UICButtonToolbar);
-            if(toolbars.Count() == 1)
-            {
-                var toolbar = toolbars.FirstOrDefault();
-                card.Footer = new UICGroup().Add(toolbar);
-                form.Children = form.Children.Where(x=>x is not UICButtonToolbar).ToList();
-            }
-        }
+        
 
         return GeneratorHelper.Success(card, true);
     }

@@ -1,0 +1,97 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@inject IUicLanguageService L
+@model UICInputNumber
+
+@{
+    Model.AddAttribute("class", "form-control");
+
+
+    string id = Model.GetOrGenerateId();
+    Model.Actions.SetIdentifier($"#{id}");
+}
+
+<input type="number" value="@Model.Value.ToString().Replace(",", ".")" @Html.Raw(Model.GetHtmlAttributes()) />
+    
+
+@if (!Model.AllowDecimalValues)
+{
+    <script>
+        $(document).ready(function(){
+            $('#@id').keyup(function(){
+                uic.removeDecimals($(this));
+            });
+            $('#@id').change(function(){
+                uic.removeDecimals($(this));
+            })
+        });
+    </script>
+}
+
+@if (Model.HasClientSideValidation)
+{
+
+    string propertyName = Model.PropertyName;
+    if (Model.DisplayName != null)
+        propertyName = await L.Translate(Model.DisplayName);
+
+        <script>
+
+        $(document).ready(function(){
+            function validateInput(element){
+                var currentValue = element.val();
+                var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+                span.text("");
+                @if (Model.ValidationMaxValue != null)
+                {
+                    <text>
+                        if (currentValue > @Model.ValidationMaxValue.Value)
+                            span.text(@await Html.Translate(L, TranslationDefaults.ValidateMaxValue(propertyName, Model.ValidationMaxValue.Value)));
+                    </text>
+                }
+
+                @if (Model.ValidationMinValue != null)
+                {
+                    <text>
+                        if (@(Model.ValidationMinValue.Value) > currentValue)
+                            span.text(@await Html.Translate(L, TranslationDefaults.ValidateMinValue(propertyName, Model.ValidationMinValue.Value)));
+                    </text>
+                }
+
+                @if (Model.ValidationRequired)
+                {
+                    <text>
+                        if (currentValue.length == 0)
+                            span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                    </text>
+                }
+            }
+
+            $('#@id').keyup(function(){
+                validateInput($(this));
+            });
+            $('#@id').blur(function () {
+                validateInput($(this));
+            });
+
+        });
+    </script>
+}
+
+
+@await Model.Actions.InvokeAsync(Component)

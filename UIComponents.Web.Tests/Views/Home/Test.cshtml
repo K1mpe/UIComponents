@@ -1,6 +1,76 @@
-﻿@using UIComponents.Generators.Interfaces;
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions;
+@using UIComponents.Defaults;
+@using UIComponents.Generators.Interfaces;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
 @inject IUIComponentService uic;
 
 @{
-    
+    var testModel = new TestModel();
+
 }
+
+@await uic.CreateComponentAsync(testModel, new(){
+    ShowCardHeaders = true,
+    FormToolbarInCardFooter = true
+}).InvokeAsync(Component)
+
+
+@{
+    var toolbarCard = new UICCard(new TranslationModel("Card.Toolbars"))
+        .Add(new UICButtonToolbar()
+            {
+                Distance = UIComponents.Abstractions.Enums.ButtonDistance.None
+            }
+            .AddLeft(new UICButton(new TranslationModel("GroupL 1")))
+            .AddLeft(new UICButton(new TranslationModel("GroupL 2")))
+            .AddLeft(new UICButton(new TranslationModel("GroupL 3")))
+            .AddCenter(new UICButton(new TranslationModel("GroupC 4")))
+            .AddCenter(new UICButton(new TranslationModel("GroupC 5")))
+        )
+        .Add(new UICButtonToolbar()
+                {
+                    Distance = UIComponents.Abstractions.Enums.ButtonDistance.Short
+                }
+            .AddLeft(new UICButton(new Untranslated("ShortL 1")))
+            .AddLeft(new UICButton(new Untranslated("ShortL 2")))
+            .AddLeft(new UICButton(new Untranslated("ShortL 3")))
+            .AddRight(new UICButton(new TranslationModel("ShortR 4")))
+            .AddRight(new UICButton(new TranslationModel("ShortR 5")))
+        )
+        .Add(new UICButtonToolbar()
+                {
+                    Distance = UIComponents.Abstractions.Enums.ButtonDistance.Medium
+                }
+            .AddCenter(new UICButton(new Untranslated("MedC 1")))
+            .AddCenter(new UICButton(new Untranslated("MedC 2")))
+            .AddCenter(new UICButton(new Untranslated("MedC 3")))
+        )
+        .Add(new UICButtonToolbar()
+                {
+                    Distance = UIComponents.Abstractions.Enums.ButtonDistance.Long
+                }
+            .AddLeft(new UICButton(new Untranslated("LongL 1")))
+            .AddLeft(new UICButton(new Untranslated("LongL 2")))
+            .AddLeft(new UICButton(new Untranslated("LongL 3")))
+            .AddCenter(new UICButton(new TranslationModel("CenterR 4")))
+            .AddCenter(new UICButton(new TranslationModel("CenterR 5")))
+        );
+
+}
+@await toolbarCard.InvokeAsync(Component)

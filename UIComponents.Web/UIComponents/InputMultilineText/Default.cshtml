@@ -1,0 +1,101 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@inject IUicLanguageService L
+@model UICInputMultiline
+
+@{
+    Model.AddAttribute("class", "form-control");
+
+    string id = Model.GetOrGenerateId();
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id}");
+    }
+
+
+    var rows = Model.Value?.Split("\n").Count() ?? 1;
+    Model.AddAttribute("rows", rows.ToString());
+}
+
+<textarea value="@Model.Value" @Html.Raw(Model.GetHtmlAttributes())>@Model.Value</textarea>
+    
+<script>
+    
+    $(document).ready(function(){
+        //add a new line on enter in a textarea
+        $('#@id').keydown(function (e) {
+            if (e.keyCode == '13') { //enter
+                var currentRows = $(this).attr('rows');
+                currentRows = +currentRows + 1;
+                $(this).attr('rows', currentRows);
+            }
+        });
+        
+        @if (Model.HasClientSideValidation)
+{
+
+    string propertyName = Model.PropertyName;
+    if (Model.DisplayName != null)
+        propertyName = await L.Translate(Model.DisplayName);
+
+    <text>
+        function validateInput(element){
+            var currentValue = element.val();
+            var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+            span.text("");
+            @if (Model.ValidationMaxLength != null)
+            {
+                <text>
+                    if (currentValue.length > @Model.ValidationMaxLength.Value)
+                        span.text(@await Html.Translate(L, TranslationDefaults.ValidateMaxLength(propertyName, Model.ValidationMaxLength.Value)));
+                </text>
+            }
+
+            @if (Model.ValidationMinLength != null)
+            {
+                <text>
+                    if (@(Model.ValidationMinLength.Value) > currentValue.length && currentValue.length > 0)
+                        span.text(@await Html.Translate(L, TranslationDefaults.ValidateMinLength(propertyName, Model.ValidationMinLength.Value)));
+                </text>
+            }
+
+            @if (Model.ValidationRequired)
+            {
+                <text>
+                    if (currentValue.length == 0)
+                        span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                </text>
+            }
+
+        }
+        $('#@id').keyup(function(){
+            validateInput($(this));
+        });
+
+        $('#@id').blur(function () {
+            validateInput($(this));
+        });
+    </text>
+
+           
+}
+    });
+
+</script>
+
+@await Model.Actions.InvokeAsync(Component)

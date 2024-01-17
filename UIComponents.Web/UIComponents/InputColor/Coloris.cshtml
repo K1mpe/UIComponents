@@ -1,0 +1,107 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@inject IUicLanguageService L
+@model UICInputColor
+@{
+    Model.AddAttribute("class", "coloris");
+    Model.AddAttribute("class", "form-control");
+    string id = Model.GetOrGenerateId();
+
+    Model.AssignCollectionForChildren();
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id}");
+    }
+
+    if (Model.OnlySystemColors)
+    {
+        Model.AddAttribute("class", "only-swatches");
+    }
+    else if (Model.AllowAlpha)
+    {
+        Model.AddAttribute("class", "allow-alpha");
+    }
+
+
+
+
+}
+
+
+<div class="coloris uic-color-input">
+    <input type="text" value="@Model.Value" @Html.Raw(Model.GetHtmlAttributes()) />
+</div>
+
+
+
+@if (Model.HasClientSideValidation)
+{
+
+    string propertyName = Model.PropertyName;
+    if (Model.DisplayName != null)
+        propertyName = await L.Translate(Model.DisplayName);
+
+    Model.AddScript(
+@<text>
+    var isColor = (strColor) => {
+    const s = new Option().style;
+    s.color = strColor;
+    return s.color !== '';
+    }
+    function validateInput(element) {
+    var currentValue = element.val();
+    var span = element.parent().parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+    span.text("");
+
+    @if (Model.ValidationValidColor)
+    {
+
+    <text>
+        if (!CSS.supports('color', currentValue)) {
+            span.text(@await Html.Translate(L, TranslationDefaults.ValidateColor(propertyName)));
+        }
+
+
+    </text>
+    }
+
+    @if (Model.ValidationRequired)
+                {
+    <text>
+        if (currentValue.length == 0)
+        span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+    </text>
+                }
+
+
+    }
+
+    $('#@id').keyup(function () {
+        validateInput($(this));
+    });
+    $('#@id').blur(function () {
+        validateInput($(this));
+    });
+
+    </text>);
+
+}
+
+@await Model.Actions.InvokeAsync(Component)
+
+@await Model.RenderStylesAndScripts(Component)

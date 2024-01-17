@@ -94,6 +94,11 @@ public class UICOptions
     public bool ReplaceSaveButtonWithCreateButton { get; set; }
 
     /// <summary>
+    /// Create a card inside the form and place its toolbar in the footer of the card
+    /// </summary>
+    public bool FormToolbarInCardFooter { get; set; }
+
+    /// <summary>
     /// As long as there are validation errors, disable the save button.
     /// </summary>
     public bool DisableSaveButtonOnValidationErrors { get; set; } = OptionDefaults.DisableSaveButtonOnValidationErrors;

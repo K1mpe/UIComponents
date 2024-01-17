@@ -2,7 +2,7 @@
 
 namespace UIComponents.Models.Models.Inputs;
 
-public class UICInputDateRange : UICInput<DateRangeInput>
+public class UICInputDateRange : UICInput<IDateRangeInput>
 {
     #region Fields
     public override bool HasClientSideValidation => ValidationRequired || ValidationMinimumDate.HasValue || ValidationMaximumDate.HasValue || ValidationMaxLength.HasValue;
@@ -120,7 +120,7 @@ public class DateRangeSelector
     }
 }
 
-public class DateRangeInput
+public class DateRangeInput : IDateRangeInput
 {
     public DateRangeInput(DateTime? start = null, DateTime? end = null)
     {
@@ -131,13 +131,4 @@ public class DateRangeInput
     public DateTime? Start { get; set; }
     public DateTime? End { get; set; }
 
-    public TimeSpan? Duration
-    {
-        get
-        {
-            if (Start.HasValue && End.HasValue)
-                return End.Value - Start.Value;
-            return null;
-        }
-    }
 }

@@ -9,7 +9,9 @@
 /*#region ButtonToolbar */
 .uic.btn-toolbar {
     &.dist-none {
-        @extend .btn-group;
+        > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right {
+            @extend .btn-group;
+        }
     }
 
     &.dist-short {
@@ -47,11 +49,8 @@
         margin-right: auto;
     }
 }
-
 /*#endregion ButtonToolbar*/
-
 /*#region Inputs*/
-
 /*#region Timespan*/
 
 
@@ -71,7 +70,6 @@
     border-right-style: none;
 }
 /*#endregion Timespan*/
-
 /*#region ToggleSwitch*/
 
 .custom-control-input.indeterminate ~ .custom-control-label {

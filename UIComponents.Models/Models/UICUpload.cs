@@ -38,6 +38,30 @@ public class UICUpload : UIComponent
     /// </remarks>
     public string PostUrl { get; set; }
 
+    /* Post Example
+     
+    [HttpPost]
+    public async Task<IActionResult> Upload()
+    {
+        try
+        {
+            var file = Request.Form.Files[0];
+            var fileName = Path.GetFileName(file.FileName);
+            string filepath= $"...\\{fileName}";
+            using (var fileStream = new FileStream(filepath, FileMode.Create, FileAccess.Write))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+            return Json("Ok");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex);
+            throw;
+        }
+    }
+    */
+
     /// <summary>
     /// Max fileSize in mb
     /// </summary>

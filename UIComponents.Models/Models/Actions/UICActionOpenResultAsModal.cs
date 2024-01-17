@@ -13,4 +13,6 @@ public class UICActionOpenResultAsModal : UIComponent, IUIAction
     }
     #endregion
 
+    public string ResultPropertyName = "result";
+
 }

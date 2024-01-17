@@ -8,6 +8,7 @@
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<Version>0.0.2</Version>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <ItemGroup>
@@ -52,15 +53,25 @@
     <None Include="UIComponents\ActionCompareObjects\Default.cshtml" />
     <None Include="UIComponents\ActionDisableSaveButtonOnValidationErrors\Default.cshtml" />
     <None Include="UIComponents\ActionGetPost\Default.cshtml" />
+    <None Include="UIComponents\ActionNavigate\Default.cshtml" />
+    <None Include="UIComponents\ActionOpenResultAsModal\Default.cshtml" />
+    <None Include="UIComponents\ActionRefreshPartial\Default.cshtml" />
     <None Include="UIComponents\ActionSetEdit\Default.cshtml" />
     <None Include="UIComponents\ActionSetReadonly\Default.cshtml" />
     <None Include="UIComponents\ActionSetValue\Default.cshtml" />
     <None Include="UIComponents\Actions\Default.cshtml" />
     <None Include="UIComponents\ButtonEdit\Default.cshtml" />
+    <None Include="UIComponents\ButtonGroup\Default.cshtml" />
+    <None Include="UIComponents\ButtonToggle\Default.cshtml" />
     <None Include="UIComponents\ButtonToolbar\Default.cshtml" />
     <None Include="UIComponents\Button\CardButton.cshtml" />
     <None Include="UIComponents\Button\Default.cshtml" />
     <None Include="UIComponents\Custom\Default.cshtml" />
+    <None Include="UIComponents\DropdownDivider\Default.cshtml" />
+    <None Include="UIComponents\DropdownHeader\Default.cshtml" />
+    <None Include="UIComponents\DropdownItem\Default.cshtml" />
+    <None Include="UIComponents\DropdownSubmenu\Default.cshtml" />
+    <None Include="UIComponents\Dropdown\Default.cshtml" />
     <None Include="UIComponents\Form\Default.cshtml" />
     <None Include="UIComponents\Group\ContentOnly.cshtml" />
     <None Include="UIComponents\Group\Div.cshtml" />
@@ -69,9 +80,15 @@
     <None Include="UIComponents\InputCheckboxThreeState\ToggleSwitch.cshtml" />
     <None Include="UIComponents\InputCheckbox\Checkbox.cshtml" />
     <None Include="UIComponents\InputCheckbox\ToggleSwitch.cshtml" />
+    <None Include="UIComponents\InputColor\Coloris.cshtml" />
+    <None Include="UIComponents\InputCustom\Default.cshtml" />
+    <None Include="UIComponents\InputDaterange\Default.cshtml" />
     <None Include="UIComponents\InputDatetime\Default.cshtml" />
     <None Include="UIComponents\InputGroup\Default.cshtml" />
     <None Include="UIComponents\InputGroup\Grid.cshtml" />
+    <None Include="UIComponents\InputMultilineText\Default.cshtml" />
+    <None Include="UIComponents\InputMultiSelect\Default.cshtml" />
+    <None Include="UIComponents\InputNumber\Default.cshtml" />
     <None Include="UIComponents\InputSelectListSource\Default.cshtml" />
     <None Include="UIComponents\InputSelectlist\Default.cshtml" />
     <None Include="UIComponents\InputText\Default.cshtml" />

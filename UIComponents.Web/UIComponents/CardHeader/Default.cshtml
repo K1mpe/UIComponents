@@ -20,6 +20,18 @@
 @model UICCardHeader
 @{
     string id = Model.GetOrGenerateId();
+    Model.AssignCollectionForChildren();
+
+    if (Model.CollapseCardOnClick)
+        Model.AddScript(
+    @<text>
+    $('#@id').on('click', ()=>{
+        $(this).closest('.card').trigger('uic-toggle');
+    });
+    $('#@id .card-tools').on('click', (ev)=>{
+        ev.stopPropagation();
+    })
+    </text>);
 }
 
 
@@ -41,3 +53,5 @@
         </div>
     }
 </div>
+
+@await Model.RenderStylesAndScripts(Component)

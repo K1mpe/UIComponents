@@ -5,6 +5,7 @@ using UIComponents.Generators.Interfaces;
 using UIComponents.Models.Models;
 using UIComponents.Models.Models.Actions;
 using UIComponents.Models.Models.Buttons;
+using UIComponents.Models.Models.Card;
 
 namespace UIComponents.Generators.Generators.Property;
 
@@ -39,14 +40,20 @@ public class UICGeneratorForm : UICGeneratorProperty
         if(args.ClassObject is IDbEntity dbEntity)
             submit.Data = new {Id = dbEntity.Id};
         form.Submit = submit;
+        
+
 
         var newCC = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, form, args.CallCollection);
         form.Add(await args.Configuration.GetChildComponentAsync(args.ClassObject, args.PropertyInfo, args.Options, newCC));
         form.Parent = args.CallCollection.Caller;
 
         var toolbarCC = new UICCallCollection(UICGeneratorPropertyCallType.ButtonToolbar, form, args.CallCollection);
-        form.Add(await args.Configuration.GetChildComponentAsync(args.ClassObject, args.PropertyInfo, args.Options, toolbarCC));
-        
+        var toolbar =await args.Configuration.GetChildComponentAsync(args.ClassObject, args.PropertyInfo, args.Options, toolbarCC);
+        if (form.Children.FirstOrDefault()?.GetType().IsAssignableTo(typeof(UICCard)) ?? false)
+           form.FindFirstOnType<UICCard>().AddFooter().Add(toolbar);
+        else
+            form.Add(toolbar);
+
 
         return GeneratorHelper.Success<IUIComponent>(form, true);
 

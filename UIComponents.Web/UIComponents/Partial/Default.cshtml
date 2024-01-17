@@ -28,7 +28,7 @@
         $('#@id').on('uic-help', ()=>{
             console.log("$('#@id').triggerHandler('uic-reload') => reload the content of this card");
             console.log("$('#@id').triggerHandler('uic-source') => returns the controller and action of this request")
-            console.log("$('#@id').on('uic-reload', () => {...}) => triggered before the reload starts");
+            console.log("$('#@id').on('uic-before-reload', () => {...}) => triggered before the reload starts");
             console.log("$('#@id').on('uic-reloaded', () => {...}) => triggered after the reload has finished");
             
         });

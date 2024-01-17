@@ -7,4 +7,5 @@ public interface ITranslateable
     public object[] Arguments { get; set; }
 
 
+
 }

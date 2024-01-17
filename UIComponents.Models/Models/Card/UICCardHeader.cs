@@ -19,7 +19,12 @@
 
         public List<IUIComponent> Buttons { get; set; } = new();
 
-
+        /// <summary>
+        /// If the card supports collapsing, Open or close it by clicking the header.
+        /// <br>Does not affect clickinig <see cref="Buttons"/></br>
+        /// <br>Can be disabled with ev.stopPropagation()</br>
+        /// </summary>
+        public bool CollapseCardOnClick { get; set; } = new();
 
         #region Methods
 

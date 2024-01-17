@@ -1,5 +1,20 @@
 ﻿var uic = uic || {};
 
+//Check if this element or any parent is hidden or collapsed
+uic.isHidden = function (element) {
+    element = $(element);
+    if (!element.length)
+        return true;
+
+    if (element.closest('[hidden]').length)
+        return true;
+    if (element.closest('.d-none').length)
+        return true;
+    if (element.closest('.collapsed-card').length)
+        return true;
+
+    return false;
+}
 
 //Transform input elements to make the inputs of this form not look like input fields
 uic.formReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonly = true, showDeleteButton = false) {
@@ -104,7 +119,7 @@ uic.getValue = function (element) {
     //      return "value";
     //  });
     // This will overwrite the default behaviour of this function.
-    var result = $(element).triggerHandler('GetValue');
+    var result = $(element).triggerHandler('getValue');
     if (result != undefined)
         return result;
 
@@ -163,7 +178,7 @@ uic.setValue = function (element, value) {
         return;
 
     if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["SetValue"] != undefined) {
-        $(element).trigger('SetValue', value);
+        $(element).trigger('setValue', value);
         return;
     }
 

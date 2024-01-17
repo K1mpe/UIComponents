@@ -25,7 +25,7 @@ uic.partial = uic.partial || {
         if (!partial.length)
             return;
 
-        await partial.triggerHandler('uic-reload');
+        await partial.triggerHandler('uic-before-reload');
         if (showOverlay)
             showOverlay(partial);
 
