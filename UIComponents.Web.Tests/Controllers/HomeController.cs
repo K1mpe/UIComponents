@@ -26,7 +26,7 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return RedirectToAction(nameof(Test));
+            return View();
             //return View();
             var testModel = new TestModel();
             var component = await _uic.CreateComponentAsync(testModel, new()
@@ -46,7 +46,7 @@ namespace UIComponents.Web.Tests.Controllers
 
         public IActionResult Test()
         {
-            return View();
+            return PartialView();
         }
 
 

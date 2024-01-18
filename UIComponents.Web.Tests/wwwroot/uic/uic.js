@@ -512,6 +512,12 @@ uic.getpost = uic.getpost || {
                     makeToast("Error", "", response.Message)
                     return false;
                 }
+            },
+            (response) => {
+                if (response.type == "Exception") {
+                    makeToast("Error", "", response.Message);
+                    return false;
+                }
             }
         ],
     },
@@ -526,22 +532,22 @@ uic.getpost = uic.getpost || {
         options = $.extend({}, uic.getpost.defaultOptions.get, options);
 
         try {
-            if (options.cancelPreviousRequests && _getRequests[url] != undefined) {
-                _getRequests[url].abort();
+            if (options.cancelPreviousRequests && uic.getpost._getRequests[url] != undefined) {
+                uic.getpost._getRequests[url].abort();
             }
         } catch { }
 
-        _getRequests[url] = $.get(url, data).catch(function (...ex) {
+        uic.getpost._getRequests[url] = $.get(url, data).catch(function (...ex) {
             console.log('Failed! Server error', ex);
             return { type: 'Exception', exception: ex };
         });
 
-        let response = await _getRequests[url];
-        _getRequests[url] = undefined;
+        let response = await uic.getpost._getRequests[url];
+        uic.getpost._getRequests[url] = undefined;
 
-        let handlers = options.handlers.concat(defaultHandlers.get).concat(defaultHandlers.both);
+        let handlers = options.handlers.concat(uic.getpost.defaultHandlers.get).concat(uic.getpost.defaultHandlers.both);
 
-        return await handleResponse(handlers, response);
+        return await uic.getpost.handleResponse(handlers, response);
     },
 
     post : async function (url, data, options = {}) {
@@ -550,22 +556,22 @@ uic.getpost = uic.getpost || {
         var data = formatNumbersForDecimalStrings(data);
 
         try {
-            if (options.cancelPreviousRequests && _postRequests[url] != undefined) {
-                _postRequests[url].abort();
+            if (options.cancelPreviousRequests && uic.getpost._postRequests[url] != undefined) {
+                uic.getpost._postRequests[url].abort();
             }
         } catch { }
 
-        _postRequests[url] = $.get(url, data).catch(function (...ex) {
+        uic.getpost._postRequests[url] = $.post(url, data).catch(function (...ex) {
             console.log('Failed! Server error', ex);
             return { type: 'Exception', exception: ex };
         });
 
-        let response = await _postRequests[url];
-        _postRequests[url] = undefined;
+        let response = await uic.getpost._postRequests[url];
+        uic.getpost._postRequests[url] = undefined;
 
-        let handlers = options.handlers.concat(defaultHandlers.post).concat(defaultHandlers.both);
+        let handlers = options.handlers.concat(uic.getpost.defaultHandlers.post).concat(uic.getpost.defaultHandlers.both);
 
-        return await handleResponse(handlers, response);
+        return await uic.getpost.handleResponse(handlers, response);
     },
 
     handleResponse : async function (handlers, response) {
@@ -665,19 +671,34 @@ uic.partial = uic.partial || {
         else
             location.reload();
     },
-    showOverlay : function (element = null) {
+    showOverlay: function (element = null) {
         if (!element)
             element = document.body;
 
         $(element).LoadingOverlay('show', { image: '', fontawesome: 'fas fa-sync-alt fa-spin' });
     },
 
-    hideOverlay : function (element = null) {
+    hideOverlay: function (element = null) {
         if (!element)
             element = document.body;
 
         $(element).LoadingOverlay('hide');
     },
+
+    handlers: [
+        (response) => {
+            if (response.type == "AccessDenied") {
+                return $('<div>', { class: 'alert alert-danger', role: 'alert' }).append('Access Denied');
+            }
+        },
+        (response) => {
+            if (response.type == "Exception") {
+                return $('<div>', { class: 'alert alert-danger', role: 'alert' }).append('Error receiving data');
+            }
+        }
+    ],
+
+
     _reloadPartial: async function (partial, showOverlay, getDatafunc) {
         if (!partial.length)
             return;
@@ -695,7 +716,7 @@ uic.partial = uic.partial || {
 
         await partial.triggerHandler('uic-reloaded');
     }
-}﻿uic.sidePanel = uic.sidePanel || {
+};﻿uic.sidePanel = uic.sidePanel || {
     initialize: function (container, startState) {
         container = $(container);
         let isHorizontal = container.hasClass('horizontal');
@@ -783,7 +804,7 @@ uic.partial = uic.partial || {
             uic.sidePanel.setHeight(container);
         }).observe(content[0]);
     },
-    saveState = function (container, state) {
+    saveState: function (container, state) {
         let name = container.data('sidebar-name');
         if (!name.length)
             return;

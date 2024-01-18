@@ -27,17 +27,23 @@ let variableContent = null
 }
 
 let data = $.extend({}, variableContent, @Json.Serialize(Model.Data));
-let options = {};
+let postOptions = {};
+@if(Model.ClientSideOptions != null)
+{
+    <text>
+        postOptions = @await Model.ClientSideOptions.InvokeAsync(Component);
+    </text>
+}
 @if(Model.Options != null)
 {
     <text>
-        options.cancelPreviousRequests = @Json.Serialize(Model.Options.CancelPreviousRequests);
-        options.handlers = [];
+        postOptions.cancelPreviousRequests = @Json.Serialize(Model.Options.CancelPreviousRequests);
+        postOptions.handlers = [];
 
         @foreach(var handler in Model.Options.Handlers)
         {
             <text>
-            options.handlers.push(@await handler.InvokeAsync(Component))
+                postOptions.handlers.push(@await handler.InvokeAsync(Component))
             </text>
         }
     </text>
@@ -48,12 +54,12 @@ try{
 {
     case UICActionGetPost.ActionTypeEnum.Get:
         <text>
-            var @Model.ResultName = await uic.getpost.get('@Url.Action(Model.Action, Model.Controller)', data, options);
+            var @Model.ResultName = await uic.getpost.get('@Url.Action(Model.Action, Model.Controller)', data, postOptions);
         </text>
         break;
     case UICActionGetPost.ActionTypeEnum.Post:
         <text>
-            var @Model.ResultName = await uic.getpost.post('@Url.Action(Model.Action, Model.Controller)', data, options);
+            var @Model.ResultName = await uic.getpost.post('@Url.Action(Model.Action, Model.Controller)', data, postOptions);
         </text>
         break;
     default:

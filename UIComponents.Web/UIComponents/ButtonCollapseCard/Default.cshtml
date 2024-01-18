@@ -56,6 +56,11 @@
         card.on('uic-opened', ()=> {ViewButtonFalse()});
         card.on('uic-closed', ()=> {ViewButtonTrue()});
 
+        if(card.hasClass('collapsed-card'))
+            ViewButtonFalse();
+        else 
+            ViewButtonTrue();
+
     </text>);
 
 }

@@ -4,6 +4,7 @@
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Defaults;
+@using UIComponents.Defaults.Models.Inputs;
 @using UIComponents.Models;
 @using UIComponents.Models.Models;
 @using UIComponents.Models.Models.Actions;
@@ -43,7 +44,7 @@
 }
 
 
-<div class="coloris uic-color-input">
+<div class="@InputColorDefaults.ColorisClass">
     <input type="text" value="@Model.Value" @Html.Raw(Model.GetHtmlAttributes()) />
 </div>
 

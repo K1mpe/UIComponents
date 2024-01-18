@@ -118,6 +118,31 @@ public class UICCard : UIComponent
     {
         return AddHeader<UICCardHeader>(header);
     }
+
+    /// <summary>
+    /// Add a partial to the card and also add a refresh button to the header
+    /// </summary>
+    public UICCard AddPartial(UICPartial partial)
+    {
+        Body.Add(partial);
+
+        try
+        {
+            AddHeader().AddButton(new UICButtonRefreshPartial(partial));
+        }
+        catch{ }
+
+        return this;
+    }
+
+    /// <summary>
+    /// Add a partial to the card and also add a refresh button to the header
+    /// </summary>
+    public UICCard AddPartial(out UICPartial addedPartial, UICPartial partial)
+    {
+        addedPartial = partial;
+        return AddPartial(partial);
+    }
     #endregion
 
 }

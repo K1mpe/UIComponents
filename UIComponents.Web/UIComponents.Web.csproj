@@ -20,9 +20,9 @@
 	
   <ItemGroup>
     <Content Remove="UIComponents\ActionGetValue\Default.cshtml" />
-    <Content Remove="UIComponents\ButtonCollapseCard.cshtml" />
     <Content Remove="UIComponents\CardHeader\TabHeader.cshtml" />
     <Content Remove="UIComponents\Card\Default.cshtml" />
+    <Content Remove="UIComponents\Default.cshtml" />
     <Content Remove="UIComponents\InputSelectlist\Select2.cshtml" />
     <Content Remove="UIComponents\Partial\Default.cshtml" />
   </ItemGroup>

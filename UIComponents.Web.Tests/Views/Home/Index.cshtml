@@ -1,4 +1,8 @@
-﻿@{
+﻿@using UIComponents.Abstractions;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models;
+@using UIComponents.Web.Extensions;
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -7,3 +11,9 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
+@{
+    var card = new UICCard(new TranslationModel("Card.Test"))
+                .AddPartial(new UICPartial("Home", "test"));
+}
+
+@await card.InvokeAsync(Component)

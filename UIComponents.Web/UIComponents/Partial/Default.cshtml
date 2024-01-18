@@ -23,6 +23,15 @@
     {
         Model.AddAttribute("class", "partial-source");
 
+        if (Model.GetHtml.ClientSideOptions == null)
+            Model.GetHtml.ClientSideOptions = new UICCustom(
+                @<text>
+                {
+                    handlers: uic.partial.handlers,
+                    cancelPreviousRequests: true
+                }
+                </text>);
+
         Model.AddScript(
     @<text>
         $('#@id').on('uic-help', ()=>{
@@ -33,6 +42,7 @@
             
         });
         $('#@id').on('uic-reload', async() =>{
+            console.log('partial retriggered');
             @if (!Model.ReloadIfHidden)
             {
             <text>
@@ -42,7 +52,9 @@
             }
 
             uic.partial._reloadPartial($('#@id'), @Json.Serialize(Model.ShowOverlay), async() =>{
-                return @await Model.GetHtml.InvokeAsync(Component);
+                
+                @await Model.GetHtml.InvokeAsync(Component);
+                return @Html.Raw(Model.GetHtml.ResultName);
             });
         });
         $('#@id').on('uic-source', ()=>{
@@ -73,7 +85,13 @@
         </text>
         }
 
-    </text>);
+        @if(!Model.SkipInitialLoad)
+        {
+        <text>
+        $('#@id').triggerHandler('uic-reload');
+        </text>
+        }
+                </text>);
 
     }
 }

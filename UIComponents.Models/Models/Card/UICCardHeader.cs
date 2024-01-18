@@ -67,6 +67,16 @@ namespace UIComponents.Models.Models.Card
             return AddAppendTitle(item);
         }
 
+        public UICCardHeader AddCollapseButton(UICCard? card = null)
+        {
+            if (Buttons.Any(x => x is UICButtonCollapseCard))
+                return this;
+
+            Buttons.Add(new UICButtonCollapseCard(card));
+            return this;
+        }
+
+
         public static Task DefaultTransformer(object sender, IHeader iheader)
         {
             var header = iheader as UICCardHeader;
@@ -76,6 +86,8 @@ namespace UIComponents.Models.Models.Card
                 header.AddAttribute("class", "card-header");
                 if (card.DefaultClosed)
                     header.CollapseCardOnClick = false;
+                else 
+                    header.Buttons.Add(new UICButtonCollapseCard(card));
             }
             else if(sender is UICTabs tabs)
             {

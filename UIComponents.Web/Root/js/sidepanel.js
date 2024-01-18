@@ -86,7 +86,7 @@
             uic.sidePanel.setHeight(container);
         }).observe(content[0]);
     },
-    saveState = function (container, state) {
+    saveState: function (container, state) {
         let name = container.data('sidebar-name');
         if (!name.length)
             return;

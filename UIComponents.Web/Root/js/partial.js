@@ -8,19 +8,34 @@ uic.partial = uic.partial || {
         else
             location.reload();
     },
-    showOverlay : function (element = null) {
+    showOverlay: function (element = null) {
         if (!element)
             element = document.body;
 
         $(element).LoadingOverlay('show', { image: '', fontawesome: 'fas fa-sync-alt fa-spin' });
     },
 
-    hideOverlay : function (element = null) {
+    hideOverlay: function (element = null) {
         if (!element)
             element = document.body;
 
         $(element).LoadingOverlay('hide');
     },
+
+    handlers: [
+        (response) => {
+            if (response.type == "AccessDenied") {
+                return $('<div>', { class: 'alert alert-danger', role: 'alert' }).append('Access Denied');
+            }
+        },
+        (response) => {
+            if (response.type == "Exception") {
+                return $('<div>', { class: 'alert alert-danger', role: 'alert' }).append('Error receiving data');
+            }
+        }
+    ],
+
+
     _reloadPartial: async function (partial, showOverlay, getDatafunc) {
         if (!partial.length)
             return;
@@ -38,4 +53,4 @@ uic.partial = uic.partial || {
 
         await partial.triggerHandler('uic-reloaded');
     }
-}
+};

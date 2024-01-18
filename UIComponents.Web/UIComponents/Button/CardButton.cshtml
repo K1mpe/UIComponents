@@ -38,13 +38,14 @@
         {
             onClickElement.AddAttribute("identifier", $"#{id}");
         }
-
     }
+    if (string.IsNullOrEmpty(Model.GetAttribute("title")))
+        Model.AddAttribute("title", await L.Translate(Model.ButtonText));
     if (Model.Disabled)
         Model.AddAttribute("disabled", "true");
 
+    Model.AddAttribute("class", "btn").AddAttribute("class", "btn-tool");
 
-    
 }
 
 
@@ -52,7 +53,6 @@
 {
     <a href="@navigate.Href" @Html.Raw(Model.GetHtmlAttributes())>
         @await Model.PrependButtonIcon.InvokeAsync(Component)
-        @Html.Translate(L, Model.ButtonText, null)
         @await Model.AppendButtonIcon.InvokeAsync(Component)
     </a>
 }
@@ -60,7 +60,6 @@ else
 {
     <button type="@type" @Html.Raw(Model.GetHtmlAttributes())>
         @await Model.PrependButtonIcon.InvokeAsync(Component)
-        @Html.Translate(L, Model.ButtonText, null)
         @await Model.AppendButtonIcon.InvokeAsync(Component)
 
         @if (Model.OnClick != null)

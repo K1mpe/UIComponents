@@ -37,6 +37,13 @@ public class UICActionGetPost : UIComponent, ISubmitAction
     /// </summary>
     public UICGetPostOptions? Options { get; set; } = null;
 
+
+    /// <summary>
+    /// A function that returns options. <see cref="Options"/> still takes priority over this
+    /// </summary>
+    public IUIAction? ClientSideOptions { get; set; } = null;
+
+
     /// <summary>
     /// Before sending the request, this action is called client side to get additional properties.
     /// </summary>

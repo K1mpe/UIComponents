@@ -18,6 +18,32 @@
 @model UICActionRefreshPartial
 
 
+@if (Model.SpinElement != null)
+{
+    Model.AddScript(
+
+@<text>
+    let partial;
+    @if (Model.Partial == null)
+                {
+    <text>
+        partial = $(this).closest('.partial-source');
+    </text>
+                }
+                else
+                {
+    <text>
+        partial = $('#@Html.JsEncode(Model.Partial.GetOrGenerateId())');
+    </text>
+                }
+
+    let spinner = $('#@Model.SpinElement.GetOrGenerateId()');
+    partial.on('uic-before-reload', () => { spinner.addClass('fa-spin')});
+    partial.on('uic-reloaded', () => { spinner.removeClass('fa-spin')});
+</text>
+);
+
+}
 
 let partial;
 @if(Model.Partial == null)
@@ -33,12 +59,4 @@ else
     </text>
 }
 
-@if(Model.SpinElement != null)
-{
-    <text>
-        let spinner = $('#@Model.SpinElement.GetOrGenerateId()');
-        partial.on('uic-before-reload', ()=>{spinner.addClass('fa-spin')});
-        partial.on('uic-reloaded', ()=>{spinner.removeClass('fa-spin')});
-    </text>
-}
 partial.trigger('uic-reload');

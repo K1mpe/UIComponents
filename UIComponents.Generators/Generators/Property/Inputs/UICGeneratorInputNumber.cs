@@ -10,14 +10,13 @@ public class UICGeneratorInputNumber : UICGeneratorProperty
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult = false;
-        UICPropertyType = Abstractions.Attributes.UICPropertyType.Number;
     }
 
     public override double Priority { get; set; } = 1000;
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
-        if (args.UICPropertyType != Abstractions.Attributes.UICPropertyType.Number || args.UICPropertyType != Abstractions.Attributes.UICPropertyType.Decimal)
+        if (args.UICPropertyType != Abstractions.Attributes.UICPropertyType.Number && args.UICPropertyType != Abstractions.Attributes.UICPropertyType.Decimal)
             return GeneratorHelper.Next<IUIComponent>();
 
         var input = new UICInputNumber(args.PropertyName);
