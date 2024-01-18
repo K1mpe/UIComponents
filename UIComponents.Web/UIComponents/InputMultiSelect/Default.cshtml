@@ -26,23 +26,23 @@
 
     var style = Model.GetAttribute("style");
     Model.Attributes["style"] = "";
-    if (Model.Color.HasValue)
+    if (Model.Color != null)
     {
      
-        Model.AddStyle(
-    @<text>
-                #@id + span .select2-selection__choice{
-                background-color: @Model.Color.Value.ToHex() !important;
-                border-color: @Model.Color.Value.ToHex() !important;
-                }
-                #@id + span.select2-container--focus .select2-selection--multiple {
-                border-color: @Model.Color.Value.ToHex() !important;
-                }
-                .select2-container--open[data-for=@id] .select2-results__option--highlighted{
-                background-color: @Model.Color.Value.ToHex() !important;
-                }
-            </text>
-        );
+    //    Model.AddStyle(
+    //@<text>
+    //            #@id + span .select2-selection__choice{
+    //            background-color: @Model.Color.ToHex() !important;
+    //            border-color: @Model.Color.ToHex() !important;
+    //            }
+    //            #@id + span.select2-container--focus .select2-selection--multiple {
+    //            border-color: @Model.Color.ToHex() !important;
+    //            }
+    //            .select2-container--open[data-for=@id] .select2-results__option--highlighted{
+    //            background-color: @Model.Color.ToHex() !important;
+    //            }
+    //        </text>
+    //    );
     }
 }
 
@@ -57,7 +57,7 @@
     Model.AddScript(@<text>
             $('#@id').select2({
                 multiple: true,
-                closeOnSelect: @JsonSerializer.Serialize(Model.CloseOnSelect),
+                closeOnSelect: @Json.Serialize(Model.CloseOnSelect),
                 @if (!string.IsNullOrEmpty(placeholder))
                     {
                     <text>
@@ -72,7 +72,7 @@
                 $('#@id').val(values).change();
             });
 
-            $('#@id').val(@JsonSerializer.Serialize(Model.Value)).change();
+            $('#@id').val(@Json.Serialize(Model.Value)).change();
 
             $('#@id').next().attr('style', @Html.JsEncode(style, "'"));
         </text>

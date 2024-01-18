@@ -14,13 +14,15 @@
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
+
+@inject IUicLanguageService L
 @model UICDropdownItem
 @{
     Model.AssignCollectionForChildren();
 
     Model.AddAttribute("class", "dropdown-item");
     if (Model.Tooltip != null)
-        Model.AddAttribute("title", L.GetResourceValue(Model.Tooltip));
+        Model.AddAttribute("title", await L.Translate(Model.Tooltip));
 
 }
 
@@ -36,7 +38,7 @@
             {
                 <span class="icon"></span>
             }
-            @L.GetResourceValue(Model.Content)
+            @await Html.Translate(L,Model.Content, null)
         </span>
     </li>
 }
@@ -53,7 +55,7 @@ else if (Model.OnClick is UICActionNavigate navigate)
             {
                 <span class="icon"></span>
             }
-            @L.GetResourceValue(Model.Content)
+            @await Html.Translate(L,Model.Content, null)
         </a>
     </li>
 }
@@ -79,7 +81,7 @@ else
         {
             <span class="icon"></span>
         }
-        @L.GetResourceValue(Model.Content)</a>
+        @await Html.Translate(L,Model.Content, null)</a>
     </li>
     //Create the script for the click on the dropdown item, and store it for later. This script will be rendered after all dropdown items.
     

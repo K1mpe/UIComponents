@@ -48,6 +48,11 @@
             {
                 if (button is UICButton b2)
                     b2.Renderer = UICButton.ButtonRenderer.CardButton;
+                if (button is UICToggleButton toggleButton)
+                {
+                    toggleButton.ButtonTrue.Renderer = UICButton.ButtonRenderer.CardButton;
+                    toggleButton.ButtonFalse.Renderer = UICButton.ButtonRenderer.CardButton;
+                }
                 @await button.InvokeAsync(Component)
             }
         </div>

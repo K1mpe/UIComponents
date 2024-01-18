@@ -1,6 +1,21 @@
-﻿@using CDCPortal.DA.UIComponents.Abstract;
-@using CDCPortal.DA.UIComponents.Models;
-@model UICCardWithTabs
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICTabs
 
 @{
     if (Model.RememberTabState)
@@ -20,15 +35,15 @@
         <text>
             let openTabId= localStorage.getItem('tabs-lastState-@id');
             if(openTabId != null)
-            taghelper.card.openTab($(openTabId));
+                taghelper.card.openTab($(openTabId));
 
 
             taghelper.card.openFirstTabCard($('#@id'), true);
 
 
             $('#@id').on('tabChanged', (ev, tabs)=>{
-            console.log(`Saving tab ${$(tabs.newTab).attr('href')}`);
-            localStorage.setItem('tabs-lastState-@id', $(tabs.newTab).attr('href'));
+                console.log(`Saving tab ${$(tabs.newTab).attr('href')}`);
+                localStorage.setItem('tabs-lastState-@id', $(tabs.newTab).attr('href'));
             })
         </text>
                 }
@@ -37,9 +52,9 @@
     </text>);
 }
 
-@if (Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent)
+@if (Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent && Model.Tabs.First() is IUIComponent firstTab)
 {
-    @await Model.Tabs.First().InvokeAsync(Component)
+    @await firstTab.InvokeAsync(Component)
 }
 else
 {
@@ -50,26 +65,11 @@ else
                     @for (int i = 0; i < Model.Tabs.Count; i++)
                     {
                         var tab = Model.Tabs[i];
-                        var title = tab.Title;
-                        tab.Title = null;
-
-                        if (tab is UICCard card)
-                        {
-                            card.OnlyDisplayContent = true;
-                            card.DefaultClosed = true;
-                        }
-                        if (tab is Card card2)
-                        {
-                            card2.HideHeader = true;
-                            card2.RemoveCardClass = true;
-                        }
-                        if(tab is UICCardWithTabs subTabs)
-                        {
-                            subTabs.AddBodyAttribute("class", "p-0 pt-2");
-                        }
-                        <a class="nav-link" data-toggle="tab" role="tab" href="@($"#{id}-tab{i+1}")">
-                            @L.GetResourceValue(title)
-                        </a>
+                        tab.Header
+                            .AddAttribute("class", "nav-link")
+                            .AddAttribute("href", $"#{id}-tab{i + 1}");
+                        
+                        @await tab.Header.InvokeAsync(Component)
                     }
                 </div>               
             </div>
@@ -77,7 +77,8 @@ else
                 <div class="tab-content">
                     @for (int i = 0; i < Model.Tabs.Count; i++)
                     {
-                        var tab = Model.Tabs[i];
+                        var tab = Model.Tabs[i].Content;
+
                         <div class="tab-pane fade" role="tabpanel" id="@($"{id}-tab{i+1}")">
                             @await tab.InvokeAsync(Component)
                         </div>

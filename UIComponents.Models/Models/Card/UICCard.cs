@@ -30,7 +30,7 @@ public class UICCard : UIComponent
     /// </summary>
     public UICGroup Body { get; set; } = new();
 
-    public UICGroup Footer { get; set; }
+    public UICGroup? Footer { get; set; }
 
 
 

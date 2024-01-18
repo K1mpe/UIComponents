@@ -2,7 +2,7 @@
 
 namespace UIComponents.Defaults;
 
-public static class Colors
+public static class ColorDefaults
 {
     public static IColor DefaultColor { get; set; }
 

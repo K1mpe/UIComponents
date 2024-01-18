@@ -22,7 +22,7 @@ public static class TranslateExtensions
 
     }
 
-    public static IHtmlContent JsEncode(this IHtmlHelper htmlHelper, string text, string brackets = null)
+    public static IHtmlContent JsEncode(this IHtmlHelper htmlHelper, string text, string? brackets = null)
     {
         HtmlContentBuilder content = new();
         if (brackets != null)

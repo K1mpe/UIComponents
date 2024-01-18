@@ -21,16 +21,10 @@
     string idButtonTrue = Model.ButtonTrue.GetOrGenerateId();
     string idButtonFalse = Model.ButtonFalse.GetOrGenerateId();
 
-}
+    Model.AssignCollectionForChildren();
 
-
-<div @Html.Raw(Model.GetHtmlAttributes())>
-    @await Model.ButtonTrue.InvokeAsync(Component)
-    @await Model.ButtonFalse.InvokeAsync(Component)
-</div>
-
-<script>
-    $(document).ready(function(){
+    Model.AddScript(
+    @<text>
         $('#@id').on('setValue', function(e, value){
             if(value == true){
                 ViewButtonTrue();
@@ -51,8 +45,8 @@
             $('#@idButtonTrue').attr('hidden', true);
             $('#@idButtonFalse').attr('hidden', false);
         };
-    @if (!Model.DisableAutoChange)
-    {
+        @if (!Model.DisableAutoChange)
+                {
         <text>
             $('#@idButtonTrue').click(function () {
                 ViewButtonFalse();
@@ -62,19 +56,33 @@
                 ViewButtonTrue();
             });
         </text>
-    }
-    
-    @if (Model.Value)
-    {
+                }
+
+        @if (Model.Value)
+                {
         <text>
             ViewButtonTrue();
         </text>
-    }
-    else
-    {
+                }
+                else
+                {
         <text>
             ViewButtonFalse();
         </text>
-    }
+                }
+    </text>);
+
+}
+
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    @await Model.ButtonTrue.InvokeAsync(Component)
+    @await Model.ButtonFalse.InvokeAsync(Component)
+</div>
+
+<script>
+    $(document).ready(function(){
+        
     });
 </script>
+@await Model.RenderStylesAndScripts(Component)

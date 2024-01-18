@@ -49,51 +49,77 @@
         margin-right: auto;
     }
 }
-/*#endregion ButtonToolbar*/
-/*#region Inputs*/
-/*#region Timespan*/
-
-
-.uic-timespan-input {
-    min-width: 50px;
-}
-
-.uic-timespan-input:not(:first-child) {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-left-style: dashed;
-}
-
-.uic-timespan-input:not(:last-child) {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right-style: none;
-}
-/*#endregion Timespan*/
-/*#region ToggleSwitch*/
-
-.custom-control-input.indeterminate ~ .custom-control-label {
-    &::before {
-        background-color: var(--secondary, $custom-control-indicator-bg);
-    }
-
-    &::after {
-        transform: translateX(($custom-switch-width - $custom-control-indicator-size)/2);
-    }
-}
-/*#endregion ToggleSwitch*/
-/*#endregion Inputs*/
-
-.custom-control-input[disabled] ~ .custom-control-label ::after, .custom-control-input:disabled ~ .custom-control-label::after {
-    opacity: 0.25;
-}
-
 
 .btn-toolbar-sm {
     .btn {
         @extend .btn-sm;
     }
 }
+/*#endregion ButtonToolbar*/
+
+/*#region Inputs*/
+
+    /*#region Color*/
+    
+    .uic-color-input.coloris{
+        @extend .coloris-square;
+    }
+
+    /*#endregion Color*/
+
+
+    /*#region Timespan*/
+
+    .uic-timespan-input {
+        min-width: 50px;
+    }
+
+    .uic-timespan-input:not(:first-child) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left-style: dashed;
+    }
+
+    .uic-timespan-input:not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right-style: none;
+    }
+
+    /*#endregion Timespan*/
+
+
+    /*#region ToggleSwitch*/
+
+    .custom-control-input.indeterminate ~ .custom-control-label {
+        &::before {
+            background-color: var(--secondary, $custom-control-indicator-bg);
+        }
+
+        &::after {
+            transform: translateX(($custom-switch-width - $custom-control-indicator-size)/2);
+        }
+    }
+    /*#endregion ToggleSwitch*/
+/*#endregion Inputs*/
+
+/*#region SidePanel*/
+.side-panel-container.horizontal{
+    .side-panel{
+        min-width: fit-content;
+        padding: 0;
+
+    }
+}
+
+/*#endregion SidePanel*/
+
+.custom-control-input[disabled] ~ .custom-control-label ::after, .custom-control-input:disabled ~ .custom-control-label::after {
+    opacity: 0.25;
+}
+
+
+
 
 
 

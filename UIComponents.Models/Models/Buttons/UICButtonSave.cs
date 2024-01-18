@@ -11,7 +11,7 @@ public class UICButtonSave : UICButton
     public UICButtonSave()
     {
         ButtonText = TranslationDefaults.ButtonSave;
-        Color = Colors.ButtonSave?? Colors.ButtonDefault;
+        Color = ColorDefaults.ButtonSave?? ColorDefaults.ButtonDefault;
         this.AddAttribute("class", "btn-save");
     }
     public UICButtonSave(UICForm form) : this()

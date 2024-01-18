@@ -16,6 +16,13 @@ public static class TranslationDefaults
     public static ITranslateable ButtonCancel = new TranslationModel("Button.Cancel");
 
     public static ITranslateable ButtonDelete = new TranslationModel("Button.Delete");
+
+    public static ITranslateable ButtonRefresh = new TranslationModel("Button.Refresh");
+
+    public static ITranslateable ButtonCardExpand = new TranslationModel("Button.Expand");
+    public static ITranslateable ButtonCardCollapse = new TranslationModel("Button.Collapse");
+
+
     public static Func<object, ITranslateable> ButtonDeleteToolTip = (obj) => new TranslationModel("Button.Delete.Tooltip", "Delete this {0}", TranslateObject(obj));
 
 

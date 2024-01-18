@@ -15,6 +15,8 @@
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
 
+@inject IUicLanguageService L
+
 @model UICDropdownSubMenu
 
 
@@ -56,7 +58,7 @@ else
             {
                 <span class="icon"></span>
             }
-            @L.GetResourceValue(Model.Content)
+        @await Html.Translate(L,Model.Content, null)
         </a>
         <ul class="dropdown-menu">
             @foreach (var item in subItems)

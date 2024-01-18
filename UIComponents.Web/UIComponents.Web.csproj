@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>0.0.2</Version>
+	<Version>1.0.0</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -20,6 +20,7 @@
 	
   <ItemGroup>
     <Content Remove="UIComponents\ActionGetValue\Default.cshtml" />
+    <Content Remove="UIComponents\ButtonCollapseCard.cshtml" />
     <Content Remove="UIComponents\CardHeader\TabHeader.cshtml" />
     <Content Remove="UIComponents\Card\Default.cshtml" />
     <Content Remove="UIComponents\InputSelectlist\Select2.cshtml" />
@@ -64,12 +65,13 @@
     <None Include="UIComponents\Actions\Default.cshtml" />
     <None Include="UIComponents\ButtonEdit\Default.cshtml" />
     <None Include="UIComponents\ButtonGroup\Default.cshtml" />
-    <None Include="UIComponents\ButtonToggle\Default.cshtml" />
+    <None Include="UIComponents\TimelineGraph\Default.cshtml" />
+    <None Include="UIComponents\ToggleButton\Default.cshtml" />
     <None Include="UIComponents\ButtonToolbar\Default.cshtml" />
     <None Include="UIComponents\Button\CardButton.cshtml" />
     <None Include="UIComponents\Button\Default.cshtml" />
     <None Include="UIComponents\Tabs\HorizontalTab.cshtml" />
-    <None Include="UIComponents\Tabs\_VerticalTab.cshtml" />
+    <None Include="UIComponents\Tabs\VerticalTab.cshtml" />
     <None Include="UIComponents\Custom\Default.cshtml" />
     <None Include="UIComponents\DropdownDivider\Default.cshtml" />
     <None Include="UIComponents\DropdownHeader\Default.cshtml" />

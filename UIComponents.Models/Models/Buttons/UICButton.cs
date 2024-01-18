@@ -25,7 +25,7 @@ public class UICButton : UIComponent
 
     public ITranslateable Tooltip { get; set; }
 
-    public IColor? Color { get; set; } = Colors.ButtonDefault;
+    public IColor? Color { get; set; } = ColorDefaults.ButtonDefault;
 
     /// <summary>
     /// Function triggered when clicking the button

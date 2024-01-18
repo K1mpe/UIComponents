@@ -15,7 +15,7 @@ namespace UIComponents.Models.Models.Card
         }
 
         public ITranslateable Title { get; set; }
-        public IColor? Color { get; set; } = UIComponents.Defaults.Colors.CardHeaderDefault;
+        public IColor? Color { get; set; } = UIComponents.Defaults.ColorDefaults.CardHeaderDefault;
 
         public List<IUIComponent> PrependTitle { get; set; } = new();
         public List<IUIComponent> AppendTitle { get; set; } = new();
@@ -80,6 +80,9 @@ namespace UIComponents.Models.Models.Card
             else if(sender is UICTabs tabs)
             {
                 header.Renderer = CardHeaderRenderer.TabHeader;
+                header
+                    .AddAttribute("role", "tab")
+                    .AddAttribute("data-toggle", "tab");
             }
 
 

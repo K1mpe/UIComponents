@@ -42,6 +42,7 @@ public class UICDropdown : UIComponent
     /// </summary>
     public IconPositionEnum IconPosition { get; set; } = IconPositionEnum.Left;
 
+    public bool ReplaceDropdownByButtonIfSingleDropdownItem { get; set; } = true;
 
     #region Methods
     /// <summary>

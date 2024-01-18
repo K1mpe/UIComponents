@@ -8,9 +8,10 @@ namespace UIComponents.Models.Models.Actions;
 public class UICActionRefreshPartial : UIComponent, IUIAction
 {
     #region Ctor
-    public UICActionRefreshPartial(UICPartial? partial = null) : base()
+    public UICActionRefreshPartial(UICPartial? partial = null, IUIHasAttributes spinElement=null) : base()
     {
-
+        Partial = partial;
+        SpinElement = spinElement;
     }
     #endregion
 
@@ -20,6 +21,14 @@ public class UICActionRefreshPartial : UIComponent, IUIAction
     /// The partial that will be updated, if null, search the DOM tree for the closest partial
     /// </summary>
     public UICPartial? Partial { get; set; } = null;
+
+
+    /// <summary>
+    /// When this partial is refreshing, this element will spin. Usefull for the icon of button
+    /// </summary>
+    /// <remarks>
+    /// If using a icon, be sure to generate a id for the icon, since a icon does not generate one itself.</remarks>
+    public IUIHasAttributes? SpinElement { get; set; } = null;
     #endregion
 
 }

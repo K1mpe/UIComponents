@@ -14,7 +14,7 @@
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
-@using CDCPortal.DA.UIComponents.Models.Dropdown;
+
 
 @model UICDropdownHeader
 
@@ -32,6 +32,6 @@
         {
             <span class="icon"></span>
         }
-        @L.GetResourceValue(Model.Content)
-        </h6>
+        Model.Content
+    </h6>
 </li>

@@ -66,11 +66,9 @@ else
                 @for (int i = 0; i < Model.Tabs.Count; i++)
                 {
                     var tab = Model.Tabs[i];
-                    if (string.IsNullOrEmpty(tab.Content.GetAttribute("id")))
-                        tab.Content.AddAttribute("id", $"{id}-tab{i+1}");
 
                     await tab.Header.Transformer(Model, tab.Header);
-                    tab.Header.AddAttribute("href", $"#{tab.Content.GetAttribute("id")}");
+                    tab.Header.AddAttribute("href", $"#{id}-tab{i + 1}");
                     
                     @await tab.Header.InvokeAsync(Component)
                 }
@@ -82,8 +80,6 @@ else
                 @for (int i = 0; i < Model.Tabs.Count; i++)
                 {
                     var tab = Model.Tabs[i].Content;
-                    tab.AddAttribute("class", "tab-pane fade")
-                        .AddAttribute("role", "tabpanel");
 
                     <div class="tab-pane fade" role="tabpanel" id="@($"{id}-tab{i+1}")">
                         @await tab.InvokeAsync(Component)

@@ -27,7 +27,7 @@ public class UICInputCheckboxThreeState : UICInput<bool?>
 
 
     #region Properties
-    public IColor Color { get; set; } = Colors.InputCheckbox;
+    public IColor Color { get; set; } = ColorDefaults.InputCheckbox;
 
     public CheckboxRenderer Renderer { get; set; }
 
