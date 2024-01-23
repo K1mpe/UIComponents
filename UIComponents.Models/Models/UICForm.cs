@@ -1,7 +1,4 @@
-﻿using UIComponents.Abstractions.Models;
-using UIComponents.Models.Models.Actions;
-
-namespace UIComponents.Models.Models;
+﻿namespace UIComponents.Models.Models;
 
 /// <summary>
 /// A form that can be posted. This is required to use the <see cref="UICActionSubmit"/>
@@ -50,5 +47,11 @@ public class UICForm : UIComponent, IUICHasChildren<IUIComponent>
     public IUIAction TriggerGetValue() => new UICActionGetValue(this);
     #endregion
 
+    
+
+    //public UICForm AddChild<T>(T child, Action<T> action) where T: IUIComponent
+    //{
+    //    return this;
+    //}
 
 }

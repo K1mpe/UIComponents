@@ -236,11 +236,15 @@ public class UICTimeLineGraph : UIComponent
         {
 
         }
+        [System.Text.Json.Serialization.JsonPropertyName("v")]
         public double Value { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
         public DateTime DateTime { get; set; }
 
 
 
+        [System.Text.Json.Serialization.JsonPropertyName("d")]
         public string DateValue { get => DateTime.ToString("s"); }
 
         /// <summary>

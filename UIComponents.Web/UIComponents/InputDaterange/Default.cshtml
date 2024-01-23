@@ -104,7 +104,7 @@
     }
         });
 
-        $('#@id').on('GetValue', function () {
+        $('#@id').on('getValue', function () {
             var data = $(this).data('daterangepicker');
             return {
                 Start: data.startDate.format(),
@@ -112,7 +112,7 @@
             }
         });
 
-        $('#@id').on('SetValue', function(event, value){
+        $('#@id').on('setValue', function(event, value){
             console.log('set daterange', value);
         if(value.Start !== undefined){
             if(value.Start == null)

@@ -26,7 +26,7 @@
         Model.AddScript(
     @<text>
     $('#@id').on('click', ()=>{
-        $(this).closest('.card').trigger('uic-toggle');
+        $('#@id').closest('.card').trigger('uic-toggle');
     });
     $('#@id .card-tools').on('click', (ev)=>{
         ev.stopPropagation();

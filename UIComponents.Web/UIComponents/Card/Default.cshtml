@@ -57,34 +57,37 @@
                 console.log("Card $('#@id').trigger('uic-open') Open the card");
                 console.log("Card $('#@id').trigger('uic-close') Close the card");
                 console.log("Card $('#@id').trigger('uic-toggle') Open or Close the card");
-                console.Log("Card $('#@id').on('uic-before-open', ()=>{...}) Triggered before the card starts opening");
-                console.Log("Card $('#@id').on('uic-before-close', ()=>{...}) Triggered before the card starts closing");
-                console.Log("Card $('#@id').on('uic-opened', () =>{...}) Triggered when the opening animation is complete");
-                console.Log("Card $('#@id').on('uic-closed', () =>{...}) Triggered when the clsoing animation is complete");
+                console.log("Card $('#@id').on('uic-before-open', ()=>{...}) Triggered before the card starts opening");
+                console.log("Card $('#@id').on('uic-before-close', ()=>{...}) Triggered before the card starts closing");
+                console.log("Card $('#@id').on('uic-opened', () =>{...}) Triggered when the opening animation is complete");
+                console.log("Card $('#@id').on('uic-closed', () =>{...}) Triggered when the clsoing animation is complete");
             });
 
-            $('#@id').on('uic-open', async ()=>{
-                let card = $(this);
+            $('#@id').on('uic-open', async (ev)=>{
+                ev.stopPropagation();
+                let card = $('#@id');
                 await card.triggerHandler('uic-before-open');
 
                 card.CardWidget('expand');
             })
             $('#@id').on('uic-close', async ()=>{
-                let card = $(this);
+            ev.stopPropagation();
+            let card = $('#@id');
                 await card.triggerHandler('uic-before-close');
 
                 card.CardWidget('collapse');
             });
             $('#@id').on('uic-toggle', async ()=>{
-                let card = $(this);
+                ev.stopPropagation();
+                let card = $('#@id');
                 if(card.hasClass('collapsed-card'))
-                card.trigger('uic-open');
+                    card.triggerHandler('uic-open');
                 else
-                card.trigger('uic-close');
+                    card.triggerHandler('uic-close');
             });
 
-            $('#@id').on('expanded.lte.cardwidget', ()=> $(this).trigger('uic-opened'));
-            $('#@id').on('collapsed.lte.cardwidget', ()=> $(this).trigger('uic-opened'));
+            $('#@id').on('expanded.lte.cardwidget', (ev)=> $('#@id').triggerHandler('uic-opened'));
+            $('#@id').on('collapsed.lte.cardwidget', (ev)=> $('#@id').triggerHandler('uic-closed'));
         </text>
 
         @if (Model.RememberCollapsedState)
@@ -96,13 +99,13 @@
                         if(!$('#@id').hasClass('collapsed-card'))
                         {
                             $('#@id').addClass('collapsed-card');
-                            $('#@id').trigger('uic-close');
+                            $('#@id').triggerHandler('uic-close');
                         }
                     } else if(collapsed =='false'){
                         if($('#@id').hasClass('collapsed-card'))
                         {
                             $('#@id').removeClass('collapsed-card');
-                            $('#@id').trigger('uic-open');
+                            $('#@id').triggerHandler('uic-open');
                         }
                     }
                 }catch{}

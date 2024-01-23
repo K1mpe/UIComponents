@@ -47,47 +47,46 @@
 
 
     $('#@guid').on('help', function(){
-        console.log(".trigger('reload', 'graphId')", "Reload this graph");
-        console.log(".trigger('reloadAll')", "Reload all data in this chart");
-        console.log(".trigger('resize')", "ReRender the graph to scale for the available space")
+        console.log("Chart $('#@guid').trigger('uic-reload')", "Reload all graphs with a data source");
+        console.log("Chart $('#@guid').trigger('uic-reload', 'graphId')", "Reload this graph");
+        console.log("Chart $('#@guid').trigger('uic-resize')", "ReRender the graph to scale for the available space")
 
-        console.log(".triggerHandler('getChart')", "Returns the current graph config");
-        console.log(".triggerHandler('getGraphs')", "Returns a array of all current graphs");
+        console.log("Chart $('#@guid').triggerHandler('uic-getChart')", "Returns the current graph config");
+        console.log("Chart $('#@guid').triggerHandler('uic-getGraphs')", "Returns a array of all current graphs");
 
-        console.log(".trigger('addGraph', graph)", "Add a new chart clientSide, Example:", {
-            Id: 'Unique string',
-            Label: 'string',
-            Points:[{
-                Value: 123,
-                DateValue:"DateTime.ToString('s')",
+        console.log("Chart $('#@guid').trigger('uic-addGraph', graph)", "Add a new chart clientSide, Example:", {
+            id: 'Unique string',
+            label: 'string',
+            data:[{
+                v: 123,
+                d:"DateTime.ToString('s')",
                 Id: 'Optional string'
             }],
-            Source: '/Home/GetData',
+            source: '/Home/GetData',
 
         });
-        console.log(".trigger('removeGraph', 'graphId')", "Remove a graph from chart based on its Id");
-        console.log(".trigger('enableGraph', 'graphId')", "If this graph is off, turn it on");
-        console.log(".trigger('disableGraph', 'graphId')", "If this graph is on, turn it off");
-        console.log(".trigger('toggleGraph', 'graphId')", "Turn this graph on or off");
+        console.log("Chart $('#@guid').trigger('uic-removeGraph', 'graphId')", "Remove a graph from chart based on its Id");
+        console.log("Chart $('#@guid').trigger('uic-enableGraph', 'graphId')", "If this graph is off, turn it on");
+        console.log("Chart $('#@guid').trigger('uic-disableGraph', 'graphId')", "If this graph is on, turn it off");
+        console.log("Chart $('#@guid').trigger('uic-toggleGraph', 'graphId')", "Turn this graph on or off");
 
 
-        console.log(".on('chartMoved', (ev, movedData) => {})", "Triggered if the chart moves or scales");
-        console.log(".on('loaded', (ev, loadedData) => {})", "Triggered after one or more graphs have loaded data");
-        console.log(".on('graphChanged', (ev, changedData) => {})", "Triggered after a chart has been turned on or off");
+        console.log("Chart $('#@guid').on('uic-chartMoved', (ev, movedData) => {})", "Triggered if the chart moves or scales");
+        console.log("Chart $('#@guid').on('uic-loaded', (ev, loadedData) => {})", "Triggered after one or more graphs have loaded data");
+        console.log("Chart $('#@guid').on('uic-graphChanged', (ev, changedData) => {})", "Triggered after a chart has been turned on or off");
     });
 
-    $('#@guid').on('reloadAll', function(){
+    $('#@guid').on('uic-reload', function(graphId){
         reloadAllGraphData();
     });
-    $('#@guid').on('getChart', function(){
+    $('#@guid').on('uic-getChart', function(){
         console.log('chart', chart);
         return chart;
     })
-    $('#@guid').on('resize', function(){
+    $('#@guid').on('uic-resize', function(){
         OnWindowResized();
     })
 
-    log('Start script');
 
     function log(...rest){
         if(@Json.Serialize(Model.EnableConsoleLog))
@@ -99,9 +98,7 @@
         if(!Model.LineGraphs.Where(x=>!string.IsNullOrWhiteSpace(x.Source) && x.DisableFutureLoading).Any())
         {
             <text>
-            liveUpdate = false;
             log('Live update disabled - No graphs with "@nameof(UICTimeLineGraph.LineGraph.Source)" and "@nameof(UICTimeLineGraph.LineGraph.DisableFutureLoading)");
-
             </text>      
         }
     }
@@ -121,21 +118,26 @@
             graph.LineColor = colors.LineColor;
 
 
-        if (string.IsNullOrEmpty(graph.Source))
-            continue;
         if (string.IsNullOrWhiteSpace(graph.LineGraphId))
             throw new Exception($"Id is required for linegraph - {await L.Translate(graph.Label)}");
 
         <text>
         graphs[@Html.JsEncode(graph.LineGraphId, "'")] = {
-            LineGraphId: @Html.JsEncode(graph.LineGraphId,"'"),
-            Index: @i,
-            Enabled: @Json.Serialize(graph.Enabled),
-            Cached: @Json.Serialize(graph.CacheData),
-            Source: @Html.JsEncode(graph.Source,"'"),
-            DisableFutureLoading: @Json.Serialize(graph.DisableFutureLoading),
-            AdditionalPostData: @Json.Serialize(graph.AdditionalPostData),
-            Ranges: []
+            id: @Html.JsEncode(graph.LineGraphId,"'"),
+            label: @await Html.Translate(L, graph.Label),
+            enabled: @Json.Serialize(graph.Enabled),
+            cached: @Json.Serialize(graph.CacheData),
+            source: @Html.JsEncode(graph.Source,"'"),
+            disableFutureLoading: @Json.Serialize(graph.DisableFutureLoading),
+            additionalPostData: @Json.Serialize(graph.AdditionalPostData),
+            data: @Json.Serialize(graph.Points),
+            stepped: @Json.Serialize(graph.Stepped),
+            fill: @Json.Serialize(graph.Fill),
+            pointRadius: @graph.PointRadius,
+            borderColor: @Html.JsEncode(graph.LineColor, "'"),
+            backgroundColor: @Html.JsEncode(graph.BackgroundColor, "'"),
+            tension: @graph.Tension,
+            ranges: []
         };
 
         </text>
@@ -152,8 +154,8 @@
         }
     }
                 
-    let minDateTime; //The smallest position on the current timeline
-    let maxDateTime; //The largest position on the current timeline
+    let minDateTime = @Model.Start.ToMoment(Html); //The smallest position on the current timeline
+    let maxDateTime = @Model.End.ToMoment(Html); //The largest position on the current timeline
     let chart;
 
     function Initialize(){
@@ -162,24 +164,7 @@
         
         
         data:{
-            datasets:[
-                @for(int i=0; i < Model.LineGraphs.Count; i++)
-                {
-                    var graph = Model.LineGraphs[i];
-                    <text>
-                    {
-                        label: @Html.Translate(L,graph.Label),
-                        data:@Html.Raw(Json.Serialize(graph.Points)),
-                        stepped: @Json.Serialize(graph.Stepped),
-                        fill: @Json.Serialize(graph.Fill),
-                        pointRadius: @graph.PointRadius,
-                        borderColor: @Html.JsEncode(graph.LineColor, "'"),
-                        backgroundColor: @Html.JsEncode(graph.BackgroundColor, "'"),
-                        tension: @graph.Tension
-                    },
-                    </text>
-                }
-            ]
+            datasets: graphs,
         },
 
         options:{
@@ -187,17 +172,14 @@
             maintainAspectRatio: true,
 
             parsing: {
-                xAxisKey: 'DateValue',
-                yAxisKey: 'Value'
+                xAxisKey: 'd',
+                yAxisKey: 'v'
             },
 
-            animation: {
-                duration: 0
-            },
             scales: {
                 x: {
-                    min: @Model.Start.ToMoment(Html),
-                    max: @Model.End.ToMoment(Html),
+                    min: minDateTime,
+                    max: maxDateTime,
                     type: 'time',
                     time: {
                         displayFormats:{
@@ -214,17 +196,17 @@
                             </text>
                             }
                             @if (!string.IsNullOrEmpty(Model.DisplayFormatMinute))
-                        {
-                        <text>
-                            minute: @Html.JsEncode(Model.DisplayFormatMinute, "'"),
-                        </text>
-                        }
-                            @if (!string.IsNullOrEmpty(Model.DisplayFormatSecond))
-                        {
-                        <text>
-                            second: @Html.JsEncode(Model.DisplayFormatSecond, "'"),
-                        </text>
-                        }
+                            {
+                            <text>
+                                minute: @Html.JsEncode(Model.DisplayFormatMinute, "'"),
+                            </text>
+                            }
+                                @if (!string.IsNullOrEmpty(Model.DisplayFormatSecond))
+                            {
+                            <text>
+                                second: @Html.JsEncode(Model.DisplayFormatSecond, "'"),
+                            </text>
+                            }
                         }
                     },
                     ticks: {
@@ -302,13 +284,13 @@
                             }
 
                             return true;
-                        }
+                            }
+                        },
                     },
-                },
                 
+                },
             },
-        },
-    });
+        });
     }
     
     Initialize();
@@ -316,22 +298,18 @@
     minDateTime = moment(chart.scales.x.min);
     maxDateTime = moment(chart.scales.x.max);
 
-    let timer;
     var graphsIds;
     async function startFetch({ chart }) {
         let { min, max } = chart.scales.x;
 
         minDateTime= moment(min);
         maxDateTime= moment(max);
-
-        clearTimeout(timer);
-        timer = setTimeout(async function() {
+        uic.delayedAction.run('chart-fetch-data-@guid', 1000,()=>{
             var startdate = moment(min);
             var enddate = moment(max);
             chart.stop(); // make sure animations are not running
             await LoadNewData(startdate, enddate);
-        }, 1000);
-
+        });
     };
 
     function LoadNewData(newMin, newMax) {
@@ -344,9 +322,7 @@
                     autoInterval = newDelay;
                     log('Autoupdate data will happen every ' + autoInterval / 1000 + ' seconds');
                 }
-
                 AutoloadData();
-
             }
             else if (autoInterval != 0) {
                 console.log('Data will not automatically update');
@@ -405,7 +381,7 @@
         //add a list of request ranges
         let requestRanges = [];
 
-        let existingDataRanges = graphData.Ranges;
+        let existingDataRanges = graphData.ranges;
 
         if(graphData.Cached){
             console.error('cache linegraph is not yet implemented')
@@ -425,9 +401,9 @@
             let sendData= {
                 StartUTC: range.start.format(),
                 EndUTC: range.end.format(),
-                LineGraphId: graphData.LineGraphId,
+                LineGraphId: graphData.id,
                 _scaleInMilliseconds: Math.floor(chart.scales.x.ticks[1].value - chart.scales.x.ticks[0].value),
-                AdditionalPostData: graphData.AdditionalPostData
+                AdditionalPostData: graphData.additionalPostData
             };
             let result = await Crud.Post(graphData.Source, sendData);
 
@@ -436,7 +412,7 @@
                 end: range.end.format(),
                 data: result});
 
-            let dataset = chart.data.datasets[graphData.Index].data;
+            let dataset = graphData.data;
             let dataBeforeRange = dataset.filter(x => range.start > x.DateValue);
             let dataAfterRange = dataset.filter(x => range.end > x.DateValue);
 
@@ -445,9 +421,9 @@
             newData = newData.concat(result);
             newData = newData.concat(dataAfterRange);
 
-            chart.data.datasets[graphData.Index].data = newData;
+            graphData.data = newData;
 
-            graphData.Ranges.push(range);
+            graphData.ranges.push(range);
             chart.update('none');
         });
     }
@@ -469,7 +445,6 @@
         });
 
         function OnWindowResized() {
-            DestroyChart();
             InitializeChart();
         }
 

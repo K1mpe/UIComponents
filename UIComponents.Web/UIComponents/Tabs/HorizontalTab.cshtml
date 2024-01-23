@@ -43,7 +43,6 @@
 
 
         $('#@id').on('tabChanged', (ev, tabs)=>{
-            console.log(`Saving tab ${$(tabs.newTab).attr('href')}`);
             localStorage.setItem('tabs-lastState-@id', $(tabs.newTab).attr('href'));
         })
         </text>

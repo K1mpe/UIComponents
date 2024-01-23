@@ -45,6 +45,8 @@ public class UICGeneratorForm : UICGeneratorProperty
 
         var newCC = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, form, args.CallCollection);
         form.Add(await args.Configuration.GetChildComponentAsync(args.ClassObject, args.PropertyInfo, args.Options, newCC));
+        
+
         form.Parent = args.CallCollection.Caller;
 
         var toolbarCC = new UICCallCollection(UICGeneratorPropertyCallType.ButtonToolbar, form, args.CallCollection);

@@ -67,7 +67,7 @@
             });
 
             $('#@id').data('select2').$dropdown.attr('data-for', '@id').addClass('include-items');
-            $('#@id').on('SetValue', function(event, ...values){
+            $('#@id').on('setValue', function(event, ...values){
                
                 $('#@id').val(values).change();
             });

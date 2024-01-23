@@ -65,9 +65,19 @@ public class UICTabs : UIComponent, IUICHasChildren<IUICTab>
     }
 
 
-    #endregion
+    public UICTabs Add<T>(out T added, T item) where T: IUICTab
+    {
+        return this.Add<UICTabs, T, IUICTab>(out added, item);
+    }
+    
+    public UICTabs Add<T>(T item, Action<T> configure) where T : IUICTab
+    {
+        return this.Add<UICTabs, T, IUICTab>(item, configure);
+    }
 
-    #region Interface
+        #endregion
+
+        #region Interface
 
     List<IUICTab> IUICHasChildren<IUICTab>.Children => Tabs;
     #endregion

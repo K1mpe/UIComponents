@@ -45,7 +45,7 @@ Model.AddScript(
     $('#@id').on('focus', ()=>{
         $('#@id').trigger('uic-open');
     });
-
+    $('#@id').on('uic-open', (ev)=> ev.stopPropagation());
     @if (Model.HasClientSideValidation)
     {
 

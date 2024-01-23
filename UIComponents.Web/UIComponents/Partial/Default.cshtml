@@ -41,8 +41,8 @@
             console.log("$('#@id').on('uic-reloaded', () => {...}) => triggered after the reload has finished");
             
         });
-        $('#@id').on('uic-reload', async() =>{
-            console.log('partial retriggered');
+        $('#@id').on('uic-reload', async(ev) =>{
+            ev.stopPropagation();
             @if (!Model.ReloadIfHidden)
             {
             <text>
