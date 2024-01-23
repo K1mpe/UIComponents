@@ -1,10 +1,10 @@
 ﻿using System.Drawing;
 
-namespace UIComponents.Abstractions;
+namespace UIComponents.Abstractions.Interfaces;
 
 public interface IColor
 {
-    public string Name { get; set; }
+    public string Name { get;}
     public string ToLower()
     {
         return Name.ToLower();
@@ -20,5 +20,5 @@ public class UICColor : IColor
 
     public string Name { get; set; }
 
-    
+
 }

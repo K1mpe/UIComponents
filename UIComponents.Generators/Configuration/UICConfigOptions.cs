@@ -6,7 +6,7 @@ using UIComponents.Generators.Models.UICGeneratorResponses;
 
 namespace UIComponents.Generators.Configuration;
 
-public partial class UICConfigOptions
+public partial class UicConfigOptions
 {
     #region Fields
 
@@ -16,21 +16,15 @@ public partial class UICConfigOptions
     #endregion
 
     #region Ctor
-    public UICConfigOptions()
+    public UicConfigOptions()
     {
     }
     #endregion
 
-    public Type? LanguageServiceType;
-    public Type? PermissionServiceType;
     public bool CheckLanguageServiceType;
     public bool CheckPermissionServiceType;
 
-    public UICLanguageConfig LanguageConfig { get; set; } = new();
-    public class UICLanguageConfig
-    {
-       
-    }
+   
 
     #region Properties
     /// <summary>
@@ -40,7 +34,7 @@ public partial class UICConfigOptions
     #endregion
 
     #region Add Generators
-    public UICConfigOptions AddGenerator<TArgs, TResult>(string name, double priority, Func<TArgs, TResult?, Task<IUICGeneratorResponse<TResult>>> func)
+    public UicConfigOptions AddGenerator<TArgs, TResult>(string name, double priority, Func<TArgs, TResult?, Task<IUICGeneratorResponse<TResult>>> func)
     {
         var generator = new UICCustomGenerator<TArgs, TResult>()
         {
@@ -52,26 +46,26 @@ public partial class UICConfigOptions
         return this;
     }
 
-    public UICConfigOptions AddGenerator(Type type)
+    public UicConfigOptions AddGenerator(Type type)
     {
         InternalGeneratorHelper.CheckType<IUICGenerator>(type);
         _generatorTypes.Add(type);
         return this;
     }
-    public UICConfigOptions AddGenerator<T>() where T : class, IUICGenerator
+    public UicConfigOptions AddGenerator<T>() where T : class, IUICGenerator
     {
         _generatorTypes.Add(typeof(T));
         return this;
     }
 
-    public UICConfigOptions AddAndRegisterGenerator(Type type, IServiceCollection serviceCollection)
+    public UicConfigOptions AddAndRegisterGenerator(Type type, IServiceCollection serviceCollection)
     {
         InternalGeneratorHelper.CheckType<IUICGenerator>(type);
         serviceCollection.AddScoped(type);
         AddGenerator(type);
         return this;
     }
-    public UICConfigOptions AddAndRegisterGenerator<T>(IServiceCollection serviceCollection) where T : class, IUICGenerator
+    public UicConfigOptions AddAndRegisterGenerator<T>(IServiceCollection serviceCollection) where T : class, IUICGenerator
     {
         return AddAndRegisterGenerator(typeof(T), serviceCollection);
     }
@@ -79,7 +73,7 @@ public partial class UICConfigOptions
     /// <summary>
     /// <inheritdoc cref="AddCustomGenerator{TArgs, TResult}(IUICGenerator{TArgs, TResult})"/>
     /// </summary>
-    public UICConfigOptions AddGenerator<TArgs, TResult>(IUICGenerator<TArgs, TResult> generator)
+    public UicConfigOptions AddGenerator<TArgs, TResult>(IUICGenerator<TArgs, TResult> generator)
     {
         return AddCustomGenerator(generator);
     }
@@ -87,14 +81,14 @@ public partial class UICConfigOptions
     /// <summary>
     /// Add a custom Generator, Use <see cref="GeneratorHelper"/> for presets.
     /// </summary>
-    public UICConfigOptions AddCustomGenerator<TArgs, TResult>(IUICGenerator<TArgs, TResult> generator)
+    public UicConfigOptions AddCustomGenerator<TArgs, TResult>(IUICGenerator<TArgs, TResult> generator)
     {
         _generators.Add(generator);
 
         return this;
     }
 
-    public UICConfigOptions AddPropertyGenerator(string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> function)
+    public UicConfigOptions AddPropertyGenerator(string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> function)
     {
         var generator = new UICCustomGenerator<UICPropertyArgs, IUIComponent>()
         {
@@ -108,7 +102,7 @@ public partial class UICConfigOptions
         return this;
     }
 
-    public UICConfigOptions AddObjectGenerator(Type type, string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> function)
+    public UicConfigOptions AddObjectGenerator(Type type, string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> function)
     {
         var generator = new UICCustomGenerator<UICPropertyArgs, IUIComponent>()
         {
@@ -128,7 +122,7 @@ public partial class UICConfigOptions
         _generators.Add(generator);
         return this;
     }
-    public UICConfigOptions AddObjectGenerator<T>(string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> function) where T : class
+    public UicConfigOptions AddObjectGenerator<T>(string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> function) where T : class
     {
         return AddObjectGenerator(typeof(T), name, priority, function);
     }
@@ -137,21 +131,7 @@ public partial class UICConfigOptions
 
     #endregion
 
-    #region Set Services
-
-    public UICConfigOptions SetPermissionService(Type permissionServiceType)
-    {
-        InternalGeneratorHelper.CheckType<IUicPermissionService>(permissionServiceType);
-
-        PermissionServiceType = permissionServiceType;
-        return this;
-    }
-    public UICConfigOptions SetPermissionService<T>() where T: class, IUicPermissionService
-    {
-        PermissionServiceType = typeof(T);
-        return this;
-    }
-    #endregion
+   
 
     #region Get methods
 

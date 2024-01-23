@@ -1,5 +1,4 @@
-﻿using System.Web.Mvc;
-using UIComponents.Generators.Helpers;
+﻿using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
@@ -20,7 +19,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
         var input = new UICInputSelectlist(args.PropertyName, new());
         input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
         input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input)?? true;
-        input.Placeholder = new TranslationModel("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));
+        input.Placeholder = new Translatable("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));
         input.SelectListItems = await args.Configuration.GetSelectListItems(args, input)?? new();
 
         input.SearchableIfMinimimResults = args.Options.SelectlistSearableForItems;

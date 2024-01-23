@@ -8,6 +8,7 @@ using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Services;
+using UIComponents.Generators.Services.Internal;
 
 namespace UIComponents.Generators.Registrations;
 
@@ -19,15 +20,20 @@ public static class UICConfigure
     /// <param name="services"></param>
     /// <param name="config"></param>
     /// <returns></returns>
-    public static IServiceCollection AddUIComponent(this IServiceCollection services, Action<UICConfigOptions> config)
+    public static IServiceCollection AddUIComponent(this IServiceCollection services, Action<UicConfigOptions> config)
     {
-        var configuration = new UICConfigOptions();
+        var configuration = new UicConfigOptions();
         services.TryAddScoped<IUIComponentService, UICService>();
-        services.TryAddSingleton<UICConfigOptions>(configuration);
+        services.TryAddSingleton<UicConfigOptions>(configuration);
         services.TryAddScoped<UICConfig>();
-        services.TryAddSingleton<IUicLanguageService, LanguageService>();
 
         config(configuration);
+
+        if (!services.Where(x => x is IUicLanguageService).Any())
+        {
+            services.TryAddSingleton<IUicLanguageService, LanguageService>();
+        }
+            
 
         return services;
     }
@@ -37,10 +43,10 @@ public static class UICConfigure
     /// </summary>
     /// <remarks>
     /// Included sets: 
-    /// <br><see cref="AddDefaultPropertyGenerators(UICConfigOptions, IServiceCollection)"/></br>
-    /// <br><see cref="AddDefaultButtons(UICConfigOptions, IServiceCollection)"/></br>
+    /// <br><see cref="AddDefaultPropertyGenerators(UicConfigOptions, IServiceCollection)"/></br>
+    /// <br><see cref="AddDefaultButtons(UicConfigOptions, IServiceCollection)"/></br>
     /// </remarks>
-    public static UICConfigOptions AddDefaultGenerators(this UICConfigOptions configOptions, IServiceCollection serviceCollection)
+    public static UicConfigOptions AddDefaultGenerators(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
     {
 
         configOptions.AddAndRegisterGenerator<UICPropTypeGenerator>(serviceCollection);
@@ -56,7 +62,7 @@ public static class UICConfigure
 
     }
 
-    public static UICConfigOptions AddDefaultPropertyGenerators(this UICConfigOptions configOptions, IServiceCollection serviceCollection)
+    public static UicConfigOptions AddDefaultPropertyGenerators(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
     {
         configOptions.AddAndRegisterGenerator<UICGeneratorPropertyViewPermission>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorPropertyEditPermission>(serviceCollection);
@@ -81,7 +87,7 @@ public static class UICConfigure
         return configOptions;
     }
 
-    public static UICConfigOptions AddDefaultButtons(this UICConfigOptions configOptions, IServiceCollection serviceCollection)
+    public static UicConfigOptions AddDefaultButtons(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
     {
         configOptions.AddAndRegisterGenerator<UICGeneratorButtonCreate>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorButtonCancel>(serviceCollection);

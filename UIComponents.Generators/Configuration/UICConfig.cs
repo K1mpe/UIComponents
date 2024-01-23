@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Generators.Services;
+using UIComponents.Generators.Services.Internal;
 using UIComponents.Models.Models.Texts;
 
 namespace UIComponents.Generators.Configuration;
@@ -8,10 +10,10 @@ namespace UIComponents.Generators.Configuration;
 public class UICConfig
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly UICConfigOptions _options;
+    private readonly UicConfigOptions _options;
     private readonly ILogger<UICConfig> _logger;
 
-    public UICConfig(UICConfigOptions options, IServiceProvider serviceProvider, ILogger<UICConfig> logger)
+    public UICConfig(UicConfigOptions options, IServiceProvider serviceProvider, ILogger<UICConfig> logger)
     {
         _options = options;
         _serviceProvider = serviceProvider;
@@ -26,7 +28,28 @@ public class UICConfig
     {
         get
         {
-            return _serviceProvider.GetService<IUicLanguageService>();
+            if (!_options.CheckLanguageServiceType)
+                return new LanguageService();
+
+            try
+            {
+                var languageService = _serviceProvider.GetRequiredService<IUicLanguageService>();
+
+                if (languageService is LanguageService)
+                {
+                    _logger.LogError($"There is no languageservice registrated as {nameof(IUicLanguageService)}. Disable this message in the config of UIComponents => {nameof(UicConfigOptions.CheckLanguageServiceType)} = false");
+                    _options.CheckLanguageServiceType = false;
+                }
+                    
+                return languageService;
+
+            } catch(Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting {nameof(IUicLanguageService)}. If no service is available, disable this in the config of UIComponents => {nameof(UicConfigOptions.CheckLanguageServiceType)} = false");
+                _options.CheckLanguageServiceType = false;
+                return new LanguageService();
+            }
+            
         }
     }
 
@@ -37,14 +60,17 @@ public class UICConfig
             if (!_options.CheckPermissionServiceType)
                 return null;
 
-            if (_options.PermissionServiceType == null)
+            try
             {
-                _logger.LogError($"There is no permissionservice provided in {nameof(UICConfigOptions)}. Assign a permissionservice or set {nameof(UICConfigOptions)}.{nameof(UICConfigOptions.CheckPermissionServiceType)} to false");
+                return _serviceProvider.GetRequiredService<IUicPermissionService>();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting {nameof(IUicPermissionService)}. If no service is available, disable this in the config of UIComponents => {nameof(UicConfigOptions.CheckPermissionServiceType)} = false");
                 _options.CheckPermissionServiceType = false;
                 return null;
             }
             
-            return (IUicPermissionService?)_serviceProvider.GetService(_options.PermissionServiceType);
         }
     }
 

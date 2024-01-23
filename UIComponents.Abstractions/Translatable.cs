@@ -1,9 +1,9 @@
 ﻿namespace UIComponents.Abstractions;
 
-public partial class TranslationModel : ITranslateable
+public class Translatable : ITranslateable
 {
-    public TranslationModel() { }
-    public TranslationModel(string resourceKey, string defaultValue = null, params object[] args)
+    public Translatable() { }
+    public Translatable(string resourceKey, string defaultValue = null, params object[] args)
     {
         ResourceKey = resourceKey;
         DefaultValue = defaultValue;
@@ -23,14 +23,14 @@ public partial class TranslationModel : ITranslateable
         return ResourceKey;
     }
 
-    public static implicit operator TranslationModel(string text) => new Untranslated(text);
+    public static implicit operator Translatable(string text) => new Untranslated(text);
 
 }
 
 /// <summary>
 /// This is a override on ITranslateable that will not create a new resourceKey
 /// </summary>
-public class Untranslated : TranslationModel
+public class Untranslated : Translatable
 {
     public Untranslated(string text) : base("UntranslatedKey", "{0}", text)
     {

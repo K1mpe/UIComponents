@@ -98,6 +98,28 @@
         }
     }
     /*#endregion ToggleSwitch*/
+
+
+    /*#region MultiSelect*/
+    .select2{
+
+    }
+span .select2-selection__choice {
+    background-color: var(--blub, blue) !important;
+    border-color: var(--blub, blue) !important;
+}
+
+span.select2-container--focus .select2-selection--multiple {
+    border-color: var(--blub, blue) !important;
+}
+
+/*.select2-container--open[data-for=@id] .select2-results__option--highlighted {
+    background-color: @Model.Color.ToHex() !important;
+}*/
+
+    /*#endregion MultiSelect*/
+
+
 /*#endregion Inputs*/
 
 /*#region SidePanel*/

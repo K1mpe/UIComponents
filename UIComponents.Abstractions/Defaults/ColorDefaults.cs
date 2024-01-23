@@ -1,6 +1,4 @@
-﻿using UIComponents.Abstractions.Interfaces;
-
-namespace UIComponents.Defaults;
+﻿namespace UIComponents.Defaults;
 
 public static class ColorDefaults
 {

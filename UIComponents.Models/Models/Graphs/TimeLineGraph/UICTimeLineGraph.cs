@@ -124,20 +124,20 @@ public class UICTimeLineGraph : UIComponent
     {
 
         #region Ctor
-        public LineGraph(TranslationModel label, List<LineGraphPoint> points)
+        public LineGraph(Translatable label, List<LineGraphPoint> points)
         {
             Label = label;
             Points = points;
         }
 
-        public LineGraph(TranslationModel label, string id, string source)
+        public LineGraph(Translatable label, string id, string source)
         {
             Label = label;
             LineGraphId = id;
             Source = source;
         }
         #endregion
-        public TranslationModel Label { get; set; }
+        public Translatable Label { get; set; }
         public List<LineGraphPoint> Points { get; set; } = new();
 
 

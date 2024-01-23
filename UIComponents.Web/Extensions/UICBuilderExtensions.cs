@@ -11,12 +11,12 @@ public static class UICBuilderExtensions
 {
 
     /// <summary>
-    /// Required for adding web elements for UICComponents. This method already includes <see cref="UIComponents.Generators.Registrations.UICConfigure.AddUIComponent(IServiceCollection, Action{UICConfigOptions})"/>
+    /// Required for adding web elements for UICComponents. This method already includes <see cref="UIComponents.Generators.Registrations.UICConfigure.AddUIComponent(IServiceCollection, Action{UicConfigOptions})"/>
     /// </summary>
     /// <param name="services"></param>
     /// <param name="config"></param>
     /// <returns></returns>
-    public static IServiceCollection AddUIComponentWeb(this IServiceCollection services, Action<UICConfigOptions> config)
+    public static IServiceCollection AddUIComponentWeb(this IServiceCollection services, Action<UicConfigOptions> config)
     {
         services.AddMvcCore()
         .AddRazorRuntimeCompilation(options =>

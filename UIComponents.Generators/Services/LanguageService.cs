@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
 
-namespace UIComponents.Generators.Services
+namespace UIComponents.Generators.Services.Internal
 {
     internal class LanguageService : IUicLanguageService
     {
@@ -14,6 +14,7 @@ namespace UIComponents.Generators.Services
         {
             if (translationModel == null)
                 return Task.FromResult(string.Empty);
+
             if (string.IsNullOrEmpty(translationModel.DefaultValue))
                 return Task.FromResult(translationModel.ResourceKey.Split(".").Last());
 

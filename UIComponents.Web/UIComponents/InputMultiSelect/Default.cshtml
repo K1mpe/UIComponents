@@ -14,6 +14,7 @@
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
+@using Microsoft.AspNetCore.Mvc.Rendering;
 
 @model UICInputMultiSelect
 
@@ -29,20 +30,20 @@
     if (Model.Color != null)
     {
      
-    //    Model.AddStyle(
-    //@<text>
-    //            #@id + span .select2-selection__choice{
-    //            background-color: @Model.Color.ToHex() !important;
-    //            border-color: @Model.Color.ToHex() !important;
-    //            }
-    //            #@id + span.select2-container--focus .select2-selection--multiple {
-    //            border-color: @Model.Color.ToHex() !important;
-    //            }
-    //            .select2-container--open[data-for=@id] .select2-results__option--highlighted{
-    //            background-color: @Model.Color.ToHex() !important;
-    //            }
-    //        </text>
-    //    );
+    Model.AddStyle(
+    @<text>
+                #@id + span .select2-selection__choice{
+                background-color: var(--@Model.Color.ToLower()) !important;
+                border-color: var(--@Model.Color.ToLower()) !important;
+                }
+                #@id + span.select2-container--focus .select2-selection--multiple {
+                border-color: var(--@Model.Color.ToLower()) !important;
+                }
+                .select2-container--open[data-for=@id] .select2-results__option--highlighted{
+                background-color: var(--@Model.Color.ToLower()) !important;
+                }
+            </text>
+        );
     }
 }
 

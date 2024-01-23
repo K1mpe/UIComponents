@@ -1,5 +1,6 @@
 
 using UIComponents.Abstractions;
+using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
 using UIComponents.Generators.Registrations;
 using UIComponents.Web.Extensions;

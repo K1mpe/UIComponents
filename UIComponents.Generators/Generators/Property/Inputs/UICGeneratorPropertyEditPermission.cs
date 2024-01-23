@@ -19,6 +19,9 @@ public class UICGeneratorPropertyEditPermission : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
+        if (!args.Options.CheckWritePermissions)
+            return GeneratorHelper.Next();
+
         if(existingResult is UICInput input && !input.Readonly)
         {
             if(args.Configuration.TryGetPermissionService(out var permissionService))

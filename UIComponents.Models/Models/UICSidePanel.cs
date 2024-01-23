@@ -64,19 +64,19 @@ public class UICSidePanel : UIComponent
 
     public UICButton SetFixedButton { get; set; } = new UICButton()
     {
-        Tooltip = new TranslationModel("Sidebar.SetFixed", "Pin this sidebar"),
+        Tooltip = new Translatable("Sidebar.SetFixed", "Pin this sidebar"),
         AppendButtonIcon = UICIcon.Pin()
     };
 
     public UICButton OpenSidebarButton { get; set; } = new UICButton()
     {
-        Tooltip = new TranslationModel("Sidebar.Open", "Open the sidebar"),
+        Tooltip = new Translatable("Sidebar.Open", "Open the sidebar"),
         AppendButtonIcon = new UICIcon("fas fa-angles-right")
     };
 
     public UICButton CloseSidebarButton { get; set; } = new UICButton()
     {
-        Tooltip = new TranslationModel("Sidebar.Close", "Close the sidebar"),
+        Tooltip = new Translatable("Sidebar.Close", "Close the sidebar"),
         AppendButtonIcon = new UICIcon("fas fa-angles-left")
     };
     #endregion

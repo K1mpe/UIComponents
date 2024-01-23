@@ -32,16 +32,16 @@
 
 
 @{
-    var toolbarCard = new UICCard(new TranslationModel("Card.Toolbars"))
+    var toolbarCard = new UICCard(new Translatable("Card.Toolbars"))
         .Add(new UICButtonToolbar()
             {
                 Distance = UIComponents.Abstractions.Enums.ButtonDistance.None
             }
-            .AddLeft(new UICButton(new TranslationModel("GroupL 1")))
-            .AddLeft(new UICButton(new TranslationModel("GroupL 2")))
-            .AddLeft(new UICButton(new TranslationModel("GroupL 3")))
-            .AddCenter(new UICButton(new TranslationModel("GroupC 4")))
-            .AddCenter(new UICButton(new TranslationModel("GroupC 5")))
+            .AddLeft(new UICButton(new Translatable("GroupL 1")))
+            .AddLeft(new UICButton(new Translatable("GroupL 2")))
+            .AddLeft(new UICButton(new Translatable("GroupL 3")))
+            .AddCenter(new UICButton(new Translatable("GroupC 4")))
+            .AddCenter(new UICButton(new Translatable("GroupC 5")))
         )
         .Add(new UICButtonToolbar()
                 {
@@ -50,8 +50,8 @@
             .AddLeft(new UICButton(new Untranslated("ShortL 1")))
             .AddLeft(new UICButton(new Untranslated("ShortL 2")))
             .AddLeft(new UICButton(new Untranslated("ShortL 3")))
-            .AddRight(new UICButton(new TranslationModel("ShortR 4")))
-            .AddRight(new UICButton(new TranslationModel("ShortR 5")))
+            .AddRight(new UICButton(new Translatable("ShortR 4")))
+            .AddRight(new UICButton(new Translatable("ShortR 5")))
         )
         .Add(new UICButtonToolbar()
                 {
@@ -68,8 +68,8 @@
             .AddLeft(new UICButton(new Untranslated("LongL 1")))
             .AddLeft(new UICButton(new Untranslated("LongL 2")))
             .AddLeft(new UICButton(new Untranslated("LongL 3")))
-            .AddCenter(new UICButton(new TranslationModel("CenterR 4")))
-            .AddCenter(new UICButton(new TranslationModel("CenterR 5")))
+            .AddCenter(new UICButton(new Translatable("CenterR 4")))
+            .AddCenter(new UICButton(new Translatable("CenterR 5")))
         );
 
 }

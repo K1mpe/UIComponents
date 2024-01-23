@@ -1,4 +1,5 @@
-﻿using UIComponents.Generators.Models.UICGeneratorResponses;
+﻿using UIComponents.Generators.Helpers;
+using UIComponents.Generators.Models.UICGeneratorResponses;
 
 namespace UIComponents.Generators.Generators.Property;
 
@@ -13,6 +14,9 @@ public class UICGeneratorPropertyViewPermission : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
+        if (!args.Options.CheckReadPermissions)
+            return GeneratorHelper.Next();
+
         if (!args.Configuration.TryGetPermissionService(out var permissionService))
             return new UICGeneratorResponseNext<IUIComponent>();
 
