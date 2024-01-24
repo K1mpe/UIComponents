@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Models.Models.Dropdown;
 
-public class UICDropdownSubMenu : UICDropdownItem
+public class UICDropdownSubMenu : UICDropdownItem, IUICHasChildren<IDropdownItem>
 {
     #region Ctor
     public UICDropdownSubMenu()
@@ -38,27 +38,24 @@ public class UICDropdownSubMenu : UICDropdownItem
     /// </summary>
     public bool ReplaceBySingleItem { get; set; } = true;
 
+    List<IDropdownItem> IUICHasChildren<IDropdownItem>.Children => Items;
+
     #endregion
 
     #region Methods
-    /// <summary>
-    /// Add a item to the collection and return the <paramref name="item"/>
-    /// </summary>
-    /// <returns><paramref name="item"/></returns>
-    public T Add<T>(T item) where T : class, IDropdownItem
+    public UICDropdownSubMenu Add<T>(out T added, T item) where T : IDropdownItem
     {
-        Items.Add(item);
-        return item;
+        return this.Add<UICDropdownSubMenu, T, IDropdownItem>(out added, item);
     }
 
-    /// <summary>
-    /// Add a item to the collection and return the current <see cref="UICDropdownSubMenu"/>
-    /// </summary>
-    /// <returns><see cref="UICDropdownSubMenu"/></returns>
-    public UICDropdownSubMenu Add2(IDropdownItem item)
+    public UICDropdownSubMenu Add(IDropdownItem item)
     {
-        Items.Add(item);
-        return this;
+        return this.Add<UICDropdownSubMenu, IDropdownItem>(item);
+    }
+
+    public UICDropdownSubMenu Add<T>(T item, Action<T> configure) where T : IDropdownItem
+    {
+        return this.Add<UICDropdownSubMenu, T, IDropdownItem>(item, configure);
     }
     #endregion
 }

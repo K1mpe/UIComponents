@@ -1,8 +1,6 @@
-﻿using UIComponents.Abstractions.Models;
+﻿namespace UIComponents.Models.Models.Dropdown;
 
-namespace UIComponents.Models.Models.Dropdown;
-
-public class UICDropdown : UIComponent
+public class UICDropdown : UIComponent, IUICHasChildren<IDropdownItem>
 {
     #region Ctor
     public UICDropdown()
@@ -44,26 +42,28 @@ public class UICDropdown : UIComponent
 
     public bool ReplaceDropdownByButtonIfSingleDropdownItem { get; set; } = true;
 
+    List<IDropdownItem> IUICHasChildren<IDropdownItem>.Children => DropdownItems;
+
     #region Methods
     /// <summary>
     /// Add a item to the collection and return the <paramref name="item"/>
     /// </summary>
     /// <returns><paramref name="item"/></returns>
-    public T Add<T>(T item) where T : class, IDropdownItem
+    public UICDropdown Add<T>(out T added,T item) where T : IDropdownItem
     {
-        DropdownItems.Add(item);
-        return item;
+        return this.Add<UICDropdown,T, IDropdownItem>(out added,item);
     }
 
-    /// <summary>
-    /// Add a item to the collection and return the current <see cref="UICDropdown"/>
-    /// </summary>
-    /// <returns><see cref="UICDropdown"/></returns>
-    public UICDropdown Add2(IDropdownItem item)
+    public UICDropdown Add(IDropdownItem item)
     {
-        DropdownItems.Add(item);
-        return this;
+        return this.Add<UICDropdown, IDropdownItem>(item);
     }
+
+    public UICDropdown Add<T>(T item, Action<T> configure) where T : IDropdownItem
+    {
+        return this.Add<UICDropdown, T, IDropdownItem>(item, configure);
+    }
+
     #endregion
 
 

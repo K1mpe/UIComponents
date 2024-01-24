@@ -2,8 +2,12 @@
 
 namespace UIComponents.Models.Models;
 
-public class UICContextMenuItem : UIComponent
+public class UICContextMenuItem : IUIComponent, IUICHasScriptCollection
 {
+    #region Fields
+    public string RenderLocation => this.CreateDefaultIdentifier();
+    #endregion
+
     #region Ctor
     public UICContextMenuItem()
     {
@@ -51,7 +55,15 @@ public class UICContextMenuItem : UIComponent
     /// </remarks>
     public string Id { get; set; }
 
+    /// <summary>
+    /// If provided, the categoryId that is used to group the items
+    /// </summary>
     public string Category { get; set; }
+
+    /// <summary>
+    /// The context menu will not show if all menu items are optional
+    /// </summary>
+    public bool Optional { get; set; }
 
     /// <summary>
     /// Optional: Action that is executed when clicking the menuItem
@@ -63,7 +75,6 @@ public class UICContextMenuItem : UIComponent
     /// <br> event: the clickevent</br>
     /// </remarks>
     public IUIAction OnClick { get; set; }
-
 
     /// <summary>
     /// Optional: A function that returns a string with the text that is displayed in the menuItem
@@ -92,7 +103,7 @@ public class UICContextMenuItem : UIComponent
     /// </remarks>
     public new IUIAction Attributes { get; set; }
 
-
+    IUICScriptCollection IUICHasScriptCollection.ScriptCollection { get; set; } = new UICScriptCollection();
 
 
 

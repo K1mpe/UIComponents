@@ -53,7 +53,7 @@
             </text>
             }
 
-            uic.partial._reloadPartial($('#@id'), @Json.Serialize(Model.ShowOverlay), async() =>{
+            uic.partial._reloadPartial($('#@id'), @Json.Serialize(Model.ShowLoadingOverlay), async() =>{
                 
                 @await Model.GetHtml.InvokeAsync(Component);
                 return @Html.Raw(Model.GetHtml.ResultName);

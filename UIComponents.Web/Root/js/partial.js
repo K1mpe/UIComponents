@@ -8,14 +8,14 @@ uic.partial = uic.partial || {
         else
             location.reload();
     },
-    showOverlay: function (element = null) {
+    showLoadingOverlay: function (element = null) {
         if (!element)
             element = document.body;
 
         $(element).LoadingOverlay('show', { image: '', fontawesome: 'fas fa-sync-alt fa-spin' });
     },
 
-    hideOverlay: function (element = null) {
+    hideLoadingOverlay: function (element = null) {
         if (!element)
             element = document.body;
 
@@ -42,14 +42,14 @@ uic.partial = uic.partial || {
 
         await partial.triggerHandler('uic-before-reload');
         if (showOverlay)
-            showOverlay(partial);
+            uic.partial.showLoadingOverlay(partial);
 
         let result = await getDatafunc();
 
         partial.html(result);
 
         if (showOverlay)
-            hideOverlay(partial);
+            uic.partial.hideLoadingOverlay(partial);
 
         await partial.triggerHandler('uic-reloaded');
     }

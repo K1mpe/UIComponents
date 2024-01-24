@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.0.5</Version>
+	<Version>1.0.6</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <None Remove="Root\css\uic.scss" />
+    <None Remove="Root\js\contextMenu.js" />
     <None Remove="Root\js\delayedAction.js" />
     <None Remove="Root\js\getpost.js" />
     <None Remove="Root\js\modal.js" />
@@ -66,6 +67,7 @@
     <None Include="UIComponents\Actions\Default.cshtml" />
     <None Include="UIComponents\ButtonEdit\Default.cshtml" />
     <None Include="UIComponents\ButtonGroup\Default.cshtml" />
+    <None Include="UIComponents\ContextMenuItem\Default.cshtml" />
     <None Include="UIComponents\TimelineGraph\Default.cshtml" />
     <None Include="UIComponents\ToggleButton\Default.cshtml" />
     <None Include="UIComponents\ButtonToolbar\Default.cshtml" />

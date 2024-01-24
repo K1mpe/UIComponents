@@ -39,7 +39,7 @@ public class UICPartial : UIComponent
     /// <summary>
     /// Show the overlay during load
     /// </summary>
-    public bool ShowOverlay { get; set; }
+    public bool ShowLoadingOverlay { get; set; } = true;
     
     /// <summary>
     /// if false, the reload will not be exexcuted if the content is hidden (example: partial in a closed card)

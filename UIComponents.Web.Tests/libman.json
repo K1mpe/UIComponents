@@ -9,16 +9,16 @@
         "scss/**/*",
         "dist/**/*"
       ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery-loading-overlay@2.1.7",
+      "destination": "wwwroot/lib/jquery-loading-overlay/",
+      "files": [
+        "loadingoverlay.js",
+        "loadingoverlay.min.js",
+        "loadingoverlay.min.js.map"
+      ]
     }
-  ],
-  {
-    "provider": "cdnjs",
-    "library": "jquery-loading-overlay@2.1.7",
-    "destination": "wwwroot/lib/jquery-loading-overlay/",
-    "files": [
-      "loadingoverlay.js",
-      "loadingoverlay.min.js",
-      "loadingoverlay.min.js.map"
-    ]
-  }
+  ]
 }
