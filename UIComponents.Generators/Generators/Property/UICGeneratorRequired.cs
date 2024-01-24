@@ -17,10 +17,6 @@ public class UICGeneratorRequired : UICGeneratorBase<UICPropertyArgs, bool>
         if (v1 != null)
             return GeneratorHelper.Success(true, false);
 
-        var v2 = args.PropertyInfo.GetCustomAttribute<CDCValidatorAttribute>();
-        if (v2 != null)
-            return GeneratorHelper.Success(v2.Required, false);
-
 
         if (args.PropertyInfo.PropertyType.IsAssignableTo(typeof(Nullable<>)))
             return GeneratorHelper.Success(false, false);

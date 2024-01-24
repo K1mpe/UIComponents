@@ -4,7 +4,7 @@ using UIComponents.Models.Models.Buttons;
 
 namespace UIComponents.Models.Models.Card;
 
-public class UICCard : UIComponent
+public class UICCard : UIComponent, IUICTab
 {
 
     #region Ctor
@@ -33,6 +33,10 @@ public class UICCard : UIComponent
     public UICGroup? Footer { get; set; }
 
 
+    /// <summary>
+    /// Do not display the header for this card. Header can still be used for tabs
+    /// </summary>
+    public bool HideHeader { get; set; }    
 
     /// <summary>
     /// If this card has a title, this property can set a card as closed by default.
@@ -58,7 +62,8 @@ public class UICCard : UIComponent
     /// If not empty, set this as the maximum width of the card
     /// </summary>
     public string MaxWidth { get; set; }
-    
+    public IUIHasAttributes Content => Body;
+
 
 
 

@@ -35,6 +35,11 @@ public static class TranslationDefaults
     /// </remarks>
     public static Func<Type, string, ITranslateable> TranslateEnums = (type, value) => new Translatable($"Enum.{type.Name}.{value}");
 
+
+    public static Func<Type, ITranslateable> TranslateType = (type) => new Translatable(type.Name);
+
+
+
     /// <summary>
     /// A Function that creates a ITranslateable for a object
     /// </summary>
@@ -59,7 +64,6 @@ public static class TranslationDefaults
         return new Translatable($"{prop.DeclaringType!.Name}.Field.{prop.Name}");
     };
 
-    public static Func<Type, ITranslateable> TranslateType = (type) => new Translatable(type.Name);
 
 
     public static Func<string, ITranslateable> ValidationIsRequired = (translatedPropertyName) => new Translatable("Validation.Required", "{0} is required", translatedPropertyName);

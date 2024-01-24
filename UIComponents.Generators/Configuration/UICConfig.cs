@@ -200,6 +200,14 @@ public class UICConfig
         return GetGeneratedResultAsync<List<SelectListItem>>(UICGeneratorPropertyCallType.SelectListItems, caller, args);
     }
 
+    public async Task<List<SelectListItem>> GetSelectListItems(PropertyInfo propertyInfo, bool addEmptyItem)
+    {
+        var args = new UICPropertyArgs(null, propertyInfo, UICPropertyType.SelectList, new(), new(UICGeneratorPropertyCallType.SelectListItems, null, null), this);
+        args.Options.SelectlistAddEmptyItem= addEmptyItem;
+
+        return await GetSelectListItems(args, null)?? new();
+    }
+
     public static string ClassAndPropertyString(PropertyInfo propertyInfo)
     {
         if (propertyInfo == null)

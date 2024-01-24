@@ -124,7 +124,7 @@
 }
 
 <div @Html.Raw(Model.GetHtmlAttributes())>
-    @if(Model.Header != null)
+    @if(Model.Header != null && !Model.HideHeader)
     {
         await Model.Header.Transformer(Model, Model.Header);
         @await Model.Header.InvokeAsync(Component)

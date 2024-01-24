@@ -3,7 +3,7 @@ using UIComponents.Abstractions.Models;
 
 namespace UIComponents.Models.Models.Card;
 
-public class UICTabs : UIComponent, IUICHasChildren<IUICTab>
+public class UICTabs : UIComponent, IUICHasChildren<IUICTab>, IUICTab
 {
     #region Fields
     public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
@@ -65,6 +65,11 @@ public class UICTabs : UIComponent, IUICHasChildren<IUICTab>
     }
 
 
+    public UICTabs Add(IUICTab item)
+    {
+        return this.Add<UICTabs, IUICTab>(item);
+    }
+
     public UICTabs Add<T>(out T added, T item) where T: IUICTab
     {
         return this.Add<UICTabs, T, IUICTab>(out added, item);
@@ -80,6 +85,14 @@ public class UICTabs : UIComponent, IUICHasChildren<IUICTab>
         #region Interface
 
     List<IUICTab> IUICHasChildren<IUICTab>.Children => Tabs;
+
+    /// <summary>
+    /// Only required if you use this tab as subtab
+    /// </summary>
+    public IHeader Header { get; set; } = new UICCardHeader(new Translatable("Tab.NoHeader"));
+
+    IUIHasAttributes IUICTab.Content => this;
+
     #endregion
 }
 

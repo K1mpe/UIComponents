@@ -13,6 +13,7 @@ namespace UIComponents.Web.Tests.Models
         [UICTooltip("Test", "Dit is een test")]
         public string TestString { get; set; }
 
+        
         public bool Checkbox { get; set; }
 
         public bool? ThreeStateBool { get; set; }

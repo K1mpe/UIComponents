@@ -2,6 +2,6 @@
 
 public interface IUICTab
 {
-    public IHeader Header { get; set; }
-    public IUIHasAttributes Content { get; set; }
+    public IHeader Header { get; }
+    public IUIHasAttributes Content { get;}
 }
