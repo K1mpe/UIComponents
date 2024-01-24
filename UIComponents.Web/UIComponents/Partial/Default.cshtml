@@ -59,6 +59,7 @@
                 return @Html.Raw(Model.GetHtml.ResultName);
             });
         });
+
         $('#@id').on('uic-source', ()=>{
             return '@Json.Serialize($"/{Model.GetHtml.Controller}/{Model.GetHtml.Action}")';
         });

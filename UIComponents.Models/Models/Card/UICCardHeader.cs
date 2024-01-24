@@ -5,6 +5,11 @@ namespace UIComponents.Models.Models.Card
 {
     public class UICCardHeader : UIComponent, IHeader
     {
+        #region Fields
+        public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
+        #endregion
+
+
         public UICCardHeader(ITranslateable title): this()
         {
             Title = title;
@@ -93,6 +98,7 @@ namespace UIComponents.Models.Models.Card
             {
                 header.Renderer = CardHeaderRenderer.TabHeader;
                 header
+                    .AddAttribute("class", "nav-link")
                     .AddAttribute("role", "tab")
                     .AddAttribute("data-toggle", "tab");
             }

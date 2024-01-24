@@ -36,6 +36,8 @@ public class UICIcon : UIComponent, IUICIcon
     public string Icon { get; set; }
 
     public IColor? Color { get; set; }
+
+    public ITranslateable Tooltip { get; set; }
     #endregion
 
     #region Presets

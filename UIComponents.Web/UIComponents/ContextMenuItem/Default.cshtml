@@ -53,9 +53,9 @@
             position: @Json.Serialize(Model.Position.Value),
         </text>
                 }
-        <text>
-            optional: @Json.Serialize(Model.Optional),
-        </text>
+        
+        optional: @Json.Serialize(Model.Optional),
+        
 
         @if (Model.OnClick.HasValue())
                 {

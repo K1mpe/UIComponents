@@ -97,6 +97,11 @@
             transform: translateX(($custom-switch-width - $custom-control-indicator-size)/2);
         }
     }
+
+    .custom-control-input[disabled] ~ .custom-control-label ::after, .custom-control-input:disabled ~ .custom-control-label::after {
+        opacity: 0.25;
+    }
+
     /*#endregion ToggleSwitch*/
 
 
@@ -133,9 +138,20 @@ span.select2-container--focus .select2-selection--multiple {
 
 /*#endregion SidePanel*/
 
-.custom-control-input[disabled] ~ .custom-control-label ::after, .custom-control-input:disabled ~ .custom-control-label::after {
-    opacity: 0.25;
+/*#region Tabs*/
+.card-header-tabs .tab-tools{
+    display:flex;
+    align-items: center;
+    justify-content: flex-end;
 }
+.card-tabs .col-tab-headers{
+    //@expand .col-1;
+    min-width: fit-content;
+}
+.card-tabs > .col-tab-content{
+
+} 
+/*#endregion Tabs*/
 
 
 

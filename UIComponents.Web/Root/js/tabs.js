@@ -43,7 +43,9 @@
             if (openTab.length)
                 hash[index] = openTab.attr('href').replace("#", "");
         });
+        let scrollTop = $('html').scrollTop();
         window.location.hash = hash.reverse().join(',');
+        $('html, body').scrollTop(scrollTop);
     }
 };
 
@@ -51,8 +53,8 @@ $(document).on('click', '[role="tab"]', async function (ev) {
 
     let newTab = $(ev.target);        // Newly activated tab
     ev.stopImmediatePropagation();
-    open(newTab);
-    setTabHash(newTab);
+    uic.tabs.open(newTab);
+    uic.tabs.setTabHash(newTab);
 
 
 });

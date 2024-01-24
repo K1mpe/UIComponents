@@ -31,7 +31,7 @@
         @await Model.AppendTitle.InvokeAsync(Component)
     @if (Model.Buttons.AnyHasValue())
     {
-        <div class="card-tools">
+        <div class="tab-tools">
             @foreach (var button in Model.Buttons)
             {
                 if (button is UICButton b2)

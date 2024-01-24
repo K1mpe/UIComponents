@@ -22,9 +22,16 @@
 
 @{
     var testModel = new TestModel();
+    var tabs = new UICTabs("blub")
+    {
+        OnlyRenderSingleContent = false
+    }.Add(new UICCard(new Translatable("card1")).AddHeader(out var header))
+    .Add(new UICCard(new Translatable("card2")));
 
+    header.AddButton(new UICButton(new Translatable("Button.Test")));
 }
 
+@await tabs.InvokeAsync(Component)
 @await uic.CreateComponentAsync(testModel, new(){
     ShowCardHeaders = true,
     FormToolbarInCardFooter = true
