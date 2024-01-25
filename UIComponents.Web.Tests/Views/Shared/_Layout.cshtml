@@ -3,55 +3,57 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - UIComponents.Web.Tests</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.scss" asp-append-version="true" />
-    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
-    <link rel="stylesheet" href="~/lib/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css" />
-    
-
+    <title>@ViewData["Title"] - UIComponents</title>
+    <partial name="_Styles" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/lib/select2/js/select2.full.min.js"></script>
-    <script src="~/uic/uic.js" asp-append-version="true"></script>
-    <script src="~/lib/jquery-loading-overlay/loadingoverlay.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
 
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UIComponents.Web.Tests</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+        <!-- Main Navbar -->
+        <partial name="Navigation/_Main" />
+
+        <!-- Left Sidebar -->
+        <partial name="Navigation/_Left" />
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+
+            <!-- Content Header -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>@ViewData["Title"]</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                <li class="breadcrumb-item active">Page</li>
+                            </ol>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+            </section>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - UIComponents.Web.Tests - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <!-- Content -->
+            <section class="content">
+                @RenderBody()
+            </section>
+
         </div>
-    </footer>
+
+        <!-- Content Footer -->
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-block"><b>Version</b> 3.2.0</div>
+            <strong>Copyright &copy; 2002 - @DateTime.Now.Year <a href="#">UIComponents tests</a>.</strong> All rights reserved.
+        </footer>
+
+
+    </div>
+    <partial name="_Scripts" />
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

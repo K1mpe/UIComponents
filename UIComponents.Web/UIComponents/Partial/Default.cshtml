@@ -48,7 +48,7 @@
             @if (!Model.ReloadIfHidden)
             {
             <text>
-                if(uic.isHidden($(this)))
+                if(uic.isHidden($('#@id')))
                     return;
             </text>
             }
@@ -84,7 +84,7 @@
         @if (Model.ReloadIfParentOpens)
         {
         <text>
-            $('#@id').parents('.card').on('uic-open', ()=> $(this).trigger('uic-reload'));
+            $('#@id').parents('.card').on('uic-opened', ()=> $('#@id').trigger('uic-reload'));
         </text>
         }
 

@@ -75,10 +75,10 @@
 }
 
 
-<div @Html.Raw(Model.GetHtmlAttributes())>
+<span @Html.Raw(Model.GetHtmlAttributes())>
     @await Model.ButtonTrue.InvokeAsync(Component)
     @await Model.ButtonFalse.InvokeAsync(Component)
-</div>
+</span>
 
 <script>
     $(document).ready(function(){

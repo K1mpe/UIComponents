@@ -1,0 +1,289 @@
+﻿
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/admin-lte/dist/js/adminlte.min.js"></script>
+<script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+<script src="~/lib/toastr/toastr.min.js"></script>
+<script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+@*<script src="~/lib/jsgrid/dist/jsgrid.min.js"></script>
+<script src="~/lib/jsgrid/dist/i18n/jsgrid-nl.js"></script>
+<script src="~/lib/jsgrid/custom-fields.js"></script>*@
+<script src="~/lib/select2/js/select2.full.min.js"></script>
+<script src="~/uic/uic.js" asp-append-version="true"></script>
+@*<script>
+
+    // …
+    var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
+
+    // jsGrid
+    jsGrid.setDefaults({
+        autoload: true, // !default
+        controller: {
+            loadData: $.noop,
+            insertItem: $.noop,
+            updateItem: $.noop,
+            deleteItem: $.noop,
+        },
+
+        heading: true,
+        sorting: false,
+        filtering: false,
+        selecting: false, // !default
+        inserting: false,
+        editing: false,
+
+        width: '100%',
+        height: 'auto',
+
+        paging: false,
+        pageLoading: false,
+
+        rowClick: function (args) {
+            defaultClick(args, this);
+        },
+        onItemEditing: function (args) {
+            onItemEditing(args, this);
+        },
+
+        confirmDeleting: false,
+        onItemDeleting: function (args) {
+            onItemDeleting(args, this);
+        },
+    });
+
+    var language = $('html').attr('lang');
+    if (language in jsGrid.locales) {
+        jsGrid.locale(language);
+    }
+
+    // …
+    else {
+        jsGrid.setDefaults({
+            noDataContent: 'Not found',
+            deleteConfirm: 'Are you sure?',
+
+            pagerFormat: 'Pages: {first} {prev} {pages} {next} {last} &nbsp;&nbsp; {pageIndex} of {pageCount}',
+            pagePrevText: '<',
+            pageNextText: '>',
+            pageFirstText: '<<',
+            pageLastText: '>>',
+
+            loadMessage: 'Please, wait',
+            invalidMessage: 'Invalid data entered!',
+        });
+    }
+
+    function loadGridData(url) {
+        async function loadData(filter) {
+            try {
+                let response = await $.get(url, filter);
+
+                if (filter.hasOwnProperty('pageIndex'))
+                    return response;
+
+                return response.data;
+            }
+            catch (ex) {
+                console.error(ex);
+
+                if (filter.hasOwnProperty('pageIndex'))
+                    return { itemsCount: 0, data: [] }
+
+                return [];
+            }
+        }
+
+        return loadData;
+    }
+
+    function insertGridItem(url) {
+        async function insertItem(item) {
+            try {
+                let response = await $.post(url, item);
+            }
+            catch (ex) {
+                console.error(ex);
+            }
+        }
+
+        return insertItem;
+    }
+
+    function updateGridItem(url) {
+        async function updateItem(item) {
+            try {
+                let response = await $.post(url, item);
+            }
+            catch (ex) {
+                console.error(ex);
+            }
+        }
+
+        return updateItem;
+    }
+
+    function deleteGridItem(url, options = {}) {
+        async function deleteItem(item) {
+            if (await confirmDelete(options)) {
+                try {
+                    let response = await $.post(url, item);
+                }
+                catch (ex) {
+                    console.error(ex);
+                }
+            }
+            else {
+                throw Error('Cancelled');
+            }
+        }
+
+        return deleteItem;
+    }
+
+    async function confirmDelete(options = {}) {
+        let config = {
+            title: '@JavaScriptEncoder.Default.Encode(L.GetResourceValue("Grid.DeleteConfirm", "Are you sure?"))',
+            text: '@JavaScriptEncoder.Default.Encode(L.GetResourceValue("Grid.DeleteMessage", "You won't be able to revert this."))',
+
+            showConfirmButton: true,
+            showCancelButton: true,
+            showCloseButton: true,
+
+            confirmButtonText: '@JavaScriptEncoder.Default.Encode(L.GetResourceValue("Button.Delete"))',
+            cancelButtonText: '@JavaScriptEncoder.Default.Encode(L.GetResourceValue("Button.Cancel"))',
+
+            reverseButtons: true,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-default',
+            },
+        };
+
+        // Extend the base configuration with custom options
+        $.extend(true, config, options);
+
+        // Show the dialog and await the result
+        let result = await Swal.fire(config);
+
+        // Return if the dialog was confirmed
+        return result.isConfirmed || false;
+    }
+
+    function defaultClick(args, grid) {
+        if (grid.editing) {
+            let cell = $(args.event.target);
+
+            // …
+            grid.editItem(args.item); // item or $(args.event.target).closest('tr')
+
+            let editrow = $('.jsgrid-edit-row');
+            let clicked = editrow.children().eq(cell.index());
+
+            let input = clicked.find(':input');
+            if (input.length == 0) {
+                // No input found, fallback to first
+                input = editrow.find(':input:first');
+            }
+
+            // Focus on input of clicked cell
+            input.focus().click();
+        }
+    }
+
+    function onItemEditing(args, grid) {
+        setTimeout(function () {
+
+            // Update when [enter] is pressed
+            let inputs = $('.jsgrid-edit-row').children().find('input');
+            inputs.on('keydown', function (ev) {
+                if (ev.which === 13) {
+                    grid.updateItem();
+                    return false;
+                }
+            });
+
+        }, 0);
+    }
+
+    function onItemDeleting(args, grid) {
+    }
+
+    function cellRenderer() {
+        function cellRenderer(value, item) {
+            let cell = $('<td onclick="event.stopPropagation();">');
+            cell.append(this.itemTemplate(value, item));
+
+            return cell;
+        }
+
+        return cellRenderer;
+    }
+
+    // Ajax
+    $.ajaxSetup({
+        complete: function (xhr, status, options = this) {
+            let result = status.charAt(0).toUpperCase() + status.slice(1);
+            let style  = window.getComputedStyle(document.body);
+            let color  = '#663399';
+
+            let unless = (condition, callback) => { !condition && callback(); }
+            let isJSON = (text) => { try { JSON.parse(text); return true; } catch (ex) { return false; } };
+
+            // Change `color` unless `xhr.status` is a list-status
+            unless(['418', '420'].includes(String(xhr.status)), () => {
+                switch (String(xhr.status).charAt(0)) {
+                    case '1':
+                        color = style.getPropertyValue('--info') || '#17a2b8';
+                        break;
+                    case '2':
+                        color = style.getPropertyValue('--success') || '#28a745';
+                        break;
+                    case '3':
+                        color = style.getPropertyValue('--warning') || '#ffc107';
+                        break;
+                    case '4':
+                        color = style.getPropertyValue('--danger') || '#dc3545';
+                        break;
+                    case '5':
+                        color = style.getPropertyValue('--danger') || '#dc3545';
+                        break;
+                }
+            });
+
+            // Parse `xhr.responseText` if the value is valid JSON
+            let response = isJSON(xhr.responseText) ? JSON.parse(xhr.responseText) : xhr.responseText;
+
+            // …
+            @if (env.IsDevelopment())
+            {
+                <text>
+                console.groupCollapsed('%c' + options.type, `color: ${color}`, options.url); console.log(response); console.groupEnd();
+                console.info('%cStatus: %s %s, Result: %s', `color: ${color}`, xhr.status, xhr.statusText, result); console.debug(options, xhr);
+                </text>
+            }
+
+            // …
+            if (response.hasOwnProperty('@nameof(Notification.Library)') && response.hasOwnProperty('@nameof(Notification.Options)')) {
+                showToast(response);
+            }
+        },
+        beforeSend: function (xhr, settings) {
+            let token = $('input[name="__RequestVerificationToken"]');
+            if (token.length && settings.data) {
+
+                // Add the CSRF (XSRF) token to each POST request
+                if ('string' === typeof settings.data && !settings.data.includes('__RequestVerificationToken'))
+                    settings.data += '&' + $.param({ __RequestVerificationToken: token.val() });
+                if ('object' === typeof settings.data && !settings.data.hasOwnProperty('__RequestVerificationToken'))
+                    settings.data = settings.data;
+            }
+
+            // Add additional headers to each AJAX request
+            // xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        },
+    });
+
+</script>*@
+<script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/lib/jquery-loading-overlay/loadingoverlay.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>

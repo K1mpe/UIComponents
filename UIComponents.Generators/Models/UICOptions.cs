@@ -37,15 +37,15 @@ public class UICOptions
     #region Overrides
     public List<IUICGenerator> Generators { get; set; } = new();
 
+    /// <summary>
+    /// A dictionary where you can add all sort of options that can be used by the generators
+    /// </summary>
+    public Dictionary<string, object> OptionsDictionary { get; set; } = new();
 
     #endregion
 
     #region Properties
 
-    /// <summary>
-    /// A dictionary where you can add all sort of options that can be used by the generators
-    /// </summary>
-    public Dictionary<string, object> OptionsDictionary { get; set; } = new();
 
     /// <summary>
     /// Hide all properties with name "Id"
@@ -67,6 +67,14 @@ public class UICOptions
     /// </remarks>
     public string IncludedProperties { get; set; }
 
+
+    /// <summary>
+    /// If true, add all undefined properties after the included properties. This does not include <see cref="ExcludedProperties"/>
+    /// </summary>
+    /// <remarks>
+    /// Is always done if <see cref="IncludedProperties"/> is empty</remarks>
+    public bool IncludedUndefinedProperties { get; set; }
+
     /// <summary>
     /// A opitional list of excluded properties.
     /// </summary>
@@ -74,6 +82,7 @@ public class UICOptions
     /// Default: "IsDeleted"
     /// </remarks>
     public string ExcludedProperties { get; set; } = OptionDefaults.ExcludedProperties;
+
 
     #endregion
 

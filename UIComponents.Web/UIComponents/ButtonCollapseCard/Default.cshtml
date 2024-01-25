@@ -22,10 +22,15 @@
     string idButtonTrue = Model.ButtonTrue.GetOrGenerateId();
     string idButtonFalse = Model.ButtonFalse.GetOrGenerateId();
 
+    
+
+
+
     Model.AssignCollectionForChildren();
 
     Model.AddScript(
     @<text>
+
         //Expand
         let ViewButtonTrue = function(){
             $('#@idButtonTrue').attr('hidden', false);
@@ -56,20 +61,22 @@
         card.on('uic-opened', ()=> {ViewButtonFalse()});
         card.on('uic-closed', ()=> {ViewButtonTrue()});
 
+        $('#@id').click(() => card.triggerHandler('uic-toggle'));
+
         if(card.hasClass('collapsed-card'))
-            ViewButtonFalse();
-        else 
             ViewButtonTrue();
+        else 
+            ViewButtonFalse();
 
     </text>);
 
 }
 
 
-<div @Html.Raw(Model.GetHtmlAttributes())>
+<span @Html.Raw(Model.GetHtmlAttributes())>
     @await Model.ButtonTrue.InvokeAsync(Component)
     @await Model.ButtonFalse.InvokeAsync(Component)
-</div>
+</span>
 
 <script>
     $(document).ready(function () {

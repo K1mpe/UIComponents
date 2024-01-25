@@ -3,6 +3,145 @@
   "defaultProvider": "unpkg",
   "libraries": [
     {
+      "provider": "cdnjs",
+      "library": "jqueryui@1.13.2",
+      "destination": "wwwroot/lib/jquery-ui/",
+      "files": [
+        "jquery-ui.js",
+        "jquery-ui.min.js",
+        "themes/base/jquery-ui.css",
+        "themes/base/jquery-ui.min.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "virtual-keyboard@1.30.4",
+      "destination": "wwwroot/lib/virtual-keyboard/",
+      "files": [
+        "js/jquery.keyboard.min.js",
+        "js/jquery.keyboard.extension-all.min.js",
+        "css/keyboard.min.css",
+        "css/keyboard-previewkeyset.min.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "select2@4.0.13",
+      "destination": "wwwroot/lib/select2/",
+      "files": [
+        "css/select2.css",
+        "css/select2.min.css",
+        "js/select2.full.js",
+        "js/select2.full.min.js",
+        "js/select2.js",
+        "js/select2.min.js",
+        "js/i18n/de.js",
+        "js/i18n/de.min.js",
+        "js/i18n/en.js",
+        "js/i18n/en.min.js",
+        "js/i18n/fr.js",
+        "js/i18n/fr.min.js",
+        "js/i18n/nl.js",
+        "js/i18n/nl.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "limonte-sweetalert2@11.4.31",
+      "destination": "wwwroot/lib/sweetalert2/",
+      "files": [
+        "sweetalert2.css",
+        "sweetalert2.min.css",
+        "sweetalert2.js",
+        "sweetalert2.min.js",
+        "sweetalert2.all.js",
+        "sweetalert2.all.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/lib/toastr/",
+      "files": [
+        "toastr.min.js",
+        "toastr.min.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "moment.js@2.29.4",
+      "destination": "wwwroot/lib/moment/",
+      "files": [
+        "moment.js",
+        "moment.min.js",
+        "moment.min.js.map",
+        "moment-with-locales.js",
+        "moment-with-locales.min.js",
+        "moment-with-locales.min.js.map",
+        "locale/de.js",
+        "locale/de.min.js",
+        "locale/fr.js",
+        "locale/fr.min.js",
+        "locale/nl.js",
+        "locale/nl.min.js",
+        "locale/nl-be.js",
+        "locale/nl-be.min.js"
+      ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "fullcalendar@5.11.0",
+      "destination": "wwwroot/lib/fullcalendar/",
+      "files": [
+        "main.min.js",
+        "main.min.css",
+        "main.js",
+        "main.css",
+        "locales/de.js",
+        "locales/fr.js",
+        "locales/nl.js",
+        "locales-all.min.js",
+        "locales-all.js"
+      ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "jsgrid@1.5.3",
+      "destination": "wwwroot/lib/jsgrid/",
+      "files": [
+        "dist/jsgrid.js",
+        "dist/jsgrid.min.js",
+        "dist/jsgrid.css",
+        "dist/jsgrid.min.css",
+        "dist/jsgrid-theme.css",
+        "dist/jsgrid-theme.min.css",
+        "dist/i18n/jsgrid-de.js",
+        "dist/i18n/jsgrid-fr.js"
+      ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "@microsoft/signalr@latest",
+      "destination": "wwwroot/lib/signalr/",
+      "files": [
+        "dist/browser/signalr.js",
+        "dist/browser/signalr.js.map",
+        "dist/browser/signalr.min.js",
+        "dist/browser/signalr.min.js.map"
+      ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "flag-icons@6.6.6",
+      "destination": "wwwroot/lib/flag-icons/",
+      "files": [
+        "flags/1x1/*",
+        "flags/4x3/*",
+        "sass/**/*"
+      ]
+    },
+    {
+      "provider": "unpkg",
       "library": "bootstrap@4.6.1",
       "destination": "wwwroot/lib/bootstrap/",
       "files": [
@@ -11,14 +150,42 @@
       ]
     },
     {
-      "provider": "cdnjs",
-      "library": "jquery-loading-overlay@2.1.7",
-      "destination": "wwwroot/lib/jquery-loading-overlay/",
+      "provider": "unpkg",
+      "library": "admin-lte@3.2.0",
+      "destination": "wwwroot/lib/admin-lte/",
       "files": [
-        "loadingoverlay.js",
-        "loadingoverlay.min.js",
-        "loadingoverlay.min.js.map"
+        "build/scss/**/*",
+        "!build/scss/mixins/_backgrounds.scss", // 
+        "!dist/js/demo.js",
+        "dist/js/adminlte.js",
+        "dist/js/adminlte.js.map",
+        "dist/js/adminlte.min.js",
+        "dist/js/adminlte.min.js.map",
+        "dist/css/adminlte.css",
+        "dist/css/adminlte.css.map",
+        "dist/css/adminlte.min.css",
+        "dist/css/adminlte.min.css.map",
+        "dist/css/alt/adminlte.components.css",
+        "dist/css/alt/adminlte.components.css.map",
+        "dist/css/alt/adminlte.components.min.css",
+        "dist/css/alt/adminlte.components.min.css.map",
+        "dist/css/alt/adminlte.core.css",
+        "dist/css/alt/adminlte.core.css.map",
+        "dist/css/alt/adminlte.core.min.css",
+        "dist/css/alt/adminlte.core.min.css.map",
+        "dist/css/alt/adminlte.extra-components.css",
+        "dist/css/alt/adminlte.extra-components.css.map",
+        "dist/css/alt/adminlte.extra-components.min.css",
+        "dist/css/alt/adminlte.extra-components.min.css.map",
+        "dist/css/alt/adminlte.pages.css",
+        "dist/css/alt/adminlte.pages.css.map",
+        "dist/css/alt/adminlte.pages.min.css",
+        "dist/css/alt/adminlte.pages.min.css.map",
+        "dist/css/alt/adminlte.plugins.css",
+        "dist/css/alt/adminlte.plugins.css.map",
+        "dist/css/alt/adminlte.plugins.min.css",
+        "dist/css/alt/adminlte.plugins.min.css.map"
       ]
-    }
+    },
   ]
 }

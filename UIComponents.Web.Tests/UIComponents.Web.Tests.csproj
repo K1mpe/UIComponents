@@ -21,8 +21,16 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Shared\Components\UIComponent\InputGroup\_Default.cshtml" />
-    <None Include="Views\Shared\Components\UIComponent\InputText\_Default.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="wwwroot\lib\font-awesome\webfonts\fa-brands-400.woff2" />
+    <None Include="wwwroot\lib\font-awesome\webfonts\fa-duotone-900.woff2" />
+    <None Include="wwwroot\lib\font-awesome\webfonts\fa-light-300.woff2" />
+    <None Include="wwwroot\lib\font-awesome\webfonts\fa-regular-400.woff2" />
+    <None Include="wwwroot\lib\font-awesome\webfonts\fa-solid-900.woff2" />
+    <None Include="wwwroot\lib\font-awesome\webfonts\fa-thin-100.woff2" />
+    <None Include="wwwroot\lib\font-awesome\webfonts\fa-v4compatibility.woff2" />
     <None Include="wwwroot\lib\select2\js\i18n\de.js" />
     <None Include="wwwroot\lib\select2\js\i18n\de.min.js" />
     <None Include="wwwroot\lib\select2\js\i18n\en.js" />

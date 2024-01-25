@@ -6,5 +6,30 @@
 // Bootstrap + AdminLTE
 // ---------------------------------------------------
 @import '../lib/bootstrap/scss/bootstrap';
-@import '../uic/uic.scss';
 
+
+// Variables and mixins
+// ---------------------------------------------------
+@import '../lib/bootstrap/scss/functions';
+@import '../lib/admin-lte/build/scss/bootstrap-variables';
+
+
+@import '../lib/admin-lte/build/scss/variables';
+@import '../lib/admin-lte/build/scss/variables-alt';
+@import '../lib/admin-lte/build/scss/mixins';
+@import '../lib/bootstrap/scss/mixins';
+
+// Bootstrap + AdminLTE
+// ---------------------------------------------------
+@import '../lib/bootstrap/scss/bootstrap';
+@import '../lib/admin-lte/build/scss/parts/core';
+@import '../lib/admin-lte/build/scss/parts/components';
+@import '../lib/admin-lte/build/scss/parts/extra-components';
+@import '../lib/admin-lte/build/scss/parts/pages';
+@import '../lib/admin-lte/build/scss/parts/plugins';
+@import '../lib/admin-lte/build/scss/parts/miscellaneous';
+
+
+
+
+@import '../uic/uic.scss';

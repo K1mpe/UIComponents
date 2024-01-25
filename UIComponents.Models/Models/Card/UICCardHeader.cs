@@ -32,7 +32,7 @@ namespace UIComponents.Models.Models.Card
         /// <br>Does not affect clickinig <see cref="Buttons"/></br>
         /// <br>Can be disabled with ev.stopPropagation()</br>
         /// </summary>
-        public bool CollapseCardOnClick { get; set; }
+        public bool CollapseCardOnClick { get; set; } = true;
         public Func<object, IHeader, Task> Transformer { get; set; } = DefaultTransformer;
 
         public CardHeaderRenderer Renderer { get; set; } = CardHeaderRenderer.CardHeader;

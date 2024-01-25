@@ -70,14 +70,14 @@
 
                 card.CardWidget('expand');
             })
-            $('#@id').on('uic-close', async ()=>{
+            $('#@id').on('uic-close', async (ev)=>{
             ev.stopPropagation();
             let card = $('#@id');
                 await card.triggerHandler('uic-before-close');
 
                 card.CardWidget('collapse');
             });
-            $('#@id').on('uic-toggle', async ()=>{
+            $('#@id').on('uic-toggle', async (ev)=>{
                 ev.stopPropagation();
                 let card = $('#@id');
                 if(card.hasClass('collapsed-card'))
@@ -86,8 +86,8 @@
                     card.triggerHandler('uic-close');
             });
 
-            $('#@id').on('expanded.lte.cardwidget', (ev)=> $('#@id').triggerHandler('uic-opened'));
-            $('#@id').on('collapsed.lte.cardwidget', (ev)=> $('#@id').triggerHandler('uic-closed'));
+            $('#@id').on('expanded.lte.cardwidget', (ev)=> {ev.stopPropagation(); $('#@id').triggerHandler('uic-opened');});
+            $('#@id').on('collapsed.lte.cardwidget', (ev)=> {ev.stopPropagation(); $('#@id').triggerHandler('uic-closed');});
         </text>
 
         @if (Model.RememberCollapsedState)

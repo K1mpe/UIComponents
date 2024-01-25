@@ -18,6 +18,7 @@ namespace UIComponents.Web.Tests.Models
 
         public bool? ThreeStateBool { get; set; }
 
+        [UICSpan("TestSpan", "Dit is een spantekst")]
         public int Number { get; set; }
 
         public double Decimal { get; set; }

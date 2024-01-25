@@ -44,8 +44,9 @@ namespace UIComponents.Web.Tests.Controllers
             return View("ComponentRender", component);
         }
 
-        public IActionResult Test()
+        public async Task<IActionResult> Test()
         {
+            await Task.Delay(500);
             return PartialView();
         }
 

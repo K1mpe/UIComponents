@@ -40,19 +40,19 @@ public class UICPartial : UIComponent
     /// Show the overlay during load
     /// </summary>
     public bool ShowLoadingOverlay { get; set; } = true;
-    
+
     /// <summary>
     /// if false, the reload will not be exexcuted if the content is hidden (example: partial in a closed card)
     /// </summary>
     /// <remarks>
     /// If reload is blocked, recommended to use <see cref="ReloadIfParentOpens"/>
     /// </remarks>
-    public bool ReloadIfHidden { get; set; }
+    public bool ReloadIfHidden { get; set; } = false;
 
     /// <summary>
     /// If the parent card opens, refresh the content
     /// </summary>
-    public bool ReloadIfParentOpens { get; set; }
+    public bool ReloadIfParentOpens { get; set; } = true;
     #endregion
 
     #region Methods

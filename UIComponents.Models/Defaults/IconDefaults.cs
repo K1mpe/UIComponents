@@ -11,6 +11,6 @@ public partial class IconDefaults
 
     public static UICIcon RefreshIcon = new UICIcon("fas fa-sync");
 
-    public static UICIcon ButtonCardCollapse = new UICIcon("fas fa-min");
-    public static UICIcon ButtonCardExpend = new UICIcon("fas fa-max");
+    public static UICIcon ButtonCardCollapse = new UICIcon("fas fa-minus");
+    public static UICIcon ButtonCardExpend = new UICIcon("fas fa-plus");
 }
