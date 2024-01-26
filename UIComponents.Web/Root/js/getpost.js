@@ -120,7 +120,7 @@ uic.getpost = uic.getpost || {
     post : async function (url, data, options = {}) {
         options = $.extend({}, uic.getpost.defaultOptions.get, options);
 
-        var data = formatNumbersForDecimalStrings(data);
+        var data = uic.getpost.formatNumbersForDecimalStrings(data);
 
         try {
             if (options.cancelPreviousRequests && uic.getpost._postRequests[url] != undefined) {

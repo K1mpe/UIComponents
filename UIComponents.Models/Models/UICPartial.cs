@@ -2,7 +2,7 @@
 
 namespace UIComponents.Models.Models;
 
-public class UICPartial : UIComponent
+public class UICPartial : UIComponent, IUICHasChildren<IUIComponent>
 {
 
     #region Ctor
@@ -39,7 +39,7 @@ public class UICPartial : UIComponent
     /// <summary>
     /// Show the overlay during load
     /// </summary>
-    public bool ShowLoadingOverlay { get; set; } = true;
+    public bool ShowLoadingOverlay { get; set; } = false;
 
     /// <summary>
     /// if false, the reload will not be exexcuted if the content is hidden (example: partial in a closed card)
@@ -53,6 +53,14 @@ public class UICPartial : UIComponent
     /// If the parent card opens, refresh the content
     /// </summary>
     public bool ReloadIfParentOpens { get; set; } = true;
+
+    /// <summary>
+    /// When reloading the partial, this partial container will be removed.
+    /// </summary>
+    /// <remarks>
+    /// This should only be used if the loaded partial starts with a new partial
+    /// </remarks>
+    public bool ReplaceSelf { get; set; }
     #endregion
 
     #region Methods

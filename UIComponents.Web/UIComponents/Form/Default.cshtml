@@ -70,6 +70,8 @@ else
 
     @if(Model.Submit != null)
     {
+        if (Model.Submit is UICActionGetPost getPost)
+            getPost.GetVariableData = new UICCustom($"uic.getValue($('#{id}'));");
         Model.AddScript(
 @<text>
 $('#@id').off('submit');

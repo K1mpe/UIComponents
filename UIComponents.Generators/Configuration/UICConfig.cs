@@ -110,7 +110,7 @@ public class UICConfig
 
         TConverted? result = default(TConverted?);
         if(!generators.Any())
-            _logger.LogError("{0} does not have any matching generators", debugString);
+            _logger.LogDebug("{0} does not have any matching generators", debugString);
 
         foreach (var generator in generators.OrderBy(x => x.Priority))
         {

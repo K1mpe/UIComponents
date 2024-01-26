@@ -22,23 +22,24 @@ uic.formReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonl
     form.find('[readonly]')
         .addClass("always-readonly");
     form.find('.form-control')
-        .addClass("form-control-plaintext")
-        .removeClass("form-control")
+    //    .addClass("form-control-plaintext")
+    //    .removeClass("form-control")
         .attr("readonly", true)
         .attr("disabled", true);
     form.find('input[type=checkbox]')
         .attr("readonly", true)
         .attr("disabled", true);
-    form.find('.select2-container')
-        .removeClass("select2-container--bootstrap4")
-        .find('.select2-selection__rendered').addClass('px-0');
+    //form.find('.select2-container')
+    //    .removeClass("select2-container--bootstrap4")
+    //    .find('.select2-selection__rendered').addClass('px-0');
 
+    form.addClass('readonly-form');
 
-    form.find('.cdc-select-btn-add').addClass("d-none");
-    form.find('.btn-save').attr('hidden', true);
-    form.find('.btn-readonly').attr('hidden', true);
-    form.find('.btn-edit').attr('hidden', false);
-    form.find('label > span').attr('hidden', true);
+    //form.find('.cdc-select-btn-add').addClass("d-none");
+    //form.find('.btn-save').attr('hidden', true);
+    //form.find('.btn-readonly').attr('hidden', true);
+    //form.find('.btn-edit').attr('hidden', false);
+    //form.find('label > span').attr('hidden', true);
 
     
 
@@ -46,7 +47,7 @@ uic.formReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonl
         form.find('.input-no-value').addClass('d-none');
 
     if(!showSpanInReadonly)
-        form.find('span:not(.card-header span, .select2, .select2 span)').attr('hidden', true);
+        form.find('span:not(.card-header span, .select2, .select2 span, .input-group-text)').attr('hidden', true);
 
     if (!showDeleteButton)
         form.find('.btn-delete').attr('hidden', true);
@@ -56,30 +57,29 @@ uic.formReadonly = function (form, showEmptyInReadonly = true, showSpanInReadonl
 //This function is to undo the uic.FormReadonly function, usefull for a edit button
 uic.formEditable = function (form) {
     form = $(form);
-    form.find('.form-control-plaintext:not(.always-readonly)')
-        .addClass("form-control")
-        .removeClass("form-control-plaintext")
+    form.find('.form-control:not(.always-readonly)')
+        //.addClass("form-control")
+        //.removeClass("form-control-plaintext")
         .attr("readonly", false)
         .attr("disabled", false);
 
-    form.find('.select2-container:not(.always-readonly)')
-        .addClass("select2-container--bootstrap4")
-        .find('.select2-selection__rendered').removeClass('px-0');
+    form.removeClass('readonly-form');
+    //form.find('.select2-container:not(.always-readonly)')
+    //    .addClass("select2-container--bootstrap4")
+    //    .find('.select2-selection__rendered').removeClass('px-0');
 
     form.find('input[type=checkbox]:not(.always-readonly)')
         .attr("readonly", false)
         .attr("disabled", false);
 
 
-
-
-    form.find('.cdc-select-btn-add').removeClass("d-none");
-    form.find('.btn-confirm').attr('hidden', false);
-    form.find('.btn-readonly').attr('hidden', false);
-    form.find('.btn-edit').attr('hidden', true);
-    form.find('.input-no-value').removeClass('d-none');
-    form.find('label > span').attr('hidden', false);
-    form.find('span').attr('hidden', false);
+    //form.find('.cdc-select-btn-add').removeClass("d-none");
+    //form.find('.btn-confirm').attr('hidden', false);
+    //form.find('.btn-readonly').attr('hidden', false);
+    //form.find('.btn-edit').attr('hidden', true);
+    //form.find('.input-no-value').removeClass('d-none');
+    //form.find('label > span').attr('hidden', false);
+    //form.find('span').attr('hidden', false);
 
     form.find('.btn-save').attr('hidden', false);
     form.find('.btn-delete').attr('hidden', false);
@@ -132,11 +132,11 @@ uic.getValue = function (element) {
     //    name = parts[parts.length - 1];
     //}
         
-    var arrayElements = uic.GetProperties(element).filter(`[name="${name}"][data-array-index]`);
+    var arrayElements = uic.getProperties(element).filter(`[name="${name}"][data-array-index]`);
     if (arrayElements.length) {
         var array = [];
         arrayElements.each(function (index, item){
-            array[index] = uic.GetValue(item);
+            array[index] = uic.getValue(item);
         })
         return array;
     }
@@ -158,11 +158,11 @@ uic.getValue = function (element) {
     }
 
     //Get object with child properties
-    var properties = uic.GetProperties(element);
+    var properties = uic.getProperties(element);
     var value = {}
     properties.each(function (index, item) {
         var property = $(item).attr('name');
-        value[property] = uic.GetValue(item);
+        value[property] = uic.getValue(item);
     });
     return value;
 }
@@ -177,7 +177,7 @@ uic.setValue = function (element, value) {
     if (!$(element).length)
         return;
 
-    if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["SetValue"] != undefined) {
+    if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["setValue"] != undefined) {
         $(element).trigger('setValue', value);
         return;
     }
@@ -193,7 +193,7 @@ uic.setValue = function (element, value) {
         
     }
     else if (typeof value == "object" && value != null) {
-        var properties = uic.GetProperties(element);
+        var properties = uic.getProperties(element);
         var valueProps = Object.getOwnPropertyNames(value);
         valueProps.forEach(function (item, index) {
             //console.log(index, item);
@@ -359,7 +359,7 @@ uic.disableUsedListItems = function (...selects) {
     updateListItems = function (selects) {
         $(selects).find('option').removeAttr('disabled');
         $(selects).each(function (index, select) {
-            var value = uic.GetValue($(select));
+            var value = uic.getValue($(select));
             var values = [];
 
             if (Array.isArray(value)) {
@@ -1258,7 +1258,7 @@ uic.getpost = uic.getpost || {
     post : async function (url, data, options = {}) {
         options = $.extend({}, uic.getpost.defaultOptions.get, options);
 
-        var data = formatNumbersForDecimalStrings(data);
+        var data = uic.getpost.formatNumbersForDecimalStrings(data);
 
         try {
             if (options.cancelPreviousRequests && uic.getpost._postRequests[url] != undefined) {

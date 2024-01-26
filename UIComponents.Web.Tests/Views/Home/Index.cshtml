@@ -7,8 +7,10 @@
 }
 
 @{
-    var card = new UICCard(new Translatable("Card.Test"))
-                .AddPartial(new UICPartial("Home", "test"));
+
+    var tabs = new UICTabs("TestTabs")
+        .Add(new UICCard(new Translatable("Card.Test"))
+                .AddPartial(new UICPartial("Home", "test")));
 }
 
-@await card.InvokeAsync(Component)
+@await tabs.InvokeAsync(Component)

@@ -37,6 +37,15 @@ public class UICGroup : UIComponent, IUIAction, IUICHasChildren<IUIComponent>
 
     public List<IUIComponent> Components { get; set; } = new();
 
+    /// <summary>
+    /// If no components are rendered, do not render this group (div)
+    /// </summary>
+    public bool RenderWithoutContent { get; set; } = false;
+
+    /// <summary>
+    /// If only 1 item will be rendered, skip the group and only render the item
+    /// </summary>
+    public bool RenderSingleItem { get; set; } = false;
     public override bool Render
     {
         get => Components.Where(x =>

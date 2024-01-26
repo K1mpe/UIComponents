@@ -44,6 +44,14 @@ public class UICOptions
 
     #endregion
 
+    /// <summary>
+    /// If this UIComponent can be generated from a controller, adding a partial to the path can prevent the entire page from reloading
+    /// </summary>
+    /// <remarks>
+    /// This partial will automatically skip initial load & add a button in the first available card
+    /// </remarks>
+    public UICPartial? Partial { get; set; }
+
     #region Properties
 
 
@@ -95,7 +103,7 @@ public class UICOptions
     /// </summary>
     public bool HideEmptyInReadonly { get; set; } = OptionDefaults.HideEmptyInReadonly;
 
-    public string FormPostUrl { get; set; }
+    public ISubmitAction PostForm { get; set; }
 
     /// <summary>
     /// Replace the Save button with a Create button
@@ -161,7 +169,7 @@ public class UICOptions
     /// <summary>
     /// If the user has permission to add this type of entity, show the add button
     /// </summary>
-    public bool ShowAddButtonIfAllowed { get; set; } = true;
+    public bool SelectListShowAddButtonIfAllowed { get; set; } = true;
 
     /// <summary>
     /// Example: User.Field.UserGroupId => User.Field.UserGroup

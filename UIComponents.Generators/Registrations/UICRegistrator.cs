@@ -50,6 +50,7 @@ public static class UICConfigure
     {
 
         configOptions.AddAndRegisterGenerator<UICPropTypeGenerator>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorInitialPartial>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorCard>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorForm>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorGroup>(serviceCollection);

@@ -21,8 +21,6 @@ public partial class UicConfigOptions
     }
     #endregion
 
-    public bool CheckLanguageServiceType;
-    public bool CheckPermissionServiceType;
 
    
 
@@ -31,6 +29,10 @@ public partial class UicConfigOptions
     /// Replace the wwwroot/uic files
     /// </summary>
     public bool ReplaceRootFolder { get; set; } = true;
+
+
+    public bool CheckLanguageServiceType { get; set; } = true;
+    public bool CheckPermissionServiceType { get; set; } = true;
     #endregion
 
     #region Add Generators

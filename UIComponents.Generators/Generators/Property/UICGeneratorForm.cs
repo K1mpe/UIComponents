@@ -32,14 +32,25 @@ public class UICGeneratorForm : UICGeneratorProperty
                 return GeneratorHelper.Next<IUIComponent>();
 
         var form = new UICForm();
-
-        var submit= new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Post, args.ClassObject.GetType().Name, args.Options.ReplaceSaveButtonWithCreateButton ? "Create" : "Update") 
+        if (args.Options.PostForm == null)
         {
-            GetVariableData = form.TriggerGetValue()
-        };
-        if(args.ClassObject is IDbEntity dbEntity)
-            submit.Data = new {Id = dbEntity.Id};
-        form.Submit = submit;
+            var submit = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Post, args.ClassObject.GetType().Name, args.Options.ReplaceSaveButtonWithCreateButton ? "Create" : "Update")
+            {
+                GetVariableData = form.TriggerGetValue()
+            };
+            if (args.ClassObject is IDbEntity dbEntity)
+                submit.Data = new { Id = dbEntity.Id };
+
+            form.Submit = submit;
+        }
+        else
+        {
+            form.Submit = args.Options.PostForm;
+        }
+
+        
+            
+
         
 
 

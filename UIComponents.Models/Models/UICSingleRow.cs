@@ -78,7 +78,7 @@ public class UICSingleRow : UIComponent
     #region Converters
     public UICGroup ConvertToGroup()
     {
-        var group = new UICGroup(Components);
+        var group = new UICGroup(Components) { RenderSingleItem = true };
         return group;
     }
 

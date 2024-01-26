@@ -15,7 +15,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
     public override double Priority { get; set; } = 1000;
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
-        bool showButtonAdd = args.Options.ShowAddButtonIfAllowed;
+        bool showButtonAdd = args.Options.SelectListShowAddButtonIfAllowed;
         var input = new UICInputSelectlist(args.PropertyName, new());
         input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
         input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input)?? true;

@@ -1,4 +1,41 @@
 ﻿
+/*#region Form*/
+form {
+    &.readonly-form {
+        .hidden-readonly {
+            display: none;
+        }
+
+        .btn-save {
+            display: none;
+        }
+
+        .btn-readonly {
+            display: none;
+        }
+
+        .form-control, .select2-selection {
+            background: none !important;
+            border: none;
+            max-width: max-content;
+        }
+        .select2-selection__arrow{
+            display:none;
+        }
+        .input-group-text {
+            background: none;
+            border: none;
+        }
+    }
+
+    &:not(.readonly-form) {
+        .btn-edit {
+            display: none;
+        }
+    }
+}
+
+/*#endregion Form*/
 
 /*#region Buttons*/
 .btn[disabled]{
@@ -59,6 +96,21 @@
 
 /*#region Inputs*/
 
+.input-group {
+    // margin-left: -1px;
+    // border-top-left-radius: 0;
+    // border-bottom-left-radius: 0;
+
+    > :not(:first-child):not(.input-group-prepend) {
+        margin-left: -1px;
+        @include border-left-radius(0);
+    }
+
+    > :not(:last-child):not(.input-group-append) {
+        @include border-right-radius(0);
+    }
+}
+
     /*#region Color*/
     
 
@@ -109,16 +161,16 @@
     .select2{
 
     }
-.select2-container--bootstrap4 .select2-results__option {
-    min-height: 2rem; //if Value is null, this height will be set
-    &[aria-disabled] {
-        opacity: 0.5;
+    .select2-container--bootstrap4 .select2-results__option {
+        min-height: 2rem; //if Value is null, this height will be set
+        &[aria-disabled] {
+            opacity: 0.5;
+        }
     }
-}
-span .select2-selection__choice {
-    background-color: var(--blub, blue) !important;
-    border-color: var(--blub, blue) !important;
-}
+    span .select2-selection__choice {
+        background-color: var(--blub, blue) !important;
+        border-color: var(--blub, blue) !important;
+    }
 
     span.select2-container--focus .select2-selection--multiple {
         border-color: var(--blub, blue) !important;
