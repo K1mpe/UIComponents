@@ -31,4 +31,7 @@ public class UICInputMultiline : UICInput<string>
 
     #endregion
 
+    #region Converters
+    public UICInputText ConvertToSingleLine() => CommonHelper.Convert<UICInputText>(this);
+    #endregion
 }

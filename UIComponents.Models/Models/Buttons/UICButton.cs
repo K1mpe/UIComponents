@@ -42,6 +42,15 @@ public class UICButton : UIComponent
     public bool Disabled { get; set; }
     #endregion
 
+    #region Converters
+    public UICDropdownItem ConvertToDropdownItem()
+    {
+        var dropdownItem = CommonHelper.Convert<UICDropdownItem>(this);
+        dropdownItem.Content = ButtonText;
+        dropdownItem.Icon = PrependButtonIcon;
+        return dropdownItem;
+    }
+    #endregion
 
 
     public enum ButtonRenderer

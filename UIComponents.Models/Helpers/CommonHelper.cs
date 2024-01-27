@@ -15,12 +15,34 @@ public class CommonHelper
         T result = Activator.CreateInstance<T>();
         foreach (var property in typeof(T).GetProperties())
         {
-            if (!property.CanWrite || property.CanWrite)
+            if (!property.CanWrite || !property.CanRead)
                 continue;
 
             object value = property.GetValue(target);
             property.SetValue(result, value, null);
         }
         return result;
+    }
+
+
+    public static T Convert<T>(object source)
+    {
+        if (source == null)
+            return default;
+
+        T result = Activator.CreateInstance<T>();
+        foreach (var property in typeof(T).GetProperties())
+        {
+            var sourceProp = source.GetType().GetProperty(property.Name);
+            if (sourceProp == null)
+                continue;
+            if (!property.CanWrite || !sourceProp.CanRead)
+                continue;
+
+            object value = sourceProp.GetValue(source);
+            property.SetValue(result, value, null);
+        }
+        return result;
+        
     }
 }

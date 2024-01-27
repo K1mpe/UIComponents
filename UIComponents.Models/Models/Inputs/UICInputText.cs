@@ -35,5 +35,10 @@ public class UICInputText : UICInput<string>
 
     #endregion
 
-
+    #region Converters
+    public UICInputMultiline CovertToMultiline()
+    {
+        return CommonHelper.Convert<UICInputMultiline>(this);
+    }
+    #endregion
 }

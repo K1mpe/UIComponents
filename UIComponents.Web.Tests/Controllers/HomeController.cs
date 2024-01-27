@@ -50,7 +50,9 @@ namespace UIComponents.Web.Tests.Controllers
         public async Task<IActionResult> Test()
         {
             await Task.Delay(500);
-            return PartialView();
+            if(IsAjaxRequest(Request))
+                return PartialView();
+            return View();
         }
 
         [HttpPost]

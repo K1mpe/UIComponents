@@ -1,0 +1,64 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICSpaceReplacer
+
+@{
+    string id = Model.GetOrGenerateId();
+
+    Model.AssignCollectionForChildren();
+
+    Model.AddScript(
+    @<text>
+
+
+    let bigElement = $('#@id >.big-element');
+    let smallElement = $('#@id >.small-element');
+    let sizeWatcher = $('#@id').closest('.card, .modal, .content')
+    displayElement();
+    function displayElement(){
+
+
+        bigElement.attr('hidden', false);
+        smallElement.attr('hidden', true);
+        let bigHeight= sizeWatcher.height();
+        bigElement.attr('hidden', true);
+        smallElement.attr('hidden', false);
+        let smallHeight = sizeWatcher.height();
+
+        if(bigHeight <= smallHeight){
+            bigElement.attr('hidden', false);
+            smallElement.attr('hidden', true);
+        }
+    }
+
+    new ResizeObserver((element)=>{displayElement();}).observe($('#@id').parent()[0]);
+    new ResizeObserver((element)=>{displayElement();}).observe($('#@id').parent().parent()[0]);
+
+    </text>);
+}
+
+<span @Html.Raw(Model.GetHtmlAttributes())>
+    <span class="big-element">
+        @await Model.BigElement.InvokeAsync(Component)
+    </span>
+    <span class="small-element">
+        @await Model.SmallElement.InvokeAsync(Component)
+    </span>
+</span>
+
+@await Model.RenderStylesAndScripts(Component)

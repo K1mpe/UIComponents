@@ -87,10 +87,15 @@ public class UICCard : UIComponent, IUICTab
     /// </summary>
     public UICCard Add<T>(out T added, T component) where T : IUIComponent
     {
-        added = component;
-        return Add(component);
+        Body.Add(out added, component);
+        return this;
     }
 
+    public UICCard Add<T>(T component, Action<T> configure) where T: IUIComponent
+    {
+        Body.Add(component, configure);
+        return this;
+    }
 
     #region AddHeader
     private T CreateHeader<T>(T header = null) where T: class, IHeader

@@ -47,4 +47,18 @@ public class UICDropdownItem : UIComponent, IDropdownItem, IHasIcon<UICIcon>
 
     #endregion
 
+    #region Converters
+
+    public virtual UICButton ConvertToButton(UICDropdown dropdown = null)
+    {
+        var button = CommonHelper.Convert<UICButton>(Icon);
+        if(dropdown != null && dropdown.Button is UICButton dropdownButton)
+        {
+            button = dropdownButton;
+        }
+        button.ButtonText = Content;
+        button.PrependButtonIcon = Icon;
+        return button;
+    }
+    #endregion
 }

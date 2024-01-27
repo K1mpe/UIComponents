@@ -46,7 +46,7 @@ form {
 /*#region ButtonToolbar */
 .uic.btn-toolbar {
     &.dist-none {
-        > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right {
+        > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right, span {
             @extend .btn-group;
         }
     }
@@ -197,6 +197,8 @@ form {
 /*#endregion SidePanel*/
 
 /*#region Card*/
+.uic.card > .card-body{
+}
 .uic.card:last-child{
     margin-bottom:0;
 }

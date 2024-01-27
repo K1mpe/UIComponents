@@ -23,9 +23,25 @@
 
     async Task DropdownMenu(List<IDropdownItem> dropdownItems, bool submenu, string id="")
     {
+        dropdownItems = dropdownItems.Where(x => x.HasValue()).ToList();
         <ul id="@id" class="dropdown-menu" style="min-width: max-content">
-            @foreach (var item in dropdownItems)
+            @for(int i=0; i<dropdownItems.Count(); i++)
             {
+                var item = dropdownItems[i];
+
+                
+                if(item is UICDropdownDivider)
+                {
+                    //Do not render a divider if it is the first or last item in a dropdown
+                    if (i == 0 || i == dropdownItems.Count() - 1)
+                        continue;
+
+                    //Do not render a divider if the previous element was also a divider.
+                    if (dropdownItems[i - 1] is UICDropdownDivider)
+                        continue;
+                }
+                
+
                 @await item.InvokeAsync(Component)
             }
         </ul>
@@ -34,33 +50,29 @@
 
 @if (Model.ReplaceDropdownByButtonIfSingleDropdownItem && Model.DropdownItems.Where(x => x.GetType().IsAssignableTo(typeof(UICDropdownItem)) && x.HasValue()).Count() == 1)
 {
-    var newButton = new UICButton();
-    if(Model.Button is UICButton modelButton)
-    {
-        newButton = modelButton;
-    }
+   
     var dropDownItem = Model.DropdownItems.Where(x => x.GetType().IsAssignableTo(typeof(UICDropdownItem)) && x.HasValue()).Single() as UICDropdownItem;
 
-    newButton.ButtonText = dropDownItem.Content;
-    
     if(dropDownItem is UICDropdownSubMenu submenu)
     {
-        Model.DropdownItems = submenu.Items;
+        var dropdown = submenu.ConvertToDropdown(Model);
+        @await dropdown.InvokeAsync(Component)
+        return;
     }
     else
     {
-        newButton.OnClick = dropDownItem.OnClick;
-        @await newButton.InvokeAsync(Component)
+        var button2 = dropDownItem.ConvertToButton(Model);
+        @await button2.InvokeAsync(Component)
         return;
     }
 }
 
-    <div class="dropdown @Model.GetAttribute("class")">
+    <span class="dropdown @Model.GetAttribute("class")">
         @if (Model.Button is UICButton button)
         {
             if (button.OnClick.HasValue())
             {
-                <div class="btn-group">
+                <span class="btn-group">
                     @await button.InvokeAsync(Component)
                     <button id="@id" type="button" class="btn @($"btn-{button.Color?.ToLower()??ColorDefaults.ButtonDefault.ToLower()}") dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="sr-only">Toggle Dropdown</span>
@@ -69,7 +81,7 @@
 
                         await DropdownMenu(Model.DropdownItems, false);
                     }
-                </div>
+                </span>
             }
             else
             {
@@ -89,14 +101,12 @@
                 @await Model.Button.InvokeAsync(Component)
             </span>
 
-
-
             await DropdownMenu(Model.DropdownItems, false);
         }
 
 
 
-    </div>
+    </span>
 
 
 

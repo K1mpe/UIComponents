@@ -26,9 +26,56 @@
     {
         AllowOneCardOpen = true
     };
-    var multiselect = new UICInputMultiSelect();
 
-    accordion.Add(new UICCard("blub").Add(new UICInputMultiline()));
+
+    UICCustom Alert(string text) => new UICCustom($"alert('{text}');");
+
+    accordion.Add(out var dropdowns, new UICCard("Dropdowns"));
+
+    #region
+    dropdowns.Add(new UICButtonToolbar(), toolbar =>
+    {
+        toolbar
+            .AddLeft(new UICSpan("Dropdown Without Button"))
+            .AddRight(new UICDropdown("Without Button")
+                .Add(new UICDropdownItem("Item1"){OnClick = Alert("Item1")})
+                .Add(new UICDropdownItem("Item2"){OnClick = Alert("Item2")})
+                .Add(new UICDropdownDivider())
+                .Add(new UICDropdownItem("Item3"){OnClick = Alert("Item3")})
+                .Add(new UICDropdownSubMenu("Dropdown1", new()
+                {
+                    new UICDropdownItem("SubItem1"),
+                    new UICDropdownItem("SubItem2")
+                }))
+            );
+
+    });
+
+    dropdowns.Add(new UICButtonToolbar(), toolbar =>
+    {
+        toolbar
+            .AddLeft(new UICSpan("SpaceReplacer"));
+
+        List<IUIComponent> buttons = new()
+        {
+            new UICButton("btn1"){OnClick=Alert("Btn1")},
+            new UICButton("btn2"){OnClick=Alert("Btn2")},
+            new UICButton("btn3"){OnClick=Alert("Btn3")},
+            new UICButton("btn4"){OnClick=Alert("Btn4")},
+            new UICButton("btn5"){OnClick=Alert("Btn5")},
+            new UICDropdown("Dropdown", new()
+            {
+                new UICDropdownItem("Item1"),
+                new UICDropdownItem("Item2"),
+            })
+        };
+
+        toolbar.AddRight(new UICSpaceReplacer(buttons, new("Combined buttons")));
+
+
+    });
+    #endregion
+
     accordion.Add(new UICCard(new Translatable("Card.Toolbars"))
         .Add(new UICButtonToolbar()
             {

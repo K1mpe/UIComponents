@@ -58,4 +58,19 @@ public class UICDropdownSubMenu : UICDropdownItem, IUICHasChildren<IDropdownItem
         return this.Add<UICDropdownSubMenu, T, IDropdownItem>(item, configure);
     }
     #endregion
+
+    #region Converters
+    public UICDropdown ConvertToDropdown(UICDropdown parentDropdown = null)
+    {
+        var dropdown = CommonHelper.Convert<UICDropdown>(this);
+        if(parentDropdown.Button is UICButton dropdownButton)
+        {
+            dropdownButton.ButtonText = Content;
+            if (Icon != null)
+                dropdownButton.PrependButtonIcon = Icon;
+            dropdown.Button = dropdownButton;
+        }
+        return dropdown;
+    }
+    #endregion
 }

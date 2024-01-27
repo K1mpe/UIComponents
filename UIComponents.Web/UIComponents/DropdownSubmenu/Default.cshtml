@@ -34,9 +34,9 @@
     var subItems = Model.Items.Where(x => x.HasValue()).ToList();
 }
 
-@if(subItems.Count == 1 && Model.ReplaceBySingleItem)
+@if(subItems.Where(x=>x.HasValue() && x is not UICDropdownDivider).Count() == 1 && Model.ReplaceBySingleItem)
 {
-    @await subItems.First().InvokeAsync(Component)
+    @await subItems.Where(x=>x.HasValue() && x is not UICDropdownDivider).First().InvokeAsync(Component)
 }
 else
 {

@@ -23,5 +23,16 @@ public class UICAccordion : UIComponent, IUICHasChildren<UICCard>
 
     #endregion
 
+    #region Methods
+    public UICAccordion Add(out UICCard added, UICCard card)
+    {
+        return this.Add<UICAccordion, UICCard, UICCard>(out added, card);
+    }
+
+    public UICAccordion Add(UICCard card, Action<UICCard> configure)
+    {
+        return this.Add<UICAccordion, UICCard, UICCard>(card, configure);
+    }
+    #endregion
 
 }

@@ -25,6 +25,7 @@
     <Content Remove="UIComponents\Default.cshtml" />
     <Content Remove="UIComponents\InputSelectlist\Select2.cshtml" />
     <Content Remove="UIComponents\Partial\Default.cshtml" />
+    <Content Remove="UIComponents\SpaceReplacer\Default.cshtml" />
   </ItemGroup>
 
   <!--<ItemGroup>
@@ -79,7 +80,7 @@
     <None Include="UIComponents\DropdownDivider\Default.cshtml" />
     <None Include="UIComponents\DropdownHeader\Default.cshtml" />
     <None Include="UIComponents\DropdownItem\Default.cshtml" />
-    <None Include="UIComponents\DropdownSubmenu\Default.cshtml" />
+    <None Include="UIComponents\DropdownSubMenu\Default.cshtml" />
     <None Include="UIComponents\Dropdown\Default.cshtml" />
     <None Include="UIComponents\Form\Default.cshtml" />
     <None Include="UIComponents\Group\ContentOnly.cshtml" />

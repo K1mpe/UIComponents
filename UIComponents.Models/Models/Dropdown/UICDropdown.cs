@@ -66,6 +66,19 @@ public class UICDropdown : UIComponent, IUICHasChildren<IDropdownItem>
 
     #endregion
 
+    #region Converters
+    public UICDropdownSubMenu ConvertToSubMenu()
+    {
+        var subMenu = CommonHelper.Convert<UICDropdownSubMenu>(this);
+        if(Button is UICButton button)
+        {
+            subMenu.Content = button.ButtonText;
+            subMenu.Icon = button.PrependButtonIcon;
+            subMenu.Items = DropdownItems;
+        }
+        return subMenu;
+    }
+    #endregion
 
     public enum IconPositionEnum
     {
