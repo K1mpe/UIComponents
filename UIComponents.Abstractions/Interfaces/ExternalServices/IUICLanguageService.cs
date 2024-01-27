@@ -2,5 +2,5 @@
 
 public interface IUicLanguageService
 {
-    Task<string> Translate(ITranslateable translationModel);
+    Task<string> Translate(Translatable translationModel);
 }

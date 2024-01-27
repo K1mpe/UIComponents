@@ -25,28 +25,28 @@ public class UICGeneratorGroup : UICGeneratorProperty
 
         var excludedProperties = new List<string>();
         if(!string.IsNullOrEmpty(args.Options.ExcludedProperties))
-            excludedProperties = args.Options.ExcludedProperties.Split(",").Select(x=>x.Trim()).ToList();
+            excludedProperties = args.Options.ExcludedProperties.ToLower().Split(",").Select(x=>x.Trim()).ToList();
         if (args.Options.IdHidden)
             excludedProperties.Add("Id");
 
         var includedProperties = new List<string>();
         if(!string.IsNullOrEmpty(args.Options.IncludedProperties))
-            includedProperties = args.Options.IncludedProperties.Split(",").Select(x=> x.Trim()).ToList();
+            includedProperties = args.Options.IncludedProperties.ToLower().Split(",").Select(x=> x.Trim()).ToList();
 
         if(string.IsNullOrWhiteSpace(args.Options.IncludedProperties) || args.Options.IncludedUndefinedProperties)
         {
             foreach(var prop in args.ClassObject.GetType().GetProperties())
             {
-                if (excludedProperties.Contains(prop.Name))
+                if (excludedProperties.Contains(prop.Name.ToLower()))
                     continue;
-                if(includedProperties.Contains(prop.Name)) 
+                if(includedProperties.Contains(prop.Name.ToLower())) 
                     continue;
-                includedProperties.Add(prop.Name);
+                includedProperties.Add(prop.Name.ToLower());
             }
         }
         foreach (var propName in includedProperties)
         {
-            var property = args.ClassObject.GetType().GetProperty(propName);
+            var property = args.ClassObject.GetType().GetProperties().Where(x=>x.Name.ToLower() == propName).FirstOrDefault();
             if (property == null)
                 continue;
             group.Components.Add(await args.Configuration.GetChildComponentAsync(args.ClassObject, property, args.Options, cc));

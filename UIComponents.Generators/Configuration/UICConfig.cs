@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
 using UIComponents.Generators.Services;
 using UIComponents.Generators.Services.Internal;
@@ -178,9 +179,9 @@ public class UICConfig
         return GetGeneratedResultAsync<IUIComponent, UICSpan>(UICGeneratorPropertyCallType.PropertyGroupSpan, caller, args);
     }
 
-    public Task<ITranslateable?> GetToolTipAsync(UICPropertyArgs args, IUIComponent caller)
+    public Task<Translatable?> GetToolTipAsync(UICPropertyArgs args, IUIComponent caller)
     {
-        return GetGeneratedResultAsync<ITranslateable?>(UICGeneratorPropertyCallType.PropertyTooltip, caller, args);
+        return GetGeneratedResultAsync<Translatable?>(UICGeneratorPropertyCallType.PropertyTooltip, caller, args);
     }
 
     /// <summary>

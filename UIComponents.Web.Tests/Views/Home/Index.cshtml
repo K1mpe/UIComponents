@@ -1,4 +1,5 @@
 ﻿@using UIComponents.Abstractions;
+@using UIComponents.Generators.Interfaces;
 @using UIComponents.Models.Models.Card;
 @using UIComponents.Models.Models;
 @using UIComponents.Web.Extensions;
@@ -6,11 +7,31 @@
     ViewData["Title"] = "Home Page";
 }
 
+@inject IUIComponentService UIC
 @{
 
     var tabs = new UICTabs("TestTabs")
-        .Add(new UICCard(new Translatable("Card.Test"))
-                .AddPartial(new UICPartial("Home", "test")));
+    {
+    OnlyRenderSingleContent = true
+    }
+        .Add(new UICTabs("FormTabs")
+        {
+            Header = new UICCardHeader("Forms"),
+            Renderer = UICCardWithTabsRenderer.VerticalTab
+        }
+        .Add(new UICCard(new Translatable("Card.Create"))
+            .Add(await UIC.CreateComponentAsync(new TestModel(), new() {
+                ReplaceSaveButtonWithCreateButton = true, 
+                ShowEditButton = false,
+                IncludedProperties= "teststring, number, decimal, checkbox, enum"
+            })))
+        .Add(new UICCard(new Translatable("Card.Edit"))
+            .Add(await UIC.CreateComponentAsync(new TestModel())))
+        .Add(new UICCard(new Translatable("Card.Partial"))
+            .AddPartial("Home", "test")
+            ))
+        .Add(new UICCard(new Translatable("Card.Partial"))
+            .AddPartial("Home", "test"));
 }
 
 @await tabs.InvokeAsync(Component)

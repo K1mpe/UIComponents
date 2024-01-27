@@ -24,17 +24,17 @@ public abstract class UICInput : UIComponent
     /// <summary>
     /// A placeholder for when the input is empty
     /// </summary>
-    public ITranslateable Placeholder { get; set; }
+    public Translatable Placeholder { get; set; }
 
     /// <summary>
     /// The popup when hovering over the input
     /// </summary>
-    public ITranslateable Tooltip { get; set; }
+    public Translatable Tooltip { get; set; }
 
     /// <summary>
     /// This is the translated name. This can be used for validation messages etc. (Should be the same as the label text in a input group)
     /// </summary>
-    public ITranslateable DisplayName { get; set; }
+    public Translatable DisplayName { get; set; }
 
 
     //public UIComponent PrependInput { get; set; }

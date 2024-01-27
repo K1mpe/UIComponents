@@ -95,7 +95,7 @@
     <None Include="UIComponents\InputDatetime\Default.cshtml" />
     <None Include="UIComponents\InputGroup\Default.cshtml" />
     <None Include="UIComponents\InputGroup\Grid.cshtml" />
-    <None Include="UIComponents\InputMultilineText\Default.cshtml" />
+    <None Include="UIComponents\InputMultiline\Default.cshtml" />
     <None Include="UIComponents\InputMultiSelect\Default.cshtml" />
     <None Include="UIComponents\InputNumber\Default.cshtml" />
     <None Include="UIComponents\InputSelectListSource\Default.cshtml" />

@@ -8,7 +8,7 @@ public class UICCard : UIComponent, IUICTab
 {
 
     #region Ctor
-    public UICCard(ITranslateable title) : this(new UICCardHeader() { Title = title})
+    public UICCard(Translatable title) : this(new UICCardHeader() { Title = title})
     {
     }
 

@@ -42,12 +42,7 @@
         $('#@id').select2({
             theme: 'bootstrap4',
             minimumResultsForSearch: @Json.Serialize(Model.SearchableIfMinimimResults),
-            @if(Model.Placeholder != null)
-            {
-                <text>
-                    
-                </text>
-            }
+            width:'100%',
         });
 
         $('#@id').on('select2:opening', function(){

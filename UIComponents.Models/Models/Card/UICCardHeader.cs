@@ -10,7 +10,7 @@ namespace UIComponents.Models.Models.Card
         #endregion
 
 
-        public UICCardHeader(ITranslateable title): this()
+        public UICCardHeader(Translatable title): this()
         {
             Title = title;
         }
@@ -19,7 +19,7 @@ namespace UIComponents.Models.Models.Card
 
         }
 
-        public ITranslateable Title { get; set; }
+        public Translatable Title { get; set; }
         public IColor? Color { get; set; } = UIComponents.Defaults.ColorDefaults.CardHeaderDefault;
 
         public List<IUIComponent> PrependTitle { get; set; } = new();

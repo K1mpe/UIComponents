@@ -13,11 +13,11 @@ public class UICSpan : UIComponent
     {
 
     }
-    public UICSpan(ITranslateable text) : this()
+    public UICSpan(Translatable text) : this()
     {
         Text = text;
     }
     #endregion
-    public ITranslateable Text { get; set; }
+    public Translatable Text { get; set; }
 
 }

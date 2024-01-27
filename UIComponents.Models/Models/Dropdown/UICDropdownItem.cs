@@ -16,7 +16,7 @@ public class UICDropdownItem : UIComponent, IDropdownItem, IHasIcon<UICIcon>
 
     }
 
-    public UICDropdownItem(ITranslateable content, IUIAction onClick = null)
+    public UICDropdownItem(Translatable content, IUIAction onClick = null)
     {
         Content = content;
         if (onClick != null)
@@ -26,12 +26,12 @@ public class UICDropdownItem : UIComponent, IDropdownItem, IHasIcon<UICIcon>
 
 
     #region Properties
-    public ITranslateable Content { get; set; }
+    public Translatable Content { get; set; }
 
     /// <summary>
     /// When hovering over the DropdownItem, this text will be shown
     /// </summary>
-    public ITranslateable Tooltip { get; set; }
+    public Translatable Tooltip { get; set; }
 
     /// <summary>
     /// Clicking a dropdown element

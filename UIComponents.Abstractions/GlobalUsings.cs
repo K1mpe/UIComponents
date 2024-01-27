@@ -5,3 +5,4 @@ global using UIComponents.Abstractions.Enums;
 global using UIComponents.Abstractions.Extensions;
 global using UIComponents.Abstractions.Interfaces;
 global using UIComponents.Abstractions.Interfaces.ExternalServices;
+global using UIComponents.Abstractions.Models;

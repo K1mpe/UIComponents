@@ -10,15 +10,15 @@ public class UICLabel : UIComponent
     {
 
     }
-    public UICLabel(ITranslateable labelText) : this()
+    public UICLabel(Translatable labelText) : this()
     {
         LabelText = labelText;
     }
     #endregion
 
 
-    public ITranslateable LabelText { get; set; }
-    public ITranslateable Tooltip { get; set; }
+    public Translatable LabelText { get; set; }
+    public Translatable Tooltip { get; set; }
 
     /// <summary>
     /// This icon is displayed only when the tooltip is not empty

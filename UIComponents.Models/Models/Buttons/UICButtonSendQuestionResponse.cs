@@ -6,7 +6,7 @@ public class UICButtonSendQuestionResponse : UICButton
     {
 
     }
-    public UICButtonSendQuestionResponse(string id, string response, ITranslateable text) : this()
+    public UICButtonSendQuestionResponse(string id, string response, Translatable text) : this()
     {
         ButtonText = text;
         var customAction = new UICCustom();

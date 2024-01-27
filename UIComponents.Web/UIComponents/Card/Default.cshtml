@@ -88,6 +88,14 @@
 
             $('#@id').on('expanded.lte.cardwidget', (ev)=> {ev.stopPropagation(); $('#@id').triggerHandler('uic-opened');});
             $('#@id').on('collapsed.lte.cardwidget', (ev)=> {ev.stopPropagation(); $('#@id').triggerHandler('uic-closed');});
+
+
+            //If the hash contains the card Id, open the card after 10ms
+            if(window.location.hash.includes('@id'))
+                setTimeout(()=>{
+                    $('#@id').trigger('uic-open');
+                }, 10);
+                
         </text>
 
         @if (Model.RememberCollapsedState)
@@ -112,7 +120,7 @@
                 $('#@id').on('uic-opened', ()=>{
                     localStorage.setItem("uic.card.collapsedState.@id", false);
                 });
-                $('#@id').on('uic-closed' ()=>{
+                $('#@id').on('uic-closed', ()=>{
                     localStorage.setItem("uic.card.collapsedState.@id", true);
                 });
 

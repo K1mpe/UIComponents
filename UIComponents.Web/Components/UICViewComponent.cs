@@ -31,10 +31,10 @@ public class UICViewComponent : ViewComponent
                 UIC.AddAttribute("hidden", "true");
             if(_uicConfig.TryGetLanguageService(out var languageService))
             {
-                if (UIC.TryGetPropertyValue<ITranslateable>("Tooltip", out ITranslateable tooltip) && tooltip != null)
+                if (UIC.TryGetPropertyValue<Translatable>("Tooltip", out Translatable tooltip) && tooltip != null)
                     UIC.AddAttribute("title", await languageService.Translate(tooltip));
 
-                if (UIC.TryGetPropertyValue<ITranslateable>(nameof(UICInput<string>.Placeholder), out ITranslateable placeholder))
+                if (UIC.TryGetPropertyValue<Translatable>(nameof(UICInput<string>.Placeholder), out Translatable placeholder))
                     UIC.AddAttribute("placeholder", await languageService.Translate(placeholder));
             }
 

@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Abstractions;
 
-public class Translatable : ITranslateable
+public class Translatable
 {
     public Translatable() { }
     public Translatable(string resourceKey, string defaultValue = null, params object[] args)
@@ -28,7 +28,7 @@ public class Translatable : ITranslateable
 }
 
 /// <summary>
-/// This is a override on ITranslateable that will not create a new resourceKey
+/// This is a override on Translatable that will not create a new resourceKey
 /// </summary>
 public class Untranslated : Translatable
 {

@@ -104,5 +104,5 @@ public class UICCustom : UIComponent, IUIAction, IDropdownItem
 
     #endregion
 
-
+    public static implicit operator UICCustom(RazerBlock razerBlock) => new(razerBlock);
 }

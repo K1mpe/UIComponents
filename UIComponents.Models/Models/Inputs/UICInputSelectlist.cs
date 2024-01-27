@@ -53,7 +53,7 @@ public class UICInputSelectlist : UICInput<string>
     /// <summary>
     /// If no <see cref="SelectListItems"/> are available, A item is generated with this text
     /// </summary>
-    public ITranslateable NoItemsText { get; set; } = TranslationDefaults.SelectListNoItems;
+    public Translatable NoItemsText { get; set; } = TranslationDefaults.SelectListNoItems;
 
 
     /// <summary>

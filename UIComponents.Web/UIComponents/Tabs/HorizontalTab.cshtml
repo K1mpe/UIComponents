@@ -29,28 +29,15 @@
 
     if (Model.RememberTabState)
     {
-    Model.AddScript(
-    @<text>
-
-    
-        <text>
-        let openTabId= localStorage.getItem('tabs-lastState-@id');
-        if(openTabId != null)
-            taghelper.card.openTab($(openTabId));
-        
-
-            taghelper.card.openFirstTabCard($('#@id'), true);
-
-
-        $('#@id').on('tabChanged', (ev, tabs)=>{
-            localStorage.setItem('tabs-lastState-@id', $(tabs.newTab).attr('href'));
-        })
-        </text>
-    
-
-        
-    </text>);
+        Model.AddScript(
+        @<text>
+            $('#@id').on('tabChanged', (ev, tabs)=>{
+                localStorage.setItem('tabs-lastState-@id', $(tabs.newTab).attr('href'));
+            })
+            </text>
+    );
     }
+    
 }
 
 @if(Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent && Model.Tabs.First() is IUIComponent firstTab)
@@ -59,6 +46,10 @@
 }
 else
 {
+    Model.AddScript(
+        @<text>
+            uic.tabs.openFirstTab($('#@id'));
+    </text>);
     <div @Html.Raw(Model.GetHtmlAttributes())>
         <div class="card-header">
             <div class="card-header-tabs nav nav-justified nav-tabs" role="tablist" aria-orientation="horizontal">

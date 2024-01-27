@@ -27,29 +27,16 @@
 
     Model.AssignCollectionForChildren();
 
-    Model.AddScript(
-    @<text>
-
-        @if (Model.RememberTabState)
-                {
-        <text>
-            let openTabId= localStorage.getItem('tabs-lastState-@id');
-            if(openTabId != null)
-                taghelper.card.openTab($(openTabId));
-
-
-            taghelper.card.openFirstTabCard($('#@id'), true);
-
-
+    @if (Model.RememberTabState)
+    {
+        Model.AddScript(
+        @<text>
             $('#@id').on('tabChanged', (ev, tabs)=>{
                 console.log(`Saving tab ${$(tabs.newTab).attr('href')}`);
                 localStorage.setItem('tabs-lastState-@id', $(tabs.newTab).attr('href'));
             })
-        </text>
-                }
-
-
-    </text>);
+        </text>);
+    }
 }
 
 @if (Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent && Model.Tabs.First() is IUIComponent firstTab)
@@ -58,6 +45,10 @@
 }
 else
 {
+    Model.AddScript(
+    @<text>
+        uic.tabs.openFirstTab($('#@id'));
+    </text>);
     <div @Html.Raw(Model.GetHtmlAttributes())>
         <div class="row">
             <div class="col col-tab-headers">
@@ -65,9 +56,8 @@ else
                     @for (int i = 0; i < Model.Tabs.Count; i++)
                     {
                         var tab = Model.Tabs[i];
-                        tab.Header
-                            .AddAttribute("class", "nav-link")
-                            .AddAttribute("href", $"#{id}-tab{i + 1}");
+                        await tab.Header.Transformer(Model, tab.Header);
+                        tab.Header.AddAttribute("href", $"#{id}-tab{i + 1}");
                         
                         @await tab.Header.InvokeAsync(Component)
                     }

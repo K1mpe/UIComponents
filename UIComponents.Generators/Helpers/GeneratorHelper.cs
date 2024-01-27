@@ -201,16 +201,16 @@ public static class GeneratorHelper
         };
     }
 
-    public static UICCustomGenerator<UICPropertyArgs, ITranslateable> PropertyToolTip(string name, double priority, Func<UICPropertyArgs, ITranslateable?, Task<IUICGeneratorResponse<ITranslateable>>> func)
+    public static UICCustomGenerator<UICPropertyArgs, Translatable> PropertyToolTip(string name, double priority, Func<UICPropertyArgs, Translatable?, Task<IUICGeneratorResponse<Translatable>>> func)
     {
-        return new UICCustomGenerator<UICPropertyArgs, ITranslateable>()
+        return new UICCustomGenerator<UICPropertyArgs, Translatable>()
         {
             Name = name,
             Priority = priority,
             GetResult = async (args, existing) =>
             {
                 if(args.CallCollection.CurrentCallType != UICGeneratorPropertyCallType.PropertyTooltip)
-                    return Next<ITranslateable>();
+                    return Next<Translatable>();
 
                 return await func(args, existing);
             }

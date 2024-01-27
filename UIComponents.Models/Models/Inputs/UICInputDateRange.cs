@@ -84,7 +84,7 @@ public class UICInputDateRange : UICInput<IDateRangeInput>
 
 public class DateRangeSelector
 {
-    public ITranslateable Title { get; set; }
+    public Translatable Title { get; set; }
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
 

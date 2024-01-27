@@ -8,7 +8,7 @@ public class UICButton : UIComponent
     #endregion
 
     #region Ctor
-    public UICButton(ITranslateable text) : this()
+    public UICButton(Translatable text) : this()
     {
         ButtonText = text;
     }
@@ -21,9 +21,9 @@ public class UICButton : UIComponent
 
     #region Properties
 
-    public ITranslateable ButtonText { get; set; }
+    public Translatable ButtonText { get; set; }
 
-    public ITranslateable Tooltip { get; set; }
+    public Translatable Tooltip { get; set; }
 
     public IColor? Color { get; set; } = ColorDefaults.ButtonDefault;
 

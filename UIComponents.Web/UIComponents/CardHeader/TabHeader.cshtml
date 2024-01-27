@@ -27,7 +27,10 @@
 
 <a @Html.Raw(Model.GetHtmlAttributes())>
         @await Model.PrependTitle.InvokeAsync(Component)
-        @await Html.Translate(L, Model.Title, null)
+        <span class="tab-title">
+            @await Html.Translate(L, Model.Title, null)
+        </span>
+        
         @await Model.AppendTitle.InvokeAsync(Component)
     @if (Model.Buttons.AnyHasValue())
     {

@@ -1591,19 +1591,53 @@ uic.partial = uic.partial || {
     setTabHash: function (tab) {
         var hash = [];
         $(tab).parents('.card-tabs').each(function (index, item) {
-            var openTab = $(item).find('> .card-header .active[role=tab]');
+            var openTab = $(item).find('> .card-header .active[role=tab],>.row > .col-tab-headers .active[role=tab]');
             if (openTab.length)
                 hash[index] = openTab.attr('href').replace("#", "");
         });
         let scrollTop = $('html').scrollTop();
         window.location.hash = hash.reverse().join(',');
         $('html, body').scrollTop(scrollTop);
+    },
+    openFirstTab: function (tabContainer) {
+        let url = window.location;
+        let hashes = url.hash.split(",");
+        let conti= true;
+        hashes.forEach(function (hash, index) {
+            hash = hash.replace("#", "");
+            let tab = tabContainer.find(`[role="tab"][href="#${hash}"]`);
+            if (tab.length) {
+                uic.tabs.open(tab);
+                conti = false;
+                return;
+            }
+                
+            
+        })
+        if (!conti)
+            return;
+        try {
+            let tabId = tabContainer.attr('id');
+            let openTabId = localStorage.getItem(`tabs-lastState-${tabId}`);
+            if ($(openTabId).length) {
+                uic.tabs.open($(openTabId));
+                conti = false;
+                return;
+            }
+                
+        } catch { }
+
+        if (!conti)
+            return;
+        let firstTab = tabContainer.find('[role="tab"]')[0];
+        uic.tabs.open($(firstTab));
+
     }
 };
 
 $(document).on('click', '[role="tab"]', async function (ev) {
 
-    let newTab = $(ev.target);        // Newly activated tab
+    let newTab = $(ev.target).closest('[role="tab"]');        // Newly activated tab
     ev.stopImmediatePropagation();
     uic.tabs.open(newTab);
     uic.tabs.setTabHash(newTab);

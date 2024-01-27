@@ -20,29 +20,16 @@
 
 @inject IUIComponentService uic;
 
+
 @{
-    var testModel = new TestModel();
-    var tabs = new UICTabs("blub")
+    var accordion = new UICAccordion()
     {
-        OnlyRenderSingleContent = false
-    }.Add(new UICCard(new Translatable("card1")).AddHeader(out var header))
-    .Add(new UICCard(new Translatable("card2")));
+        AllowOneCardOpen = true
+    };
+    var multiselect = new UICInputMultiSelect();
 
-    header.AddButton(new UICButton(new Translatable("Button.Test")));
-}
-
-@await tabs.InvokeAsync(Component)
-@await uic.CreateComponentAsync(testModel, new(){
-    ShowCardHeaders = true,
-    FormToolbarInCardFooter = true,
-    IncludedProperties="Number, Decimal",
-    IncludedUndefinedProperties = true,
-    SelectListShowAddButtonIfAllowed = true,
-}).InvokeAsync(Component)
-
-
-@{
-    var toolbarCard = new UICCard(new Translatable("Card.Toolbars"))
+    accordion.Add(new UICCard("blub").Add(new UICInputMultiline()));
+    accordion.Add(new UICCard(new Translatable("Card.Toolbars"))
         .Add(new UICButtonToolbar()
             {
                 Distance = UIComponents.Abstractions.Enums.ButtonDistance.None
@@ -80,7 +67,7 @@
             .AddLeft(new UICButton(new Untranslated("LongL 3")))
             .AddCenter(new UICButton(new Translatable("CenterR 4")))
             .AddCenter(new UICButton(new Translatable("CenterR 5")))
-        );
+        ));
 
 }
-@await toolbarCard.InvokeAsync(Component)
+@await accordion.InvokeAsync(Component)

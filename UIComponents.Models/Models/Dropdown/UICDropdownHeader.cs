@@ -25,7 +25,7 @@ public class UICDropdownHeader : UIComponent, IDropdownItem, IHasIcon<UICIcon>
     #region Properties
 
     public string Content { get; set; }
-    public ITranslateable Tooltip { get; set; }
+    public Translatable Tooltip { get; set; }
     public UICIcon Icon { get; set; }
 
 

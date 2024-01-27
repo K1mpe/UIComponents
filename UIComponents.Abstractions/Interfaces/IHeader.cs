@@ -2,7 +2,7 @@
 
 public interface IHeader : IUIComponent, IUIHasAttributes
 {
-    public ITranslateable Title { get; set; }
+    public Translatable Title { get; set; }
     public IColor? Color { get; set; }
 
     /// <summary>

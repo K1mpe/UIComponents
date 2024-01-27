@@ -10,7 +10,7 @@ namespace UIComponents.Generators.Services.Internal
 {
     internal class LanguageService : IUicLanguageService
     {
-        public Task<string> Translate(ITranslateable translationModel)
+        public Task<string> Translate(Translatable translationModel)
         {
             if (translationModel == null)
                 return Task.FromResult(string.Empty);

@@ -196,22 +196,77 @@ form {
 
 /*#endregion SidePanel*/
 
-/*#region Tabs*/
-.card-header-tabs .tab-tools{
-    display:flex;
-    align-items: center;
-    justify-content: flex-end;
+/*#region Card*/
+.uic.card:last-child{
+    margin-bottom:0;
 }
-.card-tabs .col-tab-headers{
-    //@expand .col-1;
-    min-width: fit-content;
-}
-.card-tabs > .col-tab-content{
+/*#endregion Card*/
 
-} 
+/*#region Tabs*/
+.uic.card-tabs {
+
+
+    a.nav-link {
+        margin: -1px;
+        display: inline-flex;
+
+        > .tab-tools {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+    }
+
+    &:not(.card-outline) > .card-header {
+        border-bottom: inherit;
+    }
+
+    .card-header-tabs {
+
+        .tab-title {
+            margin-left: auto;
+
+            &:last-child {
+                margin-right: auto;
+            }
+        }
+    }
+
+    .col-tab-headers {
+        flex-grow: 0;
+        min-width: fit-content;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    > .row {
+        margin-left: 0px;
+        margin-right: 0px;
+
+        .col-tab-content {
+            padding-left: $card-spacer-x;
+            padding-right: $card-spacer-x;
+            padding-top: $card-spacer-y;
+            padding-bottom: $card-spacer-y;
+        }
+    }
+
+    .tab-pane > .uic.card-tabs:only-child {
+        margin-left: -$card-spacer-x;
+        margin-right: -$card-spacer-x;
+        margin-top: -$card-spacer-y;
+        margin-bottom: -$card-spacer-y;
+    }
+}
 /*#endregion Tabs*/
 
-
+/*#region Accordion*/
+.uic.card-accordion.no-margin{
+    >.card{
+        margin-bottom:0;
+    }
+}
+/*#endregion Accordion*/
 
 
 
