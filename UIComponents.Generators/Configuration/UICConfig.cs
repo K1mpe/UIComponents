@@ -10,14 +10,14 @@ namespace UIComponents.Generators.Configuration;
 
 public class UICConfig
 {
-    private readonly IServiceProvider _serviceProvider;
+    
     private readonly UicConfigOptions _options;
     private readonly ILogger<UICConfig> _logger;
 
     public UICConfig(UicConfigOptions options, IServiceProvider serviceProvider, ILogger<UICConfig> logger)
     {
         _options = options;
-        _serviceProvider = serviceProvider;
+        ServiceProvider = serviceProvider;
         _logger = logger;
         ButtonGenerators = new(this);
     }
@@ -25,6 +25,7 @@ public class UICConfig
 
     public ButtonGenerator ButtonGenerators { get; }
 
+    public IServiceProvider ServiceProvider { get; init; }
     public IUicLanguageService LanguageService
     {
         get
@@ -34,7 +35,7 @@ public class UICConfig
 
             try
             {
-                var languageService = _serviceProvider.GetRequiredService<IUicLanguageService>();
+                var languageService = ServiceProvider.GetRequiredService<IUicLanguageService>();
 
                 if (languageService is LanguageService)
                 {
@@ -63,7 +64,7 @@ public class UICConfig
 
             try
             {
-                return _serviceProvider.GetRequiredService<IUicPermissionService>();
+                return ServiceProvider.GetRequiredService<IUicPermissionService>();
             }
             catch(Exception ex)
             {
@@ -93,7 +94,7 @@ public class UICConfig
     }
     public async Task<TConverted?> GetGeneratedResultAsync<TArgs, TResult, TConverted>(string debugString, TArgs args, UICOptions options) where TConverted : TResult
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = ServiceProvider.CreateScope();
 
         var (generators, types) = _options.FindGenerators<TArgs, TResult>(args);
 

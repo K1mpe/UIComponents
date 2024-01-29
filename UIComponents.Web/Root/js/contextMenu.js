@@ -144,10 +144,10 @@
     },
 
     addMenuItem: function (menuItem) {
-        contextMenu.menuItems.push(menuItem);
+        uic.contextMenu.menuItems.push(menuItem);
     },
     addCategory: function (category) {
-        contextMenu.categories.push(category);
+        uic.contextMenu.categories.push(category);
     },
 
     default: {

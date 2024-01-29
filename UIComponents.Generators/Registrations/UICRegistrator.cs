@@ -22,6 +22,11 @@ public static class UICConfigure
     /// <returns></returns>
     public static IServiceCollection AddUIComponent(this IServiceCollection services, Action<UicConfigOptions> config)
     {
+        return AddUIComponent(services, config, out var configOptions);
+    }
+
+    public static IServiceCollection AddUIComponent(this IServiceCollection services, Action<UicConfigOptions> config, out UicConfigOptions configOptions)
+    {
         var configuration = new UicConfigOptions();
         services.TryAddScoped<IUIComponentService, UICService>();
         services.TryAddSingleton<UicConfigOptions>(configuration);
@@ -33,9 +38,10 @@ public static class UICConfigure
         {
             services.TryAddSingleton<IUicLanguageService, LanguageService>();
         }
-            
 
+        configOptions = configuration;
         return services;
+
     }
 
     /// <summary>

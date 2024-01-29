@@ -39,20 +39,21 @@ public class UICPartial : UIComponent, IUICHasChildren<IUIComponent>
     /// <summary>
     /// Show the overlay during load
     /// </summary>
-    public bool ShowLoadingOverlay { get; set; } = false;
+    public bool ShowLoadingOverlay { get; set; } = true;
 
     /// <summary>
     /// if false, the reload will not be exexcuted if the content is hidden (example: partial in a closed card)
     /// </summary>
     /// <remarks>
-    /// If reload is blocked, recommended to use <see cref="ReloadIfParentOpens"/>
+    /// If no content is loaded & a parent card or tab opens, this will be triggered (only first-time).
+    /// <br>Use <see cref="ReloadIfParentOpens"/> to refresh on each opening</br>
     /// </remarks>
     public bool ReloadIfHidden { get; set; } = false;
 
     /// <summary>
     /// If the parent card opens, refresh the content
     /// </summary>
-    public bool ReloadIfParentOpens { get; set; } = true;
+    public bool ReloadIfParentOpens { get; set; } = false;
 
     /// <summary>
     /// When reloading the partial, this partial container will be removed.

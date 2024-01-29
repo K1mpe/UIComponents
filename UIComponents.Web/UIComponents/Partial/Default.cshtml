@@ -83,9 +83,19 @@
         }
         @if (Model.ReloadIfParentOpens)
         {
-        <text>
-            $('#@id').parents('.card').on('uic-opened', ()=> $('#@id').trigger('uic-reload'));
-        </text>
+            <text>
+                $('#@id').parents('.card, .tab-pane').on('uic-opened', ()=> $('#@id').trigger('uic-reload'));
+            </text>
+        } else if (!Model.ReloadIfHidden)
+        {
+            //If not auto reloading on open and partial does not have content yet, reload anyway
+           <text>
+                $('#@id').parents('.card, .tab-pane').on('uic-opened', ()=> {
+                    if(!$('#@id').children().lenght){
+                        $('#@id').trigger('uic-reload');
+                    }
+                })
+           </text>
         }
 
         @if(!Model.SkipInitialLoad)

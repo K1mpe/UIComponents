@@ -25,61 +25,61 @@ public static class UICBuilderExtensions
                 .GetTypeInfo().Assembly));
         });
 
-        services.AddUIComponent(config);
+        services.AddUIComponent(config, out var options);
 
-
-        var executingAssembly = Assembly.GetCallingAssembly();
-        var currentAssembly = Assembly.GetExecutingAssembly();
-
-        string root = executingAssembly.Location;
-
-        var manifestNames = currentAssembly.GetManifestResourceNames();
-        string currentAssemblyName = currentAssembly.GetName().Name;
-        var dir = Directory.GetCurrentDirectory();
-        string targetRoote = $"{dir}\\wwwroot\\uic";
-        string sourceRoute = $"{currentAssemblyName}.Root.";
-        if (!Directory.Exists(targetRoote))
-        {
-            Directory.CreateDirectory(targetRoote);
-        }
-
-        var scripts = manifestNames.Where(x => x.EndsWith(".js")).OrderBy(x=>x);
-        var styles = manifestNames.Where(x => x.EndsWith(".css") || x.EndsWith(".scss"));
-
-
-        var jsDestination = $"{targetRoote}\\uic.js";
-        if (File.Exists(jsDestination))
-            File.Delete(jsDestination);
-
-        using (var jsFile = File.Create(jsDestination))
+        if (options.ReplaceRootFolder)
         {
 
-            foreach (var script in scripts)
+            var executingAssembly = Assembly.GetCallingAssembly();
+            var currentAssembly = Assembly.GetExecutingAssembly();
+
+            string root = executingAssembly.Location;
+            var manifestNames = currentAssembly.GetManifestResourceNames();
+            string currentAssemblyName = currentAssembly.GetName().Name;
+            var dir = Directory.GetCurrentDirectory();
+            string targetRoote = $"{dir}\\wwwroot\\uic";
+            string sourceRoute = $"{currentAssemblyName}.Root.";
+            if (!Directory.Exists(targetRoote))
             {
-                using (var resourceStream = currentAssembly.GetManifestResourceStream(script))
+                Directory.CreateDirectory(targetRoote);
+            }
+
+            var scripts = manifestNames.Where(x => x.EndsWith(".js")).OrderBy(x => x);
+            var styles = manifestNames.Where(x => x.EndsWith(".css") || x.EndsWith(".scss"));
+
+
+            var jsDestination = $"{targetRoote}\\uic.js";
+            if (File.Exists(jsDestination))
+                File.Delete(jsDestination);
+
+            using (var jsFile = File.Create(jsDestination))
+            {
+
+                foreach (var script in scripts)
                 {
-                    resourceStream!.CopyTo(jsFile);
+                    using (var resourceStream = currentAssembly.GetManifestResourceStream(script))
+                    {
+                        resourceStream!.CopyTo(jsFile);
+                    }
+                }
+            }
+
+            var cssDestination = $"{targetRoote}\\uic.scss";
+            if (File.Exists(cssDestination))
+                File.Delete(cssDestination);
+
+            using (var cssFile = File.Create(cssDestination))
+            {
+
+                foreach (var style in styles)
+                {
+                    using (var resourceStream = currentAssembly.GetManifestResourceStream(style))
+                    {
+                        resourceStream!.CopyTo(cssFile);
+                    }
                 }
             }
         }
-
-        var cssDestination = $"{targetRoote}\\uic.scss";
-        if (File.Exists(cssDestination))
-            File.Delete(cssDestination);
-
-        using (var cssFile = File.Create(cssDestination))
-        {
-
-            foreach (var style in styles)
-            {
-                using (var resourceStream = currentAssembly.GetManifestResourceStream(style))
-                {
-                    resourceStream!.CopyTo(cssFile);
-                }
-            }
-        }
-
-
 
         return services;
     }

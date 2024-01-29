@@ -29,8 +29,8 @@
             tabContent.addClass('active show');
 
 
-            tabContent.triggerHandler('uic-open');
-            oldActiveContent.triggerHandler('uic-close');
+            tabContent.triggerHandler('uic-opened');
+            oldActiveContent.triggerHandler('uic-closed');
 
             let tabContainer = tab.closest('.card-tabs');
             tabContainer.triggerHandler('uic-tab-change', oldActiveHeader, tabHeader);
