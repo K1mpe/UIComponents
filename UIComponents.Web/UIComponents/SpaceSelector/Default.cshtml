@@ -1,0 +1,83 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICSpaceSelector
+
+@{
+    string id = Model.GetOrGenerateId();
+
+    Model.AssignCollectionForChildren();
+    var elements = Model.Elements.Where(x => x.HasValue()).ToList();
+    Model.AddScript(
+    @<text>
+
+
+    let sizeWatcher = $('#@id').closest('.card, .card-body, .modal, .content')
+    displayElement();
+    function displayElement(){
+
+        let bestElement;
+        let bestWidth;
+        let bestInnerWidth;
+        let bestHeight;
+
+
+        for(var i=0; @elements.Count > i; i++){
+            let el = $(`#@id-${i}`);
+            $('#@id .space-selector').attr('hidden', true);
+            el.attr('hidden', false);
+            let watcherHeight = sizeWatcher.height();
+            if(bestHeight == null || bestHeight > watcherHeight){
+                bestElement = el;
+                bestInnerWidth= el.width();
+                bestWidth = sizeWatcher.width();
+                bestHeight= watcherHeight;
+            } else if (bestHeight == watcherHeight){
+                let watcherWidth = sizeWatcher.width();
+                if(watcherWidth > bestWidth)
+                    continue;
+                    
+                if(bestWidth> watcherWidth || el.width() > bestInnerWidth){
+                    bestElement = el;
+                    bestInnerWidth = el.width();
+                    bestHeight = watcherHeight;
+                }
+            }
+                
+
+        }
+        $('#@id .space-selector').attr('hidden', true);
+        bestElement.attr('hidden', false);
+
+    }
+
+    new ResizeObserver((element)=>{displayElement();}).observe($('#@id').parent()[0]);
+    new ResizeObserver((element)=>{displayElement();}).observe($('#@id').parent().parent()[0]);
+
+    </text>);
+}
+
+<span @Html.Raw(Model.GetHtmlAttributes())>
+    @for(int i=0; i < elements.Count; i++)
+    {
+        <span id="@(id+$"-{i}")" class="space-selector">
+            @await elements[i].InvokeAsync(Component)
+        </span>
+    }
+</span>
+
+@await Model.RenderStylesAndScripts(Component)

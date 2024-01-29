@@ -63,6 +63,7 @@
             new UICButton("btn3"){OnClick=Alert("Btn3")},
             new UICButton("btn4"){OnClick=Alert("Btn4")},
             new UICButton("btn5"){OnClick=Alert("Btn5")},
+            new UICButton("btn6"){OnClick=Alert("Btn6")},
             new UICDropdown("Dropdown", new()
             {
                 new UICDropdownItem("Item1"),
@@ -70,7 +71,7 @@
             })
         };
 
-        toolbar.AddRight(new UICSpaceReplacer(buttons, new("Combined buttons")));
+        toolbar.AddRight(new UICSpaceSelector(buttons, new("Combined buttons")));
 
 
     });

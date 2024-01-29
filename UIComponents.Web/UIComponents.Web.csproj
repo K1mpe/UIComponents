@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.0.6</Version>
+	<Version>1.0.7</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -25,7 +25,7 @@
     <Content Remove="UIComponents\Default.cshtml" />
     <Content Remove="UIComponents\InputSelectlist\Select2.cshtml" />
     <Content Remove="UIComponents\Partial\Default.cshtml" />
-    <Content Remove="UIComponents\SpaceReplacer\Default.cshtml" />
+    <Content Remove="UIComponents\SpaceSelector\Default.cshtml" />
   </ItemGroup>
 
   <!--<ItemGroup>

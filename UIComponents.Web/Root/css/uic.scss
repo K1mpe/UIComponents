@@ -197,7 +197,10 @@ form {
 /*#endregion SidePanel*/
 
 /*#region Card*/
-.uic.card > .card-body{
+.uic.card{
+    min-width: fit-content;
+} > .card-body{
+    min-width: fit-content;
 }
 .uic.card:last-child{
     margin-bottom:0;
