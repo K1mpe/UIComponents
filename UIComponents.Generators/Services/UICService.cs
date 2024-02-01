@@ -30,7 +30,6 @@ public class UICService : IUIComponentService
 
     public Task<IUIComponent?> CreateComponentAsync<T, TProp>(T classObject, Expression<Func<T, TProp>> expression, UICOptions? options = null) where T : class
     {
-
         var propertyInfo = GetPropertyInfoFromExpression(expression);
         return CreateElementFromProperty(propertyInfo, classObject, options);
     }
@@ -39,7 +38,7 @@ public class UICService : IUIComponentService
     {
         options = GetOptions(options);
 
-        var cc = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, null, null);
+        var cc = new UICCallCollection(UICGeneratorPropertyCallType.PropertyGroup, null, null);
         return _configuration.GetChildComponentAsync(classObject, propertyInfo, options!, cc);
     }
     #endregion

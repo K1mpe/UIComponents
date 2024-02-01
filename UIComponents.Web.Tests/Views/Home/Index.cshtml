@@ -10,7 +10,7 @@
 
 @inject IUIComponentService UIC
 @{
-
+    var testModel = new TestModel();
     var tabs = new UICTabs("TestTabs")
     {
         OnlyRenderSingleContent = true
@@ -26,7 +26,7 @@
                 ReplaceSaveButtonWithCreateButton = true,
                 ShowEditButton = false,
                 IncludedProperties = "teststring, number, decimal, checkbox, enum"
-            })))
+            })).Add(await UIC.CreateComponentAsync(testModel, x=>x.TestString)))
         .Add(new UICCard(new Translatable("Card.Edit"))
             .Add(new UICSidePanel(await UIC.CreateComponentAsync(new TestModel()), new UICGroup()
                     .AddAttribute("width", "300px")
