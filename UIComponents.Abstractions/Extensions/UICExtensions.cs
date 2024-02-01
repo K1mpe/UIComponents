@@ -177,6 +177,8 @@ public static class UICExtensions
         return id;
     }
 
+    
+
     /// <summary>
     /// Get a value from the attributes
     /// </summary>
@@ -214,6 +216,15 @@ public static class UICExtensions
         return element;
     }
 
+    public static T AddClass<T>(this T element, string @class) where T : IUIHasAttributes
+    {
+        return element.AddAttribute("class", @class);
+    }
+
+    public static T AddStyle<T>(this T element, string style) where T : IUIHasAttributes
+    {
+        return element.AddAttribute("style", style);
+    }
 
     /// <summary>
     /// This calls the <see cref="UIComponent.DefaultIdentifier(string, object)"/> where the <see cref="Type"/> of <paramref name="component"/> is used as first property

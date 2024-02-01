@@ -5,31 +5,6 @@ using UIComponents.Models.Models.Inputs;
 namespace UIComponents.Generators.Models;
 
 /// <summary>
-/// A override for the UICOptions with diffrent presets for rendering a entire class object
-/// </summary>
-public class UICClassOptions : UICOptions
-{
-    public UICClassOptions()
-    {
-        InputGroupSingleRow = true;
-        HideEmptyInReadonly = true;
-    }
-}
-
-public class UICCreateOptions : UICOptions
-{
-    public UICCreateOptions()
-    {
-        ReplaceSaveButtonWithCreateButton = true;
-        InputGroupSingleRow = true;
-        ShowEditButton = false;
-        ShowDeleteButton = false;
-        ShowCancelButton = true;
-        IdHidden = true;
-    }
-}
-
-/// <summary>
 /// This is a options object used to create new IUElements.
 /// </summary>
 public class UICOptions

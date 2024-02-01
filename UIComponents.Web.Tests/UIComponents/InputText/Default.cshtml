@@ -1,0 +1,94 @@
+﻿@using UIComponents.Defaults;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@inject IUicLanguageService L
+@model UICInputText
+
+@{
+    Model.AddAttribute("class", "form-control");
+
+
+    string id = Model.GetOrGenerateId();
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id}");
+    }
+
+    string type = "text";
+    switch (Model.Type)
+    {
+        default:
+            type = Model.Type.ToString().ToLower();
+            break;
+    }
+
+}
+
+
+
+<input type="@type" value="@Model.Value" @Html.Raw(Model.GetHtmlAttributes()) />
+
+
+@if (Model.HasClientSideValidation)
+{
+
+    string propertyName = Model.PropertyName;
+    if (Model.DisplayName != null)
+        propertyName = await L.Translate(Model.DisplayName);
+
+        <script>
+
+        $(document).ready(function(){
+            function validateInput(element){
+                var currentValue = element.val();
+                var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+                span.text("");
+                @if (Model.ValidationMaxLength != null)
+                {
+                    <text>
+                        if (currentValue.length > @Model.ValidationMaxLength.Value)
+                            span.text(@await Html.Translate(L, TranslationDefaults.ValidateMaxLength(propertyName, Model.ValidationMaxLength.Value)));
+                    </text>
+                }
+
+                @if (Model.ValidationMinLength != null)
+                {
+                    <text>
+                        if (@(Model.ValidationMinLength.Value) > currentValue.length && currentValue.length > 0)
+                            span.text(@await Html.Translate(L, TranslationDefaults.ValidateMinLength(propertyName, Model.ValidationMinLength.Value)));
+                    </text>
+                }
+
+                @if (Model.ValidationRequired)
+                {
+                    <text>
+                        if (currentValue.length == 0)
+                            span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                    </text>
+                }
+            }
+
+            $('#@id').keyup(function(){
+                validateInput($(this));
+            });
+            $('#@id').blur(function () {
+                validateInput($(this));
+            });
+
+        });
+    </script>
+}
+
+
+@await Model.Actions.InvokeAsync(Component)

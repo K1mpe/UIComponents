@@ -187,5 +187,23 @@
         "dist/css/alt/adminlte.plugins.min.css.map"
       ]
     },
+    {
+      "library": "jstree@3.3.12",
+      "destination": "wwwroot/lib/jstree/",
+      "files": [
+        "dist/jstree.js",
+        "dist/jstree.min.js",
+        "dist/themes/default/32px.png",
+        "dist/themes/default/40px.png",
+        "dist/themes/default/style.css",
+        "dist/themes/default/style.min.css",
+        "dist/themes/default/throbber.gif",
+        "dist/themes/default-dark/32px.png",
+        "dist/themes/default-dark/40px.png",
+        "dist/themes/default-dark/style.css",
+        "dist/themes/default-dark/style.min.css",
+        "dist/themes/default-dark/throbber.gif"
+      ]
+    }
   ]
 }

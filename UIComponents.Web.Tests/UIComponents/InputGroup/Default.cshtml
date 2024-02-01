@@ -1,0 +1,103 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@using System.Reflection;
+
+@model UICInputGroup
+
+@{
+    Model.AssignCollectionForChildren();
+
+    Model.Label?.AddAttribute("for", Model.Input.GetOrGenerateId());
+
+    if (Model.Span.HasValue())
+    {
+        Model.Span.AddAttribute("class", "form-text");
+        Model.Span.AddAttribute("class", "text-muted");
+    }
+
+    if (Model.Input.TryGetPropertyValue<object>(nameof(UICInput<string>.Value), out var value))
+    {
+        //If value is null, add classes to make the input hidden in readonly
+        if (string.IsNullOrEmpty(value?.ToString() ?? null))
+        {
+            Model.AddAttribute("class", "input-no-value");
+        }
+        else if (Model.Input is UICInputSelectlist selectlist)
+        {
+            if (selectlist.Value == "0")
+                Model.AddAttribute("class", "input-no-value");
+
+        }
+        
+    }
+
+    Model.AddAttribute("class", "form-group");
+    if (Model.LabelAndInputOnSingleLine == true)
+    {
+        if (Model.Label.HasValue())
+            Model.Label.AddAttribute("class", "col-1 fit-content");
+        Model.AddAttribute("class", "row");
+    }
+
+}
+
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    @await Model.Label.InvokeAsync(Component)
+    
+    @if(Model.PrependInput.Any() || Model.AppendInput.Any())
+    {
+        <div class="input-group">
+        @foreach (var prepend in Model.PrependInput)
+        {
+            string prependClass = "input-group-text";
+            var attr = prepend.GetType().GetCustomAttribute<PrependAppendInputGroupClass>();
+                if (attr != null)
+                    prependClass = attr.PrependClass;
+
+            prepend.AddAttribute("class", prependClass);
+            @await prepend.InvokeAsync(Component)
+        }
+        @{
+            Model.Input.AddAttribute("style", "flex-grow:1;");
+        }
+        @await Model.Input.InvokeAsync(Component)
+
+        @foreach (var append in Model.AppendInput)
+        {
+                string appendClass = "input-group-text";
+                var attr = append.GetType().GetCustomAttribute<PrependAppendInputGroupClass>();
+                if (attr != null)
+                    appendClass = attr.AppendClass;
+
+                append.AddAttribute("class", appendClass);
+            @await append.InvokeAsync(Component)
+        }
+        </div>
+    }
+    else
+    {
+        @await Model.Input.InvokeAsync(Component)
+    }
+    
+
+    <span class="field-validation-valid text-danger" data-valmsg-for="@Model.Input.PropertyName"></span>
+
+    @await Model.Span.InvokeAsync(Component)
+</div>
+
+@await Model.RenderStylesAndScripts(Component)
+
+

@@ -1,0 +1,113 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICDropdown
+
+@{
+    string id = Model.GetOrGenerateId();
+    Model.AssignCollectionForChildren();
+
+    async Task DropdownMenu(List<IDropdownItem> dropdownItems, bool submenu, string id="")
+    {
+        dropdownItems = dropdownItems.Where(x => x.HasValue()).ToList();
+        <ul id="@id" class="dropdown-menu" style="min-width: max-content">
+            @for(int i=0; i<dropdownItems.Count(); i++)
+            {
+                var item = dropdownItems[i];
+
+                
+                if(item is UICDropdownDivider)
+                {
+                    //Do not render a divider if it is the first or last item in a dropdown
+                    if (i == 0 || i == dropdownItems.Count() - 1)
+                        continue;
+
+                    //Do not render a divider if the previous element was also a divider.
+                    if (dropdownItems[i - 1] is UICDropdownDivider)
+                        continue;
+                }
+                
+
+                @await item.InvokeAsync(Component)
+            }
+        </ul>
+    }
+}
+
+@if (Model.ReplaceDropdownByButtonIfSingleDropdownItem && Model.DropdownItems.Where(x => x.GetType().IsAssignableTo(typeof(UICDropdownItem)) && x.HasValue()).Count() == 1)
+{
+   
+    var dropDownItem = Model.DropdownItems.Where(x => x.GetType().IsAssignableTo(typeof(UICDropdownItem)) && x.HasValue()).Single() as UICDropdownItem;
+
+    if(dropDownItem is UICDropdownSubMenu submenu)
+    {
+        var dropdown = submenu.ConvertToDropdown(Model);
+        @await dropdown.InvokeAsync(Component)
+        return;
+    }
+    else
+    {
+        var button2 = dropDownItem.ConvertToButton(Model);
+        @await button2.InvokeAsync(Component)
+        return;
+    }
+}
+
+    <span class="dropdown @Model.GetAttribute("class")">
+        @if (Model.Button is UICButton button)
+        {
+            if (button.OnClick.HasValue())
+            {
+                <span class="btn-group">
+                    @await button.InvokeAsync(Component)
+                    <button id="@id" type="button" class="btn @($"btn-{button.Color?.ToLower()??ColorDefaults.ButtonDefault.ToLower()}") dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    @{
+
+                        await DropdownMenu(Model.DropdownItems, false);
+                    }
+                </span>
+            }
+            else
+            {
+                button.AddAttribute("class", "dropdown-toggle");
+                button.AddAttribute("data-toggle", "dropdown");
+                button.AddAttribute("aria-haspopup", "true");
+                button.AddAttribute("aria-expanded", "false");
+                @await button.InvokeAsync(Component)
+                await DropdownMenu(Model.DropdownItems, false);
+
+            }
+
+        }
+        else
+        {
+            <span id="@id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+                @await Model.Button.InvokeAsync(Component)
+            </span>
+
+            await DropdownMenu(Model.DropdownItems, false);
+        }
+
+
+
+    </span>
+
+
+
+@await Model.RenderStylesAndScripts(Component)

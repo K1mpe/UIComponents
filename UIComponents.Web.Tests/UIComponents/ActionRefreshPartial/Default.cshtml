@@ -1,0 +1,62 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICActionRefreshPartial
+
+
+@if (Model.SpinElement != null)
+{
+    Model.AddScript(
+
+@<text>
+    let partial;
+    @if (Model.Partial == null)
+                {
+    <text>
+        partial = $(this).closest('.partial-source');
+    </text>
+                }
+                else
+                {
+    <text>
+        partial = $('#@Html.JsEncode(Model.Partial.GetOrGenerateId())');
+    </text>
+                }
+
+    let spinner = $('#@Model.SpinElement.GetOrGenerateId()');
+    partial.on('uic-before-reload', () => { spinner.addClass('fa-spin')});
+    partial.on('uic-reloaded', () => { spinner.removeClass('fa-spin')});
+</text>
+);
+
+}
+
+let partial;
+@if(Model.Partial == null)
+{
+    <text>
+        partial = $(this).closest('.partial-source');
+    </text>
+}
+else
+{
+    <text>
+        partial = $('#@Html.JsEncode(Model.Partial.GetOrGenerateId())');
+    </text>
+}
+
+partial.trigger('uic-reload');

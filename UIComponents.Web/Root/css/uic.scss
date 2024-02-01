@@ -274,9 +274,8 @@ form {
 /*#endregion Accordion*/
 
 
-
-
-.side-panel-container {
+/* #region SidePanel */
+.uic .side-panel-container {
     &.horizontal {
         > .side-panel {
             //transition: width $transition-speed ease-in-out;
@@ -288,6 +287,7 @@ form {
 
             &.collapsed {
                 width: 0px;
+                display: none;
             }
 
             &.overlay {
@@ -316,3 +316,5 @@ form {
         margin-left: -5px;
     }
 }
+/* #endregion SidePanel */
+

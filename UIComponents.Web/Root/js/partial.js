@@ -1,13 +1,6 @@
 ﻿var uic = uic || {};
 
 uic.partial = uic.partial || {
-    reload: function (element) {
-        let parent = $(element).closest('.partial-source');
-        if (parent.length)
-            parent.trigger('uic-reload');
-        else
-            location.reload();
-    },
     showLoadingOverlay: function (element = null) {
         if (!element)
             element = document.body;
@@ -54,3 +47,6 @@ uic.partial = uic.partial || {
         await partial.triggerHandler('uic-reloaded');
     }
 };
+$('body').on('uic-reload', (ev) => {
+    location.reload();
+});

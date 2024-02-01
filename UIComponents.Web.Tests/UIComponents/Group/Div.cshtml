@@ -1,0 +1,41 @@
+﻿@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICGroup
+
+@{
+    Model.AssignCollectionForChildren();
+}
+
+@if(Model.RenderWithoutContent || Model.Children.AnyHasValue())
+{
+    if (Model.RenderSingleItem)
+    {
+        var children = Model.Children.Where(x => x.HasValue());
+        if(children.Count() == 1)
+        {
+            @await children.First().InvokeAsync(Component)
+            return;
+        }
+        
+    }
+    
+
+    <div @Html.Raw(Model.GetHtmlAttributes())>
+        @foreach (var element in Model.Components)
+        {
+            @await element.InvokeAsync(Component)
+        }
+    </div>
+}
+
+@await Model.RenderStylesAndScripts(Component)

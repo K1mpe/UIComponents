@@ -13,6 +13,7 @@ using UIComponents.Models.Models.Buttons;
 using UIComponents.Models.Models.Card;
 using UIComponents.Models.Models.Inputs;
 using UIComponents.Models.Models.Texts;
+using UIComponents.Models.Models.Tree;
 using UIComponents.Web.Tests.Models;
 
 namespace UIComponents.Web.Tests.Controllers
@@ -53,6 +54,17 @@ namespace UIComponents.Web.Tests.Controllers
             if(IsAjaxRequest(Request))
                 return PartialView();
             return View();
+        }
+
+        public async Task<IActionResult> JsTreeItems(string id, bool initial)
+        {
+            var treeItems = new UICTreeItems();
+            treeItems.Add(new("ajax1"));
+            treeItems.Add(new("ajax2"), (item) =>
+            {
+                item.HasAjaxChildren = false;
+            });
+            return ViewOrPartial(treeItems);
         }
 
         [HttpPost]

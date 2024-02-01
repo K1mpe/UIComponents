@@ -1,0 +1,172 @@
+﻿﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+
+@using UIComponents.Models.Models.Tree;
+@model UICTree
+
+@{
+    if(string.IsNullOrWhiteSpace(Model.Id))
+    {
+        Model.SaveState = false;
+        Model.Id = "Tree"+Guid.NewGuid().ToString("N").Substring(0,4);
+    }
+
+    Model.AssignCollectionForChildren(Model.Id);
+
+    List<string> plugins = new List<string>();
+    if (Model.EnableCheckbox)
+        plugins.Add("checkbox");
+    if (Model.EnableDragAndDrop)
+        plugins.Add("dnd");
+
+    if (Model.SaveState)
+        plugins.Add("state");
+
+    if (Model.GetData == null)
+        Model.FindAllChildrenOnType<UICTreeItem>().ForEach(x => x.HasAjaxChildren = false);
+
+}
+
+<div id="@Model.Id">
+</div>
+
+<link rel="stylesheet" href="~/lib/jstree/dist/themes/default/style.min.css" />
+<script src="/lib/jstree/dist/jstree.min.js"></script>
+
+@{
+    Model.AddScript(
+    @<text>
+        $('#@Model.Id').jstree({
+        'core': {
+
+        check_callback : true,
+
+        expand_selected_onload: false,
+        @if (Model.GetData.HasValue())
+        {
+        <text>
+            'data': async function(obj, callback)
+            {
+                console.log('getData');
+                @await Model.GetData.InvokeAsync(Component)
+            }
+        </text>
+        }
+        else if (Model.TreeItems.Any())
+        {
+        <text>
+            'data':[
+            @foreach (var item in Model.TreeItems)
+            {
+                @await item.InvokeAsync(Component)
+            }
+            ]
+        </text>
+            }
+        },
+
+        @if (Model.EnableCheckbox)
+        {
+            string cascade = "";
+            if (Model.CheckboxCascadeUp)
+                cascade += "up";
+            if (Model.CheckboxCascadeDown)
+                cascade += "down";
+            <text>
+                'checkbox': {
+                keep_selected_style : false,
+                cascade: '@cascade',
+                three_state: @Json.Serialize(Model.CheckboxThreeState),
+                },
+            </text>
+        }
+
+        @if (Model.EnableDragAndDrop)
+        {
+        <text>
+            dnd : {
+            //Prevents multiple checkboxes to be dragged
+            drag_selection: false,
+            },
+        </text>
+        }
+
+
+        @foreach (var component in Model.CustomComponents)
+        {
+        @await component.InvokeAsync(Component)
+        }
+
+        @if (plugins.Any())
+        {
+        <text>
+            "plugins": [@(Html.Raw(string.Join(", ", plugins.Select(x => $"\"{x}\""))))]
+        </text>
+        }
+        });
+
+        @if (Model.OnMove.HasValue())
+        {
+        <text>
+            $('#@Model.Id').on('move_node.jstree', function(event, data){
+            @await Model.OnMove.InvokeAsync(Component)
+            });
+        </text>
+        }
+
+        $('#@Model.Id').on('uic-help', ()=>{
+            @if(Model.GetData != null)
+            {
+                <text>
+                console.log("jsTree .trigger('uic-reload', 'node_id') => Reload the node with this Id, does not reload if node is not found");
+                console.log("jsTree .trigger('uic-reload', 'node_id', true) => Reload the node with this Id, reloads the entire jsTree if node not found");
+                </text>
+            }
+        });
+        $('#@Model.Id').on('uic-reload', (ev, node = null, reloadAll = false)=>{
+            let container = $('#@Model.Id');
+            if(container.length == 0)
+                return;
+
+            ev.stopPropagation();
+
+            uic.delayedAction.run('@(Model.Id+"UpdateTree")', 300, (triggers) =>{
+                if(node == null || triggers.filter(x=>x == null).length)
+                {
+                    container.parent().trigger('uic-reload');
+                } else
+                {
+
+                    container.css('min-height', container.height());
+                    triggers.forEach((id)=>{
+                        $('#@Model.Id').jstree(true).refresh_node(id);
+                    });
+
+                    setTimeout(()=> {
+                        container.css('min-height', '');
+                    }, 1000);
+                }
+            }, node);
+        });
+
+
+    </text>);
+}
+
+
+@await Model.RenderStylesAndScripts(Component, Model.Id)

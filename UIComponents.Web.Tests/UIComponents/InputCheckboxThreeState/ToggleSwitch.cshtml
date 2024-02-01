@@ -1,0 +1,58 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICInputCheckboxThreeState
+
+@{
+
+    string id = Model.GetOrGenerateId();
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id}");
+    }
+
+    Model.AddAttribute("data-value", Model.Value?.ToString().ToLower() ?? "null");
+
+
+    Model.AddAttribute("class", "three-state-checkbox");
+    Model.AddAttribute("class", "custom-control-input");
+}
+
+<div class="custom-control custom-switch icheck-@Model.Color">
+    <input type="checkbox" @Html.Raw(Model.GetHtmlAttributes()) />
+    <label class="custom-control-label" for="@id"></label>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        uic.setThreeState($('#@id'));
+
+        $('#@id').click(function (e) {
+            console.log('three-state-toggle');
+            e.preventDefault;
+            var oldVal = $(this).data('value');
+            if (oldVal == "null" || oldVal == "")
+                $(this).data('value', "true");
+            else if (oldVal == "false")
+                $(this).data('value', "null");
+            else
+                $(this).data('value', "false");
+
+            uic.setThreeState($(this));
+        })
+    })
+</script>

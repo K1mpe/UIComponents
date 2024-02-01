@@ -16,6 +16,7 @@
 @using UIComponents.Models.Models.Icons;
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Texts;
+@using UIComponents.Models.Models.Tree;
 @using UIComponents.Web.Extensions;
 
 @inject IUIComponentService uic;
@@ -31,8 +32,9 @@
     UICCustom Alert(string text) => new UICCustom($"alert('{text}');");
 
     accordion.Add(out var dropdowns, new UICCard("Dropdowns"));
+    accordion.Add(out var tree, new UICCard("Tree"));
 
-    #region
+    #region Dropdown
     dropdowns.Add(new UICButtonToolbar(), toolbar =>
     {
         toolbar
@@ -77,6 +79,24 @@
     });
     #endregion
 
+    #region Tree
+    tree.Add(new UICTree("TreeTest", new List<UICTreeItem>()
+    {
+        new("Item1"),
+        new("Item2"){Icon = UICIcon.Add().Icon},
+        new UICTreeItem("Item3")
+            .Add(new("subItem1"))
+            .Add(new("subItem2"))
+    })
+    {
+        EnableCheckbox = true,
+        EnableDragAndDrop = true
+    });
+
+    tree.Add(new UICTree("TreeAjax", new UICTreeLoadAjaxData(new(UICActionGetPost.ActionTypeEnum.Post, "home", "jsTreeItems"), "abc")));
+    #endregion
+
+    #region Toolbars
     accordion.Add(new UICCard(new Translatable("Card.Toolbars"))
         .Add(new UICButtonToolbar()
             {
@@ -116,6 +136,6 @@
             .AddCenter(new UICButton(new Translatable("CenterR 4")))
             .AddCenter(new UICButton(new Translatable("CenterR 5")))
         ));
-
+        #endregion
 }
 @await accordion.InvokeAsync(Component)

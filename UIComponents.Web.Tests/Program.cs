@@ -1,4 +1,3 @@
-
 using UIComponents.Abstractions;
 using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
@@ -25,9 +24,7 @@ builder.Services.AddMvc();
 
 builder.Services.AddUIComponentWeb(config =>
 {
-
     UIComponents.Defaults.OptionDefaults.ReverseButtonOrder = false;
-    
     config.AddDefaultGenerators(builder.Services);
 });
 

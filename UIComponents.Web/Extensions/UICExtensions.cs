@@ -33,6 +33,8 @@ public static class UICExtensions
     public static async Task<Microsoft.AspNetCore.Html.IHtmlContent> InvokeAsync<T>(this IEnumerable<T> UIC, IViewComponentHelper component) where T : IUIComponent
     {
         var content = new HtmlContentBuilder();
+        if(UIC == null)
+            return content;
         foreach (var uic in UIC)
         {
             content.AppendHtml(await uic.InvokeAsync(component));

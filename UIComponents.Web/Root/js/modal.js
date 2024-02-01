@@ -7,7 +7,7 @@ uic.modal = uic.modal || {
         console.log(".on('uic-hidden', function()) => triggered after the modal has hidden.");
     },
 
-    closeParent: function (element) {
+    closeParent: function (item) {
         var modal = $(item).closest('.uic.modal');
         if (modal.length) {
             modal.trigger('uic-hide');

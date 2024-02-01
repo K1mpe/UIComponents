@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using System.Diagnostics;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Registrations;
 using UIComponents.Web.Components;
@@ -18,25 +20,22 @@ public static class UICBuilderExtensions
     /// <returns></returns>
     public static IServiceCollection AddUIComponentWeb(this IServiceCollection services, Action<UicConfigOptions> config)
     {
-        services.AddMvcCore()
-        .AddRazorRuntimeCompilation(options =>
-        {
-            options.FileProviders.Add(new EmbeddedFileProvider(typeof(UICViewComponent)
-                .GetTypeInfo().Assembly));
-        });
-
         services.AddUIComponent(config, out var options);
 
-        if (options.ReplaceRootFolder)
+
+
+        var executingAssembly = Assembly.GetCallingAssembly();
+        var currentAssembly = Assembly.GetExecutingAssembly();
+
+        string root = executingAssembly.Location;
+        var manifestNames = currentAssembly.GetManifestResourceNames();
+        string currentAssemblyName = currentAssembly.GetName().Name;
+        var dir = Directory.GetCurrentDirectory();
+
+
+        if (options.ReplaceScripts)
         {
 
-            var executingAssembly = Assembly.GetCallingAssembly();
-            var currentAssembly = Assembly.GetExecutingAssembly();
-
-            string root = executingAssembly.Location;
-            var manifestNames = currentAssembly.GetManifestResourceNames();
-            string currentAssemblyName = currentAssembly.GetName().Name;
-            var dir = Directory.GetCurrentDirectory();
             string targetRoote = $"{dir}\\wwwroot\\uic";
             string sourceRoute = $"{currentAssemblyName}.Root.";
             if (!Directory.Exists(targetRoote))
@@ -45,7 +44,6 @@ public static class UICBuilderExtensions
             }
 
             var scripts = manifestNames.Where(x => x.EndsWith(".js")).OrderBy(x => x);
-            var styles = manifestNames.Where(x => x.EndsWith(".css") || x.EndsWith(".scss"));
 
 
             var jsDestination = $"{targetRoote}\\uic.js";
@@ -64,6 +62,20 @@ public static class UICBuilderExtensions
                 }
             }
 
+        }
+        if (options.ReplaceCss)
+        {
+
+            string targetRoote = $"{dir}\\wwwroot\\uic";
+            string sourceRoute = $"{currentAssemblyName}.Root.";
+            if (!Directory.Exists(targetRoote))
+            {
+                Directory.CreateDirectory(targetRoote);
+            }
+
+            var styles = manifestNames.Where(x => x.EndsWith(".css") || x.EndsWith(".scss"));
+
+
             var cssDestination = $"{targetRoote}\\uic.scss";
             if (File.Exists(cssDestination))
                 File.Delete(cssDestination);
@@ -80,8 +92,59 @@ public static class UICBuilderExtensions
                 }
             }
         }
+        if (options.ReplaceComponents)
+        {
+
+            string targetRoote = $"{dir}\\UIComponents\\";
+            string sourceRoute = $"{currentAssemblyName}.UIComponents.";
+            if (!Directory.Exists(targetRoote))
+            {
+                Directory.CreateDirectory(targetRoote);
+            }
+
+            var components = manifestNames.Where(x => x.StartsWith(sourceRoute));
+
+            foreach(var component in components)
+            {
+                string componentDir = FixFilePath(component.Replace(sourceRoute, targetRoote));
+                var fileInfo = new FileInfo(componentDir);
+                Directory.CreateDirectory(fileInfo.DirectoryName);
+                if (File.Exists(componentDir))
+                    File.Delete(componentDir);
+
+                using (var componentFile = File.Create(componentDir))
+                {
+                    using (var resourceStream = currentAssembly.GetManifestResourceStream(component))
+                    {
+                        resourceStream!.CopyTo(componentFile);
+                    }
+                }
+            }
+
+            
+        }
 
         return services;
+    }
+
+    private static string FixFilePath(string targetPath)
+    {
+        string currentDirectory = Directory.GetCurrentDirectory();
+        if (!targetPath.StartsWith(currentDirectory))
+            throw new ArgumentException("File target does not start in current directory");
+
+        targetPath = targetPath.Replace(currentDirectory, string.Empty);
+        var parts = targetPath.Split('.');
+        var result = currentDirectory;
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (i == parts.Length - 1)
+                result += ".";
+            else
+                result+=$"\\";
+            result += parts[i];
+        }
+        return result;
     }
 
     public static IApplicationBuilder MapUIC(this IApplicationBuilder app, string localPath)

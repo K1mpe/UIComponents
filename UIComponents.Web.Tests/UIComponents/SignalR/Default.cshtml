@@ -1,0 +1,75 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICSignalR
+@{
+    string id = Model.GetOrGenerateId();
+    foreach(var child in Model.GetAllChildren())
+    {
+        if (child is UIComponent component)
+        {
+            component.AddAttribute("identifier", $"#{id}");
+        }
+    }
+}
+
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    <script>
+        $(document).ready(async function () {
+        //console.log('uic-signalR');
+        @if (!string.IsNullOrWhiteSpace(Model.JoinGroups))
+        {
+            <text>
+                if (connection.state == signalR.HubConnectionState.Connected) {
+                    await connection.invoke("JoinGroup", '@Model.JoinGroups');
+                }
+                EventManager.subscribe('connected', async () => {
+                    await connection.invoke("JoinGroup", '@Model.JoinGroups');
+
+                });
+            </text>
+        }
+        @if (string.IsNullOrWhiteSpace(Model.SubscriptionName))
+        {
+            <text>
+                    console.log('SignalR does not have a subscription!');
+            </text>
+        }
+        else
+        {
+            <text>
+                await connection.on('@Model.SubscriptionName', async function (@string.Join(", ", Model.IncommingArgs)){
+                    @if (Model.DisableOnHidden)
+                    {
+                        <text>
+                            if (uic.isHidden($('#@id'))){
+                                return;
+                            }
+                        </text>
+                    }
+
+                    @await Model.Action.InvokeAsync(Component)
+
+                });
+            </text>
+        }
+
+
+        });
+    </script>
+</div>

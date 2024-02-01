@@ -1224,7 +1224,7 @@ uic.getpost = uic.getpost || {
             },
             (response) => {
                 if (response.type == "Exception") {
-                    makeToast("Error", "", response.Message);
+                    makeToast("Error", "", response.exception[0].responseText);
                     return false;
                 }
             }
@@ -1306,7 +1306,7 @@ uic.getpost = uic.getpost || {
                 if (!isNaN(val) && val !== null)
                     data[prop] = val.toString().replace(".", ",");
                 else if (typeof val == "object")
-                    data[prop] = formatNumbersForDecimalStrings(val);
+                    data[prop] = uic.getpost.formatNumbersForDecimalStrings(val);
             }
         }
         return data;
@@ -1331,7 +1331,7 @@ uic.modal = uic.modal || {
         console.log(".on('uic-hidden', function()) => triggered after the modal has hidden.");
     },
 
-    closeParent: function (element) {
+    closeParent: function (item) {
         var modal = $(item).closest('.uic.modal');
         if (modal.length) {
             modal.trigger('uic-hide');
@@ -1373,13 +1373,6 @@ $(document).ready(function () {
 ﻿var uic = uic || {};
 
 uic.partial = uic.partial || {
-    reload: function (element) {
-        let parent = $(element).closest('.partial-source');
-        if (parent.length)
-            parent.trigger('uic-reload');
-        else
-            location.reload();
-    },
     showLoadingOverlay: function (element = null) {
         if (!element)
             element = document.body;
@@ -1425,7 +1418,10 @@ uic.partial = uic.partial || {
 
         await partial.triggerHandler('uic-reloaded');
     }
-};﻿uic.sidePanel = uic.sidePanel || {
+};
+$('body').on('uic-reload', (ev) => {
+    location.reload();
+});﻿uic.sidePanel = uic.sidePanel || {
     initialize: function (container, startState) {
         container = $(container);
         let isHorizontal = container.hasClass('horizontal');
@@ -1441,13 +1437,13 @@ uic.partial = uic.partial || {
 
         switch (setState) {
             case 0:
-                uic.sidePanel.SetCollapse(container);
+                uic.sidePanel.setCollapse(container);
                 break;
             case 1:
-                uic.sidePanel.SetOverlay(container);
+                uic.sidePanel.setOverlay(container);
                 break;
             case 2:
-                uic.sidePanel.SetPinned(container);
+                uic.sidePanel.setPinned(container);
                 break;
         }
 
@@ -1528,7 +1524,7 @@ uic.partial = uic.partial || {
         sidePanel.addClass('collapsed');
 
         container.find('.btn-sidebar-open').removeClass('d-none');
-        uic.sidePanel.SaveState(container, 0);
+        uic.sidePanel.saveState(container, 0);
     },
     setOverlay: function (container) {
         let sidePanel = container.find('.side-panel');
@@ -1539,7 +1535,7 @@ uic.partial = uic.partial || {
 
         sidePanel.find('.btn-sidebar-fixed').removeClass('d-none');
         container.find('.btn-sidebar-open').addClass('d-none');
-        uic.sidePanel.SaveState(container, 1);
+        uic.sidePanel.saveState(container, 1);
     },
     setPinned: function (container) {
 
@@ -1551,7 +1547,7 @@ uic.partial = uic.partial || {
 
         sidePanel.find('.btn-sidebar-fixed').addClass('d-none');
         container.find('.btn-sidebar-open').addClass('d-none');
-        uic.sidePanel.SaveState(container, 2);
+        uic.sidePanel.saveState(container, 2);
     }
 };
 ﻿uic.tabs = uic.tabs || {

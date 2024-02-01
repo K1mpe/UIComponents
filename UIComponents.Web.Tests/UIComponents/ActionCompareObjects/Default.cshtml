@@ -1,0 +1,18 @@
+﻿@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICActionValidateObject
+
+if(uic.compareObjects(@Model.ReferenceObjectName, @Json.Serialize(Model.MatchObject) || {}, @Json.Serialize(Model.NotMatchObject) || {})){
+    @await Model.OnMatch.InvokeAsync(Component)
+} else{
+    @await Model.OnMisMatch.InvokeAsync(Component)
+}

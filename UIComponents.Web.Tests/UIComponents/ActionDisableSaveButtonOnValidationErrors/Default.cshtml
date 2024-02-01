@@ -1,0 +1,73 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Models;
+
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICActionDisableSaveButtonOnValidationErrors
+
+@{
+    string buttonId = $"#{Model.SaveButton.GetOrGenerateId()}";
+    string formId = "body";
+    if (Model.Form.HasValue())
+        formId = $"#{Model.Form.GetOrGenerateId()}";
+}
+
+<script>
+    $(document).ready(function(){
+        var button = $('@buttonId');
+
+        //Script will not work if button is already disabled
+        if(button.attr('disabled'))
+            return;
+
+        var form = $('@formId');
+        var buttonTooltip = button.attr('title');
+
+        var validationSpans = form.find('span.field-validation-valid');
+        form.find('input, select').on('keyup', function(){
+            CheckButton();
+        });
+        form.find('input, select').on('blur', function(){
+            CheckButton();
+        });
+        form.find('input, select').on('change', function(){
+            CheckButton();
+        });
+
+        button.hover(function(){
+            CheckButton();
+        });
+
+        function CheckButton(){
+            var validationMessages= "";
+            validationSpans.each(function(){
+                if($(this).text().length){
+                    validationMessages += $(this).text();
+                    validationMessages += '\r\n';
+                }
+            });
+
+            
+
+            if(validationMessages.length){
+                console.log('savebutton has been disabled');
+                button.attr('title', validationMessages);
+                button.attr('disabled',true);
+            } else{
+                button.attr('title', buttonTooltip);
+                button.attr('disabled',false);
+            }
+        }
+    });
+</script>

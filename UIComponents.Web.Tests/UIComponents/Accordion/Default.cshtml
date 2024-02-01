@@ -1,0 +1,65 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICAccordion
+
+@{
+    string id = Model.GetOrGenerateId();
+    Model.AssignCollectionForChildren();
+
+    Model.AddAttribute("class", "card-accordion");
+
+    if (Model.RemoveMarginBetweenCards)
+        Model.AddAttribute("class", "no-margin");
+
+    if (Model.AllowOneCardOpen)
+    {
+        Model.AddScript(
+            @<text>
+                $('#@id > .uic.card').on('uic-before-open', (ev)=>{
+                    $(`#@id > .uic.card:not(#${$(ev.target).attr('id')})`).trigger('uic-close');
+                });
+
+                setTimeout(()=>{
+                    $('#@id > .uic.card:not(.collapsed-card)').each((index, item)=>{
+                        if(index ==0)
+                            return;
+
+                        $(item).trigger('uic-close');
+                    });
+                },1);
+                
+            </text>
+    );
+    }
+    if (Model.AllCardsClosedByDefault)
+    {
+        Model.AddScript(
+            @<text>
+                $('#@id > .uic.card').trigger('uic-close');
+            </text>);
+    }
+}
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    @foreach(var card in Model.Children)
+    {
+        @await card.InvokeAsync(Component)
+    }
+</div>
+
+@await Model.RenderStylesAndScripts(Component)

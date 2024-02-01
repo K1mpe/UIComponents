@@ -26,9 +26,19 @@ public partial class UicConfigOptions
 
     #region Properties
     /// <summary>
-    /// Replace the wwwroot/uic files
+    /// Replace the wwwroot/uic/uic.js file
     /// </summary>
-    public bool ReplaceRootFolder { get; set; } = true;
+    public bool ReplaceScripts { get; set; } = true;
+
+    /// <summary>
+    /// Replace the wwwroot/uic/uic.scss
+    /// </summary>
+    public bool ReplaceCss { get; set; } = true;
+
+    /// <summary>
+    /// Replace the UIComponents/...
+    /// </summary>
+    public bool ReplaceComponents { get; set; } = true;
 
 
     public bool CheckLanguageServiceType { get; set; } = true;

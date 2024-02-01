@@ -48,6 +48,7 @@ public class UICButton : UIComponent
         var dropdownItem = CommonHelper.Convert<UICDropdownItem>(this);
         dropdownItem.Content = ButtonText;
         dropdownItem.Icon = PrependButtonIcon;
+        dropdownItem.OnClick= OnClick;
         return dropdownItem;
     }
     #endregion

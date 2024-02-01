@@ -7,13 +7,12 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.0.8</Version>
+	<Version>1.0.9</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <ItemGroup>
 	  <EmbeddedResource Include="UIComponents\**\*.cshtml" Pack="true" />
-	  <EmbeddedResource Include="Views\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="Root\**" Pack="true" />
 	  <EmbeddedResource Include="Taghelper\**" Pack="true" />
   </ItemGroup>
@@ -26,6 +25,8 @@
     <Content Remove="UIComponents\InputSelectlist\Select2.cshtml" />
     <Content Remove="UIComponents\Partial\Default.cshtml" />
     <Content Remove="UIComponents\SpaceSelector\Default.cshtml" />
+    <Content Remove="UIComponents\TreeItems\Default.cshtml" />
+    <Content Remove="UIComponents\Tree\Default.cshtml" />
   </ItemGroup>
 
   <!--<ItemGroup>

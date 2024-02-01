@@ -1,4 +1,6 @@
-﻿namespace UIComponents.Models.Models;
+﻿using UIComponents.Abstractions.Extensions;
+
+namespace UIComponents.Models.Models;
 
 
 /// <summary>
@@ -33,13 +35,20 @@ public class UICSpaceSelector : UIComponent
         foreach(var item in buttons)
         {
             if (item is UICButton button)
-                dropdown.Add(button.ConvertToDropdownItem());
+            {
+                var id = button.GetAttribute("id");
+                var dropdownItem =button.ConvertToDropdownItem();
+                if(!string.IsNullOrEmpty(id))
+                    dropdownItem.Attributes["id"] = "dropdown-"+id;
+                dropdown.Add(dropdownItem);
+
+            }
+                
             else if (item is UICDropdown dropdown2)
                 dropdown.Add(dropdown2.ConvertToSubMenu());
             
         }
-        var SmallElement= dropdown;
-        Elements = new() { BigElement, SmallElement };
+        Elements = new() { BigElement, dropdown };
 
         }
     #endregion

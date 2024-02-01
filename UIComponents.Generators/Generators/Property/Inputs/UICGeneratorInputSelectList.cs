@@ -18,6 +18,9 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
         bool showButtonAdd = args.Options.SelectListShowAddButtonIfAllowed;
         var input = new UICInputSelectlist(args.PropertyName, new());
         input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
+        if(args.PropertyType.IsEnum && args.PropertyValue != null)
+            input.Value = ((int)args.PropertyValue).ToString();
+
         input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input)?? true;
         input.Placeholder = new Translatable("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));
         input.SelectListItems = await args.Configuration.GetSelectListItems(args, input)?? new();

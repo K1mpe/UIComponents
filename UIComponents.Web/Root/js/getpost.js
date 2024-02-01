@@ -82,7 +82,7 @@ uic.getpost = uic.getpost || {
             },
             (response) => {
                 if (response.type == "Exception") {
-                    makeToast("Error", "", response.Message);
+                    makeToast("Error", "", response.exception[0].responseText);
                     return false;
                 }
             }
@@ -164,7 +164,7 @@ uic.getpost = uic.getpost || {
                 if (!isNaN(val) && val !== null)
                     data[prop] = val.toString().replace(".", ",");
                 else if (typeof val == "object")
-                    data[prop] = formatNumbersForDecimalStrings(val);
+                    data[prop] = uic.getpost.formatNumbersForDecimalStrings(val);
             }
         }
         return data;

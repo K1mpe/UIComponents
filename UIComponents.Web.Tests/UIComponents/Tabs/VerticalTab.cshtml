@@ -1,0 +1,82 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICTabs
+
+@{
+    if (Model.RememberTabState)
+        Model.RememberTabState = Model.Attributes.ContainsKey("id");
+
+    string id = Model.GetOrGenerateId();
+    Model.AddAttribute("class", "card card-tabs");
+    Model.AddBodyAttribute("class", "col col-tab-content");
+
+    Model.AssignCollectionForChildren();
+
+    @if (Model.RememberTabState)
+    {
+        Model.AddScript(
+        @<text>
+            $('#@id').on('tabChanged', (ev, tabs)=>{
+                console.log(`Saving tab ${$(tabs.newTab).attr('href')}`);
+                localStorage.setItem('tabs-lastState-@id', $(tabs.newTab).attr('href'));
+            })
+        </text>);
+    }
+}
+
+@if (Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent && Model.Tabs.First() is IUIComponent firstTab)
+{
+    @await firstTab.InvokeAsync(Component)
+}
+else
+{
+    Model.AddScript(
+    @<text>
+        uic.tabs.openFirstTab($('#@id'));
+    </text>);
+    <div @Html.Raw(Model.GetHtmlAttributes())>
+        <div class="row">
+            <div class="col col-tab-headers">
+                <div class="nav nav-tabs flex-column h-100" role="tablist">
+                    @for (int i = 0; i < Model.Tabs.Count; i++)
+                    {
+                        var tab = Model.Tabs[i];
+                        await tab.Header.Transformer(Model, tab.Header);
+                        tab.Header.AddAttribute("href", $"#{id}-tab{i + 1}");
+                        
+                        @await tab.Header.InvokeAsync(Component)
+                    }
+                </div>               
+            </div>
+            <div @Html.Raw(Model.BodyAttributes.GetHtmlAttributes())>
+                <div class="tab-content">
+                    @for (int i = 0; i < Model.Tabs.Count; i++)
+                    {
+                        var tab = Model.Tabs[i].Content;
+
+                        <div class="tab-pane fade" role="tabpanel" id="@($"{id}-tab{i+1}")">
+                            @await tab.InvokeAsync(Component)
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@await Model.RenderStylesAndScripts(Component)

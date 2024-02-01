@@ -1,0 +1,147 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICCard
+
+@{
+    if(Model.RememberCollapsedState)
+        Model.RememberCollapsedState= !string.IsNullOrEmpty(Model.GetAttribute("id"));
+
+    var id = Model.GetOrGenerateId();
+    Model.AssignCollectionForChildren();
+    Model.AddAttribute("class", "card");
+
+    Model.Body.AddAttribute("class", "card-body");
+    Model.Footer?.AddAttribute("class", "card-footer");
+
+    if (Model.Header != null && Model.Header is UIComponent headerComp && string.IsNullOrEmpty(headerComp.GetAttribute("Id")))
+        headerComp.AddAttribute("id", $"{id}_header");
+    if (Model.Body != null && string.IsNullOrEmpty(Model.Body.GetAttribute("Id")))
+        Model.Body.AddAttribute("id", $"{id}_body");
+    if (Model.Footer != null && string.IsNullOrEmpty(Model.Footer.GetAttribute("Id")))
+        Model.Footer.AddAttribute("id", $"{id}_footer");
+
+    if (Model.Header?.Color != null)
+        Model.AddAttribute("class", $"card-{Model.Header.Color.ToLower()}");
+
+    if (Model.DefaultClosed)
+        Model.AddAttribute("class", "collapsed-card");
+
+    if (!string.IsNullOrEmpty(Model.MinWidth))
+        Model.AddAttribute("min-width", Model.MinWidth);
+
+    if (!string.IsNullOrEmpty(Model.MaxWidth))
+        Model.AddAttribute("max-width", Model.MaxWidth);
+
+
+    Model.AddScript(
+    @<text>
+    @if (!Model.DisableClosing)
+    {
+        <text>
+            $('#@id').on('uic-help', ()=>{
+                console.log("Card $('#@id').trigger('uic-open') Open the card");
+                console.log("Card $('#@id').trigger('uic-close') Close the card");
+                console.log("Card $('#@id').trigger('uic-toggle') Open or Close the card");
+                console.log("Card $('#@id').on('uic-before-open', ()=>{...}) Triggered before the card starts opening");
+                console.log("Card $('#@id').on('uic-before-close', ()=>{...}) Triggered before the card starts closing");
+                console.log("Card $('#@id').on('uic-opened', () =>{...}) Triggered when the opening animation is complete");
+                console.log("Card $('#@id').on('uic-closed', () =>{...}) Triggered when the clsoing animation is complete");
+            });
+
+            $('#@id').on('uic-open', async (ev)=>{
+                ev.stopPropagation();
+                let card = $('#@id');
+                await card.triggerHandler('uic-before-open');
+
+                card.CardWidget('expand');
+            })
+            $('#@id').on('uic-close', async (ev)=>{
+            ev.stopPropagation();
+            let card = $('#@id');
+                await card.triggerHandler('uic-before-close');
+
+                card.CardWidget('collapse');
+            });
+            $('#@id').on('uic-toggle', async (ev)=>{
+                ev.stopPropagation();
+                let card = $('#@id');
+                if(card.hasClass('collapsed-card'))
+                    card.triggerHandler('uic-open');
+                else
+                    card.triggerHandler('uic-close');
+            });
+
+            $('#@id').on('expanded.lte.cardwidget', (ev)=> {ev.stopPropagation(); $('#@id').triggerHandler('uic-opened');});
+            $('#@id').on('collapsed.lte.cardwidget', (ev)=> {ev.stopPropagation(); $('#@id').triggerHandler('uic-closed');});
+
+
+            //If the hash contains the card Id, open the card after 10ms
+            if(window.location.hash.includes('@id'))
+                setTimeout(()=>{
+                    $('#@id').trigger('uic-open');
+                }, 10);
+                
+        </text>
+
+        @if (Model.RememberCollapsedState)
+        {
+            <text>
+                try{
+                    let collapsed = localStorage.getItem("uic.card.collapsedState.@id");
+                    if(collapsed == 'true'){
+                        if(!$('#@id').hasClass('collapsed-card'))
+                        {
+                            $('#@id').addClass('collapsed-card');
+                            $('#@id').triggerHandler('uic-close');
+                        }
+                    } else if(collapsed =='false'){
+                        if($('#@id').hasClass('collapsed-card'))
+                        {
+                            $('#@id').removeClass('collapsed-card');
+                            $('#@id').triggerHandler('uic-open');
+                        }
+                    }
+                }catch{}
+                $('#@id').on('uic-opened', ()=>{
+                    localStorage.setItem("uic.card.collapsedState.@id", false);
+                });
+                $('#@id').on('uic-closed', ()=>{
+                    localStorage.setItem("uic.card.collapsedState.@id", true);
+                });
+
+            </text>
+        }
+    }
+    
+    </text>);
+}
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    @if(Model.Header != null && !Model.HideHeader)
+    {
+        await Model.Header.Transformer(Model, Model.Header);
+        @await Model.Header.InvokeAsync(Component)
+    }
+
+    @await Model.Body.InvokeAsync(Component)
+    @await Model.Footer.InvokeAsync(Component)
+</div>
+
+
+
+@await Model.RenderStylesAndScripts(Component)

@@ -14,13 +14,13 @@
 
         switch (setState) {
             case 0:
-                uic.sidePanel.SetCollapse(container);
+                uic.sidePanel.setCollapse(container);
                 break;
             case 1:
-                uic.sidePanel.SetOverlay(container);
+                uic.sidePanel.setOverlay(container);
                 break;
             case 2:
-                uic.sidePanel.SetPinned(container);
+                uic.sidePanel.setPinned(container);
                 break;
         }
 
@@ -101,7 +101,7 @@
         sidePanel.addClass('collapsed');
 
         container.find('.btn-sidebar-open').removeClass('d-none');
-        uic.sidePanel.SaveState(container, 0);
+        uic.sidePanel.saveState(container, 0);
     },
     setOverlay: function (container) {
         let sidePanel = container.find('.side-panel');
@@ -112,7 +112,7 @@
 
         sidePanel.find('.btn-sidebar-fixed').removeClass('d-none');
         container.find('.btn-sidebar-open').addClass('d-none');
-        uic.sidePanel.SaveState(container, 1);
+        uic.sidePanel.saveState(container, 1);
     },
     setPinned: function (container) {
 
@@ -124,6 +124,6 @@
 
         sidePanel.find('.btn-sidebar-fixed').addClass('d-none');
         container.find('.btn-sidebar-open').addClass('d-none');
-        uic.sidePanel.SaveState(container, 2);
+        uic.sidePanel.saveState(container, 2);
     }
 };

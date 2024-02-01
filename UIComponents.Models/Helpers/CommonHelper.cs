@@ -1,4 +1,6 @@
-﻿namespace UIComponents.Models.Helpers;
+﻿using System.Text.Json;
+
+namespace UIComponents.Models.Helpers;
 
 public class CommonHelper
 {
@@ -41,6 +43,13 @@ public class CommonHelper
 
             object value = sourceProp.GetValue(source);
             property.SetValue(result, value, null);
+            if (property.PropertyType.IsAssignableTo(typeof(Dictionary<string, string>)))
+            {
+                var serialized = JsonSerializer.Serialize(value);
+                property.SetValue(result, JsonSerializer.Deserialize(serialized, property.PropertyType));
+            }
+
+            
         }
         return result;
         

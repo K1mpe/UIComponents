@@ -1,0 +1,99 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICContextMenuItem
+
+@{
+
+    string guid = "cmi"+Guid.NewGuid().ToString("N").Substring(0, 4);
+    Model.AssignCollectionForChildren(guid);
+    Model.AddScript(
+    @<text>
+        uic.contextMenu.add({
+        selector: '@Html.Raw(Model.Selector())',
+
+        @if (!string.IsNullOrEmpty(Model.Id))
+                {
+        <text>
+            id: '@Html.Raw(Model.Id)',
+        </text>
+                }
+
+        @if (!string.IsNullOrWhiteSpace(Model.Category))
+                {
+        <text>
+            category: '@Html.Raw(Model.Category)',
+        </text>
+                }
+
+        @if (Model.DropdownItem.HasValue())
+                {
+        <text>
+            element: $('#@guid').html(),
+        </text>
+                }
+
+        @if (Model.Position != null)
+                {
+        <text>
+            position: @Json.Serialize(Model.Position.Value),
+        </text>
+                }
+        
+        optional: @Json.Serialize(Model.Optional),
+        
+
+        @if (Model.OnClick.HasValue())
+                {
+        <text>
+            onClick: async function(target, clickedElement, event){
+            @await Model.OnClick.InvokeAsync(Component)
+            },
+        </text>
+                }
+
+        @if (Model.Text.HasValue())
+                {
+        <text>
+            text: @await Model.Text.InvokeAsync(Component),
+        </text>
+                }
+
+        @if (Model.Title.HasValue())
+                {
+        <text>
+            title: @await Model.Title.InvokeAsync(Component),
+        </text>
+                }
+
+        @if (Model.Attributes.HasValue())
+                {
+        <text>
+            attr: @await Model.Attributes.InvokeAsync(Component),
+        </text>
+                }
+        });
+    </text>);
+
+}
+
+
+<script type="text/html" id="@guid">
+    @await Model.DropdownItem.InvokeAsync(Component)
+</script>
+
+@await Model.RenderStylesAndScripts(Component,guid)
