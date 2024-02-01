@@ -90,6 +90,7 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorInputBool>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputThreeStateBool>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputTimespan>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorInputColor>(serviceCollection);
 
         return configOptions;
     }

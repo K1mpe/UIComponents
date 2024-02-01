@@ -28,6 +28,8 @@ namespace UIComponents.Web.Tests.Models
         public TimeSpan TimeSpan { get; set; }
 
         public TestEnum Enum { get; set; }
+
+        public string Color { get; set; }
     }
 
     public enum TestEnum

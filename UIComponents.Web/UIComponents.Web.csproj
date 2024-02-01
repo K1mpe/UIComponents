@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.0.10</Version>
+	<Version>1.0.11</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -37,6 +37,7 @@
     <None Remove="Root\css\uic.scss" />
     <None Remove="Root\js\contextMenu.js" />
     <None Remove="Root\js\delayedAction.js" />
+    <None Remove="Root\js\form.js" />
     <None Remove="Root\js\getpost.js" />
     <None Remove="Root\js\modal.js" />
     <None Remove="Root\js\partial.js" />

@@ -25,6 +25,8 @@ builder.Services.AddMvc();
 builder.Services.AddUIComponentWeb(config =>
 {
     UIComponents.Defaults.OptionDefaults.ReverseButtonOrder = false;
+    config.CheckPermissionServiceType = false;
+    config.CheckLanguageServiceType = false;
     config.AddDefaultGenerators(builder.Services);
 });
 

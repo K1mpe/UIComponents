@@ -10,7 +10,7 @@ public class UICButtonDelete : UICButton
         Color = ColorDefaults.ButtonDelete;
         OnClick = new UICCustom()
         {
-            Content = $"await Crud.Delete('{controller}', {id});"
+            Content = $"await uic.form.delete('{controller}', {id});"
         };
         PrependButtonIcon = UICIcon.Delete();
         this.AddAttribute("class", "btn-delete");

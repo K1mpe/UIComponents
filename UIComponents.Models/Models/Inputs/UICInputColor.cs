@@ -10,6 +10,7 @@ namespace UIComponents.Models.Models.Inputs
     {
         #region Fields
         public override bool HasClientSideValidation => ValidationRequired || ValidationValidColor;
+        public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
         #endregion
 
         #region Ctor

@@ -25,6 +25,18 @@
       ]
     },
     {
+      "library": "@melloware/coloris@0.21.1",
+      "destination": "wwwroot/lib/coloris/",
+      "files": [
+        "dist/coloris.css",
+        "dist/coloris.min.css",
+        "dist/esm/coloris.js",
+        "dist/esm/coloris.min.js",
+        "dist/umd/coloris.js",
+        "dist/umd/coloris.min.js"
+      ]
+    },
+    {
       "provider": "cdnjs",
       "library": "select2@4.0.13",
       "destination": "wwwroot/lib/select2/",

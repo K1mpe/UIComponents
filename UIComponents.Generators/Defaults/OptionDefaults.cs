@@ -21,5 +21,5 @@ public static class OptionDefaults
     public static bool ReverseButtonOrder = true;
     public static bool ShowEditButton = true;
     public static bool ShowDeleteButton = true;
-    public static bool ShowCancelButton = true;
+    public static bool ShowCancelButton = false;
 }

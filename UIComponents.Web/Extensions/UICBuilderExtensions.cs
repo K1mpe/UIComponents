@@ -36,7 +36,7 @@ public static class UICBuilderExtensions
         if (options.ReplaceScripts)
         {
 
-            string targetRoote = $"{dir}\\wwwroot\\uic";
+            string targetRoote = $"{dir}\\wwwroot\\uic\\js";
             string sourceRoute = $"{currentAssemblyName}.Root.";
             if (!Directory.Exists(targetRoote))
             {
@@ -66,7 +66,7 @@ public static class UICBuilderExtensions
         if (options.ReplaceCss)
         {
 
-            string targetRoote = $"{dir}\\wwwroot\\uic";
+            string targetRoote = $"{dir}\\wwwroot\\uic\\css";
             string sourceRoute = $"{currentAssemblyName}.Root.";
             if (!Directory.Exists(targetRoote))
             {

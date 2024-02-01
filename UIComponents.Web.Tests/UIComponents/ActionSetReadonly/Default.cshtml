@@ -20,4 +20,4 @@
     string identifier = Model.GetAttribute("formidentifier");
 }
 
-uic.formReadonly($('@identifier'), @Json.Serialize(Model.ShowEmptyInReadonly), @Json.Serialize(Model.ShowSpanInReadonly), @Json.Serialize(Model.ShowDeleteButtonInReadonly));
+uic.form.readonly($('@identifier'), @Json.Serialize(Model.ShowEmptyInReadonly), @Json.Serialize(Model.ShowSpanInReadonly), @Json.Serialize(Model.ShowDeleteButtonInReadonly));

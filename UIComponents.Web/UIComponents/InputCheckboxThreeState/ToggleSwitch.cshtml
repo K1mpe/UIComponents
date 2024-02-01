@@ -39,7 +39,7 @@
 
 <script>
     $(document).ready(function () {
-        uic.setThreeState($('#@id'));
+        uic.form.setThreeState($('#@id'));
 
         $('#@id').click(function (e) {
             console.log('three-state-toggle');
@@ -52,7 +52,7 @@
             else
                 $(this).data('value', "false");
 
-            uic.setThreeState($(this));
+            uic.form.setThreeState($(this));
         })
     })
 </script>
