@@ -40,6 +40,7 @@ public interface ICreatePermissionCurrentUserService
     /// </remarks>
     Task<bool> CanCreate<T>(T obj) where T : class;
 
+    Task<bool> CanCreate(Type type);
 }
 
 

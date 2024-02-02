@@ -36,7 +36,30 @@ public static class TranslationDefaults
     public static Func<Type, string, Translatable> TranslateEnums = (type, value) => new Translatable($"Enum.{type.Name}.{value}");
 
 
-    public static Func<Type, Translatable> TranslateType = (type) => new Translatable(type.Name);
+    public static Func<Type, Translatable> TranslateType = (type) =>
+    {
+        string key = type.Name;
+        List<Translatable> args = new();
+        string defaultValue = null;
+
+        if (type.IsGenericType)
+        {
+
+            defaultValue = key.Split("`")[0];
+            key = defaultValue + ".Generic";
+            defaultValue += "<";
+            var genTypes = type.GetGenericArguments();
+            for(var i = 0; i < genTypes.Length; i++)
+            {
+                defaultValue += $"{{{i}}}";
+                args.Add(TranslateType(genTypes[i]));
+            }
+
+            defaultValue += ">";
+        }
+
+        return new Translatable(key, defaultValue, args.ToArray());
+    };
 
 
 
@@ -81,4 +104,23 @@ public static class TranslationDefaults
         else return new Translatable("FileUpload.MaxCountFiles", "Upload up to {0} files", fileCount);
     };
     public static Translatable SelectListNoItems = new Translatable("SelectList.NoItemsAvailable", "No items available");
+
+
+    /// <summary>
+    /// When using <see cref="UICTooltipAttribute"/> without a key, this is the key that will be used
+    /// </summary>
+    public static Func<PropertyInfo, UICPropertyType, string> DefaultTooltipKey = (propertyInfo, propertyType) =>
+    {
+        var translateProperty = TranslateProperty(propertyInfo, propertyType);
+        return $"{translateProperty.ResourceKey}.Tooltip";
+    };
+
+    /// <summary>
+    /// When using <see cref="UICSpanAttribute"/> without a key, this is the key that will be used
+    /// </summary>
+    public static Func<PropertyInfo, UICPropertyType, string> DefaultInfoSpanKey = (propertyInfo, propertyType) =>
+    {
+        var translateProperty = TranslateProperty(propertyInfo, propertyType);
+        return $"{translateProperty.ResourceKey}.InfoSpan";
+    };
 }

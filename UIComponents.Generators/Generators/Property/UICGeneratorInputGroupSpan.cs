@@ -26,6 +26,11 @@ public class UICGeneratorInputGroupSpan : UICGeneratorProperty
         if (spanAttr == null)
             return await Task.FromResult(GeneratorHelper.Next<IUIComponent>());
 
+        
+
+        if (string.IsNullOrEmpty(spanAttr.TranslationModel.ResourceKey))
+            spanAttr.TranslationModel.ResourceKey = TranslationDefaults.DefaultTooltipKey(args.PropertyInfo, args.UICPropertyType.Value);
+
         var span = new UICSpan(spanAttr.TranslationModel);
         return await Task.FromResult(GeneratorHelper.Success<IUIComponent>(span, true));
     }

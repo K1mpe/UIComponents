@@ -9,7 +9,7 @@ public class UICViewComponent : ViewComponent
 {
     private readonly UICConfig _uicConfig;
 
-    public UICViewComponent(IUicLanguageService languageService, UICConfig uicConfig)
+    public UICViewComponent(UICConfig uicConfig)
     {
         _uicConfig = uicConfig;
     }
@@ -34,7 +34,7 @@ public class UICViewComponent : ViewComponent
                 if (UIC.TryGetPropertyValue<Translatable>("Tooltip", out Translatable tooltip) && tooltip != null)
                     UIC.AddAttribute("title", await languageService.Translate(tooltip));
 
-                if (UIC.TryGetPropertyValue<Translatable>(nameof(UICInput<string>.Placeholder), out Translatable placeholder))
+                if (UIC.TryGetPropertyValue<Translatable>(nameof(UICInput<string>.Placeholder), out Translatable placeholder) && placeholder != null)
                     UIC.AddAttribute("placeholder", await languageService.Translate(placeholder));
             }
 

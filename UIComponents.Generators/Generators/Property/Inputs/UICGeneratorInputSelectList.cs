@@ -22,8 +22,33 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
             input.Value = ((int)args.PropertyValue).ToString();
 
         input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input)?? true;
-        input.Placeholder = new Translatable("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));
         input.SelectListItems = await args.Configuration.GetSelectListItems(args, input)?? new();
+
+        if(input.Placeholder == null)
+            input.Placeholder = new Translatable("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));
+        
+        if (!args.PropertyType.IsEnum || args.CallCollection.Caller is not UICInputGroup)
+            showButtonAdd = false;
+
+        if(showButtonAdd && args.Configuration.TryGetPermissionService(out var permissionService))
+        {
+            var propertyType = args.PropertyType.BaseType ?? args.PropertyType;
+            showButtonAdd = await permissionService!.CanCreate(propertyType);
+
+            if (showButtonAdd && args.CallCollection.Caller is UICInputGroup inputGroup)
+            {
+                inputGroup.AppendInput.Add(new UICButton()
+                {
+                    AppendButtonIcon = IconDefaults.Add,
+                    Tooltip = new("Button.CreateOfType.Tooltip", "Create a new {0}", TranslationDefaults.TranslateType(propertyType)),
+                    OnClick = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Get, propertyType.Name, "create")
+                    {
+                        OnSuccess = new UICActionOpenResultAsModal()
+                    }
+                });
+        }
+        }
+        
 
         input.SearchableIfMinimimResults = args.Options.SelectlistSearableForItems;
 

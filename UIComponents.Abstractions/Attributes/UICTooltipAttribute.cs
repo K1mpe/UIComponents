@@ -7,7 +7,7 @@ public class UICTooltipAttribute : Attribute
     /// </summary>
     /// <param name="translationKey"></param>
     /// <param name="defaultText"></param>
-    public UICTooltipAttribute(string translationKey, string defaultText)
+    public UICTooltipAttribute(string defaultText, string translationKey=null)
     {
         TranslationModel = new Translatable(defaultText, translationKey);
     }

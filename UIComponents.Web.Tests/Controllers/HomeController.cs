@@ -4,7 +4,9 @@ using System.Diagnostics;
 using UIComponents.Abstractions;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces;
+using UIComponents.Abstractions.Interfaces.ExternalServices;
 using UIComponents.Abstractions.Models;
+using UIComponents.Defaults;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Models.Extensions;
 using UIComponents.Models.Models;
@@ -22,10 +24,12 @@ namespace UIComponents.Web.Tests.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUIComponentService _uic;
-        public HomeController(ILogger<HomeController> logger, IUIComponentService uic)
+        private readonly IUicLanguageService _languageService;
+        public HomeController(ILogger<HomeController> logger, IUIComponentService uic, IUicLanguageService languageService)
         {
             _logger = logger;
             _uic = uic;
+            _languageService = languageService;
         }
 
         public async Task<IActionResult> Index()

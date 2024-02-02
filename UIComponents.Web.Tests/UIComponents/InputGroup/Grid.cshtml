@@ -53,7 +53,6 @@
     {
         if(Model.Label.HasValue())
             Model.Label.Hidden = true;
-        addedClass += " d-none";
 
     }
 }
@@ -61,7 +60,7 @@
 
 
 @await Model.Label.InvokeAsync(Component)
-<div class="@addedClass">
+<div class="@addedClass"  @Html.Raw(Model.Hidden?"hidden":"")>
     @if(Model.PrependInput.Any() || Model.AppendInput.Any())
     { 
         <div class="input-group">

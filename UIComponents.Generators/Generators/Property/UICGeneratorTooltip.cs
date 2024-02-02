@@ -31,6 +31,9 @@ public class UICGeneratorTooltip : UICGeneratorBase<UICPropertyArgs, Translatabl
         var tooltipAttr = args.PropertyInfo.GetCustomAttribute<UICTooltipAttribute>();
         if (tooltipAttr != null)
         {
+            if (string.IsNullOrEmpty(tooltipAttr.TranslationModel.ResourceKey))
+                tooltipAttr.TranslationModel.ResourceKey = TranslationDefaults.DefaultTooltipKey(args.PropertyInfo, args.UICPropertyType.Value);
+
             return GeneratorHelper.Success<Translatable>(tooltipAttr.TranslationModel, true);
         }
 
