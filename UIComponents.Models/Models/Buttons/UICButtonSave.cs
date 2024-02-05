@@ -14,9 +14,4 @@ public class UICButtonSave : UICButton
         Color = ColorDefaults.ButtonSave?? ColorDefaults.ButtonDefault;
         this.AddAttribute("class", "btn-save");
     }
-    public UICButtonSave(UICForm form) : this()
-    {
-        OnClick = form.TriggerSubmit();
-
-    }
 }

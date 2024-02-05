@@ -7,6 +7,9 @@ namespace UIComponents.Models.Models.Actions;
 /// </summary>
 public class UICActionGetPost : UIComponent, ISubmitAction
 {
+    #region Fields
+    public override string RenderLocation => UIComponent.DefaultIdentifier("ActionGetPost");
+    #endregion
 
     #region Ctor
     public UICActionGetPost(ActionTypeEnum actionType, string controller, string action, object data = null)
@@ -30,7 +33,14 @@ public class UICActionGetPost : UIComponent, ISubmitAction
     public ActionTypeEnum ActionType { get; set; }
     public string Controller { get; set; }
     public string Action { get; set; }
+
+
     public object Data { get; set; }
+
+    /// <summary>
+    /// If not empty, use the url instead of <see cref="Controller"/> and <see cref="Action"/>
+    /// </summary>
+    public string Url { get; set; }
 
     /// <summary>
     /// When providing post options, these will overwrite the default options.
@@ -75,10 +85,6 @@ public class UICActionGetPost : UIComponent, ISubmitAction
         Post
     }
 
-    public IUIAction TriggerSubmit()
-    {
-        return this;
-    }
 
 
     public class UICGetPostOptions
@@ -95,3 +101,27 @@ public class UICActionGetPost : UIComponent, ISubmitAction
         public bool CancelPreviousRequests { get; set; }
     }
 }
+
+public class UICActionGet : UICActionGetPost
+{
+    public UICActionGet(string controller, string action, object data = null) : base(ActionTypeEnum.Get, controller, action, data)
+    {
+    }
+
+    public UICActionGet()
+    {
+        ActionType = ActionTypeEnum.Get;
+    }
+}
+
+public class UICActionPost : UICActionGetPost
+{
+    public UICActionPost(string controller, string action, object data = null): base(ActionTypeEnum.Post, controller, action, data) 
+    {
+
+    }
+    public UICActionPost()
+    {
+        ActionType = ActionTypeEnum.Post;
+    }
+} 

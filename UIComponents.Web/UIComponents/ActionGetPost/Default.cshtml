@@ -50,21 +50,21 @@ let postOptions = {};
 }
 
 try{
-@switch (Model.ActionType)
-{
-    case UICActionGetPost.ActionTypeEnum.Get:
-        <text>
-            var @Model.ResultName = await uic.getpost.get('@Url.Action(Model.Action, Model.Controller)', data, postOptions);
-        </text>
-        break;
-    case UICActionGetPost.ActionTypeEnum.Post:
-        <text>
-            var @Model.ResultName = await uic.getpost.post('@Url.Action(Model.Action, Model.Controller)', data, postOptions);
-        </text>
-        break;
-    default:
-        throw new NotImplementedException();
-}
+    @switch (Model.ActionType)
+    {
+        case UICActionGetPost.ActionTypeEnum.Get:
+            <text>
+                var @Model.ResultName = await uic.getpost.get('@(string.IsNullOrEmpty(Model.Url)?Url.Action(Model.Action, Model.Controller):Model.Url)', data, postOptions);
+            </text>
+            break;
+        case UICActionGetPost.ActionTypeEnum.Post:
+            <text>
+                var @Model.ResultName = await uic.getpost.post('@(string.IsNullOrEmpty(Model.Url) ? Url.Action(Model.Action, Model.Controller) : Model.Url)', data, postOptions);
+            </text>
+            break;
+        default:
+            throw new NotImplementedException();
+    }
 
     @await Model.OnSuccess.InvokeAsync(Component);
 

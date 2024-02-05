@@ -2,5 +2,4 @@
 
 public interface ISubmitAction: IUIAction
 {
-    public IUIAction TriggerSubmit();
 }

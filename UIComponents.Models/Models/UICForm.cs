@@ -38,7 +38,7 @@ public class UICForm : UIComponent, IUICHasChildren<IUIComponent>
     /// ClientSide: Triggers the form to post
     /// </summary>
     /// <returns></returns>
-    public IUIAction? TriggerSubmit() => Readonly?null :  Submit?.TriggerSubmit();
+    public IUIAction? TriggerSubmit() => Readonly?null : new UICCustom($"$('#{this.GetOrGenerateId()}').trigger('submit');");
 
     /// <summary>
     /// ClientSide: Triggers the form to return the current value of all properties

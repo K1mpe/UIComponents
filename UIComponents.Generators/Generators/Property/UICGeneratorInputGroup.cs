@@ -35,7 +35,6 @@ namespace UIComponents.Generators.Generators.Property
             inputGroup.Label = await args.Configuration.GetGeneratedResultAsync<IUIComponent, UICLabel>(UICGeneratorPropertyCallType.PropertyLabel, inputGroup, args);
             inputGroup.Input = await args.Configuration.GetGeneratedResultAsync<IUIComponent, UICInput>(UICGeneratorPropertyCallType.PropertyInput, inputGroup, args);
 
-            inputGroup.LabelAndInputOnSingleLine = args.Options.InputGroupSingleRow;
             if (!inputGroup.Label.HasValue() && !inputGroup.Input.HasValue())
                 inputGroup.Render = false;
 

@@ -49,13 +49,6 @@ public class UICInputGroup : UIComponent, IUISingleRowSupport
     /// </summary>
     public UICSpan Span { get; set; }
 
-    /// <summary>
-    /// Set the label and input field on the same row
-    /// </summary>
-    /// <remarks>
-    /// To prevent a form from automatically turning this on, set value to false.
-    /// </remarks>
-    public bool? LabelAndInputOnSingleLine { get; set; }
 
 
     /// <summary>
@@ -76,7 +69,6 @@ public class UICInputGroup : UIComponent, IUISingleRowSupport
 
     public void TransformToSingleRow()
     {
-        if (LabelAndInputOnSingleLine != false)
             Renderer = InputGroupRenderer.Grid;
     }
 
