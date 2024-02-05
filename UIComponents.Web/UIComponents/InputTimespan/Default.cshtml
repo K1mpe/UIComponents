@@ -54,7 +54,7 @@
 <div @Html.Raw(Model.GetHtmlAttributes())>
     @if (Model.ShowDays)
     {
-        <input type="number" class="form-control uic-timespan-input timespan-days" min="0" max="30" value="@(Model.Value?.Days??null)" title="@await Html.Translate(L, new Translatable("Timespan.Days"), null)" />
+        <input type="number" class="form-control uic-timespan-input timespan-days" min="0" value="@(Model.Value?.Days??null)" title="@await Html.Translate(L, new Translatable("Timespan.Days"), null)" />
     }
     @if (Model.ShowHours)
     {

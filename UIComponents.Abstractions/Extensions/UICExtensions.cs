@@ -108,12 +108,16 @@ public static class UICExtensions
     /// <param name="element"></param>
     /// <param name="searchType"></param>
     /// <returns></returns>
-    public static T FindFirstOnType<T>(this IUIComponent element) where T : IUIComponent
+    public static T FindFirstOnType<T>(this IUIComponent element, Action<T> action = null) where T : IUIComponent
     {
         if (element is T onType)
+        {
+            if (action != null)
+                action(onType);
             return onType;
-
-        return element.FindFirstChildOnType<T>();
+        }
+        
+        return element.FindFirstChildOnType<T>(action);
     }
 
 
@@ -141,9 +145,12 @@ public static class UICExtensions
     /// <param name="element"></param>
     /// <param name="searchType"></param>
     /// <returns></returns>
-    public static T FindFirstChildOnType<T>(this IUIComponent element) where T : IUIComponent
+    public static T FindFirstChildOnType<T>(this IUIComponent element, Action<T> action = null) where T : IUIComponent
     {
-        return element.FindAllChildrenOnType<T>().FirstOrDefault();
+        var first = element.FindAllChildrenOnType<T>().FirstOrDefault();
+        if (action != null)
+            action(first);
+        return first;
     }
 
     /// <summary>
@@ -159,10 +166,14 @@ public static class UICExtensions
         return typeResults;
     }
 
-    public static T FindInputByPropertyName<T>(this IUIComponent element, string propertyName) where T : UICInput
+    public static T FindInputByPropertyName<T>(this IUIComponent element, string propertyName, Action<T> action= null) where T : UICInput
     {
         var typeResults = element.GetAllChildren().Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
-        return typeResults.Where(x => x.PropertyName.ToLower() == propertyName.ToLower()).FirstOrDefault();
+        var firstInput =  typeResults.Where(x => x.PropertyName.ToLower() == propertyName.ToLower()).FirstOrDefault();
+
+        if(action != null)
+            action(firstInput);
+        return firstInput;
     }
 
 

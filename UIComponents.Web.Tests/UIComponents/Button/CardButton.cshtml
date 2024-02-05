@@ -26,7 +26,7 @@
     if(Model.OnClick != null)
     {
         var onClickType = Model.OnClick.GetType();
-        if (Model.OnClick is UICButtonSave submit)
+        if (Model is UICButtonSave submit)
         {
             type = "submit";
             //submit.AddAttribute("HideDocReady", "true");

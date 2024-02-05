@@ -1,4 +1,5 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using UIComponents.Abstractions.Extensions;
+using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
@@ -45,7 +46,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
                     {
                         OnSuccess = new UICActionOpenResultAsModal()
                     }
-                });
+                }.AddClass("hidden-readonly"));
         }
         }
         

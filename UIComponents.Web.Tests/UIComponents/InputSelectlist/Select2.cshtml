@@ -42,7 +42,7 @@
         $('#@id').select2({
             theme: 'bootstrap4',
             minimumResultsForSearch: @Json.Serialize(Model.SearchableIfMinimimResults),
-            width:'100%',
+            width:'',
         });
 
         $('#@id').on('select2:opening', function(){
@@ -58,27 +58,26 @@
 
         $('#@id').on('uic-open', (ev)=> ev.stopPropagation());
 
-        @if (Model.HasClientSideValidation)
-        {
-
+        @{
             string propertyName = Model.PropertyName;
             if (Model.DisplayName != null)
                 propertyName = await L.Translate(Model.DisplayName);
+        }
+       
 
-        <text>
             function validateInput(element) {
             var currentValue = element.val();
-            var span = element.parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+            var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
             span.text("");
 
 
-            @if (Model.ValidationRequired)
-                    {
-            <text>
-                if (currentValue == null || currentValue =='')
-                span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
-            </text>
-                    }
+                @if (Model.ValidationRequired)
+                {
+                    <text>
+                        if (currentValue == null || currentValue =='')
+                        span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                    </text>
+                }
             }
 
             $('#@id').change(function () {
@@ -87,8 +86,6 @@
             $('#@id').blur(function () {
                 validateInput($(this));
             });
-        </text>
-                }
     </text>);
 }
 

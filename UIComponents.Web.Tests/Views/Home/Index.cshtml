@@ -1,8 +1,11 @@
 ﻿@using UIComponents.Abstractions;
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Generators.Interfaces;
+@using UIComponents.Models.Models.Buttons
 @using UIComponents.Models.Models.Card;
 @using UIComponents.Models.Models;
+@using UIComponents.Models.Extensions;
+@using UIComponents.Models.Models.Icons
 @using UIComponents.Web.Extensions;
 @{
     ViewData["Title"] = "Home Page";
@@ -31,12 +34,16 @@
             .Add(new UICSidePanel(await UIC.CreateComponentAsync(new TestModel()), new UICGroup()
                     .AddAttribute("width", "300px")
                     .AddAttribute("height", "100%"))))
-            
+
         .Add(new UICCard(new Translatable("Card.Partial"))
             .AddPartial("Home", "test")
             ))
     .Add(new UICCard(new Translatable("Card.Partial"))
             .AddPartial("Home", "test"));
+
+    tabs.FindInputGroupByPropertyName(nameof(TestModel.Enum), (input)=>{
+        input.AppendInput.Add(new UICButton() { PrependButtonIcon = UICIcon.Add() });
+    });
 }
 
 @await tabs.InvokeAsync(Component)

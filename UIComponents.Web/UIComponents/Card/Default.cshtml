@@ -42,10 +42,10 @@
         Model.AddAttribute("class", "collapsed-card");
 
     if (!string.IsNullOrEmpty(Model.MinWidth))
-        Model.AddAttribute("min-width", Model.MinWidth);
+        Model.AddAttribute("style", $"min-width:{Model.MinWidth};");
 
     if (!string.IsNullOrEmpty(Model.MaxWidth))
-        Model.AddAttribute("max-width", Model.MaxWidth);
+        Model.AddAttribute("style", $"max-width:{Model.MaxWidth};");
 
 
     Model.AddScript(

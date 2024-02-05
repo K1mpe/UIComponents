@@ -167,16 +167,16 @@
                     var result = $('<div>').css('order', category.menuItem?.position || 1000);
 
                     if (addDividers)
-                        result.append(contextMenu.default.divider.clone());
+                        result.append(uic.contextMenu.default.divider.clone());
 
-                    var menuItems = contextMenu._sort(category._menuItems);
+                    var menuItems = uic.contextMenu._sort(category._menuItems);
 
                     menuItems.forEach(function (value, index) {
                         result.append(value._renderedElement);
                     });
 
                     if (addDividers)
-                        result.append(contextMenu.default.divider.clone());
+                        result.append(uic.contextMenu.default.divider.clone());
 
                     return result;
                 },
@@ -187,9 +187,9 @@
                     var itemRow = $('<li>');
 
                     if (addDividers)
-                        results.append(contextMenu.default.divider.clone());
+                        results.append(uic.contextMenu.default.divider.clone());
 
-                    var menuItems = contextMenu._sort(category._menuItems);
+                    var menuItems = uic.contextMenu._sort(category._menuItems);
 
                     menuItems.forEach(function (value) {
                         var element = $(value._renderedElement).find('.dropdown-item');
@@ -204,7 +204,7 @@
                     results.append(itemRow);
 
                     if (addDividers)
-                        results.append(contextMenu.default.divider.clone());
+                        results.append(uic.contextMenu.default.divider.clone());
 
                     return results;
                 },
@@ -215,22 +215,22 @@
                     if (!category.menuItem)
                         console.error('Category requires menuItem', category);
 
-                    let sublistPromise = contextMenu._getItemPromise(category.menuItem);
+                    let sublistPromise = uic.contextMenu._getItemPromise(category.menuItem);
                     await Promise.resolve(sublistPromise).then((result) => {
-                        let subItem = contextMenu._processSingleItemPromises(result);
+                        let subItem = uic.contextMenu._processSingleItemPromises(result);
 
                         let subMenu = $(subItem._renderedElement).addClass('dropdown-submenu').addClass('dropdown-hover');
                         subMenu.find('a').addClass('dropdown-toggle').attr('role', 'button').click(function (e) { e.stopPropagation(); e.preventDefault(); });
 
                         if (!subMenu.find('[disabled]').length) {
                             let subList = $('<ul>', { class: 'dropdown-menu' });
-                            let menuItems = contextMenu._sort(category._menuItems);
+                            let menuItems = uic.contextMenu._sort(category._menuItems);
 
                             menuItems.forEach(function (value) {
                                 subList.append(value._renderedElement);
                             });
 
-                            subList = contextMenu._cleanUp(subList);
+                            subList = uic.contextMenu._cleanUp(subList);
                             subMenu.append(subList);
                         }
 
@@ -238,7 +238,7 @@
                     })
 
                     if (addDividers)
-                        results.append(contextMenu.default.divider.clone());
+                        results.append(uic.contextMenu.default.divider.clone());
 
 
                     return results;
@@ -261,7 +261,7 @@
     //element is jQuery, Id or htmlTag
     find: function (element) {
         if (element instanceof jQuery)
-            return $(contextMenu.MenuItems).find(element);
+            return $(uic.contextMenu.MenuItems).find(element);
 
         else if (jQuery.type(element) === "string") {
             console.log('element is string');
@@ -282,7 +282,7 @@
         if (!element.length)
             return null;
 
-        var results = $.map(contextMenu.menuItems, function (menuItem) {
+        var results = $.map(uic.contextMenu.menuItems, function (menuItem) {
             var matches = $(menuItem.selector);
             for (var i = 0; i < matches.length; i++) {
                 if (matches[i] === element[0]) {
@@ -338,35 +338,35 @@
         return false;
     },
 
-    rightClick: async function (e) {
-        if (!uic.contextMenu.enabled && !uic.contextMenu.altKeyEnabled)
+    rightClick: async function (ev) {
+        if (!uic.contextMenu.enabled && !uic.contextMenu.altKeyEnabled(ev))
             return;
-        if (uic.contextMenu.enabled && uic.contextMenu.altKeyEnabled)
+        if (uic.contextMenu.enabled && uic.contextMenu.altKeyEnabled(ev))
             return;
 
-        if (!uic.contextMenu.enabled && uic.contextMenu.altKeyEnabled)
+        if (!uic.contextMenu.enabled && uic.contextMenu.altKeyEnabled(ev))
             uic.contextMenu.enabled = true;
 
-        uic.contextMenu.target = e.target;
+        uic.contextMenu.target = ev.target;
         //console.log('rightClickEvent', e);
 
         if ($('.context-menu').length) {
             uic.contextMenu.hideMenu();
-            e.preventDefault();
+            ev.preventDefault();
         }
         else {
             var menu = uic.contextMenu.default.menu();
-            $(menu).css('left', `${e.pageX}px`);
-            $(menu).css('top', `${e.pageY}px`);
+            $(menu).css('left', `${ev.pageX}px`);
+            $(menu).css('top', `${ev.pageY}px`);
 
 
-            let menuItems = uic.contextMenu.findForElement(contextMenu.Target, true);
-            if (menuItems != null && menuItems.length && menuItems.filter(x => !!x.optional).length) {
+            let menuItems = uic.contextMenu.findForElement(uic.contextMenu.target, true);
+            if (menuItems != null && menuItems.length && menuItems.filter(x => !x.optional).length) {
                 //Sort menuItems on their position
                 menuItems = uic.contextMenu._sort(menuItems);
                 
 
-                e.preventDefault();
+                ev.preventDefault();
 
                 let promises = [];
 
@@ -511,7 +511,7 @@
 
             //element= function (target) {  }
             if ($.isFunction(element)) {
-                element = await element($(menuItem._target), $(contextMenu.Target));
+                element = await element($(menuItem._target), $(uic.contextMenu.target));
             }
 
         
@@ -538,7 +538,7 @@
 
             //text= function (target) { return 'mijn text'; }
             if ($.isFunction(text)) {
-                text = await text($(menuItem._target), $(contextMenu.Target));
+                text = await text($(menuItem._target), $(uic.contextMenu.target));
             }
 
             // text != 'mijn text'
@@ -564,7 +564,7 @@
 
             //icon= function (target) { return 'fas fa-user'; }
             if ($.isFunction(icon)) {
-                icon = await icon($(menuItem._target), $(contextMenu.Target));
+                icon = await icon($(menuItem._target), $(uic.contextMenu.target));
             }
 
             // icon == 'fas fa-icon'
@@ -590,7 +590,7 @@
             //text= function (target) { return 'mijn text'; }
             if ($.isFunction(title)) {
 
-                title = await title($(menuItem._target), $(contextMenu.Target));
+                title = await title($(menuItem._target), $(uic.contextMenu.target));
             }
 
             return title;
@@ -606,7 +606,7 @@
             //attr= function (target) { return {} }
             if ($.isFunction(attr)) {
 
-                attr = await attr($(menuItem._target), $(contextMenu.Target));
+                attr = await attr($(menuItem._target), $(uic.contextMenu.target));
             }
 
             return attr;

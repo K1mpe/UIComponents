@@ -78,7 +78,7 @@ uic.setValue = function (element, value) {
             console.log(index, val);
 
             var subElement = $(element).find(`[name="${name}"][data-array-index=${index}]`);
-            uic.SetValue(subElement, val);
+            uic.setValue(subElement, val);
         });
         
     }
@@ -88,7 +88,7 @@ uic.setValue = function (element, value) {
         valueProps.forEach(function (item, index) {
             //console.log(index, item);
             var property = properties.filter(`[name="${item}"]`);
-            uic.SetValue(property, value[item]);
+            uic.setValue(property, value[item]);
         });
 
     } else {

@@ -20,6 +20,9 @@ public class Translatable
         if (!string.IsNullOrEmpty(DefaultValue))
             return string.Format(DefaultValue, Arguments);
 
+        if (ResourceKey.Contains(".") && !ResourceKey.Trim().EndsWith("."))
+            return ResourceKey.Split('.').Last();
+
         return ResourceKey;
     }
 

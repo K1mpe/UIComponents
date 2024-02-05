@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.0.13</Version>
+	<Version>1.0.14</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	

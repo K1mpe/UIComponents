@@ -68,8 +68,7 @@
 <input type="@((Model.Precision == UICDatetimeStep.Date)?"date":"datetime-local")" @Html.Raw(Model.GetHtmlAttributes()) />
  
 
-@if (hasClientValidation)
-{
+@{
 
     string propertyName = Model.PropertyName;
     if (Model.DisplayName != null)

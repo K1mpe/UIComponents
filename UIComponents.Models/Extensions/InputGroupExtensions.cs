@@ -5,9 +5,12 @@ namespace UIComponents.Models.Extensions;
 public static class InputGroupExtensions
 {
 
-    public static UICInputGroup FindInputGroupByPropertyName(this IUIComponent element, string propertyName)
+    public static UICInputGroup FindInputGroupByPropertyName(this IUIComponent element, string propertyName, Action<UICInputGroup> action = null)
     {
-        return element.FindInputGroupsByPropertyName(propertyName).FirstOrDefault();
+        var first = element.FindInputGroupsByPropertyName(propertyName).FirstOrDefault();
+        if (action != null)
+            action(first);
+        return first;
     }
     public static List<UICInputGroup> FindInputGroupsByPropertyName(this IUIComponent element, string propertyName)
     {
