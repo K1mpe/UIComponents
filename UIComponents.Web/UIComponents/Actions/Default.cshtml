@@ -16,23 +16,19 @@
 
 @model UICActions
 @{
-    string identifier = Model.GetAttribute("identifier");
+    string identifier = Model.Id();
     if(string.IsNullOrEmpty(identifier))
         throw new Exception("Identifier for Actions not defined");
 
     Model.AssignCollectionForChildren();
-    foreach(var action in Model.AllActions)
-    {
-        if(action is UIComponent component)
-            component.SetIdentifier(identifier);
-    }
+
     Model.AddScript(
     @<text>
         @if (Model.OnClick.HasValue())
                 {
         <text>
-            console.log('OnClick', $('@Html.Raw(identifier)'));
-            $('@Html.Raw(identifier)').click(async function (args) {
+            console.log('OnClick', $('#@Html.Raw(identifier)'));
+            $('#@Html.Raw(identifier)').click(async function (args) {
             @await Model.OnClick.InvokeAsync(Component)
             });
         </text>
@@ -41,8 +37,8 @@
         @if (Model.OnChange.HasValue())
                 {
         <text>
-            console.log('OnChange', $('@Html.Raw(identifier)'));
-            $('@Html.Raw(identifier)').keyup(async function (args) {
+            console.log('OnChange', $('#@Html.Raw(identifier)'));
+            $('#@Html.Raw(identifier)').keyup(async function (args) {
                 @await Model.OnChange.InvokeAsync(Component)
             });
         </text>
@@ -51,8 +47,8 @@
         @if (Model.AfterChange.HasValue())
                 {
         <text>
-            console.log('AfterChange', $('@Html.Raw(identifier)'));
-            $('@Html.Raw(identifier)').change(async function (args) {
+            console.log('AfterChange', $(#'@Html.Raw(identifier)'));
+            $('#@Html.Raw(identifier)').change(async function (args) {
                 @await Model.AfterChange.InvokeAsync(Component)
             });
         </text>
@@ -61,8 +57,8 @@
         @if (Model.OnFocus.HasValue())
                 {
         <text>
-            console.log('OnFocus', $('@Html.Raw(identifier)'));
-            $('@Html.Raw(identifier)').focus(async function (args) {
+            console.log('OnFocus', $('#@Html.Raw(identifier)'));
+            $('#@Html.Raw(identifier)').focus(async function (args) {
                 @await Model.OnFocus.InvokeAsync(Component)
             });
         </text>
@@ -71,8 +67,8 @@
         @if (Model.OnLoseFocus.HasValue())
                 {
         <text>
-            console.log('OnLoseFocus', $('@Html.Raw(identifier)'));
-            $('@Html.Raw(identifier)').blur(async function (args) {
+            console.log('OnLoseFocus', $('#@Html.Raw(identifier)'));
+            $('#@Html.Raw(identifier)').blur(async function (args) {
                 @await Model.OnLoseFocus.InvokeAsync(Component)
             });
         </text>

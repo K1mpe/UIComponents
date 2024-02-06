@@ -22,6 +22,8 @@
     Model.AddAttribute("class", "form-control");
 
 
+    Model.Actions.Renderer = UICActions.ActionsRenderer.Select2;
+
     string id = Model.GetOrGenerateId();
 
     if (!string.IsNullOrEmpty(Model.Value))

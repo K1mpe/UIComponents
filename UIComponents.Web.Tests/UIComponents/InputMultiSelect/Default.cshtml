@@ -21,6 +21,7 @@
 @{
     Model.AssignCollectionForChildren();
     Model.AddAttribute("class", "form-control");
+    Model.Actions.Renderer = UICActions.ActionsRenderer.Select2;
     string id = Model.GetOrGenerateId();
 
     string placeholder = Model.GetAttribute("placeholder");
@@ -79,6 +80,8 @@
         </text>
     );
 }
+
+@await Model.Actions.InvokeAsync(Component)
 
 @*Als script doorgeschoven wordt naar parent, doet deze functie niets*@
 @await Model.RenderStylesAndScripts(Component)

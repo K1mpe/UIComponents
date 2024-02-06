@@ -10,6 +10,7 @@ public abstract class UICInput : UIComponent
     public UICInput(string propertyName) : base()
     {
         PropertyName = propertyName;
+        Actions = new(() => this.GetOrGenerateId());
     }
 
     #region Properties
@@ -43,7 +44,7 @@ public abstract class UICInput : UIComponent
     /// <summary>
     /// The actions that can be triggered on certain events
     /// </summary>
-    public UICActions Actions { get; set; } = new();
+    public UICActions Actions { get; set; }
 
     public bool Readonly { get; set; }
     public bool Disabled { get; set; }

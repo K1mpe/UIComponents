@@ -7,6 +7,7 @@ public class UICActions : UIComponent, IUIAction
 {
     #region Fields
 
+    public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
     /// <summary>
     /// This is a list of all the actions that are assigned in the UIActions class
     /// </summary>
@@ -29,13 +30,15 @@ public class UICActions : UIComponent, IUIAction
     #endregion
 
     #region Ctor
-    public UICActions() : base()
+    public UICActions(Func<string> id) : base()
     {
-
+        Id = id;
     }
     #endregion
 
     #region Properties
+
+    public Func<string> Id { get; set; }
 
     /// <summary>
     /// Action triggered when clicking on the element
@@ -61,5 +64,17 @@ public class UICActions : UIComponent, IUIAction
     /// Action triggered when element loses focus
     /// </summary>
     public IUIAction OnLoseFocus { get; set; } = new UICCustom();
+
+
+    /// <summary>
+    /// Automatically toggled for select2 parents
+    /// </summary>
+    public ActionsRenderer Renderer { get; set; } = ActionsRenderer.Default;
     #endregion
+    public enum ActionsRenderer
+    {
+        Default,
+        Select2,
+    }
 }
+

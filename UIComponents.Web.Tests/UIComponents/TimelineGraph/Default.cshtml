@@ -45,6 +45,9 @@
     Model.AddScript(
     @<text>
 
+    function NYI(){
+        console.log('This method has not yet been implemented!');
+    }
 
     $('#@guid').on('help', function(){
         console.log("Chart $('#@guid').trigger('uic-reload')", "Reload all graphs with a data source");
@@ -71,21 +74,53 @@
         console.log("Chart $('#@guid').trigger('uic-toggleGraph', 'graphId')", "Turn this graph on or off");
 
 
-        console.log("Chart $('#@guid').on('uic-chartMoved', (ev, movedData) => {})", "Triggered if the chart moves or scales");
+        console.log("Chart $('#@guid').on('uic-chartMoved', (ev) => {})", "Triggered if the chart moves or scales");
         console.log("Chart $('#@guid').on('uic-loaded', (ev, loadedData) => {})", "Triggered after one or more graphs have loaded data");
         console.log("Chart $('#@guid').on('uic-graphChanged', (ev, changedData) => {})", "Triggered after a chart has been turned on or off");
     });
 
-    $('#@guid').on('uic-reload', function(graphId){
-        reloadAllGraphData();
+    $('#@guid').on('uic-reload', function(ev, graphId){
+        ev.stopPropagation();
+        if(graph.length){
+            NYI();
+        } else{
+            reloadAllGraphData();
+        } 
     });
-    $('#@guid').on('uic-getChart', function(){
-        console.log('chart', chart);
-        return chart;
-    })
     $('#@guid').on('uic-resize', function(){
         OnWindowResized();
-    })
+    });
+
+    $('#@guid').on('uic-getChart', function(ev){
+        ev.stopPropagation();
+        console.log('chart', chart);
+        return chart;
+    });
+    $('#@guid').on('uic-getGraphs', function(ev){
+        ev.stopPropagation();
+        NYI();
+    });
+    $('#@guid').on('uic-addGraph', function(ev, graph){
+        ev.stopPropagation();
+        NYI();
+    });
+    $('#@guid').on('uic-removeGraph', function(ev, graphId){
+        ev.stopPropagation();
+        NYI();
+    });
+    $('#@guid').on('uic-enableGraph', function(ev, graphId){
+        ev.stopPropagation();
+        NYI();
+    });
+    $('#@guid').on('uic-disableGraph', function(ev, graphId){
+        ev.stopPropagation();
+        NYI();
+    });
+
+    $('#@guid').on('uic-toggleGraph', function(ev, graphId){
+        ev.stopPropagation();
+        NYI();
+    });
 
 
     function log(...rest){
@@ -105,6 +140,7 @@
 
 
     let graphs = {};
+    let datasets= [];
     let autoInterval = @Model.LoadLiveDataMinInterval.TotalMilliseconds;
     @for(int i=0; i<Model.LineGraphs.Count; i++)
     {
@@ -123,13 +159,7 @@
 
         <text>
         graphs[@Html.JsEncode(graph.LineGraphId, "'")] = {
-            id: @Html.JsEncode(graph.LineGraphId,"'"),
             label: @await Html.Translate(L, graph.Label),
-            enabled: @Json.Serialize(graph.Enabled),
-            cached: @Json.Serialize(graph.CacheData),
-            source: @Html.JsEncode(graph.Source,"'"),
-            disableFutureLoading: @Json.Serialize(graph.DisableFutureLoading),
-            additionalPostData: @Json.Serialize(graph.AdditionalPostData),
             data: @Json.Serialize(graph.Points),
             stepped: @Json.Serialize(graph.Stepped),
             fill: @Json.Serialize(graph.Fill),
@@ -137,8 +167,25 @@
             borderColor: @Html.JsEncode(graph.LineColor, "'"),
             backgroundColor: @Html.JsEncode(graph.BackgroundColor, "'"),
             tension: @graph.Tension,
+            id: @Html.JsEncode(graph.LineGraphId,"'"),
+            index: @Json.Serialize(i),
+            enabled: @Json.Serialize(graph.Enabled),
+            cached: @Json.Serialize(graph.CacheData),
+            source: @Html.JsEncode(graph.Source,"'"),
+            disableFutureLoading: @Json.Serialize(graph.DisableFutureLoading),
+            additionalPostData: @Json.Serialize(graph.AdditionalPostData),
             ranges: []
         };
+        datasets.push({
+            label: @await Html.Translate(L, graph.Label),
+            data: @Json.Serialize(graph.Points),
+            stepped: @Json.Serialize(graph.Stepped),
+            fill: @Json.Serialize(graph.Fill),
+            pointRadius: @graph.PointRadius,
+            borderColor: @Html.JsEncode(graph.LineColor, "'"),
+            backgroundColor: @Html.JsEncode(graph.BackgroundColor, "'"),
+            tension: @graph.Tension,
+        });
 
         </text>
         if (graph.Points.Any())
@@ -164,7 +211,7 @@
         
         
         data:{
-            datasets: graphs,
+            datasets: datasets,
         },
 
         options:{
@@ -304,12 +351,13 @@
 
         minDateTime= moment(min);
         maxDateTime= moment(max);
-        uic.delayedAction.run('chart-fetch-data-@guid', 1000,()=>{
+        uic.delayedAction.run('chart-fetch-data-@guid', 1000,async ()=>{
             var startdate = moment(min);
             var enddate = moment(max);
             chart.stop(); // make sure animations are not running
             await LoadNewData(startdate, enddate);
         });
+        $('#@guid').trigger('uic-chartMoved');
     };
 
     function LoadNewData(newMin, newMax) {
@@ -345,11 +393,11 @@
     function reloadAllGraphData(){
         EachGraph((graph) => {
 
-            if(!graph.Source.length)
+            if(!graph.source.length)
                 return;
 
-            graph.Ranges = [];
-            LoadNewGraphData(graph.LineGraphId);
+            graph.ranges = [];
+            LoadNewGraphData(graph.id);
         });
     }
 
@@ -362,10 +410,10 @@
             return;
         }
 
-        if (!graphData.Source.length)
+        if (!graphData.source.length)
             return;
 
-        if(!graphData.Enabled)
+        if(!graphData.enabled)
             return;
 
         if(newMin == null || minDateTime > moment(newMin))
@@ -375,7 +423,7 @@
         newMax = maxDateTime;
 
         //Set the max time to now if futureloading is disabled
-        if(graphData.DisableFutureLoading && newMax > moment())
+        if(graphData.disableFutureLoading && newMax > moment())
             newMax = moment();
 
         //add a list of request ranges
@@ -387,7 +435,7 @@
             console.error('cache linegraph is not yet implemented')
         }
         else{
-            chart.data.datasets[graphData.Index].data = [];
+            chart.data.datasets[graphData.index].data = [];
             requestRanges.push({
                 start: newMin,
                 end: newMax
@@ -405,7 +453,7 @@
                 _scaleInMilliseconds: Math.floor(chart.scales.x.ticks[1].value - chart.scales.x.ticks[0].value),
                 AdditionalPostData: graphData.additionalPostData
             };
-            let result = await Crud.Post(graphData.Source, sendData);
+            let result = await uic.getpost.post(graphData.source, sendData);
 
             log('fetch data', {
                 start: range.start.format(),
@@ -424,6 +472,7 @@
             graphData.data = newData;
 
             graphData.ranges.push(range);
+            chart.data.datasets[graphData.index].data = newData;
             chart.update('none');
         });
     }

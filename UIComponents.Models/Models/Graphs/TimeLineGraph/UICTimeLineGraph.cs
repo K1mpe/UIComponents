@@ -162,6 +162,12 @@ public class UICTimeLineGraph : UIComponent
         public bool CacheData { get; set; }
 
         /// <summary>
+        /// When zooming in or out, remove the cached data.
+        /// <br>This is recommended when using <see cref="DataDecimation.LargestTriangleThreeBuckets(List{LineGraphPoint}, int)"/></br>
+        /// </summary>
+        public bool DisableCachingOnZoom { get; set; }
+
+        /// <summary>
         /// When a <see cref="Source"/> is provided, request will not ask data in the future.
         /// <br>This is to make sure that the live update can ask for only the missing data between requests</br>
         /// </summary>

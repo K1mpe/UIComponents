@@ -133,8 +133,8 @@
             @if(Model.GetData != null)
             {
                 <text>
-                console.log("jsTree .trigger('uic-reload', 'node_id') => Reload the node with this Id, does not reload if node is not found");
-                console.log("jsTree .trigger('uic-reload', 'node_id', true) => Reload the node with this Id, reloads the entire jsTree if node not found");
+                console.log("jsTree $('#@Model.Id').trigger('uic-reload', 'node_id') => Reload the node with this Id, does not reload if node is not found");
+                console.log("jsTree $('#@Model.Id').trigger('uic-reload', 'node_id', true) => Reload the node with this Id, reloads the entire jsTree if node not found");
                 </text>
             }
         });
