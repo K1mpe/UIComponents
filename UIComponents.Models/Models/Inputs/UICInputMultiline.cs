@@ -25,6 +25,19 @@ public class UICInputMultiline : UICInput<string>
     #endregion
 
     #region Properties
+    /// <summary>
+    /// If not null, set the minimum amount of visible lines in the text area
+    /// </summary>
+    public int? MinRows { get; set; }
+
+
+    /// <summary>
+    /// If not null, set the maximum amount of visible lines in the text area.
+    /// <br>If the text requires more lines, this will display a scrollbar</br>
+    /// </summary>
+    public int? MaxRows { get; set; }
+
+
     public bool ValidationRequired { get; set; }
     public int? ValidationMinLength { get; set; }
     public int? ValidationMaxLength { get; set; }

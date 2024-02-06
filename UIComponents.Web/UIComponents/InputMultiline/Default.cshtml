@@ -27,8 +27,7 @@
         Model.Actions.SetIdentifier($"#{id}");
     }
 
-
-    var rows = Model.Value?.Split("\n").Count() ?? 1;
+    var rows = Math.Clamp(Model.Value?.Split("\n").Count() ?? 1, Model.MinRows??1, Model.MaxRows??int.MaxValue);
     Model.AddAttribute("rows", rows.ToString());
 }
 
@@ -42,7 +41,8 @@
             if (e.keyCode == '13') { //enter
                 var currentRows = $(this).attr('rows');
                 currentRows = +currentRows + 1;
-                $(this).attr('rows', currentRows);
+                if(currentRows <= @Json.Serialize(Model.MaxRows??int.MaxValue))
+                    $(this).attr('rows', currentRows);
             }
         });
         

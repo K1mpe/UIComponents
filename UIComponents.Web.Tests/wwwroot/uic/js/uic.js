@@ -1235,7 +1235,10 @@ uic.getpost = uic.getpost || {
             },
             (response) => {
                 if (response.type == "Exception") {
-                    makeToast("Error", "", response.exception[0].responseText);
+                    let text = response.exception[0].responseText;
+                    if (text.length > 255)
+                        text = "A error occured";
+                    makeToast("Error", "", text);
                     return false;
                 }
             }

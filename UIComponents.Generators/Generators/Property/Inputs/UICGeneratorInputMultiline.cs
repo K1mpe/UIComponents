@@ -17,7 +17,7 @@ public class UICGeneratorInputMultiline : UICGeneratorProperty
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
         var input = new UICInputMultiline(args.PropertyName);
-        input.Value = args.PropertyValue!.ToString();
+        input.Value = args.PropertyValue?.ToString()?? string.Empty;
 
         if (args.Configuration.TryGetPermissionService(out var permissionService))
             input.Readonly = !(await permissionService!.CanEdit(args.ClassObject!) && await permissionService.CanEditProperty(args.ClassObject, args.PropertyName));

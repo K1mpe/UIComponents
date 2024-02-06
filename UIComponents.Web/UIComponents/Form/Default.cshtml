@@ -75,7 +75,8 @@ else
         Model.AddScript(
 @<text>
 $('#@id').off('submit');
-$('#@id').on('submit', async function(){
+$('#@id').on('submit', async function(ev){
+    ev.preventDefault();
     @await Model.Submit.InvokeAsync(Component)
 });
 

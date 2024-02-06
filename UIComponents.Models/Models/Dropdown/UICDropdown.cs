@@ -76,6 +76,7 @@ public class UICDropdown : UIComponent, IUICHasChildren<IDropdownItem>
             subMenu.Icon = button.PrependButtonIcon;
             subMenu.Items = DropdownItems;
         }
+        subMenu.ReplaceBySingleItem = ReplaceDropdownByButtonIfSingleDropdownItem;
         return subMenu;
     }
     #endregion
