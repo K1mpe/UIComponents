@@ -32,7 +32,27 @@ public class UICGeneratorRequired : UICGeneratorBase<UICPropertyArgs, bool>
         if (args.PropertyInfo.PropertyType.IsClass && args.PropertyInfo.PropertyType != typeof(string))
             return GeneratorHelper.Success(true, false);
 
+        if(UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inherit))
+        {
+            var v12 = inherit.GetCustomAttribute<RequiredAttribute>();
+            if (v1 != null)
+                return GeneratorHelper.Success(true, false);
 
+
+            if (inherit.PropertyType.IsAssignableTo(typeof(Nullable<>)))
+                return GeneratorHelper.Success(false, false);
+
+            var foreignKey2 = inherit.GetCustomAttribute<ForeignKeyAttribute>();
+            if (foreignKey2 != null)
+                return GeneratorHelper.Success(true, false);
+
+            var fakeForeignKey2 = inherit.GetCustomAttribute<FakeForeignKeyAttribute>();
+            if (fakeForeignKey2 != null)
+                return GeneratorHelper.Success(fakeForeignKey2.IsRequired, false);
+
+            if (inherit.PropertyType.IsClass && inherit.PropertyType != typeof(string))
+                return GeneratorHelper.Success(true, false);
+        }
         return GeneratorHelper.Success(false, false);
     }
 }

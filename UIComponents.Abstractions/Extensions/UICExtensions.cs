@@ -108,7 +108,7 @@ public static class UICExtensions
     /// <param name="element"></param>
     /// <param name="searchType"></param>
     /// <returns></returns>
-    public static T FindFirstOnType<T>(this IUIComponent element, Action<T> action = null) where T : IUIComponent
+    public static T FindFirstOfType<T>(this IUIComponent element, Action<T> action = null) where T : IUIComponent
     {
         if (element is T onType)
         {
@@ -117,7 +117,7 @@ public static class UICExtensions
             return onType;
         }
         
-        return element.FindFirstChildOnType<T>(action);
+        return element.FindFirstChildOfType<T>(action);
     }
 
 
@@ -128,13 +128,13 @@ public static class UICExtensions
     /// <param name="element"></param>
     /// <param name="searchType"></param>
     /// <returns></returns>
-    public static List<T> FindAllOnType<T>(this IUIComponent element) where T : IUIComponent
+    public static List<T> FindAllOfType<T>(this IUIComponent element) where T : IUIComponent
     {
         var results = new List<T>();
         if (element is T ofType)
             results.Add(ofType);
 
-        results.AddRange(element.FindAllChildrenOnType<T>());
+        results.AddRange(element.FindAllChildrenOfType<T>());
         return results;
     }
 
@@ -145,9 +145,9 @@ public static class UICExtensions
     /// <param name="element"></param>
     /// <param name="searchType"></param>
     /// <returns></returns>
-    public static T FindFirstChildOnType<T>(this IUIComponent element, Action<T> action = null) where T : IUIComponent
+    public static T FindFirstChildOfType<T>(this IUIComponent element, Action<T> action = null) where T : IUIComponent
     {
-        var first = element.FindAllChildrenOnType<T>().FirstOrDefault();
+        var first = element.FindAllChildrenOfType<T>().FirstOrDefault();
         if (action != null)
             action(first);
         return first;
@@ -160,7 +160,7 @@ public static class UICExtensions
     /// <param name="element"></param>
     /// <param name="searchType"></param>
     /// <returns></returns>
-    public static List<T> FindAllChildrenOnType<T>(this IUIComponent element) where T : IUIComponent
+    public static List<T> FindAllChildrenOfType<T>(this IUIComponent element) where T : IUIComponent
     {
         var typeResults = element.GetAllChildren().Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
         return typeResults;

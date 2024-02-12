@@ -17,7 +17,8 @@
 @model UICInputGroup
 
 @{
-    Model.Label.AddAttribute("for", Model.Input.GetOrGenerateId());
+    if(Model.Label.HasValue())
+        Model.Label?.AddAttribute("for", Model.Input.GetOrGenerateId());
 
     if (Model.Span.HasValue())
     {
@@ -45,7 +46,7 @@
         addedClass += " input-no-value";
     }
     addedClass += $" {Model.GetAttribute("class")}";
-    Model.Label.AddAttribute("class", addedClass);
+    Model.Label?.AddAttribute("class", addedClass);
 
 
 

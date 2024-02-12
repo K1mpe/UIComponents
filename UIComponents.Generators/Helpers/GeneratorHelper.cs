@@ -61,6 +61,29 @@ public static class GeneratorHelper
     }
 
     /// <summary>
+    /// Add a generator that is called for <see cref="UICInputGroup"/>
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="priority"></param>
+    /// <param name="func"></param>
+    /// <returns></returns>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGroupGenerator(string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> func)
+    {
+        var generator = new UICCustomGenerator<UICPropertyArgs, IUIComponent>()
+        {
+            Name = name,
+            Priority = priority,
+            GetResult = async (args, existing) =>
+            {
+                if(args.CallCollection.CurrentCallType != UICGeneratorPropertyCallType.PropertyGroup)
+                    return Next<IUIComponent>();
+                return await func(args, existing);
+            }
+        };
+        return generator;
+    }
+
+    /// <summary>
     /// Add a generator that only works for a property with this name
     /// </summary>
     /// <param name="propertyName">Name of the matching property</param>

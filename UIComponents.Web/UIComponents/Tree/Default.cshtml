@@ -38,7 +38,7 @@
         plugins.Add("state");
 
     if (Model.GetData == null)
-        Model.FindAllChildrenOnType<UICTreeItem>().ForEach(x => x.HasAjaxChildren = false);
+        Model.FindAllChildrenOfType<UICTreeItem>().ForEach(x => x.HasAjaxChildren = false);
 
 }
 

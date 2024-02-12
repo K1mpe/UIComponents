@@ -31,7 +31,7 @@ public class UICButton : UIComponent
     /// Function triggered when clicking the button
     /// </summary>
     /// <remarks>
-    /// args => ClickEventArgs
+    /// ev => ClickEventArgs
     /// </remarks>
     public IUIAction OnClick { get; set; } = new UICCustom();
 

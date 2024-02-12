@@ -24,9 +24,9 @@ public class UICGeneratorCard : UICGeneratorProperty
 
         UICCard card = null;
         if (args.CallCollection.Caller == null && args.Options.StartInCard != null)
-            card = CommonHelper.CopyObject(args.Options.StartInCard);
+            card = InternalHelper.CopyObject(args.Options.StartInCard);
         else if (args.CallCollection.Caller != null && args.CallCollection.Components.Any(x=>x is not UICPartial) && args.Options.SubClassesInCard != null)
-            card = CommonHelper.CopyObject(args.Options.SubClassesInCard);
+            card = InternalHelper.CopyObject(args.Options.SubClassesInCard);
         if (card == null)
             return GeneratorHelper.Next();
 

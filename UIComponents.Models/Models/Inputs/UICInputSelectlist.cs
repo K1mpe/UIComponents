@@ -21,13 +21,13 @@ public class UICInputSelectlist : UICInput<string>
     #endregion
 
     #region Ctor
-    public UICInputSelectlist() : this(null, new())
+    public UICInputSelectlist() : base(null)
     {
 
     }
     public UICInputSelectlist(string propertyName, List<SelectListItem> selectListItems) : base(propertyName)
     {
-        SelectListItems = selectListItems;
+        SelectListItems = selectListItems.ToUIC();
     }
     #endregion
 
@@ -46,7 +46,7 @@ public class UICInputSelectlist : UICInput<string>
     /// </summary>
     public bool AllowButtonAdd { get; set; }
 
-    public List<SelectListItem> SelectListItems { get; set; }
+    public List<UICSelectListItem> SelectListItems { get; set; } = new();
 
     public bool ValidationRequired { get; set; }
 
@@ -55,6 +55,12 @@ public class UICInputSelectlist : UICInput<string>
     /// </summary>
     public Translatable NoItemsText { get; set; } = TranslationDefaults.SelectListNoItems;
 
+
+
+    /// <summary>
+    /// If true, the user can create new options by typing
+    /// </summary>
+    public bool AllowDynamicOptions { get; set; }
 
     /// <summary>
     /// Action that is triggered on opening the selectlist

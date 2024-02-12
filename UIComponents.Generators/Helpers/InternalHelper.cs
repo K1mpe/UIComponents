@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Generators.Helpers;
 
-public class CommonHelper
+public class InternalHelper
 {
     /// <summary>
     /// Copies all properties from a source to a new object. Could be used as a clone function
@@ -15,7 +15,7 @@ public class CommonHelper
         T result = Activator.CreateInstance<T>();
         foreach(var property in typeof(T).GetProperties())
         {
-            if(!property.CanWrite || property.CanWrite)
+            if(!property.CanWrite || !property.CanRead)
                 continue;
 
             object value = property.GetValue(target);

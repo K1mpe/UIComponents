@@ -92,7 +92,10 @@ Model.AddScript(
 
         foreach (var item in Model.SelectListItems)
         {
-            <option value="@item.Value" @(item.Disabled?"Disabled":"")>@item.Text</option>
+            bool selected = item.Selected;
+            if (Model.Value != null && Model.Value == item.Value)
+                selected = true;
+            <option value="@item.Value" @(item.Disabled ? "Disabled" : "") @((selected) ? "selected" : "")>@item.Text</option>
         }
     }
     else if(Model.NoItemsText != null)

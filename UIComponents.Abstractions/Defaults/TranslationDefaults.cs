@@ -81,6 +81,10 @@ public static class TranslationDefaults
 
     public static Func<PropertyInfo, UICPropertyType, Translatable> TranslateProperty = (prop, uicPropType) =>
     {
+        var translateAttr = prop.GetCustomAttribute<UICSpanAttribute>();
+        if (translateAttr != null)
+            return translateAttr.TranslationModel.ResourceKey;
+
         if (uicPropType == UICPropertyType.SelectList && prop.Name.EndsWith("Id") && prop.Name != "Id")
             return new Translatable($"{prop.DeclaringType!.Name}.Field.{prop.Name.Substring(0, prop.Name.Length - 2)}");
 
@@ -112,7 +116,7 @@ public static class TranslationDefaults
     public static Func<PropertyInfo, UICPropertyType, string> DefaultTooltipKey = (propertyInfo, propertyType) =>
     {
         var translateProperty = TranslateProperty(propertyInfo, propertyType);
-        return $"{translateProperty.ResourceKey}.Tooltip";
+        return translateProperty.ResourceKey.Replace(".Field.", ".Tooltip.");
     };
 
     /// <summary>
@@ -121,6 +125,6 @@ public static class TranslationDefaults
     public static Func<PropertyInfo, UICPropertyType, string> DefaultInfoSpanKey = (propertyInfo, propertyType) =>
     {
         var translateProperty = TranslateProperty(propertyInfo, propertyType);
-        return $"{translateProperty.ResourceKey}.InfoSpan";
+        return translateProperty.ResourceKey.Replace(".Field.", ".Info.");
     };
 }

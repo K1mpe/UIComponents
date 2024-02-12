@@ -1,8 +1,10 @@
 using UIComponents.Abstractions;
 using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Registrations;
 using UIComponents.Web.Extensions;
+using UIComponents.Web.Tests.Models;
 using UIComponents.Web.Tests.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +30,8 @@ builder.Services.AddUIComponentWeb(config =>
     config.CheckPermissionServiceType = false;
     config.CheckLanguageServiceType = false;
     config.AddDefaultGenerators(builder.Services);
+
+   
 });
 
 builder.Services.AddWebOptimizer(pipeline =>

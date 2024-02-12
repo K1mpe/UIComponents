@@ -23,6 +23,12 @@ public class UICGeneratorInputGroupSpan : UICGeneratorProperty
             return await Task.FromResult(GeneratorHelper.Next<IUIComponent>());
 
         var spanAttr = args.PropertyInfo.GetCustomAttribute<UICSpanAttribute>();
+
+        if(spanAttr == null && UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inheritInfo))
+        {
+            spanAttr = inheritInfo.GetCustomAttribute<UICSpanAttribute>();
+        }
+
         if (spanAttr == null)
             return await Task.FromResult(GeneratorHelper.Next<IUIComponent>());
 

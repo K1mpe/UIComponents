@@ -35,6 +35,44 @@ form {
     }
 }
 
+i.uic-value-changed {
+    color: var(--warning);
+
+    &:not(:hover) {
+        animation: pulseIcon 2s infinite;
+    }
+}
+input.uic-value-changed, select.uic-value-changed{
+    animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseIcon{
+    0% {
+        transform: initial;
+    }
+
+    70% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: initial;
+    }
+}
+
+@keyframes pulseBorder{
+    0% {
+        box-shadow: 0 0 0 0rem var(--warning);
+    }
+    70% {
+        box-shadow: 0 0 0 0.2rem var(--warning);
+    }
+    100%{
+        box-shadow: 0 0 0 0rem;
+    }
+}
+
+
 /*#endregion Form*/
 
 /*#region Buttons*/
@@ -96,20 +134,20 @@ form {
 
 /*#region Inputs*/
 
-.input-group {
-    // margin-left: -1px;
-    // border-top-left-radius: 0;
-    // border-bottom-left-radius: 0;
+    .input-group {
+        // margin-left: -1px;
+        // border-top-left-radius: 0;
+        // border-bottom-left-radius: 0;
 
-    > :not(:first-child):not(.input-group-prepend) {
-        margin-left: -1px;
-        @include border-left-radius(0);
-    }
+        > :not(:first-child):not(.input-group-prepend) {
+            margin-left: -1px;
+            @include border-left-radius(0);
+        }
 
-    > :not(:last-child):not(.input-group-append) {
-        @include border-right-radius(0);
+        > :not(:last-child):not(.input-group-append) {
+            @include border-right-radius(0);
+        }
     }
-}
 
     /*#region Color*/
 
@@ -222,54 +260,52 @@ form {
 
 
     /*#region Select2*/
-    .select2{
-
+    .select2-container{
+        flex-grow:1;
     }
-    .select2-container--bootstrap4 .select2-results__option {
-        min-height: 2rem; //if Value is null, this height will be set
+    .select2-container .select2-results__option {
+        min-height: 1.8rem; //if Value is null, this height will be set
         &[aria-disabled] {
+            cursor: not-allowed;
             opacity: 0.5;
         }
     }
-    span .select2-selection__choice {
-        background-color: var(--blub, blue) !important;
-        border-color: var(--blub, blue) !important;
+    .select2-results__option:has(ul:empty) {
+        display: none;
     }
-
-    span.select2-container--focus .select2-selection--multiple {
-        border-color: var(--blub, blue) !important;
-    }
-
-/*.select2-container--open[data-for=@id] .select2-results__option--highlighted {
+    /*.select2-container--open[data-for=@id] .select2-results__option--highlighted {
     background-color: @Model.Color.ToHex() !important;
 }*/
-
     /*#endregion MultiSelect*/
-
-
-/*#endregion Inputs*/
+    /*#endregion Inputs*/
 
 /*#region SidePanel*/
-.side-panel-container.horizontal{
-    .side-panel{
+.side-panel-container.horizontal {
+    .side-panel {
         min-width: fit-content;
         padding: 0;
-
     }
 }
-
 /*#endregion SidePanel*/
 
 /*#region Card*/
-.uic.card{
-    min-width: fit-content;
-} > .card-body{
+.uic.card {
     min-width: fit-content;
 }
-.uic.card:last-child{
-    margin-bottom:0;
+
+> .card-body {
+    min-width: fit-content;
+}
+
+.uic.card:last-child {
+    margin-bottom: 0;
 }
 /*#endregion Card*/
+
+/*#region Modal*/
+.modal-footer .btn-toolbar:only-child {
+}
+/*#endregion Modal*/
 
 /*#region Tabs*/
 .uic.card-tabs {
@@ -326,20 +362,20 @@ form {
         margin-top: -$card-spacer-y;
         margin-bottom: -$card-spacer-y;
     }
-    .tab-pane > .card:only-child{
+
+    .tab-pane > .card:only-child {
         box-shadow: none;
     }
 }
 /*#endregion Tabs*/
 
 /*#region Accordion*/
-.uic.card-accordion.no-margin{
-    >.card{
-        margin-bottom:0;
+.uic.card-accordion.no-margin {
+    > .card {
+        margin-bottom: 0;
     }
 }
 /*#endregion Accordion*/
-
 
 /* #region SidePanel */
 .uic .side-panel-container {

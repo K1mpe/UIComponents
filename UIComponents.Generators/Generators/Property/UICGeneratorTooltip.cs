@@ -29,6 +29,10 @@ public class UICGeneratorTooltip : UICGeneratorBase<UICPropertyArgs, Translatabl
             return GeneratorHelper.Next<Translatable>();
 
         var tooltipAttr = args.PropertyInfo.GetCustomAttribute<UICTooltipAttribute>();
+
+        if(tooltipAttr == null && UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inheritInfo)) 
+            tooltipAttr = inheritInfo.GetCustomAttribute<UICTooltipAttribute>();
+
         if (tooltipAttr != null)
         {
             if (string.IsNullOrEmpty(tooltipAttr.TranslationModel.ResourceKey))

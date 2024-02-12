@@ -1,4 +1,5 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using System.ComponentModel;
+using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Models.UICGeneratorResponses;
 
 namespace UIComponents.Generators.Generators.Property;
@@ -21,8 +22,24 @@ public class UICGeneratorLabel : UICGeneratorProperty
         if(existingResult != null)
             return new UICGeneratorResponseNext<IUIComponent>();
 
-        var labelText = TranslationDefaults.TranslateProperty(args.PropertyInfo, args.UICPropertyType!.Value);
-        var label = new UICLabel(labelText);
+        var label = new UICLabel();
+
+        var displayNameAttr = args.PropertyInfo.GetCustomAttribute<DisplayNameAttribute>();
+        bool hasInherit = UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inheritPropInfo);
+
+        if(hasInherit && displayNameAttr == null) 
+        {
+            displayNameAttr = inheritPropInfo.GetCustomAttribute<DisplayNameAttribute>();
+        }
+
+        if (displayNameAttr != null)
+        {
+            label.LabelText = displayNameAttr.DisplayName;
+        }
+        else
+        {
+            label.LabelText =  TranslationDefaults.TranslateProperty(inheritPropInfo, args.UICPropertyType!.Value);
+        }
 
         var toolTipCC = new UICCallCollection(UICGeneratorPropertyCallType.PropertyTooltip, label, args.CallCollection);
         var toolTipArgs = new UICPropertyArgs(args.ClassObject, args.PropertyInfo, args.UICPropertyType, args.Options, toolTipCC, args.Configuration);

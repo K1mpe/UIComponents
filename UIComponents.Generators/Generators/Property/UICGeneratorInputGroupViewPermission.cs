@@ -26,6 +26,14 @@ public class UICGeneratorPropertyViewPermission : UICGeneratorProperty
       
         if(args.PropertyInfo != null)
         {
+            if(UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inheritInfo))
+            {
+                if (!await permissionService!.CanView(inheritInfo.DeclaringType))
+                    return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
+
+                if (!await permissionService.CanViewProperty(inheritInfo.DeclaringType, inheritInfo.Name))
+                    return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
+            }
             if(!await permissionService.CanViewProperty(args.ClassObject, args.PropertyName!))
                 return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
         }

@@ -1,4 +1,5 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using UIComponents.Abstractions.Extensions;
+using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Models.UICGeneratorResponses;
 
 namespace UIComponents.Generators.Generators.Property;
@@ -20,6 +21,13 @@ public class UICGeneratorGroup : UICGeneratorProperty
             return GeneratorHelper.Next<IUIComponent>();
 
         var group = new UICGroup() { RenderSingleItem = true };
+
+        if(args.ClassObject is IUIComponent component)
+        {
+            group.Add(component);
+            return GeneratorHelper.Success(group, false);
+        }
+
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.PropertyGroup, group, args.CallCollection);
 
 

@@ -75,6 +75,9 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
             if (fakeForeignKey != null)
                 return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.SelectList, true);
 
+            if(UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inherit))
+                return await GetResponseAsync(inherit, existingResult);
+
             switch (type.Name.ToLower())
             {
                 case "string":

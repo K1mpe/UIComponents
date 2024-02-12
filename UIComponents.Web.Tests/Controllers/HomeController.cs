@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using UIComponents.Abstractions;
@@ -13,6 +14,7 @@ using UIComponents.Models.Models;
 using UIComponents.Models.Models.Actions;
 using UIComponents.Models.Models.Buttons;
 using UIComponents.Models.Models.Card;
+using UIComponents.Models.Models.Icons;
 using UIComponents.Models.Models.Inputs;
 using UIComponents.Models.Models.Texts;
 using UIComponents.Models.Models.Tree;
@@ -102,6 +104,29 @@ namespace UIComponents.Web.Tests.Controllers
                 return request.Headers["X-Requested-With"] == "XMLHttpRequest";
 
             return false;
+        }
+
+        public IActionResult SelectList()
+        {
+            var group = new UICGroup();
+            group.Add(out var multiselect, new UICInputMultiSelect()
+            {
+                Color = new UICColor("Green"),//Colors.Green
+                AllowDynamicOptions = false,
+                ClearInputAfterSelecting = true
+            }) ;
+            
+            
+            multiselect.SelectListItems.AddRange(new List<UICSelectListItem>()
+            {
+                new UICSelectListItem(){Value = "1", Text = "one", Group = new(){Name="Group1"}, SearchTag="blub a b c "}.AddPrepend(UICIcon.Delete()),
+                new(){Value = "2", Text = "two", Group = new(){Name="Group1"}},
+                new(){Value = "3", Text = "one", Group = new UICSelectListGroup(){Name="Group2", Disabled=true}.AddAppend(new UICIcon("fas fa-user"))},
+                new(){Value = "4", Text = "four", Group = new(){Name="Group2"}},
+                new(){Value = "5", Text = "five", Disabled = true},
+
+            });
+            return ViewOrPartial(group);
         }
     }
 }

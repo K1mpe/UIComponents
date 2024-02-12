@@ -44,7 +44,7 @@ public class UICGeneratorButtonToolbar : UICGeneratorProperty
             buttons.Add(editButton);
             if (editButton is UICButtonEdit editButton2 && editButton2.ButtonSetReadonly.OnClick != null)
             {
-                buttons.SelectMany(button => button.FindAllChildrenOnType<UICActionCloseCard>()).ToList().ForEach(x =>
+                buttons.SelectMany(button => button.FindAllChildrenOfType<UICActionCloseCard>()).ToList().ForEach(x =>
                 {
                     if (x.OnFailed == null)
                         x.OnFailed = editButton2.ButtonSetReadonly.OnClick;

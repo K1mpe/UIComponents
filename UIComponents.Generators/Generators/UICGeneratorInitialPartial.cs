@@ -31,7 +31,7 @@ public class UICGeneratorInitialPartial : UICGeneratorProperty
         var result = await args.Configuration.GetGeneratedResultAsync<UICPropertyArgs, IUIComponent>($"Content for Initial partial", newArgs, args.Options);
 
 
-        var firstCard = result.FindFirstOnType<UICCard>();
+        var firstCard = result.FindFirstOfType<UICCard>();
         if(firstCard.Header != null && firstCard.Header is UICCardHeader header)
         {
             if (!header.Buttons.Any(x => x is UICButtonRefreshPartial))

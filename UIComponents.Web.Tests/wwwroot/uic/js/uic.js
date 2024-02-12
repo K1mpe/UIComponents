@@ -110,6 +110,83 @@ uic.setValue = function (element, value) {
     }
 }
 
+//This function acts simular to setValue, but does not (yet) replace the changed values from non-readonly properties.
+//These changed properties are marked and will only be changed after the user clicks on them.
+//This function is usefull for updating a item with signalR, without changing values without user noticing
+uic.markChanges = function (element, newValue) {
+    if (!$(element).length)
+        return;
+        
+
+    if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["setValue"] != undefined) {
+        let oldValue = uic.getValue(element);
+        if (oldValue != newValue) {
+            uic.applyMark(element, oldValue, newValue);
+        }
+        return;
+    }
+
+    if (Array.isArray(newValue)) {
+        let name = $(element).attr('name');
+        newValue.forEach(function (val, index) {
+            console.log(index, val);
+
+            let subElement = $(element).find(`[name="${name}"][data-array-index=${index}]`);
+            uic.markChanges(subElement, val);
+        });
+        return;
+    }
+    if (typeof newValue == "object" && newValue != null) {
+        let properties = uic.getProperties(element);
+        let valueProps = Object.getOwnPropertyNames(newValue);
+        valueProps.forEach(function (item, index) {
+            //console.log(index, item);
+            let property = properties.filter(`[name="${item}"]`);
+            uic.markChanges(property, newValue[item]);
+        });
+        return;
+
+    } 
+    let oldValue = uic.getValue(element);
+    if (oldValue != newValue)
+        uic.applyMark(element, oldValue, newValue);
+}
+
+
+uic.markChangesIcon = $('<i>', { class: 'fas fa-triangle-exclamation uic-value-changed' });
+uic.markChangesTooltip = function (element, oldValue, newValue) {
+    return `Value has changed to '${newValue}'\r\nClick here to update value`;
+}
+
+uic.applyMark = async function (element, oldValue, newValue) {
+    let mark = uic.markChangesIcon.clone();
+    let tooltip = await uic.markChangesTooltip(element, oldValue, newValue);
+
+    if (tooltip.length)
+        mark.attr('title', tooltip);
+    mark.click(() => {
+        uic.setValue(element, newValue);
+        element.removeClass('uic-value-changed');
+        mark.remove();
+    });
+
+    element.each((index, item) => {
+        item = $(item);
+        if (item.attr('readonly')) {
+            uic.setValue(item, newValue);
+            return;
+        }
+
+        item.addClass('uic-value-changed');
+
+        let label = $(`label[for="${item.attr('id')}"]`);
+        if (label.length)
+            label.append(mark);
+        else
+            item.before(mark);
+    })
+    
+}
 uic.clearValues = function (object) {
     for (let [key, val] of Object.entries(object)) {
         if (val instanceof Object) {
@@ -1149,6 +1226,120 @@ uic.delayedAction = uic.delayedAction || {
 
         } catch (ex) {
             ErrorBox(ex);
+        }
+    },
+    select2: {
+        //https://select2.org/searching
+        searchMethod: function (params, data) {
+            // If there are no search terms, return all of the data
+            if ($.trim(params.term) === '') {
+                return data;
+            }
+
+            // Do not display the item if there is no 'text' property
+            if (typeof data.text === 'undefined') {
+                return null;
+            }
+
+            
+            //Sort on each part seperated by ' '
+            let parts = params.term.toLowerCase().split(" ");
+
+            //If there are children, this is a group
+            if (data.children != undefined) {
+                let childResults = [];
+                
+                for (let i = 0; i < data.children.length; i++) {
+                    let match = true;
+                    let child = $.extend({}, data.children[i], true);
+
+                    for (let j = 0; j < parts.length; j++) {
+                        let part = parts[j];
+                        if (child.text.toLowerCase().includes(part))
+                            continue;
+
+                        let searchAttr = $(child.element).attr('data-select-search');
+                        if (!!searchAttr && searchAttr.toLowerCase().includes(part))
+                            continue;
+
+                        if (data.text.toLowerCase().includes(part)) {
+                            continue;
+                        }
+                        let searchAttrGroup = $(data.element).attr('data-select-search');
+                        if (!!searchAttrGroup && searchAttrGroup.toLowerCase().includes(part)) {
+                            continue;
+                        }
+
+                        match = false;
+                    }
+                    if (match) {
+                        child.text += `( ${data.text} )`;
+                        childResults.push(child);
+                    }
+                        
+                }
+                if (childResults.length)
+                    return { children: childResults };
+                else
+                    return null;
+;
+            } else {
+                let match = true;
+                for (let i = 0; i < parts.length; i++) {
+                    let part = parts[i];
+                    if (data.text.toLowerCase().includes(part)) 
+                        continue;
+
+                    let searchAttr = $(data.element).attr('data-select-search');
+                    if (!!searchAttr && searchAttr.toLowerCase().includes(part))
+                        continue;
+
+                    match = false;
+                }
+
+                if (match) {
+                    return data;
+                }
+                else {
+                    return null;
+                }
+            }
+            
+
+            //// `params.term` should be the term that is used for searching
+            //// `data.text` is the text that is displayed for the data object
+            //if (data.text.indexOf(params.term) > -1) {
+            //    var modifiedData = $.extend({}, data, true);
+            //    modifiedData.text += ' (matched)';
+
+            //    // You can return modified objects from here
+            //    // This includes matching the `children` how you want in nested data sets
+            //    return modifiedData;
+            //}
+
+            //// Return `null` if the term should not be displayed
+            //return null;
+        },
+        resultRenderer: function (state) {
+            if (state.element == undefined)
+                return;
+                
+
+            let selectId = $(state.element).closest('select').attr('id');
+            if (state.children == undefined) {
+                let prepend = $(`.select-elements[for-select="${selectId}"] .prepend-item[for-value="${state.id}"]`).html();
+                let append = $(`.select-elements[for-select="${selectId}"] .append-item[for-value="${state.id}"]`).html();
+
+                let result = $('<span>').append(prepend).append(state.text).append(append);
+                return result;
+            } else {
+                let prepend = $(`.select-elements[for-select="${selectId}"] .prepend-group[for-label="${state.text}"]`).html();
+                let append = $(`.select-elements[for-select="${selectId}"] .append-group[for-label="${state.text}"]`).html();
+
+                let result = $('<span>').append(prepend).append(state.text).append(append);
+                return result;
+            }
+            
         }
     }
 };﻿var uic = uic || {};

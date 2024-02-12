@@ -206,6 +206,7 @@ public class UICCard : UIComponent, IUICTab
     {
         return AddPartial(new(controller, action, data));
     }
+
     /// <summary>
     /// Add a partial to the card and also add a refresh button to the header
     /// </summary>

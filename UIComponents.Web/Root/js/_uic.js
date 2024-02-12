@@ -110,6 +110,83 @@ uic.setValue = function (element, value) {
     }
 }
 
+//This function acts simular to setValue, but does not (yet) replace the changed values from non-readonly properties.
+//These changed properties are marked and will only be changed after the user clicks on them.
+//This function is usefull for updating a item with signalR, without changing values without user noticing
+uic.markChanges = function (element, newValue) {
+    if (!$(element).length)
+        return;
+        
+
+    if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["setValue"] != undefined) {
+        let oldValue = uic.getValue(element);
+        if (oldValue != newValue) {
+            uic.applyMark(element, oldValue, newValue);
+        }
+        return;
+    }
+
+    if (Array.isArray(newValue)) {
+        let name = $(element).attr('name');
+        newValue.forEach(function (val, index) {
+            console.log(index, val);
+
+            let subElement = $(element).find(`[name="${name}"][data-array-index=${index}]`);
+            uic.markChanges(subElement, val);
+        });
+        return;
+    }
+    if (typeof newValue == "object" && newValue != null) {
+        let properties = uic.getProperties(element);
+        let valueProps = Object.getOwnPropertyNames(newValue);
+        valueProps.forEach(function (item, index) {
+            //console.log(index, item);
+            let property = properties.filter(`[name="${item}"]`);
+            uic.markChanges(property, newValue[item]);
+        });
+        return;
+
+    } 
+    let oldValue = uic.getValue(element);
+    if (oldValue != newValue)
+        uic.applyMark(element, oldValue, newValue);
+}
+
+
+uic.markChangesIcon = $('<i>', { class: 'fas fa-triangle-exclamation uic-value-changed' });
+uic.markChangesTooltip = function (element, oldValue, newValue) {
+    return `Value has changed to '${newValue}'\r\nClick here to update value`;
+}
+
+uic.applyMark = async function (element, oldValue, newValue) {
+    let mark = uic.markChangesIcon.clone();
+    let tooltip = await uic.markChangesTooltip(element, oldValue, newValue);
+
+    if (tooltip.length)
+        mark.attr('title', tooltip);
+    mark.click(() => {
+        uic.setValue(element, newValue);
+        element.removeClass('uic-value-changed');
+        mark.remove();
+    });
+
+    element.each((index, item) => {
+        item = $(item);
+        if (item.attr('readonly')) {
+            uic.setValue(item, newValue);
+            return;
+        }
+
+        item.addClass('uic-value-changed');
+
+        let label = $(`label[for="${item.attr('id')}"]`);
+        if (label.length)
+            label.append(mark);
+        else
+            item.before(mark);
+    })
+    
+}
 uic.clearValues = function (object) {
     for (let [key, val] of Object.entries(object)) {
         if (val instanceof Object) {

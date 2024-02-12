@@ -1,23 +1,24 @@
-﻿using UIComponents.Abstractions.Models;
+﻿namespace UIComponents.Models.Models.Actions;
 
-namespace UIComponents.Models.Models.Actions;
 
 /// <summary>
-/// This action will set a value clientside
+/// This method uses the uic.markChanges() method.
+/// <br>This will change readonly values & notify the user of changed input fields.</br>
 /// </summary>
-/// <remarks>
-/// If you want to change the value of a editable form, use <see cref="UICActionMarkChanges"/> to notify the user of the changes
-/// </remarks>
-public class UICActionSetValue : UIComponent, IUIAction
+public class UICActionMarkChanges : IUIAction
 {
+    #region Fields
+    public string RenderLocation => throw new NotImplementedException();
+
+    #endregion
 
     #region Ctor
-    public UICActionSetValue()
+    public UICActionMarkChanges()
     {
 
     }
 
-    public UICActionSetValue(IUIComponent component, string valueName = "referenceObject")
+    public UICActionMarkChanges(IUIComponent component, string valueName = "referenceObject")
     {
         Component = component;
         ValueName = valueName;
@@ -25,7 +26,6 @@ public class UICActionSetValue : UIComponent, IUIAction
     #endregion
 
     #region Properties
-
     /// <summary>
     /// The component to set the value too
     /// </summary>

@@ -26,7 +26,8 @@ public class UICGeneratorPropertyEditPermission : UICGeneratorProperty
         {
             if(args.Configuration.TryGetPermissionService(out var permissionService))
             {
-                input.Readonly = !await permissionService!.CanEditProperty(args.ClassObject, args.PropertyName!);
+                UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inherit);
+                input.Readonly = !await permissionService!.CanEditProperty(inherit.DeclaringType, inherit.Name);
                 return GeneratorHelper.Success<IUIComponent>(input, true);
             }
         }

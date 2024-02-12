@@ -10,7 +10,7 @@ namespace UIComponents.Models.Models;
 /// <remarks>
 /// To make this work for custom <see cref="IUIComponent"/>, implement the <see cref="IUISingleRowSupport"/> interface 
 /// </remarks>
-public class UICSingleRow : UIComponent
+public class UICSingleRow : UIComponent, IUICHasChildren<IUIComponent>
 {
     #region Ctor
     public UICSingleRow()
@@ -51,28 +51,12 @@ public class UICSingleRow : UIComponent
     /// The margin between diffrent label and input
     /// </summary>
     public string MarginBetweenColumns { get; set; }
+
+    public List<IUIComponent> Children => Components;
     #endregion
 
     #region Methods
-    /// <summary>
-    /// Add a item to the collection and return the <paramref name="item"/>
-    /// </summary>
-    /// <returns><paramref name="item"/></returns>
-    public T Add<T>(T item) where T : class, IUIComponent
-    {
-        Components.Add(item);
-        return item;
-    }
-
-    /// <summary>
-    /// Add a item to the collection and return the current <see cref="UICSingleRow"/>
-    /// </summary>
-    /// <returns>This <see cref="UICSingleRow"/></returns>
-    public UICSingleRow Add2(IUIComponent item)
-    {
-        Components.Add(item);
-        return this;
-    }
+    
     #endregion
 
     #region Converters

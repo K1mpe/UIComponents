@@ -86,7 +86,7 @@ else
             Model.AddScript(
             @<text>
             
-                $('#@id').click(async function (args) {
+                $('#@id').click(async function (ev) {
                     @await Model.OnClick.InvokeAsync(Component)
                 });
             </text>);

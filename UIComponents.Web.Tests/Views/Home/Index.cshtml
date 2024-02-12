@@ -1,11 +1,15 @@
 ﻿@using UIComponents.Abstractions;
 @using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Models
 @using UIComponents.Generators.Interfaces;
 @using UIComponents.Models.Models.Buttons
 @using UIComponents.Models.Models.Card;
 @using UIComponents.Models.Models;
 @using UIComponents.Models.Extensions;
+@using UIComponents.Models.Models.Dropdown
 @using UIComponents.Models.Models.Icons
+@using UIComponents.Models.Models.Inputs
+@using UIComponents.Models.Models.Texts
 @using UIComponents.Web.Extensions;
 @{
     ViewData["Title"] = "Home Page";
@@ -18,7 +22,7 @@
     {
         OnlyRenderSingleContent = true
     }
-        .Add(new UICTabs("FormTabs")
+        .Add(out var formTabs, new UICTabs("FormTabs")
         {
             Header = new UICCardHeader("Forms"),
             Renderer = UICCardWithTabsRenderer.VerticalTab
@@ -41,9 +45,18 @@
     .Add(new UICCard(new Translatable("Card.Partial"))
             .AddPartial("Home", "test"));
 
+    formTabs.Add(new UICCard("Card.SelectList").AddPartial("home", "selectlist"));
     tabs.FindInputGroupByPropertyName(nameof(TestModel.Enum), (input)=>{
         input.AppendInput.Add(new UICButton() { PrependButtonIcon = UICIcon.Add() });
     });
+
+    tabs.FindFirstOfType<UICForm>().Add(new UICCustom(@<text>
+        <div class="bg-red">
+            x
+        </div>
+        </text>
+    ));
+
 }
 
 @await tabs.InvokeAsync(Component)

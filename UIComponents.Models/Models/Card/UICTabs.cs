@@ -30,7 +30,7 @@ public class UICTabs : UIComponent, IUICHasChildren<IUICTab>, IUICTab
     /// <summary>
     /// Remember what tab was last accessed. Requires <see cref="Id"/> to be assigned
     /// </summary>
-    public bool RememberTabState { get; set; }
+    public bool RememberTabState { get; set; } = true;
 
     /// <summary>
     /// If only one tab is available, only render the content from that single tab

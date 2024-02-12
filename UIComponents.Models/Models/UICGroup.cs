@@ -48,14 +48,19 @@ public class UICGroup : UIComponent, IUIAction, IUICHasChildren<IUIComponent>
     public bool RenderSingleItem { get; set; } = false;
     public override bool Render
     {
-        get => Components.Where(x =>
+        get
         {
-            if (x == null)
-                return false;
-            if (x is IConditionalRender cr)
-                return cr.Render;
-            return true;
-        }).Any();
+            if (RenderWithoutContent)
+                return true;
+            return Components.Where(x =>
+            {
+                if (x == null)
+                    return false;
+                if (x is IConditionalRender cr)
+                    return cr.Render;
+                return true;
+            }).Any();
+        }
     }
     public List<IUIComponent> Children { get => Components; set => Components = value; }
 

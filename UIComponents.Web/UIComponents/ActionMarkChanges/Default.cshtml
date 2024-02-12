@@ -1,0 +1,34 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Models;
+
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+
+@model UICActionSetValue
+
+@{
+    string componentId = null;
+    if (Model.Component is UIComponent uiComponent)
+    {
+        componentId = uiComponent.GetAttribute("id");
+    }
+
+
+    if (string.IsNullOrWhiteSpace(componentId))
+    {
+        throw new Exception($"{Model.Component.RenderLocation} does not have a Id, assigned, and cannot be used to set the value");
+    }
+
+}
+uic.markChanges($('#@componentId'), @Model.ValueName);
