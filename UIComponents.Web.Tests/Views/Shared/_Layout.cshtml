@@ -8,6 +8,8 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<partial name="_Scripts" />
+@await RenderSectionAsync("Scripts", required: false)
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
 
@@ -52,8 +54,6 @@
 
 
     </div>
-    <partial name="_Scripts" />
-    @await RenderSectionAsync("Scripts", required: false)
 
 </body>
 </html>

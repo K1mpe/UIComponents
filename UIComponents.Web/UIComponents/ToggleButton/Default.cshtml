@@ -17,9 +17,9 @@
 @model UICToggleButton
 
 @{
-    string id = Model.GetOrGenerateId();
-    string idButtonTrue = Model.ButtonTrue.GetOrGenerateId();
-    string idButtonFalse = Model.ButtonFalse.GetOrGenerateId();
+    string id = Model.GetId();
+    string idButtonTrue = Model.ButtonTrue.GetId();
+    string idButtonFalse = Model.ButtonFalse.GetId();
 
     Model.AssignCollectionForChildren();
 

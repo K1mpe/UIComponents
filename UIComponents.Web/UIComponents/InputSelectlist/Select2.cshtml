@@ -24,10 +24,10 @@
 
     Model.Actions.Renderer = UICActions.ActionsRenderer.Select2;
 
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
 
     if (!string.IsNullOrEmpty(Model.Value))
-        Model.AddAttribute("value", Model.Value);
+        Model.SelectListItems.FirstOrDefault(x => x.Value == Model.Value, new()).Selected = true;
 
     Model.Actions.SetIdentifier($"#{id}");
 
@@ -38,59 +38,59 @@
     Model.AddScript(
     @<text>
         $('#@id').on('uic-help', ()=>{
-            console.log("$('#@id').on('uic-open', ()=>{...}) Triggered when opening the selectlist");
+        console.log("$('#@id').on('uic-open', ()=>{...}) Triggered when opening the selectlist");
         });
 
         $('#@id').select2({
-            theme: 'bootstrap4',
-            minimumResultsForSearch: @Json.Serialize(Model.SearchableIfMinimimResults),
-            matcher: uic.form.select2.searchMethod,
-            templateResult: uic.form.select2.resultRenderer,
-            tags: @Json.Serialize(Model.AllowDynamicOptions),
-            width:'',
+        theme: 'bootstrap4',
+        minimumResultsForSearch: @Json.Serialize(Model.SearchableIfMinimimResults),
+        matcher: uic.form.select2.searchMethod,
+        templateResult: uic.form.select2.resultRenderer,
+        tags: @Json.Serialize(Model.AllowDynamicOptions),
+        width:'',
         });
 
         $('#@id').on('select2:opening', function(){
-            uic.delayedAction.run('OpenDropdown-@id', 100, ()=>{$('#@id').triggerHandler('uic-open')});
+        uic.delayedAction.run('OpenDropdown-@id', 100, ()=>{$('#@id').triggerHandler('uic-open')});
         })
         $('#@id').on('setValue', function (event, value) {
-            $(this).val(value).change();
+        $(this).val(value).change();
         });
 
         $('#@id').on('focus', ()=>{
-            $('#@id').trigger('uic-open');
+        $('#@id').trigger('uic-open');
         });
 
         $('#@id').on('uic-open', (ev)=> ev.stopPropagation());
 
         @{
-            string propertyName = Model.PropertyName;
-            if (Model.DisplayName != null)
-                propertyName = await L.Translate(Model.DisplayName);
+    string propertyName = Model.PropertyName;
+    if (Model.DisplayName != null)
+    propertyName = await L.Translate(Model.DisplayName);
         }
-       
-
-            function validateInput(element) {
-            var currentValue = element.val();
-            var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
-            span.text("");
 
 
-                @if (Model.ValidationRequired)
-                {
-                    <text>
-                        if (currentValue == null || currentValue =='')
-                        span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
-                    </text>
-                }
-            }
+        function validateInput(element) {
+        var currentValue = element.val();
+        var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+        span.text("");
 
-            $('#@id').change(function () {
-                validateInput($(this));
-            });
-            $('#@id').blur(function () {
-                validateInput($(this));
-            });
+
+        @if (Model.ValidationRequired)
+    {
+        <text>
+            if (currentValue == null || currentValue =='')
+            span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+        </text>
+    }
+        }
+
+        $('#@id').change(function () {
+        validateInput($(this));
+        });
+        $('#@id').blur(function () {
+        validateInput($(this));
+        });
     </text>
     );
 
@@ -102,27 +102,33 @@
     int maxValue = Math.Max(groups.Any() ? groups.Max(x => x.SortOrder) : 0, others.Any() ? others.Max(x => x.SortOrder) : 0);
 }
 <select @Html.Raw(Model.GetHtmlAttributes())>
-
-    @for (int i = minValue; i <= maxValue; i++)
+    @if (Model.SelectListItems.Any())
     {
-        foreach (var item in Model.SelectListItems.Where(x => x.Group == null && x.SortOrder == i))
+        for (int i = minValue; i <= maxValue; i++)
         {
-            @await item.InvokeAsync(Component)
-        }
-        foreach (var group in groups.Where(x => x.SortOrder == i))
-        {
-            group.AddAttribute("label", group.Name);
-            if (group.Tooltip != null)
-                group.AddAttribute("title", await L.Translate(group.Tooltip));
+            foreach (var item in Model.SelectListItems.Where(x => x.Group == null && x.SortOrder == i))
+            {
+                @await item.InvokeAsync(Component)
+            }
+            foreach (var group in groups.Where(x => x.SortOrder == i))
+            {
+                group.AddAttribute("label", group.Name);
+                if (group.Tooltip != null)
+                    group.AddAttribute("title", await L.Translate(group.Tooltip));
 
-            <optgroup @Html.Raw(group.GetHtmlAttributes()) @(group.Disabled ? "disabled" : "")>
-                @foreach (var item in Model.SelectListItems.Where(x => x.Group != null && x.Group.Name == group.Name).OrderBy(x => x.SortOrder))
-                {
-                    @await item.InvokeAsync(Component)
-                }
-            </optgroup>
-        }
+                <optgroup @Html.Raw(group.GetHtmlAttributes()) @(group.Disabled ? "disabled" : "")>
+                    @foreach (var item in Model.SelectListItems.Where(x => x.Group != null && x.Group.Name == group.Name).OrderBy(x => x.SortOrder))
+                    {
+                        @await item.InvokeAsync(Component)
+                    }
+                </optgroup>
+            }
 
+        }
+    }
+    else if (Model.NoItemsText != null)
+    {
+        <option disabled>@await Html.Translate(L, Model.NoItemsText, null)</option>
     }
 
 

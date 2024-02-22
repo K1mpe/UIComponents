@@ -18,7 +18,7 @@
 @model UICSpaceSelector
 
 @{
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
 
     Model.AssignCollectionForChildren();
     var elements = Model.Elements.Where(x => x.HasValue()).ToList();

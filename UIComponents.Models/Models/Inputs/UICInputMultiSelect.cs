@@ -42,6 +42,8 @@ public class UICInputMultiSelect : UICInput<string[]>
     /// </summary>
     public bool AllowDynamicOptions { get; set; }
 
+    public Translatable NoItemsText { get; set; } = TranslationDefaults.SelectListNoItems;
+
     #endregion
 
 }

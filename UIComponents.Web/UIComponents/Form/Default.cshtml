@@ -17,7 +17,7 @@
 @model UICForm
 
 @{
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
     bool isSubForm = !string.IsNullOrEmpty(Model.GetAttribute("formidentifier"));
 
     Model.AssignCollectionForChildren();

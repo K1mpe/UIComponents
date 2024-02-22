@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UIComponents.Abstractions.Attributes;
+using UIComponents.Web.Tests.Models;
 
 namespace UIComponents.Web.Tests.Models
 {
@@ -41,8 +42,10 @@ namespace UIComponents.Web.Tests.Models
         Two = 2,
     }
 
+    [UICInherit(typeof(TestModel))]
     public class TestModel2
     {
         public string TestString { get; set; }
+
     }
 }

@@ -19,7 +19,7 @@
 
 @{
 
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
     Model.AddAttribute("class", "custom-control-input");
     if (Model.Actions.HasValue())
     {

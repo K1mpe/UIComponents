@@ -1,15 +1,7 @@
 ﻿namespace UIComponents.Abstractions.Interfaces.ExternalServices;
 
 
-public interface IUicPermissionService : IViewPermissionCurrentUserService, ICreatePermissionCurrentUserService, IEditPermissionCurrentUserService, IDeletePermissionCurrentUserService
-{
-}
-
-
-/// <summary>
-/// Interface for <see langword="CanView"/> permission methods
-/// </summary>
-public interface IViewPermissionCurrentUserService
+public interface IUicPermissionService
 {
     /// <summary>
     /// Check if the user can view this object
@@ -23,14 +15,6 @@ public interface IViewPermissionCurrentUserService
     Task<bool> CanViewProperty<T>(T obj, string propertyName) where T : class;
 
 
-}
-
-
-/// <summary>
-/// Interface for <see langword="CanCreate"/> permission methods
-/// </summary>
-public interface ICreatePermissionCurrentUserService
-{
     /// <summary>
     /// Check if the user can view this object
     /// <br>the properties of <paramref name="obj"/> could be used for specific validations</br>
@@ -41,14 +25,7 @@ public interface ICreatePermissionCurrentUserService
     Task<bool> CanCreate<T>(T obj) where T : class;
 
     Task<bool> CanCreate(Type type);
-}
 
-
-/// <summary>
-/// Interface for <see langword="CanEdit"/> permission methods
-/// </summary>
-public interface IEditPermissionCurrentUserService
-{
 
     /// <summary>
     /// Check if the user can edit this object. 
@@ -64,20 +41,9 @@ public interface IEditPermissionCurrentUserService
     /// </summary>
     Task<bool> CanEditProperty<T>(T obj, string propertyName) where T : class;
 
-
-}
-
-
-/// <summary>
-/// Interface for <see langword="CanDelete"/> permission methods
-/// </summary>
-public interface IDeletePermissionCurrentUserService
-{
-
     /// <summary>
     /// Check if the user can delete this object
     /// </summary>
     Task<bool> CanDelete<T>(T obj) where T : class;
-
 
 }

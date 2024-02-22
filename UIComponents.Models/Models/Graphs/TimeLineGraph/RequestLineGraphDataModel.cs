@@ -15,8 +15,12 @@ public class RequestLineGraphDataModel
     /// <summary>
     /// This is the time diffrence between 2 markers on the timeline
     /// </summary>
+    /// <remarks>
+    /// Can be null when there is no data available yet
+    /// </remarks>
     public TimeSpan Scale { get => TimeSpan.FromMilliseconds(_scaleInMilliseconds); }
     public int _scaleInMilliseconds { get; set; }
+
     /// <summary>
     /// The Id defined in <see cref="LineGraph.LineGraphId"/>
     /// </summary>
@@ -41,5 +45,12 @@ public class RequestLineGraphDataModel
             return points;
 
         return DataDecimation.LargestTriangleThreeBuckets(points, maxPointsCount);
+    }
+
+    public List<LineGraphPoint> AveragePerTimespan(List<LineGraphPoint> points, TimeSpan? timeSpan = null)
+    {
+        if (timeSpan == null)
+            timeSpan = Scale;
+        return DataDecimation.AveragePerTimespan(points, timeSpan.Value);
     }
 }

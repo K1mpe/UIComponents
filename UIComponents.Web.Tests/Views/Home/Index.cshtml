@@ -7,6 +7,7 @@
 @using UIComponents.Models.Models;
 @using UIComponents.Models.Extensions;
 @using UIComponents.Models.Models.Dropdown
+@using UIComponents.Models.Models.Graphs.TimeLineGraph
 @using UIComponents.Models.Models.Icons
 @using UIComponents.Models.Models.Inputs
 @using UIComponents.Models.Models.Texts
@@ -50,12 +51,14 @@
         input.AppendInput.Add(new UICButton() { PrependButtonIcon = UICIcon.Add() });
     });
 
-    tabs.FindFirstOfType<UICForm>().Add(new UICCustom(@<text>
-        <div class="bg-red">
-            x
-        </div>
-        </text>
-    ));
+
+
+    tabs.Add(new UICCard(new UICCardHeader("Chart")).Add(new UICTimeLineGraph(), graph =>
+    {
+        graph.Height = "1000px";
+        graph.Add(new("Graph1", "blub", "/home/GetTimelineChartData") { CacheData = true, RemoveCacheOnZoom = true, AdditionalPostData = new { UserId = 1 } });
+        graph.Add(new("Graph2", "foo", "/home/GetTimelineChartData"){CacheData = true, RemoveCacheOnZoom = true});
+    }));
 
 }
 

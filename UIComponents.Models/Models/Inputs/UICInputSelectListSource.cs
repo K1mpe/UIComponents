@@ -71,7 +71,7 @@ public class UICInputSelectListSource : UIComponent
         if (InputSelectList == null)
             return null;
 
-        var id = InputSelectList.GetOrGenerateId();
+        var id = InputSelectList.GetId();
         return new UICCustom($"$('#{id}').trigger('uic-reload');");
     }
     #endregion

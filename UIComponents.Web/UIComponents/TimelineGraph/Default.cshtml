@@ -4,6 +4,7 @@
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Defaults;
+@using UIComponents.Defaults.Models.Graphs
 @using UIComponents.Models;
 @using UIComponents.Models.Models;
 @using UIComponents.Models.Models.Actions;
@@ -25,7 +26,7 @@
 @model UICTimeLineGraph
 
 @{
-    string guid = Model.GetOrGenerateId();
+    string guid = Model.GetId();
 
     Model.AssignCollectionForChildren();
 
@@ -49,40 +50,49 @@
         console.log('This method has not yet been implemented!');
     }
 
-    $('#@guid').on('help', function(){
+    $('#@guid').on('uic-help', function(){
         console.log("Chart $('#@guid').trigger('uic-reload')", "Reload all graphs with a data source");
-        console.log("Chart $('#@guid').trigger('uic-reload', 'graphId')", "Reload this graph");
+        console.log("Chart $('#@guid').trigger('uic-reload', 'graphId', ignoreCache=false)", "Reload this graph. If cache is enabled, you can choose to ignore the cache");
         console.log("Chart $('#@guid').trigger('uic-resize')", "ReRender the graph to scale for the available space")
 
         console.log("Chart $('#@guid').triggerHandler('uic-getChart')", "Returns the current graph config");
         console.log("Chart $('#@guid').triggerHandler('uic-getGraphs')", "Returns a array of all current graphs");
 
-        console.log("Chart $('#@guid').trigger('uic-addGraph', graph)", "Add a new chart clientSide, Example:", {
+        let example ={
             id: 'Unique string',
             label: 'string',
             data:[{
-                v: 123,
-                d:"DateTime.ToString('s')",
-                Id: 'Optional string'
+            v: 123,
+            d:"DateTime.ToString('s')",
+            Id: 'Optional string'
             }],
             source: '/Home/GetData',
 
-        });
+        };
+        console.log("Chart $('#@guid').trigger('uic-addGraph', graph)", "Add a new chart clientSide, Example:", example, $.extend({}, example,defaultGraph));
         console.log("Chart $('#@guid').trigger('uic-removeGraph', 'graphId')", "Remove a graph from chart based on its Id");
         console.log("Chart $('#@guid').trigger('uic-enableGraph', 'graphId')", "If this graph is off, turn it on");
         console.log("Chart $('#@guid').trigger('uic-disableGraph', 'graphId')", "If this graph is on, turn it off");
         console.log("Chart $('#@guid').trigger('uic-toggleGraph', 'graphId')", "Turn this graph on or off");
 
 
-        console.log("Chart $('#@guid').on('uic-chartMoved', (ev) => {})", "Triggered if the chart moves or scales");
-        console.log("Chart $('#@guid').on('uic-loaded', (ev, loadedData) => {})", "Triggered after one or more graphs have loaded data");
-        console.log("Chart $('#@guid').on('uic-graphChanged', (ev, changedData) => {})", "Triggered after a chart has been turned on or off");
+        console.log("Chart $('#@guid').on('uic-chartMoved', (ev, chart, momentStart, momentEnd) => {})", "Triggered if the chart moves or scales");
+        console.log("Chart $('#@guid').on('uic-loaded', (ev, graph) => {})", "Triggered after one or more graphs have loaded data");
+        console.log("Chart $('#@guid').on('uic-graphChanged', (ev, graph) => {})", "Triggered after a chart has been turned on or off");
     });
 
-    $('#@guid').on('uic-reload', function(ev, graphId){
+    
+    $('#@guid').on('uic-reload', function(ev, graphId, ignoreCache){
         ev.stopPropagation();
-        if(graph.length){
-            NYI();
+        if(graphId!= undefined){
+            let graph = graphs[graphId];
+            if(graph == undefined)
+                return;
+
+            if(ignoreCache == true)
+                graph.ranges = [];
+
+            LoadNewGraphData(graph.id);
         } else{
             reloadAllGraphData();
         } 
@@ -98,34 +108,59 @@
     });
     $('#@guid').on('uic-getGraphs', function(ev){
         ev.stopPropagation();
-        NYI();
+        console.log('graphs', graphs);
+        return graphs;
     });
     $('#@guid').on('uic-addGraph', function(ev, graph){
         ev.stopPropagation();
-        NYI();
+        graph = $.extend({}, defaultGraph, graph);
+        
+
+        let graphId= graph.id;
+        if(graphs[graphId] != undefined)
+            throw `Graph with Id ${graphId} already exists`;
+
+        graphs[graphId] = graph;
+        let colorSet = graphColors[Object.getOwnPropertyNames(graphs).length%graphColors.length];
+        if(graph.backgroundColor == undefined)
+            graph.backgroundColor = graph.borderColor || colorSet.backgroundColor;
+        if(graph.borderColor == undefined)
+            graph.borderColor = colorSet.lineColor;
+
+        syncDataSets();
+        if(graph.enabled == false){
+            setDataSetVisibility(graphId, false);
+        } else{
+            graph.enabled = true;
+            LoadNewGraphData(graphId);
+            chart.update('none');
+        }
     });
     $('#@guid').on('uic-removeGraph', function(ev, graphId){
         ev.stopPropagation();
-        NYI();
+        graphs[graphId] = undefined;
+        syncDataSets();
+        chart.update('none');
+
     });
     $('#@guid').on('uic-enableGraph', function(ev, graphId){
         ev.stopPropagation();
-        NYI();
+        setDataSetVisibility(graphId, false);
     });
     $('#@guid').on('uic-disableGraph', function(ev, graphId){
         ev.stopPropagation();
-        NYI();
+        setDataSetVisibility(graphId, false);
     });
 
     $('#@guid').on('uic-toggleGraph', function(ev, graphId){
         ev.stopPropagation();
-        NYI();
+        setDataSetVisibility(graphId, null);
     });
 
 
     function log(...rest){
         if(@Json.Serialize(Model.EnableConsoleLog))
-            console.log('TimelineGraph @Model.GetOrGenerateId()', rest);
+            console.log('TimelineGraph @Model.GetId()', rest);
     }
     let liveUpdate = @Json.Serialize(Model.EnableLiveData);
     @if (Model.EnableLiveData)
@@ -141,6 +176,48 @@
 
     let graphs = {};
     let datasets= [];
+    let defaultGraph = {
+        pointRadius: @LineGraphDefaults.PointRadius.ToString().Replace(",","."),
+        pointHitRadius: @LineGraphDefaults.PointHitRadius.ToString().Replace(",","."),
+        borderWidth: @LineGraphDefaults.BorderWidth.ToString().Replace(",","."),
+        tension: @LineGraphDefaults.Tension.ToString().Replace(",","."),
+        fill: @Json.Serialize(LineGraphDefaults.Fill),
+        stepped: @Json.Serialize(LineGraphDefaults.Stepped),
+        enabled: @Json.Serialize(LineGraphDefaults.Enabled),
+        cached: @Json.Serialize(LineGraphDefaults.CacheData),
+        removeCacheOnZoom: @Json.Serialize(LineGraphDefaults.RemoveCacheOnZoom),
+        disableFutureLoading: @Json.Serialize(LineGraphDefaults.DisableFutureLoading),
+
+    };
+    let graphColors=[
+    @foreach(var colorSet in Model.LineColors){
+        <text>
+        {
+            lineColor: @Html.JsEncode(colorSet.LineColor,"'"),
+            backgroundColor: @Html.JsEncode(colorSet.BackgroundColor, "'")
+        },
+        </text>
+    }];
+    function syncDataSets(){
+        datasets = [];
+        EachGraph(graph =>{
+            graph.index = datasets.length;
+            datasets.push({
+                label: graph.label,
+                data: graph.data,
+                stepped: graph.stepped,
+                fill: graph.fill,
+                pointRadius: graph.pointRadius,
+                pointHitRadius: graph.pointHitRadius,
+                borderColor: graph.borderColor,
+                borderWidth: graph.borderWidth,
+                backgroundColor: graph.backgroundColor,
+                tension: graph.tension,
+            });
+        });
+        if(chart != null)
+            chart.data.datasets = datasets;
+    }
     let autoInterval = @Model.LoadLiveDataMinInterval.TotalMilliseconds;
     @for(int i=0; i<Model.LineGraphs.Count; i++)
     {
@@ -164,28 +241,22 @@
             stepped: @Json.Serialize(graph.Stepped),
             fill: @Json.Serialize(graph.Fill),
             pointRadius: @graph.PointRadius,
+            pointHitRadius: @graph.PointHitRadius,
             borderColor: @Html.JsEncode(graph.LineColor, "'"),
+            borderWidth: @graph.BorderWidth.ToString().Replace(",","."),
             backgroundColor: @Html.JsEncode(graph.BackgroundColor, "'"),
-            tension: @graph.Tension,
+            tension: @Json.Serialize(graph.Tension),
             id: @Html.JsEncode(graph.LineGraphId,"'"),
             index: @Json.Serialize(i),
             enabled: @Json.Serialize(graph.Enabled),
             cached: @Json.Serialize(graph.CacheData),
+            removeCacheOnZoom: @Json.Serialize(graph.RemoveCacheOnZoom),
             source: @Html.JsEncode(graph.Source,"'"),
             disableFutureLoading: @Json.Serialize(graph.DisableFutureLoading),
             additionalPostData: @Json.Serialize(graph.AdditionalPostData),
             ranges: []
         };
-        datasets.push({
-            label: @await Html.Translate(L, graph.Label),
-            data: @Json.Serialize(graph.Points),
-            stepped: @Json.Serialize(graph.Stepped),
-            fill: @Json.Serialize(graph.Fill),
-            pointRadius: @graph.PointRadius,
-            borderColor: @Html.JsEncode(graph.LineColor, "'"),
-            backgroundColor: @Html.JsEncode(graph.BackgroundColor, "'"),
-            tension: @graph.Tension,
-        });
+        
 
         </text>
         if (graph.Points.Any())
@@ -200,11 +271,17 @@
         </text>
         }
     }
-                
     let minDateTime = @Model.Start.ToMoment(Html); //The smallest position on the current timeline
     let maxDateTime = @Model.End.ToMoment(Html); //The largest position on the current timeline
     let chart;
 
+        syncDataSets();
+
+    function Destroy(){
+        if(!chart)
+            return;
+        chart.destroy();
+    }
     function Initialize(){
         chart = new Chart($('#@guid')[0], {
         type: 'line',
@@ -216,8 +293,7 @@
 
         options:{
             responsive: true,
-            maintainAspectRatio: true,
-
+            maintainAspectRatio: false,
             parsing: {
                 xAxisKey: 'd',
                 yAxisKey: 'v'
@@ -258,9 +334,9 @@
                     },
                     ticks: {
                         major: {
-                            enabled: true
+                            enabled: @Json.Serialize(!string.IsNullOrEmpty(Model.ColorMajor)),
                         },
-                        color: (context) => context.tick && context.tick.major && '#FF0000',
+                        color: (context) => context.tick && context.tick.major && @Html.JsEncode(Model.ColorMajor, "'"),
                         font: function (context) {
                             if (context.tick && context.tick.major) {
                                 return {
@@ -276,6 +352,14 @@
         
             plugins:{
                 legend: {
+                    onClick:(ev, legendItem, legend) => {
+                        let graph;
+                        EachGraph(g => {
+                            if(g.index == legendItem.datasetIndex)
+                                graph = g;
+                        })
+                        setDataSetVisibility(graph.id, null);
+                    },
                     display: @Json.Serialize(Model.ShowLegend),
                     position: @Html.JsEncode(Model.LegendPosition.ToString().ToLower(), "'")
                 },
@@ -312,8 +396,7 @@
                         mode: 'x',
                         onZoomComplete: startFetch,
                         onZoomStart: (args)=>{
-                            var range = args.chart.scales.x.max - args.chart.scales.x.min
-                            console.log('checkzoom');
+                            var range = args.chart.scales.x.max - args.chart.scales.x.min;
                             @*args.deltaY is the scroll direction*@
                             @if (Model.ZoomInLimit.HasValue)
                             {
@@ -356,34 +439,34 @@
             var enddate = moment(max);
             chart.stop(); // make sure animations are not running
             await LoadNewData(startdate, enddate);
+            $('#@guid').trigger('uic-chartMoved', chart, minDateTime, maxDateTime);
         });
-        $('#@guid').trigger('uic-chartMoved');
+        
     };
 
     function LoadNewData(newMin, newMax) {
-        if(liveUpdate){
-            if (newMax > moment()) {
-                var newDelay = (newMax - newMin) / 100; //set miliseconds for autoupdate
-                if(@Model.LoadLiveDataMinInterval.TotalMilliseconds > newDelay)
-                    newDelay = @Model.LoadLiveDataMinInterval.TotalMilliseconds;
-                if (newDelay != autoInterval) {
-                    autoInterval = newDelay;
-                    log('Autoupdate data will happen every ' + autoInterval / 1000 + ' seconds');
-                }
-                AutoloadData();
+        if (newMax > moment()) {
+            var newDelay = (newMax - newMin) / 100; //set miliseconds for autoupdate
+            if(@Model.LoadLiveDataMinInterval.TotalMilliseconds > newDelay)
+                newDelay = @Model.LoadLiveDataMinInterval.TotalMilliseconds;
+            if (newDelay != autoInterval) {
+                autoInterval = newDelay;
+                log('Autoupdate data will happen every ' + autoInterval / 1000 + ' seconds');
             }
-            else if (autoInterval != 0) {
-                console.log('Data will not automatically update');
-            }
+            AutoloadData();
+
+        }
+        else if (autoInterval != 0) {
+            log('Data will not automatically update');
         }
         
         EachGraph(function(graph){
-            LoadNewGraphData(graph.LineGraphId, newMin, newMax);
+            LoadNewGraphData(graph.id, newMin, newMax);
         });
     }
 
     function AutoloadData() {
-        if (autoInterval > 0) {
+        if (autoInterval > 0 && liveUpdate) {
             setTimeout(async function() {
                 await LoadNewData(moment(chart.scales.x.min), moment(chart.scales.x.max));
             }, autoInterval);
@@ -400,16 +483,26 @@
             LoadNewGraphData(graph.id);
         });
     }
+    function setDataSetVisibility(graphId, visible){
+        let graph = graphs[graphId];
+        if(visible == null)
+            visible = !graph.enabled;
+        chart.setDatasetVisibility(graph.index, visible);
+        graph.enabled = visible;
+        if(visible)
+            LoadNewGraphData(graphId);
 
+        chart.update();
+        $('#@guid').trigger('uic-graphChanged', graph);
+    }
     function LoadNewGraphData(graphId, newMin, newMax){
-        
         let graphData = graphs[graphId];
         
         if(graphData == undefined){
             console.error(`graph ${graphId} does not exist`);
             return;
         }
-
+        
         if (!graphData.source.length)
             return;
 
@@ -425,22 +518,66 @@
         //Set the max time to now if futureloading is disabled
         if(graphData.disableFutureLoading && newMax > moment())
             newMax = moment();
-
+        let scaleInMiliseconds;
+        if(chart.scales.x.ticks.length > 1){
+            scaleInMiliseconds = Math.floor(chart.scales.x.ticks[1].value - chart.scales.x.ticks[0].value);
+        } else{
+            scaleInMiliseconds = moment.duration(newMax - newMin)._milliseconds/60;
+        }
+             
+        
+        if(!graphData.cached){
+            graphData.ranges = [];
+            graphData.data=[];
+        }
+        else if(graphData.removeCacheOnZoom){
+            if(graphData.cachedScale != scaleInMiliseconds){
+                graphData.ranges = [];
+                graphData.data=[];
+                graphData.cachedScale = scaleInMiliseconds;
+            }
+        }
         //add a list of request ranges
         let requestRanges = [];
 
         let existingDataRanges = graphData.ranges;
 
-        if(graphData.Cached){
-            console.error('cache linegraph is not yet implemented')
+        //If there is already data for this full range, do not send a new request
+        let existingRange = graphData.ranges.filter(x=>x.start <= newMin && x.end >= newMax);
+        if(existingRange.length)
+            return;
+
+        //If data exists at start, move start to end of existing
+        let existingStart = graphData.ranges.filter(x => x.start <= newMin && x.end > newMin);
+        if(existingStart.length){
+            newMin = existingStart[0].end;
+
+            let existingStartIndex = graphData.ranges.indexOf(existingStart[0]);
+            graphData.ranges.splice(existingStartIndex, 1);
+
         }
-        else{
-            chart.data.datasets[graphData.index].data = [];
-            requestRanges.push({
-                start: newMin,
-                end: newMax
-            });
+            
+        
+        let existingEnd = graphData.ranges.filter(x=>x.start <newMax && x.end >= newMax);
+        if(existingEnd.length){
+            newMax = existingEnd[0].start;
+
+            let existingEndIndex = graphData.ranges.indexOf(existingEnd[0]);
+            graphData.ranges.splice(existingEndIndex, 1);
         }
+
+        let includedRanges = graphData.ranges.filter(x=>x.start >= newMin && x.end<=newMax).forEach((range) =>{
+            let index = graphData.ranges.indexOf(range);
+            graphData.ranges.splice(index, 1);
+        });
+        requestRanges.push({
+            start: newMin,
+            end: newMax
+        });
+        graphData.ranges.push({
+            start: existingStart[0]?.start || newMin,
+            end: existingEnd[0]?.end || newMax
+        });
 
         
         //Todo : generate requestRanges
@@ -450,9 +587,12 @@
                 StartUTC: range.start.format(),
                 EndUTC: range.end.format(),
                 LineGraphId: graphData.id,
-                _scaleInMilliseconds: Math.floor(chart.scales.x.ticks[1].value - chart.scales.x.ticks[0].value),
+                _scaleInMilliseconds: scaleInMiliseconds,
                 AdditionalPostData: graphData.additionalPostData
             };
+            // try{
+            //     sendData._scaleInMilliseconds= 
+            // }catch{}
             let result = await uic.getpost.post(graphData.source, sendData);
 
             log('fetch data', {
@@ -460,9 +600,9 @@
                 end: range.end.format(),
                 data: result});
 
-            let dataset = graphData.data;
-            let dataBeforeRange = dataset.filter(x => range.start > x.DateValue);
-            let dataAfterRange = dataset.filter(x => range.end > x.DateValue);
+            let dataset = chart.data.datasets[graphData.index].data;
+            let dataBeforeRange = dataset.filter(x => range.start > moment(x.d));
+            let dataAfterRange = dataset.filter(x => moment(x.d) > range.end);
 
             let newData = [];
             newData = newData.concat(dataBeforeRange);
@@ -471,9 +611,9 @@
 
             graphData.data = newData;
 
-            graphData.ranges.push(range);
             chart.data.datasets[graphData.index].data = newData;
             chart.update('none');
+            $('#@guid').trigger('uic-loaded', graphData);
         });
     }
 
@@ -481,11 +621,12 @@
         let propNames = Object.getOwnPropertyNames(graphs);
         propNames.forEach(function(prop){
             let graph = graphs[prop];
+            if(graph == undefined)
+                return;
             func(graph);
         });
     }
-
-    reloadAllGraphData();
+            setTimeout(reloadAllGraphData, 10);
 
         let resizeHandle = null;
         $(window).resize(() => {
@@ -494,111 +635,36 @@
         });
 
         function OnWindowResized() {
-            InitializeChart();
+            Destroy();
+            Initialize();
         }
-
-    async function oldCode(){
-
-        if (!(newMin < minValue || newMax > maxValue))
-            return;
-
-        var objects = [];
-        graphsIds.forEach(item => {
-            var timespans = []
-            if (newMin < minValue) {
-                timespans.push({ start: newMin.toISOString(true), end: minValue.toISOString(true) });
-            }
-            if (newMax > maxValue) {
-                timespans.push({ start: maxValue.toISOString(true), end: newMax.toISOString(true) });
-            }
-            objects.push({ Id: item.id, Timespans: timespans });
-        });
-
-        if (newMin < minValue) {
-            minValue = newMin;
-            $('#daterange-start').data('daterangepicker').setStartDate(minValue);
-        }
-
-        if (newMax > maxValue) {
-            maxValue = newMax;
-            $('#daterange-start').data('daterangepicker').setEndDate(maxValue);
-        }
-
-
-        await GetGraphData(objects);
-
-        let tHandle = null;
-        $(window).resize(function() {
-            if (tHandle)
-                clearTimeout(tHandle);
-            tHandle = setTimeout(() => {
-                tHanle = null;
-                Resize();
-            }, 100);
-        });
-
-        function Resize(){
-            createChart();
-        }
-
-
-        async function GetGraphData(objects, fullReload) {
-            if (objects.length === 0)
-        return;
-
-        let data = {
-            Requests: objects
-        };
-
-
-        if (fullReload)
-        
-        var response = await $.post('@Url.Action("LoadData", "WashingMachine")', data);
-        
-
-        if (fullReload === true)
-        chart.data.datasets = response;
-        else {
-        chart.data.datasets.forEach(dataset => {
-        var firstLoaded = dataset.data[0];
-        var lastLoaded = dataset.data[dataset.data.length - 1];
-        var current = response.filter(x => x.label == dataset.label)[0];
-
-        var olderData = current.data.filter(x => x.d < firstLoaded.d);
-        var newData = current.data.filter(x => x.d > lastLoaded.d);
-        dataset.data = olderData.concat(dataset.data);
-        dataset.data = dataset.data.concat(newData);
-        });
-        }
-        chart.update();
-    }
-    //#endregion
-
-    //Buttons
-    //#region
-    $('.btn-reload').click(async function() {
-        toggleSidebar(false);
-        Resize();
-        await ReloadData();
-    });
 
     
-
-    //#endregion
-    }
     </text>);
 }
 
-<div class="flex-grow-1" width="@Html.JsEncode(Model.Width)" height="@Html.JsEncode(Model.Height)">
+<div class="flex-grow-1" style="width: @Html.JsEncode(Model.Width); height: @Html.JsEncode(Model.Height); max-height:@Html.JsEncode(Model.MaxHeight)">
     <canvas @Html.Raw(Model.GetHtmlAttributes())>
     </canvas>
 </div>
 
 
+@if (!string.IsNullOrEmpty(Model.Script_ChartJs))
+{
+    <script src="@Model.Script_ChartJs"></script>
+}
+@if (!string.IsNullOrEmpty(Model.Script_HammerJs))
+{
+    <script src="@Model.Script_HammerJs"></script>
+}
+@if (!string.IsNullOrEmpty(Model.Script_ChartJs_Adapter_Moment))
+{
+    <script src="@Model.Script_ChartJs_Adapter_Moment"></script>
+}
+@if (!string.IsNullOrEmpty(Model.Script_ChartJs_Plugin_Zoom))
+{
+    <script src="@Model.Script_ChartJs_Plugin_Zoom"></script>
+}
 
-<script src="~/lib/chart.js/dist/chart.umd.js"></script>
-<script src="~/lib/hammerjs/hammer.min.js"></script>
-<script src="~/lib/chartjs-adapter-moment/dist/chartjs-adapter-moment.js"></script>
-<script src="~/lib/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.js"></script>
 
 @await Model.RenderStylesAndScripts(Component)

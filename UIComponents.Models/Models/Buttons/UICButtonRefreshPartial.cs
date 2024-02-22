@@ -2,13 +2,16 @@
 
 namespace UIComponents.Models.Models.Buttons;
 
+/// <summary>
+/// Create a button to update a partial. If no partial is provided, the closest parent partial will be used.
+/// </summary>
 public class UICButtonRefreshPartial : UICButton
 {
 	public UICButtonRefreshPartial(UICPartial partial)
 	{
 		PrependButtonIcon = new UICIcon(IconDefaults.RefreshIcon.Icon);
 		ButtonText = TranslationDefaults.ButtonRefresh;
-		PrependButtonIcon.GetOrGenerateId();
+		PrependButtonIcon.GetId();
 		OnClick = new UICActionRefreshPartial(partial, PrependButtonIcon);
 	}
 }

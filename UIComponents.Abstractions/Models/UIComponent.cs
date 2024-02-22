@@ -104,7 +104,7 @@ public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScr
 
     public static implicit operator Func<string>(UIComponent uIComponent)
     {
-        return () => $"#{uIComponent.GetOrGenerateId()}";
+        return () => $"#{uIComponent.GetId()}";
     }
 }
 

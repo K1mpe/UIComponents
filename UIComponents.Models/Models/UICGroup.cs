@@ -12,6 +12,7 @@ public class UICGroup : UIComponent, IUIAction, IUICHasChildren<IUIComponent>
 {
     #region Fields
     public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
+    private bool _render = true;
     #endregion
 
     #region Ctor
@@ -51,15 +52,19 @@ public class UICGroup : UIComponent, IUIAction, IUICHasChildren<IUIComponent>
         get
         {
             if (RenderWithoutContent)
-                return true;
+                return _render;
             return Components.Where(x =>
             {
                 if (x == null)
                     return false;
                 if (x is IConditionalRender cr)
                     return cr.Render;
-                return true;
+                return _render;
             }).Any();
+        }
+        set
+        {
+            _render = value;
         }
     }
     public List<IUIComponent> Children { get => Components; set => Components = value; }

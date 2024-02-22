@@ -21,7 +21,7 @@
     if (Model.RememberTabState)
         Model.RememberTabState = Model.Attributes.ContainsKey("id");
 
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
     Model.AddAttribute("class", "card card-tabs");
     Model.AddBodyAttribute("class", "card-body");
 
@@ -31,8 +31,8 @@
     {
         Model.AddScript(
         @<text>
-            $('#@id').on('tabChanged', (ev, tabs)=>{
-                localStorage.setItem('tabs-lastState-@id', $(tabs.newTab).attr('href'));
+            $('#@id').on('uic-tab-change', (ev, tab)=>{
+                localStorage.setItem('tabs-lastState-@id', $(tab).attr('href'));
             })
             </text>
     );
@@ -49,6 +49,7 @@ else
     Model.AddScript(
         @<text>
             uic.tabs.openFirstTab($('#@id'));
+
     </text>);
     <div @Html.Raw(Model.GetHtmlAttributes())>
         <div class="card-header">

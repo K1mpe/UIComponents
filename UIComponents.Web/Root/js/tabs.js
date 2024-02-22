@@ -33,7 +33,7 @@
             oldActiveContent.triggerHandler('uic-closed');
 
             let tabContainer = tab.closest('.card-tabs');
-            tabContainer.triggerHandler('uic-tab-change', oldActiveHeader, tabHeader);
+            tabContainer.triggerHandler('uic-tab-change', tabHeader, oldActiveHeader);
         }
     },
     setTabHash: function (tab) {

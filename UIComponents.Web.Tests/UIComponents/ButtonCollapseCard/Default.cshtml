@@ -18,9 +18,9 @@
 @model UICButtonCollapseCard
 
 @{
-    string id = Model.GetOrGenerateId();
-    string idButtonTrue = Model.ButtonTrue.GetOrGenerateId();
-    string idButtonFalse = Model.ButtonFalse.GetOrGenerateId();
+    string id = Model.GetId();
+    string idButtonTrue = Model.ButtonTrue.GetId();
+    string idButtonFalse = Model.ButtonFalse.GetId();
 
     
 
@@ -46,7 +46,7 @@
         @if(Model.Card != null)
         {
             <text>
-            card = $('#@Model.Card.GetOrGenerateId()');
+            card = $('#@Model.Card.GetId()');
             </text>
         }
         else

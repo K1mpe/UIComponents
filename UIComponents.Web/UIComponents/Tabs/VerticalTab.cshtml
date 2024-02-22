@@ -21,7 +21,7 @@
     if (Model.RememberTabState)
         Model.RememberTabState = Model.Attributes.ContainsKey("id");
 
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
     Model.AddAttribute("class", "card card-tabs");
     Model.AddBodyAttribute("class", "col col-tab-content");
 

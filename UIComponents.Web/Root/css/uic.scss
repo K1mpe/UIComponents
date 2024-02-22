@@ -29,6 +29,9 @@ form {
     }
 
     &:not(.readonly-form) {
+        .hidden-edit{
+            display: none;
+        }
         .btn-edit {
             display: none;
         }

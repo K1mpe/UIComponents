@@ -18,7 +18,7 @@
 @model UICDropdown
 
 @{
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
     Model.AssignCollectionForChildren();
 
     async Task DropdownMenu(List<IDropdownItem> dropdownItems, bool submenu, string id="")

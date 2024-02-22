@@ -23,7 +23,7 @@
 
     string formId = Model.GetAttribute("formidentifier");
     if (Model.Form != null)
-        formId = Model.Form.GetOrGenerateId();
+        formId = Model.Form.GetId();
 
     Model.AssignCollectionForChildren();
 

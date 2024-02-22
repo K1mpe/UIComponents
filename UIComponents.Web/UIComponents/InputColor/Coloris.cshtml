@@ -21,7 +21,7 @@
 @{
     Model.AddAttribute("class", "coloris");
     Model.AddAttribute("class", "form-control");
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
 
     Model.AssignCollectionForChildren();
     if (Model.Actions.HasValue())

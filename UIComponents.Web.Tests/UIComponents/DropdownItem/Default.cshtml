@@ -61,7 +61,7 @@ else if (Model.OnClick is UICActionNavigate navigate)
 }
 else
 {
-    string itemId = Model.GetOrGenerateId();
+    string itemId = Model.GetId();
     Model.AddAttribute("href", "#");
     Model.AddScript(
         @<text>

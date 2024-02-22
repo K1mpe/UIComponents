@@ -16,7 +16,7 @@
 @model UICSingleRow
 
 @{
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
     Model.AssignCollectionForChildren();
 
     List<Type> SupportedTypes = new() { typeof(UICInputGroup) };

@@ -18,7 +18,7 @@
 
 @{
     if(Model.Label.HasValue())
-        Model.Label?.AddAttribute("for", Model.Input.GetOrGenerateId());
+        Model.Label?.AddAttribute("for", Model.Input.GetId());
 
     if (Model.Span.HasValue())
     {

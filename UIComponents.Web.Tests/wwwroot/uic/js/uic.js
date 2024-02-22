@@ -1348,11 +1348,13 @@ uic.getpost = uic.getpost || {
     defaultOptions : {
         get : {
             cancelPreviousRequests: true,
+            loadType: null,
             handlers : []
         },
 
         post : {
             cancelPreviousRequests: false,
+            loadType: null,
             handlers : []
         },
     },
@@ -1427,7 +1429,7 @@ uic.getpost = uic.getpost || {
             (response) => {
                 if (response.type == "Exception") {
                     let text = response.exception[0].responseText;
-                    if (text.length > 255 || !test.length)
+                    if (text.length > 255 || !text.length)
                         text = "A error occured";
                     makeToast("Error", "", text);
                     return false;
@@ -1451,7 +1453,7 @@ uic.getpost = uic.getpost || {
             }
         } catch { }
 
-        uic.getpost._getRequests[url] = $.get(url, data).catch(function (...ex) {
+        uic.getpost._getRequests[url] = $.get(url, data, null, options.loadType).catch(function (...ex) {
             console.log('Failed! Server error', ex);
             return { type: 'Exception', exception: ex };
         });
@@ -1475,7 +1477,7 @@ uic.getpost = uic.getpost || {
             }
         } catch { }
 
-        uic.getpost._postRequests[url] = $.post(url, data).catch(function (...ex) {
+        uic.getpost._postRequests[url] = $.post(url, data, null, options.loadType).catch(function (...ex) {
             console.log('Failed! Server error', ex);
             return { type: 'Exception', exception: ex };
         });
@@ -1790,7 +1792,7 @@ $('body').on('uic-reload', (ev) => {
             oldActiveContent.triggerHandler('uic-closed');
 
             let tabContainer = tab.closest('.card-tabs');
-            tabContainer.triggerHandler('uic-tab-change', oldActiveHeader, tabHeader);
+            tabContainer.triggerHandler('uic-tab-change', tabHeader, oldActiveHeader);
         }
     },
     setTabHash: function (tab) {

@@ -20,7 +20,7 @@
 @{
     string type = Model.GetAttribute("type")??"button";
 
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
     Model.AssignCollectionForChildren();
 
     if(Model.OnClick != null)

@@ -148,7 +148,7 @@ public static class UICExtensions
 
     public static void AssignCollectionForChildren<T>(this IUICScriptCollection collection, T uiComponent) where T : class, IUIHasAttributes, IUIComponent
     {
-        collection.AssignCollectionForChildren(uiComponent, uiComponent.GetOrGenerateId());
+        collection.AssignCollectionForChildren(uiComponent, uiComponent.GetId());
     }
 
     public static async Task<IHtmlContent> RenderStylesAndScripts(this IUICScriptCollection collection, IViewComponentHelper component, string id)
@@ -198,7 +198,7 @@ public static class UICExtensions
 
     public static Task<IHtmlContent> RenderStylesAndScripts(this IUICScriptCollection collection, IViewComponentHelper component, IUIHasAttributes uiComponent)
     {
-        return collection.RenderStylesAndScripts(component, uiComponent.GetOrGenerateId());
+        return collection.RenderStylesAndScripts(component, uiComponent.GetId());
     }
 
 

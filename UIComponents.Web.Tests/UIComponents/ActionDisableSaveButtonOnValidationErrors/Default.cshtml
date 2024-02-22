@@ -17,10 +17,10 @@
 @model UICActionDisableSaveButtonOnValidationErrors
 
 @{
-    string buttonId = $"#{Model.SaveButton.GetOrGenerateId()}";
+    string buttonId = $"#{Model.SaveButton.GetId()}";
     string formId = "body";
     if (Model.Form.HasValue())
-        formId = $"#{Model.Form.GetOrGenerateId()}";
+        formId = $"#{Model.Form.GetId()}";
 }
 
 <script>

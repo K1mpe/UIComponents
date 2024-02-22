@@ -10,7 +10,7 @@ public abstract class UICInput : UIComponent
     public UICInput(string propertyName) : base()
     {
         PropertyName = propertyName;
-        Actions = new(() => this.GetOrGenerateId());
+        Actions = new(() => this.GetId());
     }
 
     #region Properties

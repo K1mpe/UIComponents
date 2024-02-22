@@ -21,7 +21,7 @@
     if(Model.RememberCollapsedState)
         Model.RememberCollapsedState= !string.IsNullOrEmpty(Model.GetAttribute("id"));
 
-    var id = Model.GetOrGenerateId();
+    var id = Model.GetId();
     Model.AssignCollectionForChildren();
     Model.AddAttribute("class", "card");
 

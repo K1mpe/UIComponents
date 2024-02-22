@@ -8,16 +8,19 @@ using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
 using UIComponents.Abstractions.Models;
 using UIComponents.Defaults;
+using UIComponents.Defaults.Models.Graphs;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Models.Extensions;
 using UIComponents.Models.Models;
 using UIComponents.Models.Models.Actions;
 using UIComponents.Models.Models.Buttons;
 using UIComponents.Models.Models.Card;
+using UIComponents.Models.Models.Graphs.TimeLineGraph;
 using UIComponents.Models.Models.Icons;
 using UIComponents.Models.Models.Inputs;
 using UIComponents.Models.Models.Texts;
 using UIComponents.Models.Models.Tree;
+using UIComponents.Web.Tests.Factory;
 using UIComponents.Web.Tests.Models;
 
 namespace UIComponents.Web.Tests.Controllers
@@ -78,6 +81,17 @@ namespace UIComponents.Web.Tests.Controllers
         {
             var x = Request;
             return Json(true);
+        }
+
+        [HttpPost]
+        public IActionResult GetTimelineChartData(RequestLineGraphDataModel request)
+        {
+            var data =(request.LineGraphId=="blub")? TimelineDataFactory.GetPoint1(request.StartLocal, request.EndLocal): TimelineDataFactory.GetPoint2(request.StartLocal, request.EndLocal);
+            
+            var x = request.AveragePerTimespan(data);
+
+            Console.WriteLine($"LoadLineGraphData from {request.StartLocal} to {request.EndLocal}, datapoints: {data.Count} => {x.Count()}");
+            return Json(x);
         }
 
 

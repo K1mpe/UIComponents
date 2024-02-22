@@ -176,8 +176,12 @@ public static class UICExtensions
         return firstInput;
     }
 
-
-    public static string GetOrGenerateId(this IUIHasAttributes element)
+    /// <summary>
+    /// Gets the Id from a element. Create a random id if none exists yet.
+    /// </summary>
+    /// <param name="element"></param>
+    /// <returns></returns>
+    public static string GetId(this IUIHasAttributes element)
     {
         string id = element.GetAttribute("id");
         if (string.IsNullOrWhiteSpace(id))
@@ -187,8 +191,22 @@ public static class UICExtensions
         }
         return id;
     }
+    /// <summary>
+    /// Set the Id for this element. Will throw <see cref="Exception"></see> if the item already has a id.
+    /// </summary>
+    /// <exception cref="Exception"></exception>
+    public static T SetId<T>(this T element, string id) where T : IUIHasAttributes
+    {
+        if(id.StartsWith("#"))
+            id = id.Substring(1);
 
-    
+        string existingId = element.GetAttribute("id");
+        if (!string.IsNullOrEmpty(existingId))
+            throw new Exception($"Element already contains a Id. {element}, {id}, {existingId}");
+
+        element.AddAttribute("id", id);
+        return element;
+    }
 
     /// <summary>
     /// Get a value from the attributes

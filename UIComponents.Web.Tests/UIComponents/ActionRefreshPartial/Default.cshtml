@@ -33,11 +33,11 @@
                 else
                 {
     <text>
-        partial = $('#@Html.JsEncode(Model.Partial.GetOrGenerateId())');
+        partial = $('#@Html.JsEncode(Model.Partial.GetId())');
     </text>
                 }
 
-    let spinner = $('#@Model.SpinElement.GetOrGenerateId()');
+    let spinner = $('#@Model.SpinElement.GetId()');
     partial.on('uic-before-reload', () => { spinner.addClass('fa-spin')});
     partial.on('uic-reloaded', () => { spinner.removeClass('fa-spin')});
 </text>
@@ -55,7 +55,7 @@ let partial;
 else
 {
     <text>
-        partial = $('#@Html.JsEncode(Model.Partial.GetOrGenerateId())');
+        partial = $('#@Html.JsEncode(Model.Partial.GetId())');
     </text>
 }
 

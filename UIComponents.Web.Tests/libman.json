@@ -101,7 +101,6 @@
       ]
     },
     {
-      "provider": "unpkg",
       "library": "fullcalendar@5.11.0",
       "destination": "wwwroot/lib/fullcalendar/",
       "files": [
@@ -117,7 +116,6 @@
       ]
     },
     {
-      "provider": "unpkg",
       "library": "jsgrid@1.5.3",
       "destination": "wwwroot/lib/jsgrid/",
       "files": [
@@ -132,7 +130,6 @@
       ]
     },
     {
-      "provider": "unpkg",
       "library": "@microsoft/signalr@latest",
       "destination": "wwwroot/lib/signalr/",
       "files": [
@@ -143,7 +140,6 @@
       ]
     },
     {
-      "provider": "unpkg",
       "library": "flag-icons@6.6.6",
       "destination": "wwwroot/lib/flag-icons/",
       "files": [
@@ -153,7 +149,6 @@
       ]
     },
     {
-      "provider": "unpkg",
       "library": "bootstrap@4.6.1",
       "destination": "wwwroot/lib/bootstrap/",
       "files": [
@@ -162,12 +157,11 @@
       ]
     },
     {
-      "provider": "unpkg",
       "library": "admin-lte@3.2.0",
       "destination": "wwwroot/lib/admin-lte/",
       "files": [
         "build/scss/**/*",
-        "!build/scss/mixins/_backgrounds.scss", // 
+        "!build/scss/mixins/_backgrounds.scss",
         "!dist/js/demo.js",
         "dist/js/adminlte.js",
         "dist/js/adminlte.js.map",
@@ -216,6 +210,44 @@
         "dist/themes/default-dark/style.min.css",
         "dist/themes/default-dark/throbber.gif"
       ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "Chart.js@4.4.1",
+      "destination": "wwwroot/lib/Chart.js/",
+      "files": [
+        "chart.min.js",
+        "chart.umd.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "hammer.js@2.0.8",
+      "destination": "wwwroot/lib/hammer.js/",
+      "files": [
+        "hammer.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "chartjs-plugin-zoom@2.0.1",
+      "destination": "wwwroot/lib/chartjs-plugin-zoom/",
+      "files": [
+        "chartjs-plugin-zoom.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "chartjs-adapter-moment@1.0.1",
+      "destination": "wwwroot/lib/chartjs-adapter-moment/",
+      "files": [
+        "chartjs-adapter-moment.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "Chart.js@4.4.1",
+      "destination": "wwwroot/lib/Chart.js/"
     }
   ]
 }

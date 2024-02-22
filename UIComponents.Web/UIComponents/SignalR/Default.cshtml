@@ -17,7 +17,7 @@
 
 @model UICSignalR
 @{
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
     foreach(var child in Model.GetAllChildren())
     {
         if (child is UIComponent component)

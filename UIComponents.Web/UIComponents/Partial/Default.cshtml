@@ -17,7 +17,7 @@
 @model UICPartial
 
 @{
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
 
     Model.AssignCollectionForChildren();
 
@@ -30,6 +30,7 @@
                 @<text>
                 {
                     handlers: uic.partial.handlers,
+                    loadType: "html",
                     cancelPreviousRequests: true
                 }
                 </text>);

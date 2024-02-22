@@ -65,7 +65,7 @@ public class UICSpaceSelector : UIComponent
     /// </summary>
     /// <remarks>
     /// Example: 
-    /// <br>() => $"#{card.GetOrGenerateId()}"</br>
+    /// <br>() => $"#{card.GetId()}"</br>
     /// <br>() => '.card'</br>
     /// <br>() => '.my-selector'</br>
     /// </remarks>

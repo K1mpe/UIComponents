@@ -22,7 +22,7 @@
     Model.AddAttribute("class", "form-control");
 
 
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
 
     if (!string.IsNullOrEmpty(Model.Value))
         Model.AddAttribute("value", Model.Value);

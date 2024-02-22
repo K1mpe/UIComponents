@@ -138,7 +138,7 @@
                 </text>
             }
         });
-        $('#@Model.Id').on('uic-reload', (ev, node = null, reloadAll = false)=>{
+        $('#@Model.Id').on('uic-reload', (ev, node = null, reloadIfNotFound = false)=>{
             let container = $('#@Model.Id');
             if(container.length == 0)
                 return;
@@ -146,16 +146,18 @@
             ev.stopPropagation();
 
             uic.delayedAction.run('@(Model.Id+"UpdateTree")', 300, (triggers) =>{
-                if(node == null || triggers.filter(x=>x == null).length)
+                if(reloadIfNotFound && (node == null || triggers.filter(x=>x == null).length))
                 {
-                    container.parent().trigger('uic-reload');
+                    $('#@Model.Id').jstree(true).refresh();
                 } else
                 {
-
                     container.css('min-height', container.height());
-                    triggers.forEach((id)=>{
-                        $('#@Model.Id').jstree(true).refresh_node(id);
-                    });
+                    if(triggers.isArray()){
+                        (new Set(triggers)).forEach((id)=>{
+                            $('#@Model.Id').jstree(true).refresh_node(id);
+                        });
+                    }
+                    
 
                     setTimeout(()=> {
                         container.css('min-height', '');
@@ -163,6 +165,11 @@
                 }
             }, node);
         });
+
+        $('#@Model.Id').on('uic-reload', 'li', (ev, reloadIfNotFound) =>{
+            ev.stopPropagation();
+            $('#@Model.Id').trigger('uic-reload', $(ev.target).att('id'), reloadIfNotFound);
+        })
 
 
     </text>);

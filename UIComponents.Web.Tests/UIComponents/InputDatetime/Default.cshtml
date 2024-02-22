@@ -45,7 +45,7 @@
     }
     Model.AddAttribute("step", step);
 
-    string id = Model.GetOrGenerateId();
+    string id = Model.GetId();
     if (Model.Actions.HasValue())
     {
         Model.Actions.SetIdentifier($"#{id}");
