@@ -74,7 +74,7 @@
         console.log("Chart $('#@guid').trigger('uic-enableGraph', 'graphId')", "If this graph is off, turn it on");
         console.log("Chart $('#@guid').trigger('uic-disableGraph', 'graphId')", "If this graph is on, turn it off");
         console.log("Chart $('#@guid').trigger('uic-toggleGraph', 'graphId')", "Turn this graph on or off");
-
+        console.log("chart $('#@guid').trigger('uic-toggleNowIndicator', TrueFalseNull)", "Turn the now Indicator on or off. value null is toggle");
 
         console.log("Chart $('#@guid').on('uic-chartMoved', (ev, chart, momentStart, momentEnd) => {})", "Triggered if the chart moves or scales");
         console.log("Chart $('#@guid').on('uic-loaded', (ev, graph) => {})", "Triggered after one or more graphs have loaded data");
@@ -134,6 +134,7 @@
             graph.enabled = true;
             LoadNewGraphData(graphId);
             chart.update('none');
+            DrawNowLineRecursive();
         }
     });
     $('#@guid').on('uic-removeGraph', function(ev, graphId){
@@ -141,6 +142,7 @@
         graphs[graphId] = undefined;
         syncDataSets();
         chart.update('none');
+        DrawNowLineRecursive();
 
     });
     $('#@guid').on('uic-enableGraph', function(ev, graphId){
@@ -157,6 +159,15 @@
         setDataSetVisibility(graphId, null);
     });
 
+    $('#@guid').on('uic-toggleNowIndicator', function(ev, setState = null){
+        if(setState == null)
+            setState = !enableDrawNowLine;
+        enableDrawNowLine = setState;
+        if(enableDrawNowLine)
+            DrawNowLineRecursive();
+        else
+            chart.render();
+    });
 
     function log(...rest){
         if(@Json.Serialize(Model.EnableConsoleLog))
@@ -324,7 +335,7 @@
                                 minute: @Html.JsEncode(Model.DisplayFormatMinute, "'"),
                             </text>
                             }
-                                @if (!string.IsNullOrEmpty(Model.DisplayFormatSecond))
+                            @if (!string.IsNullOrEmpty(Model.DisplayFormatSecond))
                             {
                             <text>
                                 second: @Html.JsEncode(Model.DisplayFormatSecond, "'"),
@@ -428,17 +439,24 @@
     minDateTime = moment(chart.scales.x.min);
     maxDateTime = moment(chart.scales.x.max);
 
+    let enableDrawNowLine = @Json.Serialize(Model.EnableNowIndicator);
+    let drawLineInterval = 100;
     var graphsIds;
     async function startFetch({ chart }) {
         let { min, max } = chart.scales.x;
 
         minDateTime= moment(min);
         maxDateTime= moment(max);
+        DrawNowLine();
         uic.delayedAction.run('chart-fetch-data-@guid', 1000,async ()=>{
             var startdate = moment(min);
             var enddate = moment(max);
             chart.stop(); // make sure animations are not running
             await LoadNewData(startdate, enddate);
+            drawLineInterval = (maxDateTime-minDateTime)/1000;
+            if(100 > drawLineInterval)
+                drawLineInterval = 100;
+            DrawNowLineRecursive();
             $('#@guid').trigger('uic-chartMoved', chart, minDateTime, maxDateTime);
         });
         
@@ -493,6 +511,7 @@
             LoadNewGraphData(graphId);
 
         chart.update();
+        DrawNowLineRecursive();
         $('#@guid').trigger('uic-graphChanged', graph);
     }
     function LoadNewGraphData(graphId, newMin, newMax){
@@ -613,6 +632,7 @@
 
             chart.data.datasets[graphData.index].data = newData;
             chart.update('none');
+            DrawNowLineRecursive();
             $('#@guid').trigger('uic-loaded', graphData);
         });
     }
@@ -639,7 +659,53 @@
             Initialize();
         }
 
-    
+        
+        let drawLineDelay = null;
+        function DrawNowLineRecursive(){
+            if(drawLineDelay != null)
+                clearTimeout(drawLineDelay);
+
+            DrawNowLine();
+            drawLineDelay = setTimeout(()=>{
+                DrawNowLineRecursive();
+            }, drawLineInterval);
+        };
+        function DrawNowLine(){
+            if(!enableDrawNowLine)
+                return;
+
+            let context = chart.ctx;
+            let lineLeftOffset = GetLeftPosition(moment());
+            if(lineLeftOffset == null)
+                return;
+
+            chart.render();
+            let scale = chart.scales.y;
+            context.beginPath();
+            context.strokeStyle = @Html.JsEncode(Model.NowIndicatorColor, "'");
+            context.moveTo(lineLeftOffset, scale.top);
+            context.lineTo(lineLeftOffset, scale.bottom);
+            context.stroke();
+        };
+        function GetLeftPosition(momentTime){
+            let scale = chart.scales.x;
+            let width = scale.width;
+            let momentValue = momentTime.valueOf();
+            let max = scale.max;
+            if(momentValue > max)
+                return null;
+
+            let min = scale.min;
+            if(min > momentValue)
+                return null;
+
+            let range = max-min;
+            let fromStart = momentValue - min;
+            let percent = fromStart / range;
+            let pixelsLeft = scale.left + (width * percent);
+            return Math.round(pixelsLeft);
+        };
+            DrawNowLineRecursive();
     </text>);
 }
 

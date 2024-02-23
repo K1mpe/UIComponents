@@ -55,9 +55,8 @@
 
     tabs.Add(new UICCard(new UICCardHeader("Chart")).Add(new UICTimeLineGraph(), graph =>
     {
-        graph.Height = "1000px";
         graph.Add(new("Graph1", "blub", "/home/GetTimelineChartData") { CacheData = true, RemoveCacheOnZoom = true, AdditionalPostData = new { UserId = 1 } });
-        graph.Add(new("Graph2", "foo", "/home/GetTimelineChartData"){CacheData = true, RemoveCacheOnZoom = true});
+        graph.Add(new("Graph2", "foo", "/home/GetTimelineChartData"){CacheData = true, RemoveCacheOnZoom = true, Tension=0.5});
     }));
 
 }

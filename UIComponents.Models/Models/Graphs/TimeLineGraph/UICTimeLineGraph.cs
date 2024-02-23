@@ -43,6 +43,8 @@ namespace UIComponents.Models.Models.Graphs.TimeLineGraph
 
         #region Live data
 
+        public bool EnableNowIndicator { get; set; } = TimeLineGraphDefault.EnableNowIndicator;
+        public string NowIndicatorColor { get; set; } = TimeLineGraphDefault.NowIndicatorColor;
 
         /// <summary>
         /// Live update data if conditions are met
@@ -332,6 +334,9 @@ namespace UIComponents.Defaults.Models.Graphs
         public static string ColorMajor { get; set; } = "#FF0000";
         public static bool EnablePanning { get; set; } = true;
         public static bool EnableZoom { get; set; } = true;
+
+        public static bool EnableNowIndicator { get; set; } = true;
+        public static string NowIndicatorColor { get; set; } = "#FF000030";
 
 
         public static string Script_ChartJs { get; set; } = "/lib/Chart.js/chart.umd.min.js";

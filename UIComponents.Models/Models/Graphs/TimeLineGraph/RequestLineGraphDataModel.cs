@@ -29,7 +29,7 @@ public class RequestLineGraphDataModel
     /// <summary>
     /// This is the same object as <see cref="LineGraph.AdditionalPostData"/> and may be usefull for handling the request
     /// </summary>
-    public object AdditionalPostData { get; set; }
+    public Dictionary<string, string> AdditionalPostData { get; set; } = new();
 
 
     /// <summary>
