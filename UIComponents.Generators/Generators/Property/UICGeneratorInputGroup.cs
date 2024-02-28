@@ -31,6 +31,12 @@ namespace UIComponents.Generators.Generators.Property
             if (existingResult != null)
                 return new UICGeneratorResponseNext<IUIComponent>();
 
+            var ignoreAttr = args.PropertyInfo.GetCustomAttribute<UICIgnoreAttribute>();
+            if (ignoreAttr != null)
+            {
+                return new UICGeneratorResponseNext<IUIComponent>();
+            }
+
             var inputGroup = new UICInputGroup();
             inputGroup.Label = await args.Configuration.GetGeneratedResultAsync<IUIComponent, UICLabel>(UICGeneratorPropertyCallType.PropertyLabel, inputGroup, args);
             inputGroup.Input = await args.Configuration.GetGeneratedResultAsync<IUIComponent, UICInput>(UICGeneratorPropertyCallType.PropertyInput, inputGroup, args);

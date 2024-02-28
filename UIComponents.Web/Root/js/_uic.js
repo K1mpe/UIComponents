@@ -1,4 +1,23 @@
-﻿var uic = uic || {};
+﻿/* Format a string by passing arguments or an object
+ * https://stackoverflow.com/a/18234317
+ */
+String.prototype.format = String.prototype.format || function () {
+    'use strict';
+
+    var str = this.toString();
+    if (arguments.length) {
+        var type = typeof arguments[0];
+        var args = ('string' === type || 'number' === type) ? Array.prototype.slice.call(arguments) : arguments[0];
+        for (var key in args) {
+            str = str.replace(new RegExp("\\{" + key + "\\}", 'gi'), args[key]);
+        }
+    }
+
+    return str;
+};
+
+var uic = uic || {};
+
 
 
 
@@ -104,9 +123,9 @@ uic.setValue = function (element, value) {
             $(element).prop('checked', value);
 
         } else {
-            
             $(element).val(value);
         }
+        $(element).change();
     }
 }
 
@@ -150,6 +169,11 @@ uic.markChanges = function (element, newValue) {
     let oldValue = uic.getValue(element);
     if (oldValue != newValue)
         uic.applyMark(element, oldValue, newValue);
+}
+
+//Returns true or false if the element contains this event
+uic.elementContainsEvent = function($element, eventKey){
+    return ($._data($element.get(0), 'events') != undefined && $._data($element.get(0), 'events')[eventKey] != undefined)        
 }
 
 
@@ -316,7 +340,6 @@ uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
 
     return true;
 }
-
 
 //This function disables all the selectlistitems that have the same value as the other selects.
 // Warning: Do not use this function on diffrent selectlists, since they can disable eachothers ids.

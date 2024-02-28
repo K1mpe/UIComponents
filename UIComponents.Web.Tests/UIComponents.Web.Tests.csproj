@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -21,9 +21,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Shared\Error.cshtml" />
-    <None Include="Views\Shared\_Layout.cshtml" />
-    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
     <None Include="wwwroot\lib\font-awesome\webfonts\fa-brands-400.woff2" />
     <None Include="wwwroot\lib\font-awesome\webfonts\fa-duotone-900.woff2" />
     <None Include="wwwroot\lib\font-awesome\webfonts\fa-light-300.woff2" />

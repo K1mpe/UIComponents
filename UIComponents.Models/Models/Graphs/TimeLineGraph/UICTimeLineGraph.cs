@@ -122,16 +122,7 @@ namespace UIComponents.Models.Models.Graphs.TimeLineGraph
         /// </summary>
         /// <remarks>
         /// If more linegraphs are used than color presets are available, this will restart the list of values</remarks>
-        public List<(string LineColor, string BackgroundColor)> LineColors { get; set; } = new()
-    {
-        ("#4287f5", "#4287f570"), //blue
-        ("#f54e42", "#f54e4270"), //red
-        ("#78f542", "#78f54270"), //green
-        ("#f542b3", "#f542b370"), //purple
-        ("#f5e942", "#f5e94270"), //yellow
-        ("#42f2f5", "#42f2f570"), //cyan
-        ("#ed871a", "#ed871a70"), //orange
-    };
+        public List<(string LineColor, string BackgroundColor)> LineColors { get; set; } = TimeLineGraphDefault.LineColors;
 
 
         #endregion
@@ -336,7 +327,7 @@ namespace UIComponents.Defaults.Models.Graphs
         public static bool EnableZoom { get; set; } = true;
 
         public static bool EnableNowIndicator { get; set; } = true;
-        public static string NowIndicatorColor { get; set; } = "#FF000030";
+        public static string NowIndicatorColor { get; set; } = $"{ColorMajor}40";
 
 
         public static string Script_ChartJs { get; set; } = "/lib/Chart.js/chart.umd.min.js";
@@ -345,6 +336,17 @@ namespace UIComponents.Defaults.Models.Graphs
         public static string Script_HammerJs { get; set; } = "/lib/hammer.js/hammer.min.js";
 
         public static bool ConsoleLog { get; set; }
+
+        public static List<(string LineColor, string BackgroundColor)> LineColors { get; set; } = new ()
+        {
+            ("#4287f5", "#4287f570"), //blue
+            ("#f54e42", "#f54e4270"), //red
+            ("#78f542", "#78f54270"), //green
+            ("#f542b3", "#f542b370"), //purple
+            ("#f5e942", "#f5e94270"), //yellow
+            ("#42f2f5", "#42f2f570"), //cyan
+            ("#ed871a", "#ed871a70"), //orange
+        };
     }
 
     public static class LineGraphDefaults

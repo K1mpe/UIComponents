@@ -24,6 +24,12 @@
 
     string id = Model.GetId();
     Model.Actions.SetIdentifier($"#{id}");
+
+    if (Model.ValidationMinValue.HasValue)
+        Model.AddAttribute("min", Model.ValidationMinValue.Value.ToString());
+
+    if (Model.ValidationMaxValue.HasValue)
+        Model.AddAttribute("max", Model.ValidationMaxValue.Value.ToString());
 }
 
 <input type="number" value="@Model.Value.ToString().Replace(",", ".")" @Html.Raw(Model.GetHtmlAttributes()) />
@@ -37,7 +43,7 @@
                 uic.removeDecimals($(this));
             });*@
             $('#@id').change(function(){
-                uic.removeDecimals($(this));
+                uic.form.removeDecimals($(this));
             })
         });
     </script>
@@ -87,6 +93,7 @@
             $('#@id').blur(function () {
                 validateInput($(this));
             });
+
 
         });
     </script>

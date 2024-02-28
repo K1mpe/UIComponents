@@ -102,6 +102,17 @@ namespace UIComponents.Models.Models.Card
                     .AddAttribute("role", "tab")
                     .AddAttribute("data-toggle", "tab");
             }
+            else if(sender is UICModal modal)
+            {
+                header.Renderer = CardHeaderRenderer.ModalHeader;
+                header.AddAttribute("class", "modal-header");
+                if (modal.ShowCloseButton)
+                    header.Buttons.Add(new UICButton()
+                    {
+                        PrependButtonIcon = new UICIcon(IconDefaults.ButtonClose.Icon),
+                        OnClick = modal.TriggerClose()
+                    });
+            }
 
 
             return Task.CompletedTask;
@@ -111,7 +122,7 @@ namespace UIComponents.Models.Models.Card
         public enum CardHeaderRenderer
         {
             CardHeader,
-
+            ModalHeader,
             TabHeader
         }
     }

@@ -1,4 +1,23 @@
-﻿var uic = uic || {};
+﻿/* Format a string by passing arguments or an object
+ * https://stackoverflow.com/a/18234317
+ */
+String.prototype.format = String.prototype.format || function () {
+    'use strict';
+
+    var str = this.toString();
+    if (arguments.length) {
+        var type = typeof arguments[0];
+        var args = ('string' === type || 'number' === type) ? Array.prototype.slice.call(arguments) : arguments[0];
+        for (var key in args) {
+            str = str.replace(new RegExp("\\{" + key + "\\}", 'gi'), args[key]);
+        }
+    }
+
+    return str;
+};
+
+var uic = uic || {};
+
 
 
 
@@ -104,9 +123,9 @@ uic.setValue = function (element, value) {
             $(element).prop('checked', value);
 
         } else {
-            
             $(element).val(value);
         }
+        $(element).change();
     }
 }
 
@@ -150,6 +169,11 @@ uic.markChanges = function (element, newValue) {
     let oldValue = uic.getValue(element);
     if (oldValue != newValue)
         uic.applyMark(element, oldValue, newValue);
+}
+
+//Returns true or false if the element contains this event
+uic.elementContainsEvent = function($element, eventKey){
+    return ($._data($element.get(0), 'events') != undefined && $._data($element.get(0), 'events')[eventKey] != undefined)        
 }
 
 
@@ -317,7 +341,6 @@ uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
     return true;
 }
 
-
 //This function disables all the selectlistitems that have the same value as the other selects.
 // Warning: Do not use this function on diffrent selectlists, since they can disable eachothers ids.
 // Warning: Do not use this function if some selectlistoptions are already disabled, if these values are not used in any of the selects, the become enabled again.
@@ -359,7 +382,26 @@ uic.disableUsedListItems = function (...selects) {
 
    
 }
-﻿uic.contextMenu = uic.contextMenu || {
+﻿uic.card = uic.card || {
+    openCard: async function(card) {
+        await card.triggerHandler('uic-before-open');
+        card.CardWidget('expand');
+    },
+    closeCard: async function(card) {
+        await card.triggerHandler('uic-before-close');
+        card.CardWidget('collapse');
+    },
+    toggleCard: async function(card) {
+        if (card.hasClass('collapsed-card'))
+            await uic.card.openCard(card);
+        else
+            await uic.card.closeCard(card);
+    }
+};
+$(document).ready(function () {
+    $('.card').on('expanded.lte.cardwidget', (ev) => { ev.stopPropagation(); $(ev.target).triggerHandler('uic-opened'); });
+    $('.card').on('collapsed.lte.cardwidget', (ev) => { ev.stopPropagation(); $(ev.target).triggerHandler('uic-closed'); });
+});﻿uic.contextMenu = uic.contextMenu || {
 
 
     //Enable or disable the entire contextMenu functionality
@@ -1063,9 +1105,7 @@ $(document).ready(function () {
     document.oncontextmenu = uic.contextMenu.rightClick;
 
 });
-
-﻿var uic = uic || {};
-uic.delayedAction = uic.delayedAction || {
+﻿uic.delayedAction = uic.delayedAction || {
 
 
 //delayedAction.Run("MyUniqueKey", 500, (data) => {data.forEach((item) => console.log(item))})
@@ -1342,9 +1382,8 @@ uic.delayedAction = uic.delayedAction || {
             
         }
     }
-};﻿var uic = uic || {};
-
-uic.getpost = uic.getpost || {
+};
+﻿uic.getpost = uic.getpost || {
     defaultOptions : {
         get : {
             cancelPreviousRequests: true,
@@ -1525,23 +1564,11 @@ uic.getpost = uic.getpost || {
 
 
 };
-
-
-
-
-﻿var uic = uic || {};
-
-uic.modal = uic.modal || {
-    help: function () {
-        console.log(".trigger('uic-hide') => triggers the modal to hide");
-        console.log(".on('uic-before-hide', function()) => runs before the modal can hide, returning false will disable de modal to hide");
-        console.log(".on('uic-hidden', function()) => triggered after the modal has hidden.");
-    },
-
+﻿uic.modal = uic.modal || {
     closeParent: function (item) {
         var modal = $(item).closest('.uic.modal');
         if (modal.length) {
-            modal.trigger('uic-hide');
+            modal.trigger('uic-close');
             return true;
         }
         modal = $(item).closest('.modal');
@@ -1560,26 +1587,7 @@ uic.modal = uic.modal || {
     },
 
 };
-
-
-$(document).ready(function () {
-    $(document).on('uic-help', '.uic.modal', function () {
-        uic.modal.help();
-    });
-
-    $(document).on('uic-hide', '.uic.modal', async function () {
-        let beforeHideResult = await $(this).on('uic-before-hide');
-        if (beforeHideResult === false)
-            return;
-
-        $(this).modal('hide');
-        $(this).trigger('uic-hidden');
-    })
-});
-
-﻿var uic = uic || {};
-
-uic.partial = uic.partial || {
+﻿uic.partial = uic.partial || {
     showLoadingOverlay: function (element = null) {
         if (!element)
             element = document.body;
@@ -1628,7 +1636,8 @@ uic.partial = uic.partial || {
 };
 $('body').on('uic-reload', (ev) => {
     location.reload();
-});﻿uic.sidePanel = uic.sidePanel || {
+});
+﻿uic.sidePanel = uic.sidePanel || {
     initialize: function (container, startState) {
         container = $(container);
         let isHorizontal = container.hasClass('horizontal');
@@ -1841,7 +1850,6 @@ $('body').on('uic-reload', (ev) => {
 
     }
 };
-
 $(document).on('click', '[role="tab"]', async function (ev) {
 
     let newTab = $(ev.target).closest('[role="tab"]');        // Newly activated tab
@@ -1851,7 +1859,6 @@ $(document).on('click', '[role="tab"]', async function (ev) {
 
 
 });
-
 $(document).on('.uic.card-tabs', 'uic-help', () => {
     console.log("tabs .on('uic-tab-change', (ev, oldHeader, newHeader) => {...} Triggered when a tab changes");
 });

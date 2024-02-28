@@ -702,4 +702,3 @@ $(document).ready(function () {
     document.oncontextmenu = uic.contextMenu.rightClick;
 
 });
-

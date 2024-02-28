@@ -35,7 +35,7 @@
         }
     }
 
-    Model.Value = Model.SelectListItems.Where(x => x.Selected).Select(x => x.Value).ToArray();
+    Model.Value = Model.SelectListItems.Where(x => x.Selected).Select(x => x.Value?.ToString()??null).ToArray();
 
 
     var style = Model.GetAttribute("style");

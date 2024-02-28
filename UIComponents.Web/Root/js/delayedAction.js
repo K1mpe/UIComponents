@@ -1,5 +1,4 @@
-﻿var uic = uic || {};
-uic.delayedAction = uic.delayedAction || {
+﻿uic.delayedAction = uic.delayedAction || {
 
 
 //delayedAction.Run("MyUniqueKey", 500, (data) => {data.forEach((item) => console.log(item))})

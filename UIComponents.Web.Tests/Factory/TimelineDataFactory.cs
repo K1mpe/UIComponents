@@ -19,7 +19,7 @@ public static class TimelineDataFactory
         if (_initialized)
             return Task.CompletedTask;
 
-        var start = DateTime.Today.AddDays(-10);
+        var start = DateTime.Today.AddDays(-1);
         var end = DateTime.Today.AddDays(2);
 
         double lastValue = 0;

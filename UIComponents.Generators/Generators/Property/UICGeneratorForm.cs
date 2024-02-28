@@ -21,6 +21,9 @@ public class UICGeneratorForm : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
+        if (args.Options.NoForm)
+            return GeneratorHelper.Next<IUIComponent>();
+
         if (args.Options.FormReadonly)
             return GeneratorHelper.Next<IUIComponent>();
 
@@ -47,12 +50,6 @@ public class UICGeneratorForm : UICGeneratorProperty
         {
             form.Submit = args.Options.PostForm;
         }
-
-        
-            
-
-        
-
 
         var newCC = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, form, args.CallCollection);
         form.Add(await args.Configuration.GetChildComponentAsync(args.ClassObject, args.PropertyInfo, args.Options, newCC));

@@ -7,6 +7,7 @@ using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
 using UIComponents.Abstractions.Models;
+using UIComponents.Abstractions.Models.RecurringDates;
 using UIComponents.Defaults;
 using UIComponents.Defaults.Models.Graphs;
 using UIComponents.Generators.Interfaces;
@@ -79,8 +80,21 @@ namespace UIComponents.Web.Tests.Controllers
         [HttpPost]
         public IActionResult Post(TestModel post)
         {
-            var x = Request;
-            return Json(true);
+            try
+            {
+                var nextOccurences = post.RecurringDate.GetNextDates(15);
+
+                var serialized = post.RecurringDate.Serialize();
+                var deserialized = RecurringDate.Deserialize(serialized);
+
+                var nextOccurences2 = deserialized.GetNextDates(15);
+                return Json(true);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+            
         }
 
         [HttpPost]

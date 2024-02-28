@@ -21,7 +21,7 @@ public class UICSelectListItem : UIComponent
     #region DefaultProps
 
     public Translatable Text { get; set; }
-    public string Value { get; set; }
+    public object Value { get; set; }
     public bool Selected { get; set; }
 
     public bool Disabled { get; set; }

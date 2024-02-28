@@ -103,6 +103,9 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
                 case "datetime":
                     uicPropertyType = UICPropertyType.DateTime;
                     break;
+                case "dateonly":
+                    uicPropertyType = UICPropertyType.DateOnly;
+                    break;
                 case "boolean":
                     uicPropertyType = UICPropertyType.Boolean;
                     if (nullable)

@@ -1,0 +1,306 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Models.RecurringDates
+@using UIComponents.Defaults;
+@using UIComponents.Generators.Interfaces
+@using UIComponents.Generators.Services
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@inject IUicLanguageService L
+@inject IUIComponentService uic;
+@model UICInputRecurringDate
+
+@{
+    string id = Model.GetId();
+
+    Model.AssignCollectionForChildren();
+    Model.AddClass("recurring-date-input")
+        .AddClass("form-control");
+
+    if (Model.Value == null)
+        Model.Value = new RecurringDate();
+    if (!Model.Value.Included.Any() && !Model.Value.Excluded.Any())
+        Model.Value.Included.Add(new());
+
+
+    var modal = new UICModal("")
+    {
+        OpenOnLoad = false,
+        RemoveModalOnClose = false, 
+        Width= UICModal.ModalSize.Large
+    }.AddClass("recurring-date-modal");
+
+
+    modal.Add(new UICCustom(
+    @<text>
+        <table class="recurring-selectors">
+            <tbody>
+            </tbody>
+        </table>
+    </text>
+            ));
+    modal.Add(new UICButtonToolbar()
+        .AddRight(new UICButton()
+        {
+            ButtonText = new("RecurringDate.Button.AddIncluded")
+        }.AddClass("btn-add-included"))
+        .AddRight(new UICButton()
+        {
+            ButtonText = new("RecurringDate.Button.AddExcluded")
+        }.AddClass("btn-add-excluded"))
+    );
+    modal.Add(out var optionsCard, new UICCard());
+    optionsCard.AddClass("selected-options");
+
+    optionsCard.Add(await uic.CreateComponentAsync(new RecurringDateItem(), new()
+    {
+        NoForm = true,
+        ExcludedProperties= nameof(RecurringDateItem.Pattern)
+    }), dateItem =>
+    {
+        dateItem.FindFirstOfType<UICSingleRow>().AddClass("static-options");
+        dateItem.FindInputByPropertyName<UICInputDatetime>(nameof(RecurringDateItem.EndDate)).ValidationRequired = Model.EndTimeRequired;
+    });
+
+    optionsCard.Add(out var tabs, new UICTabs($"{id}RecurringTabs")
+    {
+        Renderer = UICCardWithTabsRenderer.VerticalTab,
+        OnlyRenderSingleContent = true,
+    });
+
+    foreach (var type in Model.AllowedTypes)
+    {
+        var instance = (IRecurringDateSelector)Activator.CreateInstance(type);
+
+        var card = new UICCard(new Translatable($"RecurringDate.{type.Name}"));
+        card.Body.Add(instance);
+        card.HideHeader = true;
+        tabs.Add(card);
+    }
+
+    modal.AddStyle(
+@<text>
+#@modal.GetId() .prebuild-recurring{
+    display: none;
+}
+#@modal.GetId() .btn-delete-row{
+    cursor: pointer
+}
+</text>);
+
+    Model.AddScript(
+        @<text>
+        $('#@id').click((ev)=>{
+            ev.stopPropagation();
+            @await modal.TriggerOpen().InvokeAsync(Component)
+        });
+        $('#@id').on('getValue', ()=>{
+            let included = [];
+            let excluded = [];
+            $('#@modal.GetId() .recurring-selectors tr.included').each((index, item)=>{
+                let data = $(item).attr('data-value');
+                if(data!= undefined)
+                    included.push(JSON.parse(data));
+            });
+        $('#@modal.GetId() .recurring-selectors tr.excluded').each((index, item)=>{
+                let data = $(item).attr('data-value');
+                if(data!= undefined)
+                    excluded.push(JSON.parse(data));
+            });
+            return {
+                @nameof(RecurringDate.Included): included,
+                @nameof(RecurringDate.Excluded): excluded
+            };
+        })
+
+        function AddIncludedRow(text, data){
+            let tr = $('<tr>')
+                .append($('<td>').append($('<i>', {class: 'fas fa-plus text-success', title: @await Html.Translate(L, new("RecurringDate.Included"))})))
+                .append($('<td>').append($('<span>', {class: 'recurring-text'}).text(text)))
+                .append($('<td>').append($('<i>', {class: '@Html.JsEncode(IconDefaults.Trash.Icon) text-danger btn-delete-row'})));
+                
+            tr.attr('data-value', data);
+            tr.addClass('included');
+            let currentIndex = $('#@modal.GetId() table tbody tr').length;
+            $('#@modal.GetId() table.recurring-selectors tbody').append(tr);
+            SetSelectedOptions(currentIndex);
+        };
+        function AddExcludedRow(text, data){
+            let tr = $('<tr>')
+                .append($('<td>').append($('<i>', {class: 'fas fa-minus text-warning', title: @await Html.Translate(L, new("RecurringDate.Excluded"))})))
+                .append($('<td>').append($('<span>', {class: 'recurring-text'}).text(text)))
+                .append($('<td>').append($('<i>', {class: '@Html.JsEncode(IconDefaults.Trash.Icon) text-danger btn-delete-row', title: @await Html.Translate(L, TranslationDefaults.ButtonDelete, "'")})));
+
+            tr.attr('data-value', data);
+            tr.addClass('excluded');
+            let currentIndex = $('#@modal.GetId() table tbody tr').length;
+            $('#@modal.GetId() table.recurring-selectors tbody').append(tr);
+            SetSelectedOptions(currentIndex);
+        }
+        let selectedIndex = null;
+        let allowSetData = true;
+        function SetSelectedOptions(index){
+            selectedIndex = index;
+            if(index == null){
+                $('#@modal.GetId() .selected-options').addClass('d-none');
+                return;
+            }
+
+            $('#@modal.GetId() .selected-options').removeClass('d-none');
+            $('#@modal.GetId() .recurring-selectors tbody tr').removeClass('selected');
+            $($('#@modal.GetId()  .recurring-selectors tbody tr')[index]).addClass('selected');
+
+            $('#@modal.GetId() .recurring-date-formatter').off('uic-recurringdate-formattedString');
+            $('#@modal.GetId() .recurring-date-formatter').on('uic-recurringdate-formattedString', (ev, value)=>{
+                $($('#@modal.GetId() .recurring-selectors tbody tr')[index]).find('.recurring-text').text(value);
+            });
+
+            allowSetData = false;
+            let dataString = $($('#@modal.GetId() .recurring-selectors tbody tr')[index]).attr('data-value');
+            let data = {};
+            if(dataString != undefined)
+                data = JSON.parse(dataString);
+            $('#@modal.GetId() .recurring-date-formatter').each((index, item)=>{
+                if($(item).attr('data-type') == data.PatternType)
+                    uic.setValue($(item), data.Pattern);
+                else
+                    $(item).trigger('uic-reset');
+            });
+            allowSetData = true;
+            uic.tabs.open($(`#@modal.GetId() .recurring-date-formatter[data-type='${data.PatternType}']`).closest('.tab-pane'));
+        };
+        function getSelectedData(){
+            let data = uic.getValue($('#@modal.GetId() .static-options'));
+
+            $('#@modal.GetId() .recurring-date-formatter').each((index, item)=>{
+                item = $(item);
+                let tabPanel = item.closest('.tab-pane');
+                if(tabPanel.hasClass('active')){
+                    data.Pattern= uic.getValue(item);
+                    data.Pattern.@nameof(IRecurringDateSelector.IsInvalid) = item.triggerHandler('uic-isInvalid');
+                    data.PatternType = item.attr('data-type');
+                }
+            })
+            return data;
+        }
+        function setSelectedData(){
+            if(!allowSetData)
+                return;
+            var data = getSelectedData();
+            let selectedRow = $($('#@modal.GetId() .recurring-selectors tbody tr')[selectedIndex]);
+            if(!data.@nameof(RecurringDateItem.Enabled))
+                selectedRow.addClass('disabled');
+            else
+                selectedRow.removeClass('disabled');
+
+            if(data.@nameof(RecurringDateItem.Pattern) == null || data.@nameof(RecurringDateItem.Pattern).@nameof(IRecurringDateSelector.IsInvalid))
+                selectedRow.addClass('invalid');
+            else
+                selectedRow.removeClass('invalid');
+
+            data = JSON.stringify(getSelectedData());
+
+            selectedRow.attr('data-value', data);
+            
+
+            setElementTitle();
+        };
+        function setElementTitle(){
+            console.log('setElementTitle');
+
+            let included = [];
+            let excluded = [];
+            $('#@modal.GetId() .recurring-selectors tr.included:not(.disabled, .invalid)').each((index, item)=>{
+                let text = $(item).find('.recurring-text').text();
+                text = text.replaceAll('\n', '').trim();
+                included.push(text);
+            });
+            $('#@modal.GetId() .recurring-selectors tr.excluded:not(.disabled, .invalid)').each((index, item)=>{
+                let text = $(item).find('.recurring-text').text();
+                text = text.replaceAll('\n', '').trim();
+                excluded.push(text);
+            });
+
+            let title = @await Html.Translate(L, new("RecurringDate.Format.ComplexPattern", "Complex pattern"), "'");
+            if(!included.length)
+            {
+                title = @await Html.Translate(L, new("RecurringDate.Format.Never"), "'");
+            } else if(included.length == 1){
+                title = included[0];
+                if(excluded.length){
+                    title +=" ";
+                    if(excluded.length == 1){
+                        title += @(await Html.Translate(L, new("RecurringDate.Format.Except"), "'")).toLowerCase();
+                        title += " ";
+                        title += excluded[0].toLowerCase();
+                    }else{
+                        title += @(await Html.Translate(L, new("RecurringDate.Format.WithExceptions", "With exceptions"), "'")).toLowerCase();
+                    }
+                }
+            }
+            $('#@modal.GetId() > .modal-dialog >.modal-content >.modal-header>.modal-title').text(title);
+            $('#@id').text(title);
+        };
+        $('#@modal.GetId() input, #@modal.GetId() select').change(()=>{
+            setSelectedData();
+        })
+
+
+        $('#@modal.GetId() .btn-add-included').click(()=>{
+            AddIncludedRow();
+        });
+        $('#@modal.GetId() .btn-add-excluded').click(()=>{
+            AddExcludedRow();
+        });
+        $('#@modal.GetId()').on('click', '.btn-delete-row', (ev)=>{
+            let target = ev.target;
+            let index = $(target).closest('tr').remove();
+            SetSelectedOptions(null);
+            setElementTitle();
+        })
+        $('#@modal.GetId() .recurring-selectors tbody').on('click', 'tr', (ev)=>{
+            console.log(ev);
+            let target = ev.target;
+            let index = $(target).closest('tr').index();
+            SetSelectedOptions(index);
+        });
+
+        @foreach(var included in Model.Value.Included)
+        {
+            <text>
+            console.log('addIncluded');
+            AddIncludedRow('', '@Html.Raw(included.Serialize())');
+            setSelectedData();
+
+            </text>
+        }
+        @foreach(var excluded in Model.Value.Excluded)
+        {
+            <text>
+            AddExcludedRow('', '@Html.Raw(excluded.Serialize())',"'");
+            setSelectedData();
+
+            </text>
+        }
+
+        </text>);
+}
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+</div>
+
+@await modal.InvokeAsync(Component)
+
+@await Model.RenderStylesAndScripts(Component)

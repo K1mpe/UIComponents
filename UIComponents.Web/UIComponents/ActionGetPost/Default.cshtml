@@ -18,12 +18,21 @@
 
 
 
-let variableContent = null
+
 @if(Model.GetVariableData != null)
 {
     <text>
-        variableContent = await @await Model.GetVariableData.InvokeAsync(Component)
+        let variableContent = @await Model.GetVariableData.InvokeAsync(Component)
+        if(typeof variableContent == 'function')
+            variableContent = await variableContent();
     </text>
+}
+else
+{
+    <text>
+        let variableContent = null;
+    </text>
+    
 }
 
 let data = $.extend({}, variableContent, @Json.Serialize(Model.Data));

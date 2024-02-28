@@ -280,8 +280,40 @@ input.uic-value-changed, select.uic-value-changed{
     background-color: @Model.Color.ToHex() !important;
 }*/
     /*#endregion MultiSelect*/
-    /*#endregion Inputs*/
 
+    /*#region recurringDate*/
+    .recurring-date-modal {
+        .selected-options>.card-body>.card{
+            margin:-1rem;
+            margin-top:0;
+        }
+        tr.selected {
+            background-color: #53c1e620;
+        }
+        tr.invalid .recurring-text{
+            text-decoration: line-through !important;
+        }
+
+        .recurring-date-formatter[data-type='RecurringMonthly'] {
+            display: flex;
+            align-items: center;
+
+            span:not(:first-child) {
+                margin-left: 1rem;
+            }
+
+            span:not(:last-child) {
+                margin-right: 1rem;
+            }
+
+            span {
+                min-width: fit-content;
+            }
+        }
+    }
+
+    /*#endregion recurringDate*/
+/*#endregion Inputs*/
 /*#region SidePanel*/
 .side-panel-container.horizontal {
     .side-panel {
@@ -307,6 +339,11 @@ input.uic-value-changed, select.uic-value-changed{
 
 /*#region Modal*/
 .modal-footer .btn-toolbar:only-child {
+}
+body .modal-dialog.auto { /* Width */
+    max-width: 100%;
+    width: auto !important;
+    display: table;
 }
 /*#endregion Modal*/
 

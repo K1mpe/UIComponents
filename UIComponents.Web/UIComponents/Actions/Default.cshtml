@@ -27,7 +27,6 @@
         @if (Model.OnClick.HasValue())
                 {
         <text>
-            console.log('OnClick', $('#@Html.Raw(identifier)'));
             $('#@Html.Raw(identifier)').click(async function (args) {
             @await Model.OnClick.InvokeAsync(Component)
             });
@@ -35,19 +34,17 @@
                 }
 
         @if (Model.OnChange.HasValue())
-                {
+        {
         <text>
-            console.log('OnChange', $('#@Html.Raw(identifier)'));
             $('#@Html.Raw(identifier)').keyup(async function (args) {
                 @await Model.OnChange.InvokeAsync(Component)
             });
         </text>
-                }
+        }
 
         @if (Model.AfterChange.HasValue())
                 {
         <text>
-            console.log('AfterChange', $(#'@Html.Raw(identifier)'));
             $('#@Html.Raw(identifier)').change(async function (args) {
                 @await Model.AfterChange.InvokeAsync(Component)
             });
@@ -57,7 +54,6 @@
         @if (Model.OnFocus.HasValue())
                 {
         <text>
-            console.log('OnFocus', $('#@Html.Raw(identifier)'));
             $('#@Html.Raw(identifier)').focus(async function (args) {
                 @await Model.OnFocus.InvokeAsync(Component)
             });
@@ -67,7 +63,6 @@
         @if (Model.OnLoseFocus.HasValue())
                 {
         <text>
-            console.log('OnLoseFocus', $('#@Html.Raw(identifier)'));
             $('#@Html.Raw(identifier)').blur(async function (args) {
                 @await Model.OnLoseFocus.InvokeAsync(Component)
             });

@@ -1,6 +1,7 @@
 ﻿@using UIComponents.Abstractions;
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Abstractions.Models
+@using UIComponents.Abstractions.Models.RecurringDates.Selectors
 @using UIComponents.Generators.Interfaces;
 @using UIComponents.Models.Models.Buttons
 @using UIComponents.Models.Models.Card;
@@ -12,6 +13,7 @@
 @using UIComponents.Models.Models.Inputs
 @using UIComponents.Models.Models.Texts
 @using UIComponents.Web.Extensions;
+@using UIComponents.Abstractions.Models.RecurringDates;
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -19,6 +21,24 @@
 @inject IUIComponentService UIC
 @{
     var testModel = new TestModel();
+    testModel.RecurringDate = new();
+    testModel.RecurringDate.Included.Add(new()
+    {
+        Pattern = new RecurringWeekly()
+        {
+            Monday = true,
+            Tuesday = true,
+            Wednesday = true,
+        }
+    });
+    testModel.RecurringDate.Excluded.Add(new()
+    {
+        Pattern = new RecurringMonthly()
+        {
+            Instance = RecurringMonthly.MonthlyInstance.First,
+            RecurringStyle = 1,
+        }
+    });
     var tabs = new UICTabs("TestTabs")
     {
         OnlyRenderSingleContent = true
@@ -29,11 +49,12 @@
             Renderer = UICCardWithTabsRenderer.VerticalTab
         }
         .Add(new UICCard(new Translatable("Card.Create"))
-            .Add(await UIC.CreateComponentAsync(new TestModel(){Enum= TestEnum.Two}, new()
+            .Add(await UIC.CreateComponentAsync(testModel, new()
             {
                 ReplaceSaveButtonWithCreateButton = true,
                 ShowEditButton = false,
-                IncludedProperties = "teststring, number, decimal, checkbox, enum"
+                IncludedProperties = "teststring, number, decimal, checkbox, enum, recurringDate",
+                PostForm = new UICActionPost("home", "post")
             })).Add(await UIC.CreateComponentAsync(testModel, x=>x.TestString)))
         .Add(new UICCard(new Translatable("Card.Edit"))
             .Add(new UICSidePanel(await UIC.CreateComponentAsync(new TestModel()), new UICGroup()
@@ -55,7 +76,7 @@
 
     tabs.Add(new UICCard(new UICCardHeader("Chart")).Add(new UICTimeLineGraph(), graph =>
     {
-        graph.Add(new("Graph1", "blub", "/home/GetTimelineChartData") { CacheData = true, RemoveCacheOnZoom = true, AdditionalPostData = new { UserId = 1 } });
+        graph.Add(new("Graph1", "blub", "/home/GetTimelineChartData") { CacheData = true, RemoveCacheOnZoom = true, AdditionalPostData = new { UserId = 1 }, Fill = true });
         graph.Add(new("Graph2", "foo", "/home/GetTimelineChartData"){CacheData = true, RemoveCacheOnZoom = true, Tension=0.5});
     }));
 

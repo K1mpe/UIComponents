@@ -10,7 +10,8 @@ public class UICInputSelectListSource : UIComponent
     #region Ctor
     public UICInputSelectListSource(UICInputSelectlist inputSelectlist, UICActionGetPost getItemsMethod) : this()
     {
-
+        InputSelectList = inputSelectlist;
+        GetSelectListItems = getItemsMethod;
     }
 
     public UICInputSelectListSource() : base()

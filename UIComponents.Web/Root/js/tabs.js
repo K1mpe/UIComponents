@@ -82,7 +82,6 @@
 
     }
 };
-
 $(document).on('click', '[role="tab"]', async function (ev) {
 
     let newTab = $(ev.target).closest('[role="tab"]');        // Newly activated tab
@@ -92,7 +91,6 @@ $(document).on('click', '[role="tab"]', async function (ev) {
 
 
 });
-
 $(document).on('.uic.card-tabs', 'uic-help', () => {
     console.log("tabs .on('uic-tab-change', (ev, oldHeader, newHeader) => {...} Triggered when a tab changes");
 });

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Registrations;
 using UIComponents.Web.Components;
+using UIComponents.Web.ModelBinders;
 
 namespace UIComponents.Web.Extensions;
 
@@ -22,7 +23,10 @@ public static class UICBuilderExtensions
     {
         services.AddUIComponent(config, out var options);
 
-
+        services.AddMvcCore(mvc =>
+        {
+            mvc.ModelBinderProviders.Insert(0, new RecurringDateModelBinderProvider());
+        });
 
         var executingAssembly = Assembly.GetCallingAssembly();
         var currentAssembly = Assembly.GetExecutingAssembly();

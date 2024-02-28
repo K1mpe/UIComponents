@@ -30,7 +30,7 @@
 
     Model.AssignCollectionForChildren();
 
-    (string BackgroundColor, string LineColor) GetColors(int index)
+    (string LineColor, string BackgroundColor) GetColors(int index)
     {
         if (!Model.LineColors.Any())
             return (null, null);

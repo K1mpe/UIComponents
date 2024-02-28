@@ -1,0 +1,94 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Models.RecurringDates.Selectors
+@using UIComponents.Defaults;
+@using UIComponents.Generators.Interfaces
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@using static UIComponents.Abstractions.Models.RecurringDates.RecurringDate
+@inject IUicLanguageService L
+@inject IUIComponentService uic
+
+@model RecurringCustomDate
+
+@{
+    string id = Guid.NewGuid().ToString("n");
+
+    var tabs = new UICTabs($"{id}RecurringMonthly")
+    {
+        RememberTabState = false,
+        Renderer = UICCardWithTabsRenderer.HorizontalTab
+    };
+    tabs.Add(new UICCard(new Translatable("RecurringDate.Format.Days")), daysCard =>
+    {
+        daysCard.Add(new UICCustom(
+            @<table>
+                <tbody>
+                @Html.Raw("<tr>")
+                @for(int i=0; i<31; i++)
+                {
+                    if(i%7 == 0){
+                        @Html.Raw("</tr>")
+                        @Html.Raw("<tr>")
+                    }
+                    <td class="day-selector" data-day="@(i+1)">
+                    @(i+1)
+                    </td>
+                }
+
+                @Html.Raw("</tr>")
+                <tr>
+                </tr>
+                </tbody>
+            </table>
+        ));
+    });
+    tabs.Add(new UICCard(new Translatable("RecurringDate.Format.Months")), daysCard =>
+    {
+
+    });
+    tabs.Add(new UICCard(new Translatable("RecurringDate.Format.Years")), daysCard =>
+    {
+
+    });
+
+
+}
+
+<div id="@id" class="recurring-date-formatter" data-type="@nameof(RecurringCustomDate)">
+    @await tabs.InvokeAsync(Component)
+
+    <script>
+        $(document).ready(function () {
+
+
+            let formattedString = "";
+
+            $('#@id input, #@id select').change(() => {
+                setFormattedString();
+            })
+            $('#@id').on('uic-isInvalid', () => {
+                let value = uic.getValue($('#@id'));
+
+
+                return true;
+            });
+            function setFormattedString() {
+                let value = uic.getValue($('#@id'));
+                $('#@id').trigger('uic-recurringdate-formattedString', formattedString);
+            };
+        });
+    </script>
+</div>

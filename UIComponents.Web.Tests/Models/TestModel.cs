@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UIComponents.Abstractions.Attributes;
+using UIComponents.Abstractions.Models.RecurringDates;
 using UIComponents.Web.Tests.Models;
 
 namespace UIComponents.Web.Tests.Models
@@ -32,6 +33,9 @@ namespace UIComponents.Web.Tests.Models
         public TestEnum Enum { get; set; }
 
         public string Color { get; set; }
+
+        public RecurringDate RecurringDate { get; set; }
+
 
     }
 

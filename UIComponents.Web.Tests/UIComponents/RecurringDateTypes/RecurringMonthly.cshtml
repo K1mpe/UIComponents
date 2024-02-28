@@ -1,0 +1,144 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Models.RecurringDates.Selectors
+@using UIComponents.Defaults;
+@using UIComponents.Generators.Interfaces
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@using static UIComponents.Abstractions.Models.RecurringDates.RecurringDate
+@inject IUicLanguageService L
+@inject IUIComponentService uic
+
+@model RecurringMonthly
+
+@{
+    string id = Guid.NewGuid().ToString("n");
+
+    var styleSelectListItems = new List<UICSelectListItem>();
+    foreach(var value in Enum.GetValues<DayOfWeek>())
+    {
+        var item = new UICSelectListItem()
+        {
+            Value = (int)value,
+            Text = TranslationDefaults.TranslateEnums(typeof(DayOfWeek), value.ToString()),
+            SortOrder = ((int)value)+100
+        };
+        if (value == DayOfWeek.Sunday)
+            item.SortOrder = 107;
+        styleSelectListItems.Add(item);
+    }
+    styleSelectListItems.Add(new()
+    {
+        Value = 10,
+        Text = new("RecurringDate.Format.Day"),
+        SortOrder = 0
+    });
+    styleSelectListItems.Add(new()
+    {
+        Value = 11,
+        Text = new("RecurringDate.Format.Weekday"),
+        SortOrder = 1
+    });
+    styleSelectListItems.Add(new()
+    {
+        Value = 12,
+        Text = new("RecurringDate.Format.Weekend"),
+        SortOrder = 2
+    });
+
+    var recurringStyleInput = new UICInputSelectlist(nameof(RecurringMonthly.RecurringStyle), new())
+    {
+        SelectListItems = styleSelectListItems,
+        ValidationRequired = true,
+    };
+    var instanceInput = (await uic.CreateComponentAsync(Model, x => x.Instance)).FindFirstOfType<UICInput>();
+    var xMonths = (await uic.CreateComponentAsync(Model, x => x.EveryXMonths)).FindFirstOfType<UICInput>();
+    xMonths.Actions.AfterChange = new UICCustom(
+    @<text>
+                    let value = uic.getValue($('#@xMonths.GetId()'));
+                    if(value > 1)
+                    {
+                        $('#@id .single-month').addClass('d-none');
+                        $('#@id .multi-months').removeClass('d-none');
+                    }
+                    else
+                    {
+                        $('#@id .single-month').removeClass('d-none');
+                        $('#@id .multi-months').addClass('d-none');
+                    }
+                    </text>);
+}
+
+<div id="@id" class="recurring-date-formatter" data-type="@nameof(RecurringMonthly)">
+    
+    <span>@await L.Translate(new("RecurringDate.Format.The"))</span>
+    @await instanceInput.InvokeAsync(Component)
+    @await recurringStyleInput.InvokeAsync(Component)
+    <span>@await L.Translate(new("RecurringDate.Format.OfEvery", "Of every"))</span>
+    @await xMonths.InvokeAsync(Component)
+    <span class="single-month">@await L.Translate(new("Common.Month"))</span>
+    <span class="multi-months d-none">@await L.Translate(new("Common.Month+", "Months"))</span>
+
+
+    <script>
+        $(document).ready(function () {
+            
+
+            let formattedString = "";
+
+            $('#@id input, #@id select').change(() => {
+                setFormattedString();
+            })
+            $('#@id').on('uic-isInvalid', () => {
+                let value = uic.getValue($('#@id'));
+                console.log('check invalid');
+                if(!value.@(nameof(RecurringMonthly.Instance)).length)
+                    return true;
+                
+                if(!value.@(nameof(RecurringMonthly.RecurringStyle)).length)
+                    return true;
+
+                return false;
+            });
+            function setFormattedString() {
+                let value = uic.getValue($('#@id'));
+                
+                let instanceText = $(`#@instanceInput.GetId() option[value="${value.@nameof(RecurringMonthly.Instance)}"]`).text();
+                    instanceText = instanceText.replaceAll("\n", "").trim().toLowerCase();
+                let styleText = $(`#@recurringStyleInput.GetId() option[value="${ value.@nameof(RecurringMonthly.RecurringStyle)}"]`).text();
+                    styleText = styleText.replaceAll("\n", "").trim().toLowerCase();
+
+                formattedString = "";
+                formattedString += @await Html.Translate(L, new("RecurringDate.Format.The"), "'");
+                formattedString += " ";
+                formattedString += instanceText;
+                formattedString += " ";
+                formattedString += styleText;
+                formattedString +=" ";
+                formattedString += @(await Html.Translate(L, new("RecurringDate.Format.OfEvery", "Of every"), "'")).toLowerCase();
+                formattedString += " ";
+                if(value.@nameof(RecurringMonthly.EveryXMonths)> 1){
+                    formattedString += ` ${value.@nameof(RecurringMonthly.EveryXMonths)} `;
+                    formattedString += @(await Html.Translate(L, new("Common.Month+", "Months"), "'")).toLowerCase();
+                } else{
+                    formattedString += @(await Html.Translate(L, new("Common.Month"), "'")).toLowerCase();
+                }
+
+                
+                $('#@id').trigger('uic-recurringdate-formattedString', formattedString);
+            }
+        });
+    </script>
+</div>

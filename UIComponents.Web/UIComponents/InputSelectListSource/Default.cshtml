@@ -45,7 +45,7 @@
             let selectListItems = @Html.Raw(Model.GetSelectListItems.ResultName);
 
             
-            let currentValue = uic.getValue(element);
+            let currentValue = uic.getValue(element) || @Html.JsEncode(Model.InputSelectList.Value, "'");
             @if(Model.MapToSelectListItems != null)
             {
                 <text>
@@ -112,7 +112,6 @@
                 default:
                     throw new NotImplementedException();
             }
-            });
         
             element.find('option').remove();
 

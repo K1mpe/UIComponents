@@ -27,12 +27,11 @@ builder.Services.AddMvc();
 builder.Services.AddUIComponentWeb(config =>
 {
     UIComponents.Defaults.OptionDefaults.ReverseButtonOrder = false;
-    config.CheckPermissionServiceType = false;
+    config.CheckPermissionServiceType = true;
     config.CheckLanguageServiceType = false;
     config.AddDefaultGenerators(builder.Services);
-
-   
 });
+builder.Services.AddSingleton<IUicPermissionService, PermissionService>();
 
 builder.Services.AddWebOptimizer(pipeline =>
 {

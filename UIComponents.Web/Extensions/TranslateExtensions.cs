@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Net;
 using System.Text.Encodings.Web;
 
 namespace UIComponents.Web.Extensions;
@@ -38,6 +39,8 @@ public static class TranslateExtensions
 
     public static async Task<IHtmlContent>Translate(this IHtmlHelper htmlHelper, IUicLanguageService languageService, Translatable translateable, string brackets = "'")
     {
+        if (translateable == null)
+            return htmlHelper.JsEncode(null, brackets);
         var translated = await languageService.Translate(translateable);
         return htmlHelper.JsEncode(translated, brackets);
     }

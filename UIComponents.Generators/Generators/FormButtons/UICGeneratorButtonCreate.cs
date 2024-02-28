@@ -25,7 +25,6 @@ public class UICGeneratorButtonCreate : UICGeneratorProperty
         var button = new UICButtonSave()
         {
             ButtonText = TranslationDefaults.ButtonCreate,
-            OnClick = form.TriggerSubmit()
         };
 
         await Task.Delay(0);

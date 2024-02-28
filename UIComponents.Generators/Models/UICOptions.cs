@@ -71,6 +71,8 @@ public class UICOptions
 
     #region Form
 
+    public bool NoForm { get; set; }
+
     public bool FormReadonly { get; set; }
 
     /// <summary>

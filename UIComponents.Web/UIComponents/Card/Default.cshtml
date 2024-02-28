@@ -63,31 +63,22 @@
                 console.log("Card $('#@id').on('uic-closed', () =>{...}) Triggered when the clsoing animation is complete");
             });
 
-            $('#@id').on('uic-open', async (ev)=>{
+            $('#@id').on('uic-open', (ev)=>{
                 ev.stopPropagation();
                 let card = $('#@id');
-                await card.triggerHandler('uic-before-open');
-
-                card.CardWidget('expand');
+                uic.card.openCard(card);
             })
-            $('#@id').on('uic-close', async (ev)=>{
-            ev.stopPropagation();
-            let card = $('#@id');
-                await card.triggerHandler('uic-before-close');
-
-                card.CardWidget('collapse');
-            });
-            $('#@id').on('uic-toggle', async (ev)=>{
+            $('#@id').on('uic-close', (ev)=>{
                 ev.stopPropagation();
                 let card = $('#@id');
-                if(card.hasClass('collapsed-card'))
-                    card.triggerHandler('uic-open');
-                else
-                    card.triggerHandler('uic-close');
+                uic.card.closeCard(card);
+            });
+            $('#@id').on('uic-toggle', (ev)=>{
+                ev.stopPropagation();
+                let card = $('#@id');
+                uic.card.toggleCard(card);
             });
 
-            $('#@id').on('expanded.lte.cardwidget', (ev)=> {ev.stopPropagation(); $('#@id').triggerHandler('uic-opened');});
-            $('#@id').on('collapsed.lte.cardwidget', (ev)=> {ev.stopPropagation(); $('#@id').triggerHandler('uic-closed');});
 
 
             //If the hash contains the card Id, open the card after 10ms

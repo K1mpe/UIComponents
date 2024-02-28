@@ -20,7 +20,7 @@
 
 @inject IUicLanguageService L
 @{
-    Model.Attributes["value"] = Model.Value;
+    Model.Attributes["value"] = Model.Value?.ToString()??null;
 
     if (!string.IsNullOrEmpty(Model.SearchTag))
         Model.AddAttribute("data-select-search", Model.SearchTag);

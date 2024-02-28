@@ -29,7 +29,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
         if(input.Placeholder == null)
             input.Placeholder = new Translatable("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));
         
-        if (!args.PropertyType.IsEnum || args.CallCollection.Caller is not UICInputGroup)
+        if (args.PropertyType.IsEnum || args.CallCollection.Caller is not UICInputGroup)
             showButtonAdd = false;
 
         if(showButtonAdd && args.Configuration.TryGetPermissionService(out var permissionService))

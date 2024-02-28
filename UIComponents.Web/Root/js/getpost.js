@@ -1,6 +1,4 @@
-﻿var uic = uic || {};
-
-uic.getpost = uic.getpost || {
+﻿uic.getpost = uic.getpost || {
     defaultOptions : {
         get : {
             cancelPreviousRequests: true,
@@ -181,7 +179,3 @@ uic.getpost = uic.getpost || {
 
 
 };
-
-
-
-

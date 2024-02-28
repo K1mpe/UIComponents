@@ -1,6 +1,4 @@
-﻿var uic = uic || {};
-
-uic.partial = uic.partial || {
+﻿uic.partial = uic.partial || {
     showLoadingOverlay: function (element = null) {
         if (!element)
             element = document.body;
