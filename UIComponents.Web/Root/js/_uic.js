@@ -24,11 +24,11 @@ var uic = uic || {};
 uic.getValue = function (element) {
 
     //If you create a function on a element like this
-    //  $().on('GetValue', function () {
+    //  $().on('uic-getValue', function () {
     //      return "value";
     //  });
     // This will overwrite the default behaviour of this function.
-    var result = $(element).triggerHandler('getValue');
+    var result = $(element).triggerHandler('uic-getValue');
     if (result != undefined)
         return result;
 
@@ -79,15 +79,15 @@ uic.getValue = function (element) {
 
 uic.setValue = function (element, value) {
     //If you create a function on a element like this
-    //  $().on('SetValue', function (e, value) {
+    //  $().on('uic-setValue', function (e, value) {
     //      ...;
     //  });
     // This will overwrite the default behaviour of this function.
     if (!$(element).length)
         return;
 
-    if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["setValue"] != undefined) {
-        $(element).trigger('setValue', value);
+    if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["uic-setValue"] != undefined) {
+        $(element).trigger('uic-setValue', value);
         return;
     }
 
@@ -137,7 +137,7 @@ uic.markChanges = function (element, newValue) {
         return;
         
 
-    if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["setValue"] != undefined) {
+    if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["uic-setValue"] != undefined) {
         let oldValue = uic.getValue(element);
         if (oldValue != newValue) {
             uic.applyMark(element, oldValue, newValue);

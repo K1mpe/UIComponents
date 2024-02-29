@@ -38,7 +38,7 @@ Model.AddScript(
     $('#@id').on('uic-help', ()=>{
         console.log("$('#@id').on('uic-open', ()=>{...}) Triggered when opening the selectlist");
     });
-    $('#@id').on('setValue', function (event, value) {
+    $('#@id').on('uic-setValue', function (event, value) {
         $(this).val(value).change();
     });
 

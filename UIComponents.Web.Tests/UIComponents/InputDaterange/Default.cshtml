@@ -105,7 +105,7 @@
     }
         });
 
-        $('#@id').on('getValue', function () {
+        $('#@id').on('uic-getValue', function () {
             var data = $(this).data('daterangepicker');
             return {
                 Start: data.startDate.format(),
@@ -113,7 +113,7 @@
             }
         });
 
-        $('#@id').on('setValue', function(event, value){
+        $('#@id').on('uic-setValue', function(event, value){
             console.log('set daterange', value);
         if(value.Start !== undefined){
             if(value.Start == null)

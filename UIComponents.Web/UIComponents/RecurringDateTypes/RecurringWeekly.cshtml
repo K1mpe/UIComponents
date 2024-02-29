@@ -26,6 +26,7 @@
 @{
     string id = Guid.NewGuid().ToString("n");
     var singleRow = new UICSingleRow();
+    var dayCheckboxes = new UICSingleRow();
     foreach(var property in Model.GetType().GetProperties())
     {
         if (property.Name == nameof(RecurringWeekly.RenderLocation))
@@ -42,14 +43,28 @@
             }
         }
         catch { }
-
-        singleRow.Add(formInput);
+        if(formInput is UICInputGroup inputGroup2 && inputGroup2.Input is UICInputCheckbox)
+            dayCheckboxes.Add(formInput);
+        else
+            singleRow.Add(formInput);
     }
 
 }
 
 <div id="@id" class="recurring-date-formatter" data-type="@nameof(RecurringWeekly)">
-    @await singleRow.InvokeAsync(Component)
+@await singleRow.InvokeAsync(Component)
+    <div class="row">
+        <div class="col">
+            @await dayCheckboxes.InvokeAsync(Component)
+        </div>
+        <div class="col" style="max-width: fit-content; display:flex; flex-direction:column;">
+            <button type="button" class="btn btn-default d-block btn-never">@await L.Translate(new("RecurringDate.Format.Never"))</button>
+            <button type="button" class="btn btn-default d-block btn-every-day">@await L.Translate(new("RecurringDate.Format.Every")) @await L.Translate(new("RecurringDate.Format.Day"))</button>
+            <button type="button" class="btn btn-default d-block btn-weekday">@await L.Translate(new("RecurringDate.Format.Every")) @await L.Translate(new("RecurringDate.Format.Weekday"))</button>
+            <button type="button" class="btn btn-default d-block btn-weekend">@await L.Translate(new("RecurringDate.Format.Every")) @await L.Translate(new("RecurringDate.Format.Weekend"))</button>
+        </div>
+    </div>
+    
 
     <script>
         $(document).ready(function () {
@@ -100,6 +115,58 @@
                     @nameof(RecurringWeekly.Sunday): false,
                 });
             });
+            $('#@id .btn-never').click(() => {
+                var value = {
+                    @nameof(RecurringWeekly.Monday): false,
+                    @nameof(RecurringWeekly.Tuesday): false,
+                    @nameof(RecurringWeekly.Wednesday): false,
+                    @nameof(RecurringWeekly.Thursday): false,
+                    @nameof(RecurringWeekly.Friday): false,
+                    @nameof(RecurringWeekly.Saturday): false,
+                    @nameof(RecurringWeekly.Sunday): false,
+                };
+                uic.setValue($('#@id'), value);
+                setFormattedString();
+            });
+            $('#@id .btn-every-day').click(() => {
+                var value = {
+                    @nameof(RecurringWeekly.Monday): true,
+                    @nameof(RecurringWeekly.Tuesday): true,
+                    @nameof(RecurringWeekly.Wednesday): true,
+                    @nameof(RecurringWeekly.Thursday): true,
+                    @nameof(RecurringWeekly.Friday): true,
+                    @nameof(RecurringWeekly.Saturday): true,
+                    @nameof(RecurringWeekly.Sunday): true,
+                };
+                uic.setValue($('#@id'), value);
+                setFormattedString();
+            });
+             $('#@id .btn-weekday').click(() => {
+                var value = {
+                    @nameof(RecurringWeekly.Monday): true,
+                    @nameof(RecurringWeekly.Tuesday): true,
+                    @nameof(RecurringWeekly.Wednesday): true,
+                    @nameof(RecurringWeekly.Thursday): true,
+                    @nameof(RecurringWeekly.Friday): true,
+                    @nameof(RecurringWeekly.Saturday): false,
+                    @nameof(RecurringWeekly.Sunday): false,
+                };
+                uic.setValue($('#@id'), value);
+                setFormattedString();
+            });
+            $('#@id .btn-weekend').click(() => {
+                var value = {
+                    @nameof(RecurringWeekly.Monday): false,
+                    @nameof(RecurringWeekly.Tuesday): false,
+                    @nameof(RecurringWeekly.Wednesday): false,
+                    @nameof(RecurringWeekly.Thursday): false,
+                    @nameof(RecurringWeekly.Friday): false,
+                    @nameof(RecurringWeekly.Saturday): true,
+                    @nameof(RecurringWeekly.Sunday): true,
+                };
+                uic.setValue($('#@id'), value);
+                setFormattedString();
+            });
             function setFormattedString() {
                 var value = uic.getValue($('#@id'));
                 formattedString = "";
@@ -121,17 +188,17 @@
                 }
 
                 let recurringWeeks = value.@nameof(RecurringWeekly.EveryXWeeks)
-                if(recurringWeeks > 1){
+                if (recurringWeeks > 1) {
                     formattedString += @(await Html.Translate(L, new("RecurringDays.Format.nWeeks", "{0} weeks on", "{0}"))).format(recurringWeeks);
                     formattedString += " ";
 
-                    if (selectedDays == 2 &&  value.@nameof(RecurringWeekly.Saturday) && value.@nameof(RecurringWeekly.Sunday)) {
+                    if (selectedDays == 2 && value.@nameof(RecurringWeekly.Saturday) && value.@nameof(RecurringWeekly.Sunday)) {
                         formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Weekends"),"'")).toLowerCase();
-                    } else  if (selectedDays == 5 && !value.@nameof(RecurringWeekly.Saturday) && !value.@nameof(RecurringWeekly.Sunday)){
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Weekdays", "weeks on weekdays"), "'")).toLowerCase();
+                    } else if (selectedDays == 5 && !value.@nameof(RecurringWeekly.Saturday) && !value.@nameof(RecurringWeekly.Sunday)) {
+                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.WeeksOnWeekdays", "weeks on weekdays"), "'")).toLowerCase();
                     } else if (selectedDays == 7) {
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Weeks", "Day"), "'")).toLowerCase();
-                    }else{
+                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Day", "Day"), "'")).toLowerCase();
+                    } else{
                         if (value.@nameof(RecurringWeekly.Monday)) {
                             formattedString += `${daysOfWeek[1]}, `;
                         }

@@ -104,9 +104,10 @@
         @<text>
         $('#@id').click((ev)=>{
             ev.stopPropagation();
-            @await modal.TriggerOpen().InvokeAsync(Component)
+            if($('#@id').attr('readonly') == undefined)
+                @await modal.TriggerOpen().InvokeAsync(Component)
         });
-        $('#@id').on('getValue', ()=>{
+        $('#@id').on('uic-getValue', ()=>{
             let included = [];
             let excluded = [];
             $('#@modal.GetId() .recurring-selectors tr.included').each((index, item)=>{
@@ -133,7 +134,7 @@
                 
             tr.attr('data-value', data);
             tr.addClass('included');
-            let currentIndex = $('#@modal.GetId() table tbody tr').length;
+            let currentIndex = $('#@modal.GetId() table.recurring-selectors tbody tr').length;
             $('#@modal.GetId() table.recurring-selectors tbody').append(tr);
             SetSelectedOptions(currentIndex);
         };
@@ -145,7 +146,7 @@
 
             tr.attr('data-value', data);
             tr.addClass('excluded');
-            let currentIndex = $('#@modal.GetId() table tbody tr').length;
+            let currentIndex = $('#@modal.GetId() table.recurring-selectors tbody tr').length;
             $('#@modal.GetId() table.recurring-selectors tbody').append(tr);
             SetSelectedOptions(currentIndex);
         }
@@ -165,6 +166,7 @@
             $('#@modal.GetId() .recurring-date-formatter').off('uic-recurringdate-formattedString');
             $('#@modal.GetId() .recurring-date-formatter').on('uic-recurringdate-formattedString', (ev, value)=>{
                 $($('#@modal.GetId() .recurring-selectors tbody tr')[index]).find('.recurring-text').text(value);
+                setSelectedData();
             });
 
             allowSetData = false;
@@ -218,8 +220,6 @@
             setElementTitle();
         };
         function setElementTitle(){
-            console.log('setElementTitle');
-
             let included = [];
             let excluded = [];
             $('#@modal.GetId() .recurring-selectors tr.included:not(.disabled, .invalid)').each((index, item)=>{
@@ -271,7 +271,6 @@
             setElementTitle();
         })
         $('#@modal.GetId() .recurring-selectors tbody').on('click', 'tr', (ev)=>{
-            console.log(ev);
             let target = ev.target;
             let index = $(target).closest('tr').index();
             SetSelectedOptions(index);
@@ -280,7 +279,6 @@
         @foreach(var included in Model.Value.Included)
         {
             <text>
-            console.log('addIncluded');
             AddIncludedRow('', '@Html.Raw(included.Serialize())');
             setSelectedData();
 

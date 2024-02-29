@@ -17,7 +17,7 @@ public class UICInputRecurringDate : UICInput<RecurringDate>
     #endregion
 
     #region Properties
-    public List<Type> AllowedTypes { get; set; } = new List<Type>() { typeof(RecurringWeekly), typeof(RecurringMonthly) };
+    public List<Type> AllowedTypes { get; set; } = new List<Type>() { typeof(RecurringWeekly), typeof(RecurringMonthly), typeof(RecurringCustomDate) };
 
     public Translatable Title { get; set; } = new("RecurringDate");
 

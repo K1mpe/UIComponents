@@ -78,42 +78,51 @@ public partial class RecurringDateItem
         var serializedParts = serialized.Split(",");
         for (int i = 0; i < serializedParts.Length; i++)
         {
-            var part = serializedParts[i];
-            var key = part.Split(":")[0].Replace("\"", "").Trim();
-            var value = part.Split(":")[1].Replace("\"", "").Trim();
+            try{
+                var part = serializedParts[i];
+                var key = part.Split(":")[0].Replace("\"", "").Trim();
+                var value = part.Split(":")[1].Replace("\"", "").Trim();
 
-            if (value.StartsWith("{"))
-            {
-                value = $"{{{part.Split("{")[1].Split("}")[0].Replace("\"", "").Trim()}";
-                int openBrackets = 1;
-                while (i < serializedParts.Length - 1)
+                if (value.StartsWith("{") && !value.EndsWith("}"))
                 {
-                    i++;
-                    var nextPart = serializedParts[i];
-                    openBrackets += (nextPart.Split("{").Length - 1);
-                    openBrackets -= (nextPart.Split("}").Length - 1);
-                    value += $",{nextPart}";
-                    if (openBrackets <= 0)
-                        break;
+                    value = $"{{{part.Split("{")[1].Split("}")[0].Replace("\"", "").Trim()}";
+                    int openBrackets = 1;
+                    while (i < serializedParts.Length - 1)
+                    {
+                        i++;
+                        var nextPart = serializedParts[i];
+                        openBrackets += (nextPart.Split("{").Length - 1);
+                        openBrackets -= (nextPart.Split("}").Length - 1);
+                        value += $",{nextPart}";
+                        if (openBrackets <= 0)
+                            break;
+                    }
                 }
-            } else if (value.StartsWith("["))
-            {
-                value = $"[{part.Split("[")[1].Split("]")[0].Replace("\"", "").Trim()}";
-                int openBrackets = 1;
-                if (i == serializedParts.Length-1)
-                    value += "]";
-                while (i < serializedParts.Length - 1)
+                else if (value.StartsWith("[") && !value.EndsWith("]"))
                 {
-                    i++;
-                    var nextPart = serializedParts[i];
-                    openBrackets += (nextPart.Split("[").Length - 1);
-                    openBrackets -= (nextPart.Split("]").Length - 1);
-                    value += $",{nextPart}";
-                    if (openBrackets <= 0)
-                        break;
+                    value = $"[{part.Split("[")[1].Split("]")[0].Replace("\"", "").Trim()}";
+                    int openBrackets = 1;
+                    if (i == serializedParts.Length - 1)
+                        value += "]";
+                    while (i < serializedParts.Length - 1)
+                    {
+                        i++;
+                        var nextPart = serializedParts[i];
+                        openBrackets += (nextPart.Split("[").Length - 1);
+                        openBrackets -= (nextPart.Split("]").Length - 1);
+                        value += $",{nextPart}";
+                        if (openBrackets <= 0)
+                            break;
+                    }
                 }
+                dict[key] = value;
             }
-            dict[key] = value;
+            catch(Exception ex)
+            {
+                var stackTrace = ex.StackTrace;
+                throw;
+            }
+            
 
         }
 

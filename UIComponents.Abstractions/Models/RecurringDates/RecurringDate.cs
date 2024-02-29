@@ -52,7 +52,7 @@ public class RecurringDate
         while (dates.Count() < maxCount && included.Any())
         {
             //filter excluded to only be the excludeds that are still valid
-            var excluded = Excluded.Where(x => x.Pattern != null && x.StartDate <= startDate && (x.EndDate == null || x.EndDate.Value >= startDate)).ToList();
+            var excluded = Excluded.Where(x => x.Enabled && x.Pattern != null && x.StartDate <= startDate && (x.EndDate == null || x.EndDate.Value >= startDate)).ToList();
 
             DateOnly? foundDate = null;
             DateOnly? firstExcludedDate = null;
@@ -117,6 +117,7 @@ public class RecurringDate
     private static List<(string Name, Type Type)> _knownTypes = new(){
         new(nameof(RecurringWeekly), typeof(RecurringWeekly)),
         new(nameof(RecurringMonthly), typeof(RecurringMonthly)),
+        new(nameof(RecurringCustomDate), typeof(RecurringCustomDate)),
     };
     public static Type? GetType(string name)
     {
@@ -125,6 +126,7 @@ public class RecurringDate
     #endregion
 
     #region Serializing
+
     /// <summary>
     /// Convert this object to a string that can be stored in a database.
     /// </summary>
@@ -180,14 +182,6 @@ public class RecurringDate
         return result;
     }
     #endregion
-
-
-
-
-   
-
-    
-
 }
 
 

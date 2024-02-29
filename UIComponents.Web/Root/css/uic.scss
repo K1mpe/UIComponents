@@ -282,35 +282,56 @@ input.uic-value-changed, select.uic-value-changed{
     /*#endregion MultiSelect*/
 
     /*#region recurringDate*/
-    .recurring-date-modal {
-        .selected-options>.card-body>.card{
-            margin:-1rem;
-            margin-top:0;
+.recurring-date-input:not([readonly]){
+    cursor: pointer;
+}
+.recurring-date-modal {
+    .selected-options > .card-body > .card {
+        margin: -1rem;
+        margin-top: 0;
+    }
+
+    tr.selected, td.selected {
+        background-color: #53c1e620;
+        cursor: pointer;
+    }
+
+    tr.disabled {
+        opacity: 0.3;
+    }
+
+    tr.invalid .recurring-text {
+        text-decoration: line-through !important;
+    }
+
+    .recurring-date-formatter[data-type='RecurringMonthly'] {
+        display: flex;
+        align-items: center;
+
+        span:not(:first-child) {
+            margin-left: 1rem;
         }
-        tr.selected {
-            background-color: #53c1e620;
-        }
-        tr.invalid .recurring-text{
-            text-decoration: line-through !important;
+
+        span:not(:last-child) {
+            margin-right: 1rem;
         }
 
-        .recurring-date-formatter[data-type='RecurringMonthly'] {
-            display: flex;
-            align-items: center;
-
-            span:not(:first-child) {
-                margin-left: 1rem;
-            }
-
-            span:not(:last-child) {
-                margin-right: 1rem;
-            }
-
-            span {
-                min-width: fit-content;
-            }
+        span {
+            min-width: fit-content;
         }
     }
+
+    .recurring-date-formatter[data-type=RecurringCustomDate] {
+        .recurring-custom-title {
+            font-weight: 700;
+        }
+
+        td {
+            user-select: none;
+            cursor: pointer;
+        }
+    }
+}
 
     /*#endregion recurringDate*/
 /*#endregion Inputs*/

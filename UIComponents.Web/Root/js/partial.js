@@ -37,6 +37,14 @@
 
         let result = await getDatafunc();
 
+        //Remove the Select2 container when reloading the partial containing the select source
+        let select2Container = $('.select2-container');
+        if (select2Container.length) {
+            let forId = select2Container.attr('data-for');
+            if (partial.find(`#${forId}`).length)
+                select2Container.remove();
+        }
+        
         partial.html(result);
 
         if (showOverlay)

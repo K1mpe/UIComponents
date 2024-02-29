@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using static UIComponents.Abstractions.Models.RecurringDates.Selectors.RecurringMonthly;
 
 namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
 {
@@ -22,44 +24,91 @@ namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
 
 
         #region Methods
-        public string Serialize()
-        {
-            throw new NotImplementedException();
-        }
-        public IRecurringDateSelector Deserialize(string serialised)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public DateOnly? GetNextDate(RecurringDateItem dateItem, DateOnly start)
         {
             if (IsValidDate(dateItem, start))
                 return start;
+            Years = Years.OrderBy(x => x).ToList();
+            Months = Months.OrderBy(x => x).Where(x=>x >0 && x <=12).ToList();
+            Days = Days.OrderBy(x => x).Where(x=> x >0 && x <= 31).ToList();
 
-            int year = start.Year;
-            if (Years.Any())
-            {
-                if (!Years.Any(x => x >= start.Year))
-                    return null;
-                year = Years.Where(x=> x>= start.Year).OrderBy(x=>x).FirstOrDefault();
-            }
+
+            int? year = start.Year;
             int month = start.Month;
-            if (Months.Any())
-            {
-                if (!Months.Any(x => x >= start.Month))
-                    return null;
-                month = Months.Where(x => x >= start.Month).OrderBy(x => x).FirstOrDefault();
-            }
             int day = start.Day;
-            if (Days.Any())
+            year = GetYear(year);
+            month = GetMonth(month);
+            day = GetDay(day);
+            if (year == null)
+                return null;
+            int counter = 0;
+            while(DateTime.DaysInMonth(year.Value, month) < day && counter <1000)
             {
-                if (!Days.Any(x => x >= start.Day))
-                    return null;
-                day = Days.Where(x => x >= start.Day).OrderBy(x => x).FirstOrDefault();
+                day = GetDay(day+1);
+                counter++;
             }
-            
+            if (counter == 1000)
+                return null;
 
-            return null;
+            return new DateOnly(year.Value, month, day);
+
+            int GetDay(int day)
+            {
+                if(day > 31)
+                {
+                    month = GetMonth(month+1);
+                    return Days.Any() ? Days.First() : 1;
+                }
+                if (!Days.Any())
+                    return day;
+                if (Days.Contains(day))
+                    return day;
+
+                if(Days.Where(x=> x > day).Any())
+                    return Days.Where(x=> x >day).First();
+                else
+                {
+                    month = GetMonth(month + 1);
+                    return Days.First();
+                }
+            }
+            int GetMonth(int month)
+            {
+                if (!Months.Any())
+                    return month;
+
+                
+                if (Months.Any(x => x >= start.Month))
+                    return Months.Where(x => x >= start.Month).First();
+                else
+                {
+                    year = GetYear(year + 1);
+                    day = GetDay(1);
+                    return Months.First();
+                }
+            }
+            int? GetYear(int? year)
+            {
+                if (year == null)
+                    return null;
+
+                if (Years.Any())
+                {
+                    if (Years.Contains(year.Value))
+                        return year;
+
+                    if (!Years.Any(x => x >= year))
+                        return null;
+
+                    month = GetMonth(1);
+                    day = GetDay(1);
+                    Years.Where(x => x >= year).First();
+                }
+                return year;
+            }
+
         }
 
         public bool IsValidDate(RecurringDateItem dateItem, DateOnly date)
@@ -72,6 +121,41 @@ namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
                 return false;
 
             return true;
+        }
+
+
+        public string Serialize()
+        {
+            string serialised = JsonSerializer.Serialize(this);
+            return serialised;
+        }
+        public IRecurringDateSelector Deserialize(string serialised)
+        {
+            var deserialised = RecurringDateItem.DeserializeDict(serialised);
+            foreach(var kvp in deserialised)
+            {
+                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+            }
+            var days = deserialised[nameof(Days)].Replace("[", "").Replace("]", "");
+            Days = new();
+            if (!string.IsNullOrWhiteSpace(days))
+            {
+                Days.AddRange(days.Split(",").Select(x => int.Parse(x)));
+            }
+            var months = deserialised[nameof(Months)].Replace("[", "").Replace("]", "");
+            Months = new();
+            if (!string.IsNullOrWhiteSpace(months))
+            {
+                Months.AddRange(months.Split(",").Select(x => int.Parse(x)));
+            }
+            var years = deserialised[nameof(Years)].Replace("[", "").Replace("]", "");
+            Years = new();
+            if (!string.IsNullOrWhiteSpace(years))
+            {
+                Years.AddRange(years.Split(",").Select(x => int.Parse(x)));
+            }
+
+            return this;
         }
         #endregion
 

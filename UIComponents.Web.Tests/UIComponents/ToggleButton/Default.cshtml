@@ -25,14 +25,14 @@
 
     Model.AddScript(
     @<text>
-        $('#@id').on('setValue', function(e, value){
+        $('#@id').on('uic-setValue', function(e, value){
             if(value == true){
                 ViewButtonTrue();
             } else{
                 ViewButtonFalse();
             }
         });
-        $('#@id').on('getValue', function(e){
+        $('#@id').on('uic-getValue', function(e){
             return $('#@idButtonTrue:visible').length >0;
         })
 

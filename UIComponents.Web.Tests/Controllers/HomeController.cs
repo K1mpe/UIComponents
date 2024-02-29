@@ -82,7 +82,7 @@ namespace UIComponents.Web.Tests.Controllers
         {
             try
             {
-                var nextOccurences = post.RecurringDate.GetNextDates(15);
+                var nextOccurences = post.RecurringDate.GetNextDates(30);
 
                 var serialized = post.RecurringDate.Serialize();
                 var deserialized = RecurringDate.Deserialize(serialized);

@@ -22,7 +22,7 @@
 @if(Model.GetVariableData != null)
 {
     <text>
-        let variableContent = @await Model.GetVariableData.InvokeAsync(Component)
+        let variableContent = @await Model.GetVariableData.InvokeAsync(Component);
         if(typeof variableContent == 'function')
             variableContent = await variableContent();
     </text>

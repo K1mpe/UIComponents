@@ -18,29 +18,40 @@ public class RecurringDateModelBinder : IModelBinder
 
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        if (bindingContext == null)
+        try
         {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+            if (bindingContext == null)
+            {
+                throw new ArgumentNullException(nameof(bindingContext));
+            }
 
-        var modelName = bindingContext.ModelName;
+            var modelName = bindingContext.ModelName;
 
-        var model = new RecurringDate();
-        var form = bindingContext.HttpContext.Request.Form;
-        if (form == null)
-        {
+            var model = new RecurringDate();
+            var form = bindingContext.HttpContext.Request.Form;
+            if (form == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            model.Included.AddRange(GetFromForm($"{modelName}[{nameof(RecurringDate.Included)}]", form));
+            model.Excluded.AddRange(GetFromForm($"{modelName}[{nameof(RecurringDate.Excluded)}]", form));
+
+            bindingContext.Result = ModelBindingResult.Success(model);
+            // Model will be null if not found, including for
+            // out of range id values (0, -3, etc.)
+            //var model = _context.Authors.Find(id);
+            //bindingContext.Result = ModelBindingResult.Success(model);
             return Task.CompletedTask;
         }
-
-        model.Included.AddRange(GetFromForm($"{modelName}[{nameof(RecurringDate.Included)}]", form));
-        model.Excluded.AddRange(GetFromForm($"{modelName}[{nameof(RecurringDate.Excluded)}]", form));
-
-        bindingContext.Result = ModelBindingResult.Success(model);
-        // Model will be null if not found, including for
-        // out of range id values (0, -3, etc.)
-        //var model = _context.Authors.Find(id);
-        //bindingContext.Result = ModelBindingResult.Success(model);
-        return Task.CompletedTask;
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex.StackTrace);
+            bindingContext.Result = ModelBindingResult.Failed();
+            return Task.CompletedTask;
+        }
+        
     }
 
     public List<RecurringDateItem> GetFromForm(string prefix, IFormCollection formCollection)
@@ -83,6 +94,10 @@ public class RecurringDateModelBinder : IModelBinder
             if(formCollection.TryGetValue($"{prefix}[{property.Name}]", out var propValue))
             {
                 properties.Add(property.Name, propValue.ToString());
+            }
+            if (formCollection.TryGetValue($"{prefix}[{property.Name}][]", out var propArray))
+            {
+                properties.Add(property.Name, $"[{propArray.ToString()}]");
             }
         }
         return properties;
