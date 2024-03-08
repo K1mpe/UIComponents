@@ -40,7 +40,7 @@ namespace UIComponents.Generators.Generators.Property
             var inputGroup = new UICInputGroup();
             inputGroup.Label = await args.Configuration.GetGeneratedResultAsync<IUIComponent, UICLabel>(UICGeneratorPropertyCallType.PropertyLabel, inputGroup, args);
             inputGroup.Input = await args.Configuration.GetGeneratedResultAsync<IUIComponent, UICInput>(UICGeneratorPropertyCallType.PropertyInput, inputGroup, args);
-
+            inputGroup.Input.DisplayName = TranslationDefaults.TranslateProperty(args.PropertyInfo, args.UICPropertyType.Value);
             if (!inputGroup.Label.HasValue() && !inputGroup.Input.HasValue())
                 inputGroup.Render = false;
 

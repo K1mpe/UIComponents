@@ -16,6 +16,9 @@ namespace UIComponents.Web.Tests.Models
         [UICTooltip("Dit is een test")]
         public string TestString { get; set; }
 
+        [UICPropertyType(UICPropertyType.MultilineText)]
+        public string Description { get; set; }
+
         public bool Checkbox { get; set; }
 
         public bool? ThreeStateBool { get; set; }

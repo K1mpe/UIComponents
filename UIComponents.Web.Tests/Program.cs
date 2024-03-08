@@ -17,11 +17,16 @@ builder.Host.ConfigureLogging(logging =>
 });
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    });
 
 builder.Services.AddMvc();
 
 // Add optimizer to minify CSS and JavaScript files at runtime.
+
 
 
 builder.Services.AddUIComponentWeb(config =>
@@ -31,6 +36,9 @@ builder.Services.AddUIComponentWeb(config =>
     config.CheckLanguageServiceType = false;
     config.AddDefaultGenerators(builder.Services);
 });
+Console.WriteLine("");
+Console.WriteLine("-- Components are generated --");
+Console.WriteLine("");
 builder.Services.AddSingleton<IUicPermissionService, PermissionService>();
 
 builder.Services.AddWebOptimizer(pipeline =>

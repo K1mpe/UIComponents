@@ -1,0 +1,98 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@model UICToggleButton
+
+@{
+    string id = Model.GetId();
+    Model.AddClass("btn-toggle");
+    string idButtonTrue = Model.ButtonTrue.GetId();
+    string idButtonFalse = Model.ButtonFalse.GetId();
+
+    Model.AssignCollectionForChildren();
+
+    Model.AddScript(
+    @<text>
+        $('#@id').on('uic-help', ()=>{
+            console.log("ToggleButton $('#@id').trigger('uic-turnOn') => Set this button to the true state");
+            console.log("ToggleButton $('#@id').trigger('uic-turnOff') => Set this button to the false state");
+            console.log("ToggleButton $('#@id').trigger('uic-toggle') => Toggle this button");
+
+            console.log("ToggleButton $('#@id').on('uic-changed') => Triggered when this button changes");
+
+        });
+
+        $('#@id').on('uic-setValue', function(e, value){
+            if(value == true){
+                ViewButtonTrue();
+            } else{
+                ViewButtonFalse();
+            }
+        });
+        $('#@id').on('uic-getValue', function(e){
+            return $('#@idButtonTrue:visible').length >0;
+        })
+
+
+        var ViewButtonTrue = function(){
+            $('#@idButtonTrue').attr('hidden', false);
+            $('#@idButtonFalse').attr('hidden',true);
+            $('#@id').trigger('uic-changed');
+            $('#@id').change();
+
+        };
+        var ViewButtonFalse = function () {
+            $('#@idButtonTrue').attr('hidden', true);
+            $('#@idButtonFalse').attr('hidden', false);
+            $('#@id').trigger('uic-changed');
+            $('#@id').change();
+        };
+        @if (!Model.DisableAutoChange)
+                {
+        <text>
+            $('#@idButtonTrue').click(function () {
+                ViewButtonFalse();
+            });
+
+            $('#@idButtonFalse').click(function () {
+                ViewButtonTrue();
+            });
+        </text>
+                }
+
+        @if (Model.Value)
+                {
+        <text>
+            ViewButtonTrue();
+        </text>
+                }
+                else
+                {
+        <text>
+            ViewButtonFalse();
+        </text>
+                }
+    </text>);
+
+}
+
+
+<span @Html.Raw(Model.GetHtmlAttributes())>
+    @await Model.ButtonTrue.InvokeAsync(Component)
+    @await Model.ButtonFalse.InvokeAsync(Component)
+</span>
+
+@await Model.RenderStylesAndScripts(Component)

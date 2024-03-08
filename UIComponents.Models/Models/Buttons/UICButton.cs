@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Models.Models.Buttons;
 
-[PrependAppendInputGroupClass("")]
+[PrependAppendInputGroupClass("input-group-button")]
 public class UICButton : UIComponent
 {
     #region Fields

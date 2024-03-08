@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 
 namespace UIComponents.Defaults;
 
@@ -81,9 +82,9 @@ public static class TranslationDefaults
 
     public static Func<PropertyInfo, UICPropertyType, Translatable> TranslateProperty = (prop, uicPropType) =>
     {
-        var translateAttr = prop.GetCustomAttribute<UICSpanAttribute>();
+        var translateAttr = prop.GetCustomAttribute<DisplayNameAttribute>();
         if (translateAttr != null)
-            return translateAttr.TranslationModel.ResourceKey;
+            return translateAttr.DisplayName;
 
         if (uicPropType == UICPropertyType.SelectList && prop.Name.EndsWith("Id") && prop.Name != "Id")
             return new Translatable($"{prop.DeclaringType!.Name}.Field.{prop.Name.Substring(0, prop.Name.Length - 2)}");
@@ -92,7 +93,9 @@ public static class TranslationDefaults
     };
 
 
-
+    /// <summary>
+    /// Function takes a already translated propertyName and creates a validation message
+    /// </summary>
     public static Func<string, Translatable> ValidationIsRequired = (translatedPropertyName) => new Translatable("Validation.Required", "{0} is required", translatedPropertyName);
 
     public static Func<string, int, Translatable> ValidateMinLength = (translatedPropertyName, minLenght) => new Translatable("Validation.MinLength", "The value of {0} must be longer than {1}", translatedPropertyName, minLenght);

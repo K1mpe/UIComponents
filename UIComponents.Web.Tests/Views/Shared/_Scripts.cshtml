@@ -30,7 +30,7 @@
             theme: 'pill',
             themeMode: 'auto',
             swatches: themeColorArray,
-            onChange: (color, input) => { console.log('col', color); $(input).parents('.form-group').find('.input-group-text *').css('color', color); },
+            onChange: (color, input) => { console.log('col', color); $(input).parents('.input-group').find('.input-group-text *').css('color', color); },
 
             focusInput: false,
             selectInput: false,
@@ -52,34 +52,7 @@
             swatchesOnly: true, theme: 'default',
         });
 
-        $(document).on('input', '[data-coloris], .coloris', function () {
-            var value = $(this).val();
-            var group = $(this).parents('.input-group');
-
-            if (value in themeColors) {
-                console.log('set', value)
-                Coloris.setColor(themeColors[value], this);
-            }
-            if (group.length && isColor(value)) {
-                console.log('css', value)
-                group.find('.input-group-text *').css('color', value);
-            }
-
-            console.log('end', value)
-        });
-        $(document).on('click', '[data-coloris]:not([data-coloris=""])', function () {
-            var config = $(this).data('coloris');
-            if (config) {
-                $(this).replaceClass('coloris', 'instance');
-                $(this).one('close', function () {
-                    Coloris.removeInstance('.instance');
-                    $(this).removeClass('instance');
-                });
-
-                // console.log(this, config);
-                Coloris.setInstance('.instance', config);
-            }
-        });
+        
     });
    
 </script>

@@ -6,7 +6,7 @@ public interface IUIComponent
     /// The Unique identifier can be used to use diffrent renders for the same object.
     /// </summary>
     /// <remarks>
-    /// Example: /Views/Shared/Components/UIComponent/Button/_Default
+    /// Example: /Views/Shared/Components/Button/Default
     /// </remarks>
     public string RenderLocation { get; }
 

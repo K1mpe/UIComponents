@@ -7,17 +7,21 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.1.5</Version>
+	<Version>1.1.11</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <ItemGroup>
 	  <EmbeddedResource Include="UIComponents\**\*.cshtml" Pack="true" />
-	  <EmbeddedResource Include="Root\**" Pack="true" />
-	  <EmbeddedResource Include="Taghelper\**" Pack="true" />
+	  <EmbeddedResource Include="UIComponents\Root\**" Pack="true" />
   </ItemGroup>
 	
   <ItemGroup>
+    <None Remove="UIComponents\Root\js\translation.js" />
+  </ItemGroup>
+	
+	
+  <!--<ItemGroup>
     <Content Remove="UIComponents\ActionGetValue\Default.cshtml" />
     <Content Remove="UIComponents\Actions\Select2.cshtml" />
     <Content Remove="UIComponents\CardHeader\ModalHeader.cshtml" />
@@ -31,13 +35,13 @@
     <Content Remove="UIComponents\SpaceSelector\Default.cshtml" />
     <Content Remove="UIComponents\TreeItems\Default.cshtml" />
     <Content Remove="UIComponents\Tree\Default.cshtml" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <!--<ItemGroup>
     <Content Remove="Views\_Imports.cshtml" />
   </ItemGroup>-->
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <None Remove="Root\css\uic.scss" />
     <None Remove="Root\js\card.js" />
     <None Remove="Root\js\contextMenu.js" />
@@ -48,7 +52,7 @@
     <None Remove="Root\js\partial.js" />
     <None Remove="Root\js\sidepanel.js" />
     <None Remove="Root\js\tabs.js" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
@@ -61,7 +65,7 @@
     <ProjectReference Include="..\UIComponents.Generators\UIComponents.Generators.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <None Include="UIComponents\ActionCloseCard\Default.cshtml" />
     <None Include="UIComponents\ActionCompareObjects\Default.cshtml" />
     <None Include="UIComponents\ActionDisableSaveButtonOnValidationErrors\Default.cshtml" />
@@ -120,10 +124,9 @@
     <None Include="UIComponents\SingleRow\Default.cshtml" />
     <None Include="UIComponents\Span\Default.cshtml" />
     <None Include="UIComponents\Upload\Dropzone1.cshtml" />
-  </ItemGroup>
-
+  </ItemGroup>-->
   <ItemGroup>
-    <Folder Include="Taghelper\" />
+	  <Folder Include="Taghelpers\UIComponentTaghelper" />
   </ItemGroup>
 
  

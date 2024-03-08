@@ -8,7 +8,7 @@ namespace UIComponents.Models.Models.Actions;
 public class UICActionRefreshPartial : UIComponent, IUIAction
 {
     #region Ctor
-    public UICActionRefreshPartial(UICPartial? partial = null, IUIHasAttributes spinElement=null) : base()
+    public UICActionRefreshPartial(UICPartial? partial = null, IUICHasAttributes spinElement=null) : base()
     {
         Partial = partial;
         SpinElement = spinElement;
@@ -30,7 +30,7 @@ public class UICActionRefreshPartial : UIComponent, IUIAction
     /// <remarks>
     /// If using a icon, be sure to generate a id for the icon, since a icon does not generate one itself.</remarks>
     [IgnoreGetChildrenFunction]
-    public IUIHasAttributes? SpinElement { get; set; } = null;
+    public IUICHasAttributes? SpinElement { get; set; } = null;
     #endregion
 
 }

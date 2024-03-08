@@ -19,9 +19,16 @@ public class UICInputRecurringDate : UICInput<RecurringDate>
     #region Properties
     public List<Type> AllowedTypes { get; set; } = new List<Type>() { typeof(RecurringWeekly), typeof(RecurringMonthly), typeof(RecurringCustomDate) };
 
-    public Translatable Title { get; set; } = new("RecurringDate");
 
-    public bool EndTimeRequired { get; set; }
+    /// <summary>
+    /// Requires at least 1 included selector
+    /// </summary>
+    public bool ValidationRequired { get; set; }
+
+    /// <summary>
+    /// The endtime is required for selectors
+    /// </summary>
+    public bool ValidationEndRequired { get; set; }
     #endregion
 
 

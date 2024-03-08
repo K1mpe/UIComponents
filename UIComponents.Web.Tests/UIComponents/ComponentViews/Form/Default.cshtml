@@ -1,0 +1,89 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Models;
+
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICForm
+
+@{
+    string id = Model.GetId();
+    bool isSubForm = !string.IsNullOrEmpty(Model.GetAttribute("formidentifier"));
+
+    Model.AssignCollectionForChildren();
+
+    if(!isSubForm)
+        Model.GetAllChildren().AddAttribute("formidentifier", $"#{id}");
+
+}
+
+
+@if (isSubForm)
+{
+    <div @Html.Raw(Model.GetHtmlAttributes())>
+        @foreach (var element in Model.Children)
+        {
+            @await element.InvokeAsync(Component)
+        }
+    </div>
+}
+else
+{
+    <form id="@id">
+    
+    @foreach(var element in Model.Children)
+    {
+        @await element.InvokeAsync(Component)
+    }
+    
+    </form>
+
+
+    @if(Model.Readonly)
+    {
+        Model.AddScript(
+    @<text>
+        uic.form.readonly($('#@id'));
+    </text>);
+    }
+
+    @if(Model.SetFocusOnFirstInput)
+    {
+        Model.AddScript(
+    @<text>
+        setTimeout(() => {
+            console.log('focussing first input');
+            $('#@id input, #@id select')[0].focus();
+        }, 500);
+    </text>);
+    }
+
+    @if(Model.Submit != null)
+    {
+        if (Model.Submit is UICActionGetPost getPost)
+            getPost.GetVariableData = new UICCustom($"uic.getValue($('#{id}'));");
+        Model.AddScript(
+            @<text>
+            $('#@id').off('submit');
+            $('#@id').on('submit', async function(ev){
+                ev.preventDefault();
+                ev.stopPropagation();
+                @await Model.Submit.InvokeAsync(Component)
+            });
+
+            </text>
+        );
+    }
+}
+
+@await Model.RenderStylesAndScripts(Component)

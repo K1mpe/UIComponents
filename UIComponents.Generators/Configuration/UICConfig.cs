@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using UIComponents.Abstractions;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Services;
 using UIComponents.Generators.Services.Internal;
 using UIComponents.Models.Models.Texts;
@@ -216,6 +217,9 @@ public class UICConfig
             return string.Empty;
         return $"{propertyInfo.DeclaringType?.Name} => {propertyInfo.Name}";
     }
+
+
+    
 
 
     public class ButtonGenerator

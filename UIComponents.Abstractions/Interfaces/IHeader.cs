@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Abstractions.Interfaces;
 
-public interface IHeader : IUIComponent, IUIHasAttributes
+public interface IHeader : IUIComponent, IUICHasAttributes
 {
     public Translatable Title { get; set; }
     public IColor? Color { get; set; }

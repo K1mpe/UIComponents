@@ -8,7 +8,7 @@ public class RecurringWeekly : IRecurringDateSelector
 {
     #region Fields
     [UICIgnore]
-    public string RenderLocation => "/UIComponents/RecurringDateTypes/RecurringWeekly";
+    public string RenderLocation => "/UIComponents/ComponentViews/RecurringDateTypes/RecurringWeekly";
     #endregion
 
 

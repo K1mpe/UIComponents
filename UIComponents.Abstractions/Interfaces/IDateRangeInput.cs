@@ -1,10 +1,10 @@
 ﻿namespace UIComponents.Abstractions.Interfaces;
 
-public interface IDateRangeInput
+public interface IDateRangeInput : IValueRange<DateTime?>
 {
 
-        public DateTime? Start { get; set; }
-        public DateTime? End { get; set; }
+    public DateTime? From { get; set; }
+    public DateTime? To { get; set; }
 
     /// <summary>
     /// Duration can only return a value if both <see cref="Start"/> and <see cref="End"/> are provided
@@ -13,10 +13,14 @@ public interface IDateRangeInput
         {
             get
             {
-                if (Start.HasValue && End.HasValue)
-                    return End.Value - Start.Value;
+                if (From.HasValue && To.HasValue)
+                    return To.Value - From.Value;
                 return null;
             }
         }
+
+
+    DateTime? IValueRange<DateTime?>.From => From;
+    DateTime? IValueRange<DateTime?>.To => To;
 
 }

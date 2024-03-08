@@ -20,6 +20,10 @@ public class UICLabel : UIComponent
     public Translatable LabelText { get; set; }
     public Translatable Tooltip { get; set; }
 
+    public List<IUIComponent> PrependLabel { get; set; } = new();
+    public List<IUIComponent> AppendLabel { get; set; } = new();
+
+
     /// <summary>
     /// This icon is displayed only when the tooltip is not empty
     /// </summary>

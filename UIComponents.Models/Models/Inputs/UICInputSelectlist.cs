@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using UIComponents.Abstractions.Extensions;
+using UIComponents.Abstractions.Interfaces.Inputs;
 using UIComponents.Abstractions.Models;
 
 namespace UIComponents.Models.Models.Inputs;
 
-public class UICInputSelectlist : UICInput<string>
+public class UICInputSelectList : UICInput<string>, IUICInputSelectList
 {
     #region Fields
     public override bool HasClientSideValidation => ValidationRequired;
@@ -21,11 +22,11 @@ public class UICInputSelectlist : UICInput<string>
     #endregion
 
     #region Ctor
-    public UICInputSelectlist() : base(null)
+    public UICInputSelectList() : base(null)
     {
 
     }
-    public UICInputSelectlist(string propertyName, List<SelectListItem> selectListItems) : base(propertyName)
+    public UICInputSelectList(string propertyName, List<SelectListItem> selectListItems) : base(propertyName)
     {
         SelectListItems = selectListItems.ToUIC();
     }
@@ -68,6 +69,47 @@ public class UICInputSelectlist : UICInput<string>
     public IUIAction? OnListOpen { get; set; }
 
     public SelectListRenderer Renderer { get; set; } = SelectListRenderer.Select2;
+
+    object IUICInputSelectList.Value => Value;
+
+
+    #endregion
+
+    #region Methods
+    public UICInputSelectList AddSource(UICActionGetPost source)
+    {
+        var selectSource = new UICInputSelectListSource(this, source);
+        AddSource(selectSource);
+        return this;
+    }
+    public UICInputSelectList AddSource(out UICInputSelectListSource outSource, UICActionGetPost source)
+    {
+        var selectSource = new UICInputSelectListSource(this, source);
+        return AddSource(out outSource, selectSource);
+    }
+    public UICInputSelectList AddSource(UICActionGetPost source, Action<UICInputSelectListSource> action)
+    {
+        var selectSource = new UICInputSelectListSource(this, source);
+        return AddSource(selectSource, action);
+    }
+    public UICInputSelectList AddSource(UICInputSelectListSource source)
+    {
+        source.InputSelectList = this;
+        ScriptCollection.AddToScripts(source);
+        return this;
+    }
+    public UICInputSelectList AddSource(out UICInputSelectListSource outSource, UICInputSelectListSource source)
+    {
+        outSource = source;
+        return AddSource(source);
+    }
+    public UICInputSelectList AddSource(UICInputSelectListSource source, Action<UICInputSelectListSource> action)
+    {
+        AddSource(source);
+        action(source);
+        return this;
+    }
+
     #endregion
 
 

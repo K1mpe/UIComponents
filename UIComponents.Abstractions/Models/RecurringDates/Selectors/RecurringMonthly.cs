@@ -7,7 +7,7 @@ public class RecurringMonthly : IRecurringDateSelector
 {
     #region Fields
     [UICIgnore]
-    public string RenderLocation => "/UIComponents/RecurringDateTypes/RecurringMonthly";
+    public string RenderLocation => "/UIComponents/ComponentViews/RecurringDateTypes/RecurringMonthly";
 
     #endregion
 

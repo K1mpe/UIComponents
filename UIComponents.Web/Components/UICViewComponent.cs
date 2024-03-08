@@ -22,7 +22,7 @@ public class UICViewComponent : ViewComponent
         if (element.TryGetPropertyValue<bool>(nameof(UIComponent.Render), out bool render))
         {
             if (!render)
-                return View($"/UIComponents/NoRender.cshtml", element);
+                return View($"/UIComponents/ComponentViews/NoRender.cshtml", element);
         }
 
         if (element is UIComponent UIC)
@@ -51,8 +51,7 @@ public class UICViewComponent : ViewComponent
                     UIC.AddAttribute("disabled", "true");
                 }
         }
-        
-
+        ViewData["UIC"] += $" => {element.RenderLocation}";
         return View($"{element.RenderLocation}.cshtml", element);
     }
 }

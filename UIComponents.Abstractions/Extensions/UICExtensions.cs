@@ -181,7 +181,7 @@ public static class UICExtensions
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
-    public static string GetId(this IUIHasAttributes element)
+    public static string GetId(this IUICHasAttributes element)
     {
         string id = element.GetAttribute("id");
         if (string.IsNullOrWhiteSpace(id))
@@ -195,7 +195,7 @@ public static class UICExtensions
     /// Set the Id for this element. Will throw <see cref="Exception"></see> if the item already has a id.
     /// </summary>
     /// <exception cref="Exception"></exception>
-    public static T SetId<T>(this T element, string id) where T : IUIHasAttributes
+    public static T SetId<T>(this T element, string id) where T : IUICHasAttributes
     {
         if(id.StartsWith("#"))
             id = id.Substring(1);
@@ -213,7 +213,7 @@ public static class UICExtensions
     /// </summary>
     /// <param name="key"></param>
     /// <returns></returns>
-    public static string GetAttribute(this IUIHasAttributes element, string key)
+    public static string GetAttribute(this IUICHasAttributes element, string key)
     {
         key = key.ToLower();
         element.Attributes.TryGetValue(key, out string existing);
@@ -221,7 +221,7 @@ public static class UICExtensions
     }
 
 
-    public static T AddAttribute<T>(this T element, string key, string value) where T : IUIHasAttributes
+    public static T AddAttribute<T>(this T element, string key, string value) where T : IUICHasAttributes
     {
         key = key.ToLower();
 
@@ -245,12 +245,12 @@ public static class UICExtensions
         return element;
     }
 
-    public static T AddClass<T>(this T element, string @class) where T : IUIHasAttributes
+    public static T AddClass<T>(this T element, string @class) where T : IUICHasAttributes
     {
         return element.AddAttribute("class", @class);
     }
 
-    public static T AddStyle<T>(this T element, string style) where T : IUIHasAttributes
+    public static T AddStyle<T>(this T element, string style) where T : IUICHasAttributes
     {
         return element.AddAttribute("style", style);
     }

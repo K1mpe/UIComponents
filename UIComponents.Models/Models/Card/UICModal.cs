@@ -26,6 +26,11 @@ public class UICModal: UIComponent
 
     public bool ShowCloseButton { get; set; } = true;
 
+    /// <summary>
+    /// Move the content out of its current location and place it on the body
+    /// </summary>
+    public bool MoveModalToBody { get; set; }
+
     public bool DisableCloseOnClickout { get; set; }
     public bool DisableEscapeKeyToClickout { get; set; } 
 
@@ -199,6 +204,11 @@ public class UICModal: UIComponent
     public IUIAction TriggerClose()
     {
         return new UICCustom($"$('#{this.GetId()}').trigger('uic-close');");
+    }
+
+    public IUIAction TriggerDestroy()
+    {
+        return new UICCustom($"$('#{this.GetId()}').trigger('uic-destroy');");
     }
     #endregion
 

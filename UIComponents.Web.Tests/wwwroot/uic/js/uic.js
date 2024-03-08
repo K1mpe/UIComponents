@@ -135,11 +135,11 @@ uic.setValue = function (element, value) {
 uic.markChanges = function (element, newValue) {
     if (!$(element).length)
         return;
-        
+
 
     if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["uic-setValue"] != undefined) {
         let oldValue = uic.getValue(element);
-        if (oldValue != newValue) {
+        if (oldValue != newValue && !(!oldValue && !newValue)) {
             uic.applyMark(element, oldValue, newValue);
         }
         return;
@@ -165,9 +165,9 @@ uic.markChanges = function (element, newValue) {
         });
         return;
 
-    } 
+    }
     let oldValue = uic.getValue(element);
-    if (oldValue != newValue)
+    if (oldValue != newValue && !(!oldValue && !newValue))
         uic.applyMark(element, oldValue, newValue);
 }
 
@@ -178,23 +178,42 @@ uic.elementContainsEvent = function($element, eventKey){
 
 
 uic.markChangesIcon = $('<i>', { class: 'fas fa-triangle-exclamation uic-value-changed' });
-uic.markChangesTooltip = function (element, oldValue, newValue) {
-    return `Value has changed to '${newValue}'\r\nClick here to update value`;
+uic.markChangesTooltip = async function (element, oldValue, newValue) {
+    let translatable = {
+        ResourceKey: "UIC.MarkChanges",
+        DefaultValue: "Value has changed to {0}\r\nClick here to update value",
+        Arguments: [newValue]
+    };
+    return await uic.translation.translate(translatable);
 }
 
 uic.applyMark = async function (element, oldValue, newValue) {
     let mark = uic.markChangesIcon.clone();
     let tooltip = await uic.markChangesTooltip(element, oldValue, newValue);
 
+    let elementId = element.attr('id');
+    let visualElement = element;
+    if (element.prop('tagName') == "SELECT") {
+        let option = element.find(`option[value=${newValue}]`);
+        if (option.length)
+            tooltip = await uic.markChangesTooltip(element, oldValue, option.text().replaceAll('\n', '').trim());
+        let select2Span = element.next();
+        if (select2Span.length && select2Span.hasClass('select2'))
+            visualElement = select2Span;
+    }
     if (tooltip.length)
         mark.attr('title', tooltip);
+    if (elementId.length) {
+        $(`.uic-value-changed[data-for=${elementId}]`).remove();
+        mark.attr('data-for', elementId);
+    }
     mark.click(() => {
         uic.setValue(element, newValue);
-        element.removeClass('uic-value-changed');
+        visualElement.removeClass('uic-value-changed');
         mark.remove();
     });
 
-    element.each((index, item) => {
+    visualElement.each((index, item) => {
         item = $(item);
         if (item.attr('readonly')) {
             uic.setValue(item, newValue);
@@ -209,7 +228,6 @@ uic.applyMark = async function (element, oldValue, newValue) {
         else
             item.before(mark);
     })
-    
 }
 uic.clearValues = function (object) {
     for (let [key, val] of Object.entries(object)) {
@@ -252,9 +270,7 @@ uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
         var prop = comparisonProps[i];
 
         //Check if entity has property
-        if (comparison.hasOwnProperty(prop))
-
-
+        if (comparison.hasOwnProperty(prop)) {
             //get props from entity and comparison in lowercase to compare
             var e = "";
             var c = "";
@@ -291,6 +307,7 @@ uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
             }
             return false;
         }
+    }
 
 
     comparisonProps = Object.getOwnPropertyNames(objectMatch);
@@ -1268,6 +1285,7 @@ $(document).ready(function () {
             ErrorBox(ex);
         }
     },
+    
     select2: {
         //https://select2.org/searching
         searchMethod: function (params, data) {
@@ -1313,7 +1331,9 @@ $(document).ready(function () {
                         match = false;
                     }
                     if (match) {
-                        child.text += `( ${data.text} )`;
+                        if(data.text.length)
+                            child.text += `( ${data.text} )`;
+
                         childResults.push(child);
                     }
                         
@@ -1363,23 +1383,30 @@ $(document).ready(function () {
         resultRenderer: function (state) {
             if (state.element == undefined)
                 return;
-                
+
 
             let selectId = $(state.element).closest('select').attr('id');
+            let prepend;
+            let append;
             if (state.children == undefined) {
-                let prepend = $(`.select-elements[for-select="${selectId}"] .prepend-item[for-value="${state.id}"]`).html();
-                let append = $(`.select-elements[for-select="${selectId}"] .append-item[for-value="${state.id}"]`).html();
+                prepend = $(`.select-elements[for-select="${selectId}"] .prepend-item[for-value="${state.id}"]`).html();
+                append = $(`.select-elements[for-select="${selectId}"] .append-item[for-value="${state.id}"]`).html();
 
-                let result = $('<span>').append(prepend).append(state.text).append(append);
-                return result;
+
             } else {
-                let prepend = $(`.select-elements[for-select="${selectId}"] .prepend-group[for-label="${state.text}"]`).html();
-                let append = $(`.select-elements[for-select="${selectId}"] .append-group[for-label="${state.text}"]`).html();
-
-                let result = $('<span>').append(prepend).append(state.text).append(append);
-                return result;
+                prepend = $(`.select-elements[for-select="${selectId}"] .prepend-group[for-label="${state.text}"]`).html();
+                append = $(`.select-elements[for-select="${selectId}"] .append-group[for-label="${state.text}"]`).html();
             }
-            
+
+            let result = $('<span>').append(prepend).append(state.text).append(append);
+
+            let existingClass = $(state.element).attr('class');
+            let existingStyle = $(state.element).attr('style');
+            let existingData = $(state.element).data();
+
+            result.attr('class', existingClass).attr('style', existingStyle).data(existingData);
+
+            return result;
         }
     }
 };
@@ -1443,10 +1470,10 @@ $(document).ready(function () {
                             console.error(response.data);
                             break;
                     }
-                    let message = response.notification.Message.DefaultValue.format(response.notification.Message.Arguments);
+                    let message = uic.translation.translate(response.notification.Message);
                     if (message == "null")
                         message = "";
-                    let title = response.notification.Title.DefaultValue.format(response.notification.Title.Arguments);
+                    let title = uic.translation.translate(response.notification.Title);
                     if (title == "null")
                         title = "";
 
@@ -1470,9 +1497,20 @@ $(document).ready(function () {
                     let text = response.exception[0].responseText;
                     if (text.length > 255 || !text.length)
                         text = "A error occured";
-                    makeToast("Error", "", text);
+                    //makeToast("Error", "", text);
                     return false;
                 }
+            }, 
+            (response) => {
+                if (response.type == "Redirect") {
+
+                    if (!response.data.length)
+                        location.reload();
+                    else
+                        location.href = response.url;
+                    return true;
+                }
+                
             }
         ],
     },
@@ -1585,6 +1623,19 @@ $(document).ready(function () {
 
         return false;
     },
+    moveModal: function (modal, referenceId) {
+        $(uic.modal.modalDestination).append(modal);
+
+        function removeModalIfReferenceIsGone() {
+            if (!$(`#${referenceId}`).length)
+                modal.remove();
+        }
+        if ($(`#${referenceId}`).length) {
+            $(document).on('uic-reloaded', removeModalIfReferenceIsGone);
+            $(document).on('uic-closed', removeModalIfReferenceIsGone);
+        }
+    },
+    modalDestination: 'body',
 
 };
 ﻿uic.partial = uic.partial || {
@@ -1612,7 +1663,7 @@ $(document).ready(function () {
             if (response.type == "Exception") {
                 return $('<div>', { class: 'alert alert-danger', role: 'alert' }).append('Error receiving data');
             }
-        }
+        },
     ],
 
 
@@ -1874,4 +1925,12 @@ $(document).on('.uic.card-tabs .tab-pane', 'uic-help',()=> {
 
     console.log("tab .on('uic-open', () => {...} Triggered when the tab opens");
     console.log("tab .on('uic-close', () => {...} Triggered when the tab closes");
-});
+});﻿uic.translation = uic.translation || {
+    translate: async function (translatable) {
+        if (translatable.ResourceKey == undefined)
+            return translatable;
+
+        let defaultValue = translatable.DefaultValue || translatable.ResourceKey.split('.').last();
+        return defaultValue.format(translatable.Arguments);
+    }
+}

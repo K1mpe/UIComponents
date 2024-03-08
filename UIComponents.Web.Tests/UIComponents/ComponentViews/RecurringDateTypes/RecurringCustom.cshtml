@@ -1,0 +1,385 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Models.RecurringDates
+@using UIComponents.Abstractions.Models.RecurringDates.Selectors
+@using UIComponents.Defaults;
+@using UIComponents.Generators.Interfaces
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@using static UIComponents.Abstractions.Models.RecurringDates.RecurringDate
+@inject IUicLanguageService L
+@inject IUIComponentService uic
+
+@model RecurringCustomDate
+
+@{
+    string id = Guid.NewGuid().ToString("n");
+
+
+}
+
+<div id="@id" class="recurring-date-formatter" data-type="@nameof(RecurringCustomDate)">
+    <div class="row">
+        <div class="col recurring-custom-days">
+            <span class="recurring-custom-title">@await L.Translate(new("RecurringDate.Format.Days"))</span>
+            <table>
+                <tbody>
+                    @Html.Raw("<tr>")
+                    @for (int i = 0; i < 31; i++)
+                    {
+                        if (i % 7 == 0)
+                        {
+                            @Html.Raw("</tr>")
+                            @Html.Raw("<tr>")
+                        }
+                    <td class="day-selector" data-day="@(i + 1)">
+                            @(i + 1)
+                    </td>
+                    }
+
+                    @Html.Raw("</tr>")
+                <tr>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col recurring-custom-months">
+            <span class="recurring-custom-title">@await L.Translate(new("RecurringDate.Format.Months"))</span>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="month-selector" data-month="1">
+                            @await L.Translate(new("Month.January"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="2">
+                            @await L.Translate(new("Month.February"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="3">
+                            @await L.Translate(new("Month.March"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="4">
+                            @await L.Translate(new("Month.April"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="5">
+                            @await L.Translate(new("Month.May"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="6">
+                            @await L.Translate(new("Month.June"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="7">
+                            @await L.Translate(new("Month.July"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="8">
+                            @await L.Translate(new("Month.August"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="9">
+                            @await L.Translate(new("Month.September"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="10">
+                            @await L.Translate(new("Month.October"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="11">
+                            @await L.Translate(new("Month.November"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="month-selector" data-month="12">
+                            @await L.Translate(new("Month.December"))
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col recurring-custom-years">
+            <span class="recurring-custom-title ">@await L.Translate(new("RecurringDate.Format.Years"))</span>
+            <table>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            let days= [];
+            let months = [];
+            let years = [];
+            let formattedString = "";
+
+            $('#@id .recurring-custom-days td').click((ev) => {
+                element = $(ev.target);
+                let day = element.attr('data-day');
+                if (days.includes(day)) {
+                    if (days.length == 1)
+                        days = [];
+                    let dayIndex = days.indexOf(day);
+                    days.splice(dayIndex, 1);
+                    element.removeClass('selected');
+                }
+                else {
+                    days.push(day);
+                    element.addClass('selected');
+                }
+                days = days.sort((a, b) => {
+                    if (Number(a) < Number(b))
+                        return -1;
+                    return 1;
+                });
+                setFormattedString();
+                setYears();
+            });
+            $('#@id .recurring-custom-months td').click((ev) => {
+                element = $(ev.target);
+                let month = element.attr('data-month');
+                if (months.includes(month)) {
+                    if (months.length == 1)
+                        months = [];
+                    let monthIndex = months.indexOf(month);
+                    months.splice(monthIndex, 1);
+                    element.removeClass('selected');
+                }
+                else {
+                    months.push(month);
+                    element.addClass('selected');
+                }
+                months = months.sort((a, b) => {
+                    if (Number(a) < Number(b))
+                        return -1;
+                    return 1;
+                });
+                setFormattedString();
+            });
+            $('#@id .recurring-custom-years').on('click', 'td', (ev) => {
+                element = $(ev.target);
+                let year = element.attr('data-year');
+                if (years.includes(year)) {
+                    if (years.length == 1)
+                        years = [];
+                    let yearIndex = years.indexOf(year);
+                    years.splice(yearIndex, 1);
+                    element.removeClass('selected');
+                }
+                else {
+                    years.push(year);
+                    element.addClass('selected');
+                }
+                years = years.sort((a, b) => {
+                    if (Number(a) < Number(b))
+                        return -1;
+                    return 1;
+                });
+                setFormattedString();
+            });
+
+            $('#@id').on('uic-getValue', () => {
+                let result = {};
+
+                var selectorContainer = $('#@id').closest('.selected-options').find('.static-options');
+                let startYear = Number(moment(selectorContainer.find('input[name=@nameof(RecurringDateItem.StartDate)]').val()).format('yyyy'));
+                let endYear = Number(moment(selectorContainer.find('input[name=@nameof(RecurringDateItem.EndDate)]').val()).format('yyyy'));
+                years = years.filter(x => Number(x) >= startYear);
+                if (endYear > 2000)
+                    years = years.filter(x => endYear >= Number(x));
+
+                result.@nameof(RecurringCustomDate.Days) = days;
+                result.@nameof(RecurringCustomDate.Months) = months;
+                result.@nameof(RecurringCustomDate.Years) = years;
+                return result;
+            });
+            $('#@id').on('uic-setValue', (ev, setValue)=>{
+                console.log('setting value', setValue);
+                days = setValue.@nameof(RecurringCustomDate.Days);
+                months = setValue.@nameof(RecurringCustomDate.Months);
+                years = setValue.@nameof(RecurringCustomDate.Years);
+                visualiseValues();
+            })
+            $('#@id').on('uic-reset', () => {
+                uic.setValue($('#@id'), {
+                    @nameof(RecurringCustomDate.Days): [],
+                    @nameof(RecurringCustomDate.Months): [],
+                    @nameof(RecurringCustomDate.Years): [],
+                });
+            });
+            $('#@id').on('uic-isInvalid', () => {
+                if (days.length)
+                    return false;
+                if (months.length)
+                    return false;
+                if (years.length)
+                    return false;
+                return true;
+            });
+            function setFormattedString() {
+                let value = uic.getValue($('#@id'));
+                formattedString = "";
+                if(days.length){
+                    if (!(months.length == 1 && years.length == 1)) {
+                        formattedString += @await Html.Translate(L, new("RecurringDate.Format.Every"), "'");
+                        formattedString += " ";
+                    }
+                    if (days.length <= 5) {
+                        for (let i = 0; i < days.length; i++) {
+                            if (i > 0){
+                                if (i == days.length - 1) {
+                                    formattedString += " ";
+                                    formattedString += @(await Html.Translate(L, new("Common.And"), "'")).toLowerCase();
+                                    formattedString += " ";
+                                } else {
+                                    formattedString += ", ";
+                                }
+                            }
+                            
+                            formattedString += days[i];
+                            formattedString += @(await Html.Translate(L, new("RecurringDate.Format.th"), "'")).toLowerCase();
+                        }
+                        formattedString += " ";
+                    } else {
+                        if (days.length >= 20) {
+                            formattedString = @await Html.Translate(L, new("RecurringDate.Format.Many"), "'");
+                        } else {
+                            formattedString = @await Html.Translate(L, new("RecurringDate.Format.Multiple"), "'");
+                        }
+                        formattedString += " ";
+                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Days"), "'")).toLowerCase();
+                        formattedString += " ";
+                    }
+                } else{
+                    formattedString += @await Html.Translate(L, new("RecurringDate.Format.Every"), "'");
+                    formattedString += " ";
+                    formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Day", "Day"), "'")).toLowerCase();
+                    formattedString += " ";
+                }
+                if (months.length) {
+                    formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Of"), "'")).toLowerCase();
+                    formattedString += " ";
+
+                    if(months.length <=3){
+                        for (let i = 0; i < months.length; i++) {
+
+                            if (i > 0) {
+                                if (i == months.length - 1) {
+                                    formattedString += " ";
+                                    formattedString += @(await Html.Translate(L, new("Common.And"), "'")).toLowerCase();
+                                    formattedString += " ";
+                                } else {
+                                    formattedString += ", ";
+                                }
+                            }
+                            let month = $(`#@id .recurring-custom-months td[data-month=${months[i]}]`).text().replaceAll('\n', '').trim();
+                            formattedString += month;
+                        }
+                        formattedString += " ";
+                    }else{
+                        if (months.length >= 6) {
+                            formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Many"), "'")).toLowerCase();
+                        } else {
+                            formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Multiple"), "'")).toLowerCase();
+                        }
+                        formattedString += " ";
+                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Months"), "'")).toLowerCase();
+                        formattedString += " ";
+                    }
+                }
+                if (years.length) {
+                    formattedString += @(await Html.Translate(L, new("RecurringDate.Format.In"), "'")).toLowerCase();
+                    formattedString += " ";
+                    if (years.length <= 3) {
+                        for (let i = 0; i < years.length; i++) {
+                            if (i > 0) {
+                                if (i == years.length - 1) {
+                                    formattedString += " ";
+                                    formattedString += @(await Html.Translate(L, new("Common.And"), "'")).toLowerCase();
+                                    formattedString += " ";
+                                } else {
+                                    formattedString += ", ";
+                                }
+                            }
+                            formattedString += years[i];
+                        }
+                        formattedString += " ";
+                    } else {
+                        if (years.length >= 6) {
+                            formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Many"), "'")).toLowerCase();
+                        } else {
+                            formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Multiple"), "'")).toLowerCase();
+                        }
+                        formattedString += " ";
+                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Years"), "'")).toLowerCase();
+                    }
+                }
+
+                $('#@id').trigger('uic-recurringdate-formattedString', formattedString);
+            };
+
+            function setYears() {
+                var selectorContainer = $('#@id').closest('.selected-options').find('.static-options');
+                let startYear = Number(moment(selectorContainer.find('input[name=@nameof(RecurringDateItem.StartDate)]').val()).format('yyyy'));
+                let endYear = Number(moment(selectorContainer.find('input[name=@nameof(RecurringDateItem.EndDate)]').val()).format('yyyy'));
+
+                let maxNumberOfYears = 12;
+                if (endYear > startYear)
+                    maxNumberOfYears = (endYear - startYear) + 1;
+                
+                let tbody = $('#@id .recurring-custom-years tbody');
+                tbody.html('');
+                for(let i=0; i < maxNumberOfYears; i++){
+                    let year = startYear + i;
+                    let row = $('<tr>').append($('<td>', { class: 'year-selector', 'data-year': year }).append(year));
+                    tbody.append(row);
+                }
+                visualiseValues();
+            }
+
+            function visualiseValues() {
+                $('#@id .selected').each((index, item) => {
+                    $(item).removeClass('selected');
+                });
+
+                days.forEach(day => {
+                    $(`#@id .recurring-custom-days .day-selector[data-day=${day}]`).addClass('selected');
+                });
+                months.forEach(month => {
+                    $(`#@id .recurring-custom-months .month-selector[data-month=${month}]`).addClass('selected');
+                }); 
+                years.forEach(year => {
+                    $(`#@id .recurring-custom-years .year-selector[data-year=${year}]`).addClass('selected');
+                });
+            }
+            setYears();
+        });
+    </script>
+</div>

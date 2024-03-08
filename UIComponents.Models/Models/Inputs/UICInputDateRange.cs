@@ -131,4 +131,14 @@ public class DateRangeInput : IDateRangeInput
     public DateTime? Start { get; set; }
     public DateTime? End { get; set; }
 
+    public DateTime? From
+    {
+        get => Start;
+        set => Start = value;
+    }
+    public DateTime? To
+    {
+        get => End;
+        set => End = value;
+    }
 }

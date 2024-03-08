@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Models.UICGeneratorResponses;
@@ -12,7 +13,8 @@ public partial class UicConfigOptions
 
     private List<IUICGenerator> _generators= new();
     private List<Type> _generatorTypes= new();
-
+    private List<Type> _objectValidators= new();
+    private List<Type> _propertyValidators = new();
     #endregion
 
     #region Ctor
@@ -143,7 +145,32 @@ public partial class UicConfigOptions
 
     #endregion
 
-   
+    #region Add Validators
+    //public UicConfigOptions AddObjectValidator<T>() where T : IObjectValidationRule
+    //{
+    //    return AddValidator(typeof(T));
+    //}
+    //public UicConfigOptions AddPropertyValidator<T>() where T : IPropertyValidationRule
+    //{
+    //    return AddValidator(typeof(T));
+    //}
+    //public UicConfigOptions AddValidator(Type type)
+    //{
+    //    if(type == null)
+    //        throw new ArgumentNullException(nameof(type));
+    //    if (!type.IsAssignableTo(typeof(IObjectValidationRule)) && !type.IsAssignableTo(typeof(IPropertyValidationRule)))
+    //        throw new ArgumentException($"{type.Name} is not assignable to {nameof(IObjectValidationRule)} or {nameof(IPropertyValidationRule)}");
+
+    //    if(type.IsAssignableTo(typeof(IObjectValidationRule)))
+    //        _objectValidators.Add(type);
+
+    //    if (type.IsAssignableTo(typeof(IPropertyValidationRule)))
+    //        _propertyValidators.Add(type);
+
+    //    return this;
+    //}
+    #endregion
+
 
     #region Get methods
 
@@ -156,6 +183,11 @@ public partial class UicConfigOptions
         var filteredTypes = _generatorTypes.Where(x => x.IsAssignableTo(typeof(IUICGenerator<TArgs, TResult>)));
 
         return (filteredGenerators.ToList(), filteredTypes.ToList());
+    }
+
+    public IList<Type> GetPropertyValidators()
+    {
+        return _propertyValidators;
     }
 
     #endregion

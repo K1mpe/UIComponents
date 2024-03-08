@@ -38,8 +38,13 @@ namespace UIComponents.Web.Tests.Controllers
             _languageService = languageService;
         }
 
+        public static int Counter { get; set; } = 0;
+
         public async Task<IActionResult> Index()
         {
+            var translatable = new Translatable("blub", "test {0}", new Translatable("foo", "foo {1}", "abc"));
+            var serialised = translatable.Serialize();
+            var x = (Translatable)serialised;
             return View();
             var testModel = new TestModel();
             var component = await _uic.CreateComponentAsync(testModel, new()
@@ -100,6 +105,9 @@ namespace UIComponents.Web.Tests.Controllers
         [HttpPost]
         public IActionResult GetTimelineChartData(RequestLineGraphDataModel request)
         {
+            Counter++;
+            if (Counter % 20 > 5 && request.LineGraphId == "blub")
+                throw new Exception("Test");
             var data =(request.LineGraphId=="blub")? TimelineDataFactory.GetPoint1(request.StartLocal, request.EndLocal): TimelineDataFactory.GetPoint2(request.StartLocal, request.EndLocal);
             
             var x = request.AveragePerTimespan(data);
@@ -137,13 +145,22 @@ namespace UIComponents.Web.Tests.Controllers
         public IActionResult SelectList()
         {
             var group = new UICGroup();
-            group.Add(out var multiselect, new UICInputMultiSelect()
+            var multiselect = new UICInputMultiSelect()
             {
                 Color = new UICColor("Green"),//Colors.Green
                 AllowDynamicOptions = false,
                 ClearInputAfterSelecting = true
-            }) ;
-            
+            };
+            multiselect.AddSource(out var source, new UICActionGet("Home", "SelectListData"));
+
+            group.Add(new UICInputGroup("Test", multiselect), inputgroup =>
+            {
+                inputgroup.PrependInput.Add(new UICButton("Refresh")
+                {
+                    OnClick = source.TriggerRefresh()
+                });
+                inputgroup.AppendInput.Add(new UICIcon("fas fa-user"));
+            });
             
             multiselect.SelectListItems.AddRange(new List<UICSelectListItem>()
             {
@@ -155,6 +172,36 @@ namespace UIComponents.Web.Tests.Controllers
 
             });
             return ViewOrPartial(group);
+        }
+
+        [HttpGet]
+        public IActionResult SelectListData()
+        {
+            Counter++;
+            if(Counter %2 == 0)
+            {
+                var items = new List<UICSelectListItem>()
+                {
+                    new UICSelectListItem(){Value = "1", Text = "one", Group = new(){Name="Group1"}, SearchTag="blub a b c "}.AddPrepend(UICIcon.Delete()),
+                    new UICSelectListItem(){Value = "2", Text = "two", Group = new(){Name="Group1"}}.AddAttribute("data-test", "abc"),
+                    new UICSelectListItem(){Value = "3", Text = "one", Group = new UICSelectListGroup(){Name="Group2", Disabled=true}.AddAppend(new UICIcon("fas fa-user"))},
+                    new UICSelectListItem(){Value = "4", Text = "four", Group = new(){Name="Group2"}, SearchTag = "4"},
+                    new UICSelectListItem(){Value = "5", Text = "five", Disabled = true},
+                };
+                return Json(items);
+            }
+            else
+            {
+                var items = new List<SelectListItem>()
+                {
+                    new(){Value="6", Text="Six"},
+                    new(){Value="7", Text="Seven"},
+                    new(){Value="8", Text="Eight"},
+                    new(){Value="9", Text="Nine"},
+                    new(){Value="10", Text="Ten"},
+                };
+                return Json(items);
+            }
         }
     }
 }

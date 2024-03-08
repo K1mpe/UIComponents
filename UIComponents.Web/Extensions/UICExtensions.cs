@@ -68,7 +68,7 @@ public static class UICExtensions
         return allAttributes;
     }
 
-    public static string GetHtmlAttributes(this IUIHasAttributes component)
+    public static string GetHtmlAttributes(this IUICHasAttributes component)
     {
         return component.Attributes.GetHtmlAttributes();
     }
@@ -87,14 +87,14 @@ public static class UICExtensions
     {
         foreach (var action in actions)
         {
-            if (action is IUIHasAttributes component)
+            if (action is IUICHasAttributes component)
             {
                 component.AddAttribute(attribute, value);
             }
         }
     }
 
-    public static void SetIdentifier(this IUIHasAttributes action, string identifier)
+    public static void SetIdentifier(this IUICHasAttributes action, string identifier)
     {
         action.AddAttribute("identifier", identifier);
     }
@@ -146,7 +146,7 @@ public static class UICExtensions
 
     }
 
-    public static void AssignCollectionForChildren<T>(this IUICScriptCollection collection, T uiComponent) where T : class, IUIHasAttributes, IUIComponent
+    public static void AssignCollectionForChildren<T>(this IUICScriptCollection collection, T uiComponent) where T : class, IUICHasAttributes, IUIComponent
     {
         collection.AssignCollectionForChildren(uiComponent, uiComponent.GetId());
     }
@@ -196,7 +196,7 @@ public static class UICExtensions
         return htmlContentBuilder;
     }
 
-    public static Task<IHtmlContent> RenderStylesAndScripts(this IUICScriptCollection collection, IViewComponentHelper component, IUIHasAttributes uiComponent)
+    public static Task<IHtmlContent> RenderStylesAndScripts(this IUICScriptCollection collection, IViewComponentHelper component, IUICHasAttributes uiComponent)
     {
         return collection.RenderStylesAndScripts(component, uiComponent.GetId());
     }
@@ -215,14 +215,14 @@ public static class UICExtensions
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="uiComponent"></param>
-    public static void AssignCollectionForChildren<T>(this T uiComponent) where T : class, IUIComponent, IUIHasAttributes, IUICHasScriptCollection
+    public static void AssignCollectionForChildren<T>(this T uiComponent) where T : class, IUIComponent, IUICHasAttributes, IUICHasScriptCollection
     {
         if (uiComponent.ScriptCollection == null)
             uiComponent.ScriptCollection = new UICScriptCollection();
         uiComponent.ScriptCollection.AssignCollectionForChildren(uiComponent);
     }
 
-    public static Task<IHtmlContent> RenderStylesAndScripts<T>(this T uiComponent, IViewComponentHelper component) where T : IUIComponent, IUIHasAttributes, IUICHasScriptCollection
+    public static Task<IHtmlContent> RenderStylesAndScripts<T>(this T uiComponent, IViewComponentHelper component) where T : IUIComponent, IUICHasAttributes, IUICHasScriptCollection
     {
         return uiComponent.ScriptCollection.RenderStylesAndScripts(component, uiComponent);
     }
@@ -232,29 +232,6 @@ public static class UICExtensions
         return uiComponent.ScriptCollection.RenderStylesAndScripts(component, id);
     }
 
-    /// <summary>
-    /// Add a script that will be rendered by the script collection. This scriptcollection is rendered inside a $(document).ready
-    /// </summary>
-    /// <param name="hasScriptCollection"></param>
-    /// <param name="razerCode"></param>
-    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, RazerBlock razerCode)
-    {
-        hasScriptCollection.ScriptCollection.AddToScripts(new UICCustom(razerCode));
-    }
-
-    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, IUIAction scriptComponent)
-    {
-        hasScriptCollection.ScriptCollection.AddToScripts(scriptComponent);
-    }
-
-    public static void AddStyle(this IUICHasScriptCollection hasScriptCollection, IUIComponent styleComponent)
-    {
-        hasScriptCollection.ScriptCollection.AddToStyles(styleComponent);
-    }
-    public static void AddStyle(this IUICHasScriptCollection hasScriptCollection, RazerBlock razerCode)
-    {
-        hasScriptCollection.ScriptCollection.AddToStyles(new UICCustom(razerCode));
-    }
     #endregion
 
 }

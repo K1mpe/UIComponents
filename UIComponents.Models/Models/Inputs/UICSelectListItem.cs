@@ -20,7 +20,7 @@ public class UICSelectListItem : UIComponent
 
     #region DefaultProps
 
-    public Translatable Text { get; set; }
+    public string Text { get; set; }
     public object Value { get; set; }
     public bool Selected { get; set; }
 
@@ -50,7 +50,7 @@ public class UICSelectListItem : UIComponent
     /// </summary>
     public List<IUIComponent> AppendText { get; set; } = new();
 
-    public Translatable Tooltip { get; set; }
+    public string Tooltip { get; set; }
 
     #endregion
 

@@ -1,30 +1,36 @@
 ﻿using UIComponents.Abstractions.Extensions;
+using UIComponents.Abstractions.Interfaces.Inputs;
 
 namespace UIComponents.Models.Models.Inputs;
 
-public class UICInputSelectListSource : UIComponent
+public class UICInputSelectListSource : IUIAction
 {
-    #region Fields
-    #endregion
+
+    public string RenderLocation => this.CreateDefaultIdentifier();
 
     #region Ctor
-    public UICInputSelectListSource(UICInputSelectlist inputSelectlist, UICActionGetPost getItemsMethod) : this()
+    public UICInputSelectListSource(UICInputSelectList inputSelectlist, UICActionGetPost getItemsMethod)
     {
         InputSelectList = inputSelectlist;
         GetSelectListItems = getItemsMethod;
     }
-
-    public UICInputSelectListSource() : base()
+    public UICInputSelectListSource(UICInputMultiSelect inputMultiSelect, UICActionGetPost getItemsMethod)
     {
-        RenderConditions.Add(() => InputSelectList.HasValue());
+        InputSelectList = inputMultiSelect;
+        GetSelectListItems = getItemsMethod;
+    }
 
+    public UICInputSelectListSource()
+    {
+            
     }
     #endregion
 
 
 
     #region Properties
-    public UICInputSelectlist InputSelectList { get; set; }
+    [IgnoreGetChildrenFunction]
+    public IUICInputSelectList InputSelectList { get; set; }
 
     /// <summary>
     /// The get or post request that gets the selectlistitems
@@ -60,6 +66,8 @@ public class UICInputSelectListSource : UIComponent
     /// Reload the selectlistitems when the dropdown opens
     /// </summary>
     public bool ReloadOnOpen { get; set; }
+
+
     #endregion
 
     #region Methods
@@ -68,7 +76,7 @@ public class UICInputSelectListSource : UIComponent
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public IUIAction UpdateItems(){
+    public IUIAction TriggerRefresh(){
         if (InputSelectList == null)
             return null;
 

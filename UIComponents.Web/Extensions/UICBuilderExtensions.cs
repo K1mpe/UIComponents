@@ -41,7 +41,7 @@ public static class UICBuilderExtensions
         {
 
             string targetRoote = $"{dir}\\wwwroot\\uic\\js";
-            string sourceRoute = $"{currentAssemblyName}.Root.";
+            string sourceRoute = $"{currentAssemblyName}.UIComponents.Root.";
             if (!Directory.Exists(targetRoote))
             {
                 Directory.CreateDirectory(targetRoote);
@@ -71,7 +71,7 @@ public static class UICBuilderExtensions
         {
 
             string targetRoote = $"{dir}\\wwwroot\\uic\\css";
-            string sourceRoute = $"{currentAssemblyName}.Root.";
+            string sourceRoute = $"{currentAssemblyName}.UIComponents.Root.";
             if (!Directory.Exists(targetRoote))
             {
                 Directory.CreateDirectory(targetRoote);
@@ -99,8 +99,8 @@ public static class UICBuilderExtensions
         if (options.ReplaceComponents)
         {
 
-            string targetRoote = $"{dir}\\UIComponents\\";
-            string sourceRoute = $"{currentAssemblyName}.UIComponents.";
+            string targetRoote = $"{dir}\\UIComponents\\ComponentViews\\";
+            string sourceRoute = $"{currentAssemblyName}.UIComponents.ComponentViews.";
             if (!Directory.Exists(targetRoote))
             {
                 Directory.CreateDirectory(targetRoote);

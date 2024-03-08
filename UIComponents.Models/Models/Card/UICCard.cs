@@ -62,7 +62,7 @@ public class UICCard : UIComponent, IUICTab
     /// If not empty, set this as the maximum width of the card
     /// </summary>
     public string MaxWidth { get; set; }
-    public IUIHasAttributes Content => Body;
+    public IUICHasAttributes Content => Body;
 
 
 

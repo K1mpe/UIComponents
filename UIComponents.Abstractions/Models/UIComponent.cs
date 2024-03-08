@@ -4,7 +4,7 @@
 /// <summary>
 /// The base for most UICs
 /// </summary>
-public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScriptCollection, IUIHasAttributes, IUICHasParent
+public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScriptCollection, IUICHasAttributes, IUICHasParent
 {
     #region Fields
     private bool _render = true;
@@ -96,7 +96,7 @@ public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScr
 
     public static string DefaultIdentifier(string UICType, object renderer = null)
     {
-        return $"/UIComponents/{UICType}/{renderer ?? "Default"}";
+        return $"/UIComponents/ComponentViews/{UICType}/{renderer ?? "Default"}";
     }
 
     #endregion

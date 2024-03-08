@@ -51,7 +51,6 @@ public partial class RecurringDateItem
 
 
         var serialized = SerializeDict(dict);
-        Console.WriteLine(serialized);
         return serialized;
 
         

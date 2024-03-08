@@ -1,5 +1,6 @@
 ﻿namespace UIComponents.Models.Models.Dropdown;
 
+[PrependAppendInputGroupClass("input-group-button")]
 public class UICDropdown : UIComponent, IUICHasChildren<IDropdownItem>
 {
     #region Ctor

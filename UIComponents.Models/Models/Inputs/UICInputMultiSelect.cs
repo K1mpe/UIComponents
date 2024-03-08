@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using UIComponents.Abstractions.Interfaces.Inputs;
 using UIComponents.Abstractions.Models;
 using UIComponents.Models.Extensions;
 
 namespace UIComponents.Models.Models.Inputs;
 
-public class UICInputMultiSelect : UICInput<string[]>
+public class UICInputMultiSelect : UICInput<string[]>, IUICInputSelectList
 {
     #region Fields
     public override bool HasClientSideValidation => false;
@@ -43,6 +44,50 @@ public class UICInputMultiSelect : UICInput<string[]>
     public bool AllowDynamicOptions { get; set; }
 
     public Translatable NoItemsText { get; set; } = TranslationDefaults.SelectListNoItems;
+
+    #endregion
+
+    #region Methods
+
+    public UICInputMultiSelect AddSource(UICActionGetPost source)
+    {
+        var selectSource = new UICInputSelectListSource(this, source);
+        AddSource(selectSource);
+        return this;
+    }
+    public UICInputMultiSelect AddSource(out UICInputSelectListSource outSource, UICActionGetPost source)
+    {
+        var selectSource = new UICInputSelectListSource(this, source);
+        return AddSource(out outSource, selectSource);
+    }
+    public UICInputMultiSelect AddSource(UICActionGetPost source, Action<UICInputSelectListSource> action)
+    {
+        var selectSource = new UICInputSelectListSource(this, source);
+        return AddSource(selectSource, action);
+    }
+    public UICInputMultiSelect AddSource(UICInputSelectListSource source)
+    {
+        source.InputSelectList = this;
+        ScriptCollection.AddToScripts(source);
+        return this;
+    }
+    public UICInputMultiSelect AddSource(out UICInputSelectListSource outSource, UICInputSelectListSource source)
+    {
+        outSource = source;
+        return AddSource(source);
+    }
+    public UICInputMultiSelect AddSource(UICInputSelectListSource source, Action<UICInputSelectListSource> action)
+    {
+        AddSource(source);
+        action(source);
+        return this;
+    }
+
+    #endregion
+
+    #region From Interface
+
+    object IUICInputSelectList.Value => Value;
 
     #endregion
 

@@ -1,4 +1,7 @@
-﻿namespace UIComponents.Abstractions;
+﻿using System.Reflection.Metadata.Ecma335;
+using System.Text.Json;
+
+namespace UIComponents.Abstractions;
 
 public class Translatable
 {
@@ -26,7 +29,28 @@ public class Translatable
         return ResourceKey;
     }
 
-    public static implicit operator Translatable(string text) => new Untranslated(text);
+    public virtual string Serialize()
+    {
+        string serialized = JsonSerializer.Serialize(this);
+        return $"[TRANSLATABLE]{serialized}";
+    }
+    public static implicit operator Translatable(string text){
+        if(!string.IsNullOrEmpty(text) && text.StartsWith("[TRANSLATABLE]"))
+        {
+            string serialised = text.Substring(14);
+            var deserialised =  JsonSerializer.Deserialize<Translatable>(serialised);
+            for(int i= 0; i < deserialised.Arguments.Length; i++)
+            {
+                var argument = deserialised.Arguments[i];
+                if(argument is JsonElement jsonElement && argument.ToString().Contains(nameof(ResourceKey)))
+                {
+                    deserialised.Arguments[i] = (Translatable)argument.ToString();
+                }
+            }
+            return deserialised;
+        }
+        return new Untranslated(text);
+    }
 
 }
 
@@ -37,6 +61,11 @@ public class Untranslated : Translatable
 {
     public Untranslated(string text) : base("UntranslatedKey", "{0}", text)
     {
+    }
+
+    public override string Serialize()
+    {
+        return Arguments[0]?.ToString();
     }
 }
 

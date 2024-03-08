@@ -1,0 +1,185 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+
+@inject IUicLanguageService L
+@model UICInputMultiSelect
+
+@{
+    Model.AssignCollectionForChildren();
+    Model.AddAttribute("class", "form-control");
+    Model.Actions.Renderer = UICActions.ActionsRenderer.Select2;
+    string id = Model.GetId();
+
+    string placeholder = Model.GetAttribute("placeholder");
+
+    if (Model.Value != null)
+    {
+        foreach (var item in Model.SelectListItems.Where(x => Model.Value.Contains(x.Value?.ToString()??string.Empty)))
+        {
+            item.Selected = true;
+        }
+    }
+
+    Model.Value = Model.SelectListItems.Where(x => x.Selected).Select(x => x.Value?.ToString()??string.Empty).ToArray();
+
+
+    var style = Model.GetAttribute("style");
+    Model.Attributes["style"] = "";
+    if (Model.Color != null)
+    {
+
+        Model.AddStyle(
+    @<text>
+        #@id + span .select2-selection__choice{
+        background-color: var(--@Model.Color.ToLower()) !important;
+        border-color: var(--@Model.Color.ToLower()) !important;
+        }
+        #@id + span.select2-container--focus .select2-selection--multiple {
+        border-color: var(--@Model.Color.ToLower()) !important;
+        }
+        .select2-container--open[data-for=@id] .select2-results__option--highlighted{
+        background-color: var(--@Model.Color.ToLower()) !important;
+        }
+    </text>
+        );
+    }
+
+    var groups = Model.SelectListItems.Where(x => x.Group != null).Select(x => x.Group).DistinctBy(x => x.Name).ToList();
+    var others = Model.SelectListItems.Where(x => x.Group == null).ToList();
+
+    int minValue = Math.Min(groups.Any() ? groups.Min(x => x.SortOrder) : 0, others.Any() ? others.Min(x => x.SortOrder) : 0);
+    int maxValue = Math.Max(groups.Any() ? groups.Max(x => x.SortOrder) : 0, others.Any() ? others.Max(x => x.SortOrder) : 0);
+}
+
+@if (Model.SelectListItems.Where(x => x.Render && (x.PrependText.AnyHasValue() || x.AppendText.AnyHasValue())).Any())
+{
+    Model.AddClass("has-select-elements");
+    <div class="select-elements select2-hidden-accessible" for-select="@id" hidden>
+        @foreach (var group in groups)
+        {
+            if (group.PrependText.AnyHasValue())
+            {
+                <div class="prepend-group" for-label="@group.Name">
+                    @await group.PrependText.InvokeAsync(Component)
+                </div>
+            }
+            if (group.AppendText.AnyHasValue())
+            {
+                <div class="append-group" for-label="@group.Name">
+                    @await group.AppendText.InvokeAsync(Component)
+                </div>
+            }
+        }
+
+        @foreach (var item in Model.SelectListItems.Where(x => x.Render))
+        {
+            if (item.PrependText.AnyHasValue())
+            {
+                <div class="prepend-item" for-value="@item.Value">
+                    @await item.PrependText.InvokeAsync(Component)
+                </div>
+            }
+            if (item.AppendText.AnyHasValue())
+            {
+                <div class="append-item" for-value="@item.Value">
+                    @await item.AppendText.InvokeAsync(Component)
+                </div>
+            }
+        }
+    </div>
+}
+
+<select @Html.Raw(Model.GetHtmlAttributes())>
+    @if (Model.SelectListItems.Any())
+    {
+        for (int i = minValue; i <= maxValue; i++)
+        {
+            foreach (var item in Model.SelectListItems.Where(x => x.Group == null && x.SortOrder == i))
+            {
+                @await item.InvokeAsync(Component)
+            }
+            foreach (var group in groups.Where(x => x.SortOrder == i))
+            {
+                group.AddAttribute("label", group.Name);
+                if (group.Tooltip != null)
+                    group.AddAttribute("title", await L.Translate(group.Tooltip));
+
+                <optgroup @Html.Raw(group.GetHtmlAttributes()) @(group.Disabled ? "disabled" : "")>
+                    @foreach (var item in Model.SelectListItems.Where(x => x.Group != null && x.Group.Name == group.Name).OrderBy(x => x.SortOrder))
+                    {
+                        @await item.InvokeAsync(Component)
+                    }
+                </optgroup>
+            }
+
+        }
+    }
+    else if (Model.NoItemsText != null)
+    {
+        <option disabled>@await Html.Translate(L, Model.NoItemsText, null)</option>
+    }
+
+
+</select>
+
+
+
+@{
+    Model.AddScript(@<text>
+        $('#@id').select2({
+        multiple: true,
+        closeOnSelect: @Json.Serialize(Model.CloseOnSelect),
+        matcher: uic.form.select2.searchMethod,
+        templateResult: uic.form.select2.resultRenderer,
+        tags: @Json.Serialize(Model.AllowDynamicOptions),
+        allowClear: true,
+        placeholder: @Html.JsEncode(placeholder, "'"),
+        });
+
+        $('#@id').data('select2').$dropdown.attr('data-for', '@id').addClass('include-items');
+        $('#@id').on('uic-setValue', function(event, ...values){
+
+            $('#@id').val(values).change();
+        });
+        @if(Model.ClearInputAfterSelecting)
+    {
+        <text>
+            $('#@id').on('select2:select', (ev) =>{
+            $('#@id').next().find('.selection input').val('');
+            });
+            $('#@id').on('select2:unselect', (ev) =>{
+            console.log('unselecting');
+            setTimeout(()=>{
+            $('#@id').next().find('.selection input').val('');
+            },1);
+
+            });
+        </text>
+    }
+
+        $('#@id').val(@Json.Serialize(Model.Value)).change();
+
+        $('#@id').next().attr('style', @Html.JsEncode(style, "'"));
+    </text>
+    );
+}
+
+@await Model.Actions.InvokeAsync(Component)
+
+@*Als script doorgeschoven wordt naar parent, doet deze functie niets*@
+@await Model.RenderStylesAndScripts(Component)

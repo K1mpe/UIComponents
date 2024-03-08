@@ -1,0 +1,153 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICInputDateRange
+@{
+    Model.AddAttribute("class", "form-control");
+    Model.AddAttribute("class", "input-daterange");
+    Model.AddAttribute("type", "text");
+    string id = Model.GetId();
+    Model.AssignCollectionForChildren();
+}
+
+<input @Html.Raw(Model.GetHtmlAttributes())/>
+
+@{
+    Model.AddScript(@<text>
+        //https://www.daterangepicker.com/
+        $('#@id').daterangepicker({
+        linkedCalendars: @Json.Serialize(!Model.DisconnectCalendars),
+        timePicker: @Json.Serialize(Model.Precision != UICDatetimeStep.Date),
+        timePickerSeconds: @Json.Serialize(Model.Precision == UICDatetimeStep.Second),
+        alwaysShowCalendars: @Json.Serialize(Model.AlwaysShowCalendar),
+        showCustomRangeLabel: @Json.Serialize(!Model.AlwaysShowCalendar || true),
+        showISOWeekNumbers: @Json.Serialize(Model.ShowWeeknumbers),
+
+        @if (Model.Value?.From.HasValue ?? false)
+    {
+        <text>
+            startDate: @Model.Value.From.Value.ToMoment(Html),
+        </text>
+    }
+        @if (Model.Value?.To.HasValue ?? false)
+    {
+        <text>
+            endDate: @Model.Value.To.Value.ToMoment(Html),
+        </text>
+    }
+
+
+        locale: {
+        @if (!string.IsNullOrEmpty(Model.DisplayFormat))
+    {
+        <text>
+            format: @Json.Serialize(Model.DisplayFormat),
+        </text>
+    }
+    //Apply format for minute precision
+    else if(Model.Precision == UICDatetimeStep.Minute)
+    {
+        <text>
+            format: "L LT",
+        </text>
+    }
+
+    //Apply format for second precision
+    else if (Model.Precision == UICDatetimeStep.Second)
+    {
+        <text>
+            format: "L LTS",
+        </text>
+    }
+        },
+
+
+        @if (Model.ValidationMinimumDate.HasValue)
+    {
+        <text>
+            minDate: @Model.ValidationMinimumDate.Value.ToMoment(Html),
+        </text>
+    }
+        @if(Model.ValidationMaximumDate.HasValue)
+    {
+        <text>
+            maxDate: @Model.ValidationMaximumDate.Value.ToMoment(Html),
+        </text>
+    }
+        @if (Model.ValidationMaxLength.HasValue)
+    {
+        <text>
+            maxSpan:{
+            miliseconds: @Model.ValidationMaxLength.Value.TotalMilliseconds
+            },
+        </text>
+    }
+        @foreach(var option in Model.Options)
+    {
+        <text>
+            @option.Key: @Json.Serialize(option.Value),
+        </text>
+    }
+        });
+
+        $('#@id').on('uic-getValue', function () {
+            var data = $(this).data('daterangepicker');
+            return {
+                Start: data.startDate.format(),
+                End: data.endDate.format()
+            }
+        });
+
+        $('#@id').on('uic-setValue', function(event, value){
+            console.log('set daterange', value);
+        if(value.Start !== undefined){
+            if(value.Start == null)
+                value.Start = @(Model.ValidationMinimumDate?.ToMoment(Html) ?? new DateTime(2020, 1, 1).ToMoment(Html));
+            else
+                value.Start = moment(value.Start);
+
+            $('#@id').data('daterangepicker').setStartDate(value.Start);
+        }
+        if(value.End !== undefined){
+            if(value.End == null)
+                value.End = @(Model.ValidationMaximumDate?.ToMoment(Html) ?? DateTime.Now.ToMoment(Html));
+            else
+                value.End = moment(value.End);
+            
+            $('#@id').data('daterangepicker').setEndDate(value.End);
+        }
+        $('#@id').trigger('change');
+        })
+
+        @if (Model.ForceFitInput)
+    {
+        <text>
+            function forceFit(){
+            var length = $('#@id').val().length;
+            $('#@id').css('min-width', `${length}ch`);
+            //ch => Character width
+            }
+            forceFit();
+        </text>
+    }
+
+     
+    </text>);
+}
+
+@await Model.RenderStylesAndScripts(Component)

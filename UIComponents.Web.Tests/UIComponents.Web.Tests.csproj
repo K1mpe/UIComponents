@@ -20,26 +20,5 @@
 		<PackageReference Include="LigerShark.WebOptimizer.Sass" Version="3.0.91" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\lib\font-awesome\webfonts\fa-brands-400.woff2" />
-    <None Include="wwwroot\lib\font-awesome\webfonts\fa-duotone-900.woff2" />
-    <None Include="wwwroot\lib\font-awesome\webfonts\fa-light-300.woff2" />
-    <None Include="wwwroot\lib\font-awesome\webfonts\fa-regular-400.woff2" />
-    <None Include="wwwroot\lib\font-awesome\webfonts\fa-solid-900.woff2" />
-    <None Include="wwwroot\lib\font-awesome\webfonts\fa-thin-100.woff2" />
-    <None Include="wwwroot\lib\font-awesome\webfonts\fa-v4compatibility.woff2" />
-    <None Include="wwwroot\lib\select2\js\i18n\de.js" />
-    <None Include="wwwroot\lib\select2\js\i18n\de.min.js" />
-    <None Include="wwwroot\lib\select2\js\i18n\en.js" />
-    <None Include="wwwroot\lib\select2\js\i18n\en.min.js" />
-    <None Include="wwwroot\lib\select2\js\i18n\fr.js" />
-    <None Include="wwwroot\lib\select2\js\i18n\fr.min.js" />
-    <None Include="wwwroot\lib\select2\js\i18n\nl.js" />
-    <None Include="wwwroot\lib\select2\js\i18n\nl.min.js" />
-    <None Include="wwwroot\lib\select2\js\select2.full.js" />
-    <None Include="wwwroot\lib\select2\js\select2.full.min.js" />
-    <None Include="wwwroot\lib\select2\js\select2.js" />
-    <None Include="wwwroot\lib\select2\js\select2.min.js" />
-  </ItemGroup>
 
 </Project>

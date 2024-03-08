@@ -9,7 +9,5 @@ namespace UIComponents.Abstractions.Interfaces
     {
         public new T Icon { get; }
         IUICIcon IHasIcon.Icon => Icon;
-
-
     }
 }

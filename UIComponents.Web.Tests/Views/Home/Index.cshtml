@@ -24,12 +24,14 @@
     testModel.RecurringDate = new();
     testModel.RecurringDate.Included.Add(new()
     {
-        Pattern = new RecurringWeekly()
+        EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5)),
+    Pattern = new RecurringWeekly()
         {
             Monday = true,
             Tuesday = true,
             Wednesday = true,
         }
+
     });
     testModel.RecurringDate.Excluded.Add(new()
     {
@@ -40,26 +42,34 @@
         }
     });
     var tabs = new UICTabs("TestTabs")
-    {
-        OnlyRenderSingleContent = true
-    }
+            {
+                OnlyRenderSingleContent = true
+            }
         .Add(out var formTabs, new UICTabs("FormTabs")
-        {
-            Header = new UICCardHeader("Forms"),
-            Renderer = UICCardWithTabsRenderer.VerticalTab
-        }
+                {
+                    Header = new UICCardHeader("Forms"),
+                    Renderer = UICCardWithTabsRenderer.VerticalTab
+                }
         .Add(new UICCard(new Translatable("Card.Create"))
             .Add(await UIC.CreateComponentAsync(testModel, new()
-            {
-                ReplaceSaveButtonWithCreateButton = true,
-                ShowEditButton = false,
-                IncludedProperties = "teststring, number, decimal, checkbox, enum, recurringDate",
-                PostForm = new UICActionPost("home", "post")
-            })).Add(await UIC.CreateComponentAsync(testModel, x=>x.TestString)))
+                    {
+                        ReplaceSaveButtonWithCreateButton = true,
+                        ShowEditButton = false,
+                        IncludedProperties = "teststring, number, decimal, checkbox, enum, recurringDate",
+                        PostForm = new UICActionPost("home", "post")
+                    })).Add(await UIC.CreateComponentAsync(testModel, x => x.TestString)))
         .Add(new UICCard(new Translatable("Card.Edit"))
             .Add(new UICSidePanel(await UIC.CreateComponentAsync(new TestModel()), new UICGroup()
                     .AddAttribute("width", "300px")
-                    .AddAttribute("height", "100%"))))
+                    .AddAttribute("height", "100%"))), sidePanel =>
+                    {
+                        var color = sidePanel.FindInputGroupByPropertyName(nameof(TestModel.Color));
+                        color.PrependInput.Add(new UICIcon("fas fa-square"));
+                        color.AppendInput.Add(new UICSpan("blub"));
+
+                        sidePanel.FindInputGroupByPropertyName(nameof(TestModel.TestString)).PrependInput.Add(new UICIcon("fas fa-user"));
+                        sidePanel.FindInputGroupByPropertyName(nameof(TestModel.Enum)).PrependInput.Add(new UICIcon("fas fa-user"));
+                    })
 
         .Add(new UICCard(new Translatable("Card.Partial"))
             .AddPartial("Home", "test")
@@ -79,7 +89,6 @@
         graph.Add(new("Graph1", "blub", "/home/GetTimelineChartData") { CacheData = true, RemoveCacheOnZoom = true, AdditionalPostData = new { UserId = 1 }, Fill = true });
         graph.Add(new("Graph2", "foo", "/home/GetTimelineChartData"){CacheData = true, RemoveCacheOnZoom = true, Tension=0.5});
     }));
-
 }
 
 @await tabs.InvokeAsync(Component)

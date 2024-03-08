@@ -12,7 +12,7 @@ namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
     {
         #region Fields
         public bool IsInvalid => !Days.Any() && !Months.Any()&& !Years.Any();
-        public string RenderLocation => "/UIComponents/RecurringDateTypes/RecurringCustom";
+        public string RenderLocation => "/UIComponents/ComponentViews/RecurringDateTypes/RecurringCustom";
         #endregion
 
         #region Properties
@@ -132,10 +132,6 @@ namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
         public IRecurringDateSelector Deserialize(string serialised)
         {
             var deserialised = RecurringDateItem.DeserializeDict(serialised);
-            foreach(var kvp in deserialised)
-            {
-                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-            }
             var days = deserialised[nameof(Days)].Replace("[", "").Replace("]", "");
             Days = new();
             if (!string.IsNullOrWhiteSpace(days))

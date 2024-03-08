@@ -8,7 +8,7 @@
 public class UICActionMarkChanges : IUIAction
 {
     #region Fields
-    public string RenderLocation => throw new NotImplementedException();
+    public string RenderLocation => this.CreateDefaultIdentifier();
 
     #endregion
 

@@ -91,7 +91,7 @@ public class UICTabs : UIComponent, IUICHasChildren<IUICTab>, IUICTab
     /// </summary>
     public IHeader Header { get; set; } = new UICCardHeader(new Translatable("Tab.NoHeader"));
 
-    IUIHasAttributes IUICTab.Content => this;
+    IUICHasAttributes IUICTab.Content => this;
 
     #endregion
 }

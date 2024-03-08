@@ -3,5 +3,5 @@
 public interface IUICTab
 {
     public IHeader Header { get; }
-    public IUIHasAttributes Content { get;}
+    public IUICHasAttributes Content { get;}
 }
