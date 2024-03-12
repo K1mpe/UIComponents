@@ -1,6 +1,6 @@
 ﻿@using UIComponents.Abstractions.Attributes;
 @using UIComponents.Abstractions.Interfaces;
-@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Interfaces.Services;
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Defaults;
@@ -47,14 +47,14 @@
         })
 
 
-        var ViewButtonTrue = function(){
+        let ViewButtonTrue = function(){
             $('#@idButtonTrue').attr('hidden', false);
             $('#@idButtonFalse').attr('hidden',true);
             $('#@id').trigger('uic-changed');
             $('#@id').change();
 
         };
-        var ViewButtonFalse = function () {
+        let ViewButtonFalse = function () {
             $('#@idButtonTrue').attr('hidden', true);
             $('#@idButtonFalse').attr('hidden', false);
             $('#@id').trigger('uic-changed');

@@ -47,7 +47,7 @@
 
 
         if (!showEmptyInReadonly)
-            form.find('.input-no-value').addClass('d-none');
+            form.addClass('hide-empty');
 
         if (!showSpanInReadonly)
             form.find('span:not(.card-header span, .select2, .select2 span, .input-group-text)').attr('hidden', true);
@@ -66,7 +66,7 @@
             .attr("readonly", false)
             .attr("disabled", false);
 
-        form.removeClass('readonly-form');
+        form.removeClass('readonly-form').removeClass('hide-empty');;
         //form.find('.select2-container:not(.always-readonly)')
         //    .addClass("select2-container--bootstrap4")
         //    .find('.select2-selection__rendered').removeClass('px-0');

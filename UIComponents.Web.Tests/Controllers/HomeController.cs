@@ -5,7 +5,7 @@ using System.Diagnostics;
 using UIComponents.Abstractions;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces;
-using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Models;
 using UIComponents.Abstractions.Models.RecurringDates;
 using UIComponents.Defaults;
@@ -19,10 +19,12 @@ using UIComponents.Models.Models.Card;
 using UIComponents.Models.Models.Graphs.TimeLineGraph;
 using UIComponents.Models.Models.Icons;
 using UIComponents.Models.Models.Inputs;
+using UIComponents.Models.Models.Questions;
 using UIComponents.Models.Models.Texts;
 using UIComponents.Models.Models.Tree;
 using UIComponents.Web.Tests.Factory;
 using UIComponents.Web.Tests.Models;
+using UIComponents.Web.Tests.Services;
 
 namespace UIComponents.Web.Tests.Controllers
 {
@@ -30,12 +32,16 @@ namespace UIComponents.Web.Tests.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUIComponentService _uic;
-        private readonly IUicLanguageService _languageService;
-        public HomeController(ILogger<HomeController> logger, IUIComponentService uic, IUicLanguageService languageService)
+        private readonly IUICLanguageService _languageService;
+        private readonly SignalRService _signalRService;
+        private readonly IUICQuestionService _uicQuestionService;
+        public HomeController(ILogger<HomeController> logger, IUIComponentService uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService)
         {
             _logger = logger;
             _uic = uic;
             _languageService = languageService;
+            _signalRService = signalRService;
+            _uicQuestionService = uicQuestionService;
         }
 
         public static int Counter { get; set; } = 0;
@@ -87,6 +93,20 @@ namespace UIComponents.Web.Tests.Controllers
         {
             try
             {
+
+                var yesNo = UICQuestionYesNo.Create("Test Ja / nee", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
+
+                var answered = _uicQuestionService.TryAskQuestion(yesNo, TimeSpan.FromMinutes(1), 1, out bool boolean);
+                if (boolean)
+                {
+                    var dayOfWeek = UICQuestionSelectEnum<DayOfWeek>.Create("Favorite day", "What is your favorite day?", _uicQuestionService, question =>
+                    {
+                        question.Icon = QuestionIconType.Success;
+                    });
+                    answered = _uicQuestionService.TryAskQuestion(dayOfWeek, TimeSpan.FromMinutes(1), new() { 1, 2, 3, 4 }, out DayOfWeek favoriteDay);
+
+                }
+
                 var nextOccurences = post.RecurringDate.GetNextDates(30);
 
                 var serialized = post.RecurringDate.Serialize();

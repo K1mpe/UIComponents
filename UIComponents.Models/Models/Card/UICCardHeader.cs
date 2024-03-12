@@ -1,129 +1,125 @@
-﻿using System.Reflection;
-using UIComponents.Abstractions.Extensions;
+﻿namespace UIComponents.Models.Models.Card;
 
-namespace UIComponents.Models.Models.Card
+public class UICCardHeader : UIComponent, IHeader
 {
-    public class UICCardHeader : UIComponent, IHeader
+    #region Fields
+    public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
+    #endregion
+
+
+    public UICCardHeader(Translatable title): this()
     {
-        #region Fields
-        public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
-        #endregion
+        Title = title;
+    }
+    public UICCardHeader()
+    {
 
+    }
 
-        public UICCardHeader(Translatable title): this()
-        {
-            Title = title;
-        }
-        public UICCardHeader()
-        {
+    public Translatable Title { get; set; }
+    public IColor? Color { get; set; } = ColorDefaults.CardHeaderDefault;
 
-        }
+    public List<IUIComponent> PrependTitle { get; set; } = new();
+    public List<IUIComponent> AppendTitle { get; set; } = new();
 
-        public Translatable Title { get; set; }
-        public IColor? Color { get; set; } = UIComponents.Defaults.ColorDefaults.CardHeaderDefault;
+    public List<IUIComponent> Buttons { get; set; } = new();
 
-        public List<IUIComponent> PrependTitle { get; set; } = new();
-        public List<IUIComponent> AppendTitle { get; set; } = new();
+    /// <summary>
+    /// If the card supports collapsing, Open or close it by clicking the header.
+    /// <br>Does not affect clickinig <see cref="Buttons"/></br>
+    /// <br>Can be disabled with ev.stopPropagation()</br>
+    /// </summary>
+    public bool CollapseCardOnClick { get; set; } = true;
+    public Func<object, IHeader, Task> Transformer { get; set; } = DefaultTransformer;
 
-        public List<IUIComponent> Buttons { get; set; } = new();
+    public CardHeaderRenderer Renderer { get; set; } = CardHeaderRenderer.CardHeader;
 
-        /// <summary>
-        /// If the card supports collapsing, Open or close it by clicking the header.
-        /// <br>Does not affect clickinig <see cref="Buttons"/></br>
-        /// <br>Can be disabled with ev.stopPropagation()</br>
-        /// </summary>
-        public bool CollapseCardOnClick { get; set; } = true;
-        public Func<object, IHeader, Task> Transformer { get; set; } = DefaultTransformer;
+    #region Methods
 
-        public CardHeaderRenderer Renderer { get; set; } = CardHeaderRenderer.CardHeader;
+    public UICCardHeader AddButton(IUIComponent button)
+    {
+        Buttons.Add(button);
+        return this;
+    }
+    public UICCardHeader AddButton<T>(out T addedButton, T button) where T : IUIComponent
+    {
+        addedButton = button;
+        return AddButton(button);
+    }
 
-        #region Methods
+    public UICCardHeader AddPrependTitle(IUIComponent item)
+    {
+        PrependTitle.Add(item);
+        return this;
+    }
+    public UICCardHeader AddPrependTitle<T>(out T addedItem, T item) where T : IUIComponent
+    {
+        addedItem = item;
+        return AddPrependTitle(item);
+    }
 
-        public UICCardHeader AddButton(IUIComponent button)
-        {
-            Buttons.Add(button);
+    public UICCardHeader AddAppendTitle(IUIComponent item)
+    {
+        AppendTitle.Add(item);
+        return this;
+    }
+    public UICCardHeader AddAppendTitle<T>(out T addedItem, T item) where T : IUIComponent
+    {
+        addedItem = item;
+        return AddAppendTitle(item);
+    }
+
+    public UICCardHeader AddCollapseButton(UICCard? card = null)
+    {
+        if (Buttons.Any(x => x is UICButtonCollapseCard))
             return this;
-        }
-        public UICCardHeader AddButton<T>(out T addedButton, T button) where T : IUIComponent
+
+        Buttons.Add(new UICButtonCollapseCard(card));
+        return this;
+    }
+
+
+    public static Task DefaultTransformer(object sender, IHeader iheader)
+    {
+        var header = iheader as UICCardHeader;
+        if(sender is UICCard card)
         {
-            addedButton = button;
-            return AddButton(button);
+            header.Renderer = CardHeaderRenderer.CardHeader;
+            header.AddAttribute("class", "card-header");
+            if (card.DefaultClosed)
+                header.CollapseCardOnClick = false;
+            else 
+                header.Buttons.Add(new UICButtonCollapseCard(card));
         }
-
-        public UICCardHeader AddPrependTitle(IUIComponent item)
+        else if(sender is UICTabs tabs)
         {
-            PrependTitle.Add(item);
-            return this;
+            header.Renderer = CardHeaderRenderer.TabHeader;
+            header
+                .AddAttribute("class", "nav-link")
+                .AddAttribute("role", "tab")
+                .AddAttribute("data-toggle", "tab");
         }
-        public UICCardHeader AddPrependTitle<T>(out T addedItem, T item) where T : IUIComponent
+        else if(sender is UICModal modal)
         {
-            addedItem = item;
-            return AddPrependTitle(item);
-        }
-
-        public UICCardHeader AddAppendTitle(IUIComponent item)
-        {
-            AppendTitle.Add(item);
-            return this;
-        }
-        public UICCardHeader AddAppendTitle<T>(out T addedItem, T item) where T : IUIComponent
-        {
-            addedItem = item;
-            return AddAppendTitle(item);
-        }
-
-        public UICCardHeader AddCollapseButton(UICCard? card = null)
-        {
-            if (Buttons.Any(x => x is UICButtonCollapseCard))
-                return this;
-
-            Buttons.Add(new UICButtonCollapseCard(card));
-            return this;
+            header.Renderer = CardHeaderRenderer.ModalHeader;
+            header.AddAttribute("class", "modal-header");
+            if (modal.ShowCloseButton)
+                header.Buttons.Add(new UICButton()
+                {
+                    PrependButtonIcon = new UICIcon(IconDefaults.ButtonClose.Icon),
+                    OnClick = modal.TriggerClose()
+                });
         }
 
 
-        public static Task DefaultTransformer(object sender, IHeader iheader)
-        {
-            var header = iheader as UICCardHeader;
-            if(sender is UICCard card)
-            {
-                header.Renderer = CardHeaderRenderer.CardHeader;
-                header.AddAttribute("class", "card-header");
-                if (card.DefaultClosed)
-                    header.CollapseCardOnClick = false;
-                else 
-                    header.Buttons.Add(new UICButtonCollapseCard(card));
-            }
-            else if(sender is UICTabs tabs)
-            {
-                header.Renderer = CardHeaderRenderer.TabHeader;
-                header
-                    .AddAttribute("class", "nav-link")
-                    .AddAttribute("role", "tab")
-                    .AddAttribute("data-toggle", "tab");
-            }
-            else if(sender is UICModal modal)
-            {
-                header.Renderer = CardHeaderRenderer.ModalHeader;
-                header.AddAttribute("class", "modal-header");
-                if (modal.ShowCloseButton)
-                    header.Buttons.Add(new UICButton()
-                    {
-                        PrependButtonIcon = new UICIcon(IconDefaults.ButtonClose.Icon),
-                        OnClick = modal.TriggerClose()
-                    });
-            }
+        return Task.CompletedTask;
+    }
+    #endregion
 
-
-            return Task.CompletedTask;
-        }
-        #endregion
-
-        public enum CardHeaderRenderer
-        {
-            CardHeader,
-            ModalHeader,
-            TabHeader
-        }
+    public enum CardHeaderRenderer
+    {
+        CardHeader,
+        ModalHeader,
+        TabHeader
     }
 }

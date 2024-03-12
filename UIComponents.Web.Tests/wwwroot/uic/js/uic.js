@@ -22,7 +22,7 @@ var uic = uic || {};
 
 
 uic.getValue = function (element) {
-
+    element = $(element);
     //If you create a function on a element like this
     //  $().on('uic-getValue', function () {
     //      return "value";
@@ -78,6 +78,7 @@ uic.getValue = function (element) {
 
 
 uic.setValue = function (element, value) {
+    element = $(element);
     //If you create a function on a element like this
     //  $().on('uic-setValue', function (e, value) {
     //      ...;
@@ -133,7 +134,8 @@ uic.setValue = function (element, value) {
 //These changed properties are marked and will only be changed after the user clicks on them.
 //This function is usefull for updating a item with signalR, without changing values without user noticing
 uic.markChanges = function (element, newValue) {
-    if (!$(element).length)
+    element = $(element);
+    if (!element.length)
         return;
 
 
@@ -1209,7 +1211,7 @@ $(document).ready(function () {
 
 
         if (!showEmptyInReadonly)
-            form.find('.input-no-value').addClass('d-none');
+            form.addClass('hide-empty');
 
         if (!showSpanInReadonly)
             form.find('span:not(.card-header span, .select2, .select2 span, .input-group-text)').attr('hidden', true);
@@ -1228,7 +1230,7 @@ $(document).ready(function () {
             .attr("readonly", false)
             .attr("disabled", false);
 
-        form.removeClass('readonly-form');
+        form.removeClass('readonly-form').removeClass('hide-empty');;
         //form.find('.select2-container:not(.always-readonly)')
         //    .addClass("select2-container--bootstrap4")
         //    .find('.select2-selection__rendered').removeClass('px-0');
@@ -1452,7 +1454,7 @@ $(document).ready(function () {
                     return false;
                 }
             },
-            (response) => {
+            async(response) => {
                 if (response.type == "ToastResponse") {
                     var level;
                     switch (response.notification.Type) {
@@ -1470,10 +1472,10 @@ $(document).ready(function () {
                             console.error(response.data);
                             break;
                     }
-                    let message = uic.translation.translate(response.notification.Message);
+                    let message = await uic.translation.translate(response.notification.Message);
                     if (message == "null")
                         message = "";
-                    let title = uic.translation.translate(response.notification.Title);
+                    let title = await uic.translation.translate(response.notification.Title);
                     if (title == "null")
                         title = "";
 
@@ -1510,7 +1512,6 @@ $(document).ready(function () {
                         location.href = response.url;
                     return true;
                 }
-                
             }
         ],
     },
@@ -1615,9 +1616,9 @@ $(document).ready(function () {
             return true;
         }
 
-        var popup = $(item).closest('.uic-can-hide');
-        if (popup.length) {
-            window.close();
+        var hideable = $(item).closest('.uic-can-close');
+        if (hideable.length) {
+            hideable.trigger('uic-close');
             return true;
         }
 
@@ -1825,7 +1826,39 @@ $('body').on('uic-reload', (ev) => {
         uic.sidePanel.saveState(container, 2);
     }
 };
-﻿uic.tabs = uic.tabs || {
+﻿uic.signalR = {
+    handleUIComponentFetch: async ()=>{
+        await window.connection.on('SendUIComponentToUser', async (fetchComponent, userId) => {
+            if (uic.signalR.currentUserId == undefined) {
+                console.error("uic.signalR.currentUserId is not defined!")
+                return;
+            }
+
+            if (uic.signalR.currentUserId != userId)
+                return;
+
+            let appendTo = $(fetchComponent.AppendTo);
+            if (!appendTo.length)
+                return;
+
+            let result = await uic.getpost.get('/uic/getComponent', { key: fetchComponent.ComponentKey });
+            appendTo.append(result);
+        });
+    },
+    handleUIComponentRemove: async () => {
+        await window.connection.on('RemoveUIComponentWithId', async (id) => {
+            $(`#${id}`).trigger('uic-remove');
+        });
+    },
+    currentUserId: undefined
+}
+$(document).ready(() => {
+    //Wait a small delay so the connection can exist
+    setTimeout(() => {
+        uic.signalR.handleUIComponentFetch();
+        uic.signalR.handleUIComponentRemove();
+    }, 5);
+});﻿uic.tabs = uic.tabs || {
     open: function (tab) {
         tab = $(tab);
         if (!tab.length)
@@ -1927,10 +1960,35 @@ $(document).on('.uic.card-tabs .tab-pane', 'uic-help',()=> {
     console.log("tab .on('uic-close', () => {...} Triggered when the tab closes");
 });﻿uic.translation = uic.translation || {
     translate: async function (translatable) {
+        //If the input has to resourceKey, inputting strings will just return the string
         if (translatable.ResourceKey == undefined)
             return translatable;
 
+        //If the key is untranslatedKey, return the first argument without translations
+        if (translatable.ResourceKey == "UntranslatedKey")
+            return translatable.Arguments[0];
+
+        //Check if the translation is already requested, call the fetchTranslationText on first request
+        let cachedValue = uic.translation._defaultValues[translatable.ResourceKey];
+        if (cachedValue == undefined) {
+            cachedValue = await fetchTranslationText(translatable);
+            uic.translation._defaultValues[translatable.ResourceKey] = cachedValue;
+        }
+
+        //Format the arguments in the text
+        return cachedValue.format(translatable.Arguments);
+
+        
+    },
+    //The function that requests the service to give the translation
+    fetchTranslationText: async function (translatable) {
         let defaultValue = translatable.DefaultValue || translatable.ResourceKey.split('.').last();
         return defaultValue.format(translatable.Arguments);
+    },
+
+    //Local dictionary that store translation keys with value texts. these values do not have their variables replaced yet.
+    //Content of this object remains until the page reloads.
+    _defaultValues: {
+
     }
 }

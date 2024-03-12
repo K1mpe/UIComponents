@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.ComponentModel.Design;
-using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Generators.FormButtons;
 using UIComponents.Generators.Generators.Property.Inputs;
@@ -29,14 +29,15 @@ public static class UICConfigure
     {
         var configuration = new UicConfigOptions();
         services.TryAddScoped<IUIComponentService, UICService>();
+        services.TryAddSingleton<IUICQuestionService, UICQuestionService>();
         services.TryAddSingleton<UicConfigOptions>(configuration);
         services.TryAddScoped<UICConfig>();
 
         config(configuration);
 
-        if (!services.Where(x => x is IUicLanguageService).Any())
+        if (!services.Where(x => x is IUICLanguageService).Any())
         {
-            services.TryAddSingleton<IUicLanguageService, LanguageService>();
+            services.TryAddSingleton<IUICLanguageService, LanguageService>();
         }
 
         configOptions = configuration;
@@ -54,7 +55,8 @@ public static class UICConfigure
     /// </remarks>
     public static UicConfigOptions AddDefaultGenerators(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
     {
-
+        serviceCollection.AddSingleton<IUICStoredEvents, StoredComponents>();
+        serviceCollection.AddSingleton<IUICStoredComponents, StoredComponents>();
         configOptions.AddAndRegisterGenerator<UICPropTypeGenerator>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInitialPartial>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorCard>(serviceCollection);

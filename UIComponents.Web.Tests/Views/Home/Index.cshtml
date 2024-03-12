@@ -89,6 +89,18 @@
         graph.Add(new("Graph1", "blub", "/home/GetTimelineChartData") { CacheData = true, RemoveCacheOnZoom = true, AdditionalPostData = new { UserId = 1 }, Fill = true });
         graph.Add(new("Graph2", "foo", "/home/GetTimelineChartData"){CacheData = true, RemoveCacheOnZoom = true, Tension=0.5});
     }));
+
+    int counter = 0;
+    var testButton = new UICButton("Test")
+    {
+        OnClick = new UICActionServerResponse(false, (data) =>
+        {
+            counter += int.Parse(data[nameof(TestModel.Number)]);
+            Console.WriteLine(counter);
+        }){GetVariableData = new UICActionGetValue("$('form')[0]")}
+    };
 }
 
 @await tabs.InvokeAsync(Component)
+
+@await testButton.InvokeAsync(Component)

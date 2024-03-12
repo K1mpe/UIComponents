@@ -1,7 +1,7 @@
-﻿namespace UIComponents.Abstractions.Interfaces.ExternalServices;
+﻿namespace UIComponents.Abstractions.Interfaces.Services;
 
 
-public interface IUicPermissionService
+public interface IUICPermissionService
 {
     /// <summary>
     /// Check if the user can view this object

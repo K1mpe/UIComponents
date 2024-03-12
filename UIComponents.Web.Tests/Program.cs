@@ -1,6 +1,7 @@
+using System.Drawing;
 using UIComponents.Abstractions;
 using UIComponents.Abstractions.Interfaces;
-using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Registrations;
 using UIComponents.Web.Extensions;
@@ -31,7 +32,7 @@ builder.Services.AddMvc();
 
 builder.Services.AddUIComponentWeb(config =>
 {
-    UIComponents.Defaults.OptionDefaults.ReverseButtonOrder = false;
+    UIComponents.Defaults.TranslationDefaults.ButtonDelete = new Translatable("Button.Delete");
     config.CheckPermissionServiceType = true;
     config.CheckLanguageServiceType = false;
     config.AddDefaultGenerators(builder.Services);
@@ -39,8 +40,19 @@ builder.Services.AddUIComponentWeb(config =>
 Console.WriteLine("");
 Console.WriteLine("-- Components are generated --");
 Console.WriteLine("");
-builder.Services.AddSingleton<IUicPermissionService, PermissionService>();
-
+builder.Services.AddSingleton<IUICPermissionService, PermissionService>();
+builder.Services.AddSignalR(options =>
+                {
+                    options.EnableDetailedErrors = true;
+                })
+                .AddJsonProtocol(options =>
+                {
+                    // options.PayloadSerializerSettings.ContractResolver = new DefaultContractResolver(); // .NET 2.1 (?)
+                    options.PayloadSerializerOptions.PropertyNamingPolicy = null;                       // .NET 5.0
+                });
+builder.Services.AddSingleton<IUICSignalRService, SignalRService>();
+builder.Services.AddSingleton<SignalRService>();
+builder.Services.AddSingleton<MainHub>();
 builder.Services.AddWebOptimizer(pipeline =>
 {
     var inProduction = builder.Environment.IsProduction();
@@ -70,6 +82,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+// SignalR
+app.MapHub<MainHub>("/MainHub");
 
 app.MapControllerRoute(
     name: "default",

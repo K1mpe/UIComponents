@@ -1,6 +1,6 @@
-﻿using UIComponents.Abstractions.Extensions;
+﻿
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Generators.Helpers;
-using UIComponents.Generators.Interfaces;
 using UIComponents.Models.Extensions;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
@@ -25,6 +25,10 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
 
         input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input)?? true;
         input.SelectListItems = (await args.Configuration.GetSelectListItems(args, input)).ToUIC()?? new();
+
+        if(!input.ValidationRequired && input.SelectListItems.Where(x => string.IsNullOrEmpty(x.Value?.ToString()??null)).Any())
+            input.SelectListItems.Insert(0, new());
+
 
         if(input.Placeholder == null)
             input.Placeholder = new Translatable("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));

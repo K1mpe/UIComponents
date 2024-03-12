@@ -28,6 +28,10 @@ form {
             background: none;
             border: none;
         }
+
+        &.hide-empty .input-no-value {
+            display:none;
+        }
     }
 
     &:not(.readonly-form) {
@@ -149,7 +153,11 @@ i.uic-value-changed {
     // border-top-left-radius: 0;
     // border-bottom-left-radius: 0;
 
-    > :not(:first-child):not(.input-group-prepend) {
+    //.d-none
+    //.hidden
+    //[hidden]
+
+    > :not(.hidden:first-child):not(.input-group-prepend) {
         margin-left: -1px;
         @include border-left-radius(0);
     }
@@ -159,13 +167,11 @@ i.uic-value-changed {
     }
 
     > .input-group-button:not(:first-child) button {
-        border-bottom-left-radius: 0;
-        border-top-left-radius: 0;
+        @include border-left-radius(0);
     }
 
     > .input-group-button:not(:last-child) button {
-        border-bottom-right-radius: 0;
-        border-top-right-radius: 0;
+        @include border-right-radius(0);
     }
 }
 
@@ -315,6 +321,9 @@ i.uic-value-changed {
     overflow-y: hidden;
 }
 .recurring-date-modal {
+    .modal-dialog{
+        min-width: 75%;
+    }
     .selected-options > .card-body > .card {
         margin: -1rem;
         margin-top: 0;
@@ -332,7 +341,9 @@ i.uic-value-changed {
     tr.invalid .recurring-text {
         text-decoration: line-through !important;
     }
-
+    .recurring-selectors tr{
+        cursor: pointer;
+    }
     .recurring-date-formatter[data-type='RecurringMonthly'] {
         display: flex;
         align-items: center;
@@ -398,6 +409,10 @@ body .modal-dialog.auto { /* Width */
 }
 /*#endregion Modal*/
 
+/*Sweet Alert*/
+.swal2-modal button:not(.swal2-styled) {
+    margin: .3125em;
+}
 /*#region Tabs*/
 .uic.card-tabs {
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net;
 using System.Text.Encodings.Web;
+using UIComponents.Abstractions.Interfaces.Services;
 
 namespace UIComponents.Web.Extensions;
 
@@ -37,7 +38,7 @@ public static class TranslateExtensions
         return content;
     }
 
-    public static async Task<IHtmlContent>Translate(this IHtmlHelper htmlHelper, IUicLanguageService languageService, Translatable translateable, string brackets = "'")
+    public static async Task<IHtmlContent>Translate(this IHtmlHelper htmlHelper, IUICLanguageService languageService, Translatable translateable, string brackets = "'")
     {
         if (translateable == null)
             return htmlHelper.JsEncode(null, brackets);

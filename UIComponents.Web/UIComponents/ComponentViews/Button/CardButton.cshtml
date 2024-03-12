@@ -1,6 +1,6 @@
 ﻿@using UIComponents.Abstractions.Attributes;
 @using UIComponents.Abstractions.Interfaces;
-@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Interfaces.Services;
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Models;
@@ -14,7 +14,7 @@
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
 
-@inject IUicLanguageService L
+@inject IUICLanguageService L
 @model UICButton
 
 @{
@@ -26,7 +26,7 @@
     if(Model.OnClick != null)
     {
         var onClickType = Model.OnClick.GetType();
-        if (Model is UICButtonSave submit)
+        if (Model is UICButtonSave submit && !Model.OnClick.HasValue())
         {
             type = "submit";
             //submit.AddAttribute("HideDocReady", "true");

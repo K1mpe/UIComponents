@@ -11,9 +11,9 @@
             return true;
         }
 
-        var popup = $(item).closest('.uic-can-hide');
-        if (popup.length) {
-            window.close();
+        var hideable = $(item).closest('.uic-can-close');
+        if (hideable.length) {
+            hideable.trigger('uic-close');
             return true;
         }
 

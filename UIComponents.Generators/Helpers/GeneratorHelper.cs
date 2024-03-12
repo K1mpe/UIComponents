@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Linq;
 using UIComponents.Abstractions.Interfaces;
-using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Models.UICGeneratorResponses;
 using UIComponents.Models.Models.Texts;

@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using UIComponents.Abstractions.Interfaces.ExternalServices;
-using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Helpers;
-using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Models.UICGeneratorResponses;
 
 namespace UIComponents.Generators.Configuration;
@@ -42,6 +39,7 @@ public partial class UicConfigOptions
     /// </summary>
     public bool ReplaceComponents { get; set; } = true;
 
+    public bool ReplaceReadMe { get; set; } = true;
 
     public bool CheckLanguageServiceType { get; set; } = true;
     public bool CheckPermissionServiceType { get; set; } = true;

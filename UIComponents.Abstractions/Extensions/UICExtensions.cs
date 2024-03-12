@@ -186,7 +186,7 @@ public static class UICExtensions
         string id = element.GetAttribute("id");
         if (string.IsNullOrWhiteSpace(id))
         {
-            id = $"uic{Guid.NewGuid().ToString("N").Substring(0, 4)}";
+            id = $"uic{Guid.NewGuid().ToString("N")}";
             element.AddAttribute("id", id);
         }
         return id;
@@ -261,8 +261,6 @@ public static class UICExtensions
     public static string CreateDefaultIdentifier(this IUIComponent component, object renderer = null)
     {
         string name = component.GetType().Name;
-        if (name.StartsWith("UIC"))
-            name = name.Substring(3);
 
         return UIComponent.DefaultIdentifier(name, renderer);
     }

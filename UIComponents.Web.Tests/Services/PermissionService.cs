@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Abstractions.Interfaces.Services;
 
 namespace UIComponents.Web.Tests.Services
 {
-    public class PermissionService : IUicPermissionService
+    public class PermissionService : IUICPermissionService
     {
         public Task<bool> CanCreate<T>(T obj) where T : class
         {

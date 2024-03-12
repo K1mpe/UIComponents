@@ -40,7 +40,7 @@
                     return false;
                 }
             },
-            (response) => {
+            async(response) => {
                 if (response.type == "ToastResponse") {
                     var level;
                     switch (response.notification.Type) {
@@ -58,10 +58,10 @@
                             console.error(response.data);
                             break;
                     }
-                    let message = uic.translation.translate(response.notification.Message);
+                    let message = await uic.translation.translate(response.notification.Message);
                     if (message == "null")
                         message = "";
-                    let title = uic.translation.translate(response.notification.Title);
+                    let title = await uic.translation.translate(response.notification.Title);
                     if (title == "null")
                         title = "";
 
@@ -98,7 +98,6 @@
                         location.href = response.url;
                     return true;
                 }
-                
             }
         ],
     },

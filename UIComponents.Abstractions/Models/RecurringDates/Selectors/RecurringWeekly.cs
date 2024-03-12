@@ -62,6 +62,8 @@ public class RecurringWeekly : IRecurringDateSelector
 
     public DateOnly? GetNextDate(RecurringDateItem dateItem, DateOnly start)
     {
+        if (IsInvalid)
+            return null;
         var startDayNr = dateItem.StartDate.DayNumber;
         var date = start;
         while (true)

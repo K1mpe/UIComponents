@@ -1,0 +1,43 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Generators.Interfaces
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@using UIComponents.Abstractions.Interfaces.Services;
+
+@inject IUICStoredEvents storedEvents
+@model UICActionServerResponse
+
+@{
+    string key = storedEvents.SubscribeIncommingEvent(Model.Function, Model.SingleUse);
+}
+
+@if (Model.GetVariableData != null)
+{
+    <text>
+        let variableContent = @await Model.GetVariableData.InvokeAsync(Component);
+        if(typeof variableContent == 'function')
+            variableContent = await variableContent();
+    </text>
+}
+else
+{
+    <text>
+        let variableContent = null;
+    </text>
+}
+let data = $.extend({}, variableContent, @Json.Serialize(Model.Data));
+await uic.getpost.post('/uic/PostEvent', {key: @Html.JsEncode(key,"'"), values: data});

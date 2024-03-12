@@ -127,7 +127,35 @@ public static class UICBuilderExtensions
 
             
         }
+        if (options.ReplaceReadMe)
+        {
 
+            string targetRoote = $"{dir}\\UIComponents\\";
+            string sourceRoute = $"{currentAssemblyName}";
+            if (!Directory.Exists(targetRoote))
+            {
+                Directory.CreateDirectory(targetRoote);
+            }
+
+            var readmes = manifestNames.Where(x => x.EndsWith(".md")).OrderBy(x => x);
+
+
+            var jsDestination = $"{targetRoote}\\README.md";
+            if (File.Exists(jsDestination))
+                File.Delete(jsDestination);
+
+            using (var readMeFile = File.Create(jsDestination))
+            {
+                foreach (var readme in readmes)
+                {
+                    using (var resourceStream = currentAssembly.GetManifestResourceStream(readme))
+                    {
+                        resourceStream!.CopyTo(readMeFile);
+                    }
+                }
+            }
+
+        }
         return services;
     }
 

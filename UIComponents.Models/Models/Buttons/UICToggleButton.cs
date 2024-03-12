@@ -2,7 +2,7 @@
 
 namespace UIComponents.Models.Models.Buttons;
 
-[PrependAppendInputGroupClass("")]
+[PrependAppendInputGroupClass("input-group-button")]
 /// <summary>
 /// This has 2 buttons, and will change between them if the <see cref="Value"/> is changed.
 /// </summary>

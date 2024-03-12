@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UIComponents.Abstractions.Interfaces;
-using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Abstractions.Interfaces.Services;
 
 namespace UIComponents.Generators.Services.Internal
 {
-    internal class LanguageService : IUicLanguageService
+    internal class LanguageService : IUICLanguageService
     {
         public Task<string> Translate(Translatable translationModel)
         {

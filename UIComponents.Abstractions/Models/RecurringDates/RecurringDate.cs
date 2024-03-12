@@ -34,7 +34,10 @@ public class RecurringDate
     /// <returns></returns>
     public DateOnly? GetNextDate(DateTime? startPoint = null)
     {
-        return GetNextDates(1, startPoint).FirstOrDefault();
+        var result = GetNextDates(1, startPoint);
+        if(result.Any())
+            return result.First();
+        return null;
     }
 
     /// <summary>
@@ -48,7 +51,7 @@ public class RecurringDate
         DateOnly startDate = DateOnly.FromDateTime(startPoint ?? DateTime.Today);
         List<DateOnly> dates = new();
 
-        List<RecurringDateItem> included = Included.Where(x => x.Enabled && x.Pattern != null).ToList();
+        List<RecurringDateItem> included = Included.Where(x => x.Enabled && x.Pattern != null && !x.Pattern.IsInvalid).ToList();
         while (dates.Count() < maxCount && included.Any())
         {
             //filter excluded to only be the excludeds that are still valid

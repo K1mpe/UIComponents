@@ -1,6 +1,6 @@
 ﻿@using UIComponents.Abstractions.Attributes;
 @using UIComponents.Abstractions.Interfaces;
-@using UIComponents.Abstractions.Interfaces.ExternalServices;
+@using UIComponents.Abstractions.Interfaces.Services;
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Models;
@@ -18,17 +18,29 @@
 @model UICActionGetValue
 
 @{
-    string componentId = null;
+    string selector = Model.Selector;
     if(Model.Component is UIComponent uiComponent)
     {
-        componentId = uiComponent.GetAttribute("id");
+        string componentId = uiComponent.GetAttribute("id");
+        if (string.IsNullOrWhiteSpace(selector) && string.IsNullOrWhiteSpace(componentId))
+            throw new Exception($"{Model.Component.RenderLocation} does not have a Id, assigned, and cannot be used to set the value");
+        if (!string.IsNullOrWhiteSpace(componentId))
+            selector = $"#{componentId}";
     }
 
 
-    if(string.IsNullOrWhiteSpace(componentId))
+    if(string.IsNullOrWhiteSpace(selector))
     {
-        throw new Exception($"{Model.Component.RenderLocation} does not have a Id, assigned, and cannot be used to set the value");
+        throw new Exception($"Cannot use {nameof(UICActionGetValue)} without a selector or component");
     }
 
 }
-uic.getValue($('#@componentId'));
+@if (selector.StartsWith("$"))
+{
+    <text>uic.getValue(@Html.Raw(selector))</text>
+}
+else
+{
+    <text>uic.getValue(@Html.JsEncode(selector, "'"));</text>
+}
+

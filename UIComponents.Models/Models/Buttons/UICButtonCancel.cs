@@ -4,7 +4,7 @@ public class UICButtonCancel : UICButton
 {
     public UICButtonCancel() : base(TranslationDefaults.ButtonCancel)
     {
-        OnClick = new UICActionCloseCard()
+        OnClick = new UICActionCloseModal()
         {
             OnFailed = new UICActionGoBack()
         };

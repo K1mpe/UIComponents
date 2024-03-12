@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UIComponents.Abstractions;
 using UIComponents.Abstractions.Interfaces;
-using UIComponents.Abstractions.Interfaces.ExternalServices;
+using UIComponents.Abstractions.Interfaces.Services;
 
 namespace UIComponents.Web.Tests.Services
 {
-    public class LanguageService2 : IUicLanguageService
+    public class LanguageService2 : IUICLanguageService
     {
         public Task<string> Translate(Translatable translationModel)
         {

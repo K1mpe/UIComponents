@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
+using UIComponents.Abstractions;
 
 namespace UIComponents.Defaults;
 
@@ -50,7 +51,7 @@ public static class TranslationDefaults
             key = defaultValue + ".Generic";
             defaultValue += "<";
             var genTypes = type.GetGenericArguments();
-            for(var i = 0; i < genTypes.Length; i++)
+            for (var i = 0; i < genTypes.Length; i++)
             {
                 defaultValue += $"{{{i}}}";
                 args.Add(TranslateType(genTypes[i]));

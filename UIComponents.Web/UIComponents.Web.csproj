@@ -7,52 +7,16 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.1.11</Version>
+	<Version>1.1.12</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <ItemGroup>
 	  <EmbeddedResource Include="UIComponents\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="UIComponents\Root\**" Pack="true" />
+	  <EmbeddedResource Include="README.md" />
   </ItemGroup>
 	
-  <ItemGroup>
-    <None Remove="UIComponents\Root\js\translation.js" />
-  </ItemGroup>
-	
-	
-  <!--<ItemGroup>
-    <Content Remove="UIComponents\ActionGetValue\Default.cshtml" />
-    <Content Remove="UIComponents\Actions\Select2.cshtml" />
-    <Content Remove="UIComponents\CardHeader\ModalHeader.cshtml" />
-    <Content Remove="UIComponents\CardHeader\TabHeader.cshtml" />
-    <Content Remove="UIComponents\Card\Default.cshtml" />
-    <Content Remove="UIComponents\Default.cshtml" />
-    <Content Remove="UIComponents\InputSelectlist\Select2.cshtml" />
-    <Content Remove="UIComponents\Partial\Default.cshtml" />
-    <Content Remove="UIComponents\RecurringDateTypes\RecurringCustom.cshtml" />
-    <Content Remove="UIComponents\RecurringDateTypes\RecurringMonthly.cshtml" />
-    <Content Remove="UIComponents\SpaceSelector\Default.cshtml" />
-    <Content Remove="UIComponents\TreeItems\Default.cshtml" />
-    <Content Remove="UIComponents\Tree\Default.cshtml" />
-  </ItemGroup>-->
-
-  <!--<ItemGroup>
-    <Content Remove="Views\_Imports.cshtml" />
-  </ItemGroup>-->
-
-  <!--<ItemGroup>
-    <None Remove="Root\css\uic.scss" />
-    <None Remove="Root\js\card.js" />
-    <None Remove="Root\js\contextMenu.js" />
-    <None Remove="Root\js\delayedAction.js" />
-    <None Remove="Root\js\form.js" />
-    <None Remove="Root\js\getpost.js" />
-    <None Remove="Root\js\modal.js" />
-    <None Remove="Root\js\partial.js" />
-    <None Remove="Root\js\sidepanel.js" />
-    <None Remove="Root\js\tabs.js" />
-  </ItemGroup>-->
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
@@ -65,66 +29,6 @@
     <ProjectReference Include="..\UIComponents.Generators\UIComponents.Generators.csproj" />
   </ItemGroup>
 
-  <!--<ItemGroup>
-    <None Include="UIComponents\ActionCloseCard\Default.cshtml" />
-    <None Include="UIComponents\ActionCompareObjects\Default.cshtml" />
-    <None Include="UIComponents\ActionDisableSaveButtonOnValidationErrors\Default.cshtml" />
-    <None Include="UIComponents\ActionGetPost\Default.cshtml" />
-    <None Include="UIComponents\ActionMarkChanges\Default.cshtml" />
-    <None Include="UIComponents\ActionNavigate\Default.cshtml" />
-    <None Include="UIComponents\ActionOpenResultAsModal\Default.cshtml" />
-    <None Include="UIComponents\ActionRefreshPartial\Default.cshtml" />
-    <None Include="UIComponents\ActionSetEdit\Default.cshtml" />
-    <None Include="UIComponents\ActionSetReadonly\Default.cshtml" />
-    <None Include="UIComponents\ActionSetValue\Default.cshtml" />
-    <None Include="UIComponents\Actions\Default.cshtml" />
-    <None Include="UIComponents\ButtonEdit\Default.cshtml" />
-    <None Include="UIComponents\ButtonGroup\Default.cshtml" />
-    <None Include="UIComponents\ContextMenuItem\Default.cshtml" />
-    <None Include="UIComponents\InputRecurringDate\Default.cshtml" />
-    <None Include="UIComponents\Modal\Default.cshtml" />
-    <None Include="UIComponents\SelectListItem\Default.cshtml" />
-    <None Include="UIComponents\TimelineGraph\Default.cshtml" />
-    <None Include="UIComponents\ToggleButton\Default.cshtml" />
-    <None Include="UIComponents\ButtonToolbar\Default.cshtml" />
-    <None Include="UIComponents\Button\CardButton.cshtml" />
-    <None Include="UIComponents\Button\Default.cshtml" />
-    <None Include="UIComponents\Tabs\HorizontalTab.cshtml" />
-    <None Include="UIComponents\Tabs\VerticalTab.cshtml" />
-    <None Include="UIComponents\Custom\Default.cshtml" />
-    <None Include="UIComponents\DropdownDivider\Default.cshtml" />
-    <None Include="UIComponents\DropdownHeader\Default.cshtml" />
-    <None Include="UIComponents\DropdownItem\Default.cshtml" />
-    <None Include="UIComponents\DropdownSubMenu\Default.cshtml" />
-    <None Include="UIComponents\Dropdown\Default.cshtml" />
-    <None Include="UIComponents\Form\Default.cshtml" />
-    <None Include="UIComponents\Group\ContentOnly.cshtml" />
-    <None Include="UIComponents\Group\Div.cshtml" />
-    <None Include="UIComponents\Icon\Default.cshtml" />
-    <None Include="UIComponents\InputCheckboxThreeState\Checkbox.cshtml" />
-    <None Include="UIComponents\InputCheckboxThreeState\ToggleSwitch.cshtml" />
-    <None Include="UIComponents\InputCheckbox\Checkbox.cshtml" />
-    <None Include="UIComponents\InputCheckbox\ToggleSwitch.cshtml" />
-    <None Include="UIComponents\InputColor\Coloris.cshtml" />
-    <None Include="UIComponents\InputCustom\Default.cshtml" />
-    <None Include="UIComponents\InputDaterange\Default.cshtml" />
-    <None Include="UIComponents\InputDatetime\Default.cshtml" />
-    <None Include="UIComponents\InputGroup\Default.cshtml" />
-    <None Include="UIComponents\InputGroup\Grid.cshtml" />
-    <None Include="UIComponents\InputMultiline\Default.cshtml" />
-    <None Include="UIComponents\InputMultiSelect\Default.cshtml" />
-    <None Include="UIComponents\InputNumber\Default.cshtml" />
-    <None Include="UIComponents\InputSelectListSource\Default.cshtml" />
-    <None Include="UIComponents\InputSelectlist\Default.cshtml" />
-    <None Include="UIComponents\InputText\Default.cshtml" />
-    <None Include="UIComponents\InputTimespan\Default.cshtml" />
-    <None Include="UIComponents\Label\Default.cshtml" />
-    <None Include="UIComponents\SidePanel\Left.cshtml" />
-    <None Include="UIComponents\SignalR\Default.cshtml" />
-    <None Include="UIComponents\SingleRow\Default.cshtml" />
-    <None Include="UIComponents\Span\Default.cshtml" />
-    <None Include="UIComponents\Upload\Dropzone1.cshtml" />
-  </ItemGroup>-->
   <ItemGroup>
 	  <Folder Include="Taghelpers\UIComponentTaghelper" />
   </ItemGroup>

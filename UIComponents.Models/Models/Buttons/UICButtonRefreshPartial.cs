@@ -1,6 +1,4 @@
-﻿using UIComponents.Abstractions.Extensions;
-
-namespace UIComponents.Models.Models.Buttons;
+﻿namespace UIComponents.Models.Models.Buttons;
 
 /// <summary>
 /// Create a button to update a partial. If no partial is provided, the closest parent partial will be used.

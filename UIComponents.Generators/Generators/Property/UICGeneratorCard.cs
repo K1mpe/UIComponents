@@ -1,5 +1,4 @@
-﻿using UIComponents.Abstractions.Extensions;
-using UIComponents.Generators.Helpers;
+﻿using UIComponents.Generators.Helpers;
 using UIComponents.Models.Models.Card;
 
 namespace UIComponents.Generators.Generators.Property;

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using UIComponents.Abstractions.Interfaces.Inputs;
-using UIComponents.Abstractions.Models;
-using UIComponents.Models.Extensions;
 
 namespace UIComponents.Models.Models.Inputs;
 

@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UIComponents.Abstractions.Extensions;
-using UIComponents.Abstractions.Models;
-using UIComponents.Generators.Configuration;
-using UIComponents.Generators.Interfaces;
+﻿using UIComponents.Abstractions.Extensions;
 using UIComponents.Generators.Models.UICGeneratorResponses;
-using UIComponents.Models.Models.Texts;
 
 namespace UIComponents.Generators.Generators.Property
 {

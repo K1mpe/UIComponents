@@ -1,6 +1,4 @@
-﻿using UIComponents.Abstractions.Extensions;
-
-namespace UIComponents.Models.Models.Buttons;
+﻿namespace UIComponents.Models.Models.Buttons;
 
 public class UICButtonDelete : UICButton
 {

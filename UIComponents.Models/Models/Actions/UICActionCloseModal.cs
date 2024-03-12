@@ -6,13 +6,13 @@ namespace UIComponents.Models.Models.Actions;
 /// <summary>
 /// Close the nearest modal or popup, if no modal or popup is available, trigger "OnFailed"
 /// </summary>
-public class UICActionCloseCard : UIComponent, IUIAction
+public class UICActionCloseModal : UIComponent, IUIAction
 {
     #region Fields
     #endregion
 
     #region Ctor
-    public UICActionCloseCard() : base()
+    public UICActionCloseModal() : base()
     {
 
     }

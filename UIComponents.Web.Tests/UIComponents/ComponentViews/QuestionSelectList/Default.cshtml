@@ -1,0 +1,70 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Models.Models.Questions;
+@using UIComponents.Web.Extensions;
+
+
+@inject IUICLanguageService L
+@model UICQuestionSelectList
+@{
+    string guid = "Question" + Guid.NewGuid().ToString("n");
+    bool canCancel = Model.ButtonCancel.HasValue() && !Model.ButtonCancel.Disabled;
+}
+<div id="@Model.Id">
+    <script>
+        $(document).ready(() => {
+            $('#@Model.Id').on('uic-remove', () => {
+        @(guid).close();
+            })
+
+            const @guid = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-@(Model.ButtonSubmit.Color?.ToLower() ?? UIComponents.Defaults.ColorDefaults.ButtonDefault.ToLower())',
+                    cancelButton: 'btn btn-@(Model.ButtonCancel.Color?.ToLower() ?? UIComponents.Defaults.ColorDefaults.ButtonDefault.ToLower())',
+                },
+                buttonsStyling: false
+            });
+
+        @(guid).fire({
+                title: @await Html.Translate(L, Model.Title, "'"),
+                text: @await Html.Translate(L, Model.Message, "'"),
+                input:'select',
+                icon: @Html.JsEncode(Model.Icon?.ToString()??string.Empty, "'"),
+                inputOptions: {
+                    @foreach(var option in Model.SelectListItems)
+                    {
+                        <text>@Html.JsEncode(option.Value, "'"): @Html.JsEncode(option.Text, "'"),</text>
+                    }
+                },
+                reverseButtons: @Json.Serialize(Model.InvertButtons),
+                allowOutsideClick: @Json.Serialize(Model.CanClickOutSideModalToClose && canCancel),
+                allowEscapeKey: @Json.Serialize(canCancel),
+                showConfirmButton: @Json.Serialize(Model.ButtonSubmit.HasValue()),
+                showCancelButton: @Json.Serialize(Model.ButtonCancel.HasValue()),
+                confirmButtonText: `@await Model.ButtonSubmit.PrependButtonIcon.InvokeAsync(Component) @await Html.Translate(L, Model.ButtonSubmit.ButtonText, string.Empty) @await Model.ButtonSubmit.AppendButtonIcon.InvokeAsync(Component)`,
+                denyButtonText: `@await Model.ButtonCancel.PrependButtonIcon.InvokeAsync(Component) @await Html.Translate(L, Model.ButtonCancel.ButtonText, string.Empty) @await Model.ButtonCancel.AppendButtonIcon.InvokeAsync(Component)`,
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+        @await Model.ButtonSubmit.OnClick.InvokeAsync(Component)
+                    } else {
+        @await Model.ButtonCancel.OnClick.InvokeAsync(Component)
+                    }
+            })
+        });
+    </script>
+
+</div>

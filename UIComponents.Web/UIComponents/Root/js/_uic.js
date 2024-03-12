@@ -22,7 +22,7 @@ var uic = uic || {};
 
 
 uic.getValue = function (element) {
-
+    element = $(element);
     //If you create a function on a element like this
     //  $().on('uic-getValue', function () {
     //      return "value";
@@ -78,6 +78,7 @@ uic.getValue = function (element) {
 
 
 uic.setValue = function (element, value) {
+    element = $(element);
     //If you create a function on a element like this
     //  $().on('uic-setValue', function (e, value) {
     //      ...;
@@ -133,7 +134,8 @@ uic.setValue = function (element, value) {
 //These changed properties are marked and will only be changed after the user clicks on them.
 //This function is usefull for updating a item with signalR, without changing values without user noticing
 uic.markChanges = function (element, newValue) {
-    if (!$(element).length)
+    element = $(element);
+    if (!element.length)
         return;
 
 

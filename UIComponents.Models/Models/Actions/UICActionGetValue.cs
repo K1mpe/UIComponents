@@ -12,13 +12,17 @@ public class UICActionGetValue : UIComponent, IUIAction
     {
         Component = component;
     }
-
+    public UICActionGetValue(string selector)
+    {
+        Selector = selector;
+    }
     #endregion
 
     #region Properties
     [IgnoreGetChildrenFunction]
     public IUIComponent Component { get; set; }
 
+    public string Selector { get; set; }
 
     #endregion
 }

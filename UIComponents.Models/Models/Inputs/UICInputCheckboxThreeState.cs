@@ -1,7 +1,4 @@
-﻿using UIComponents.Abstractions.Extensions;
-using UIComponents.Abstractions.Models;
-
-namespace UIComponents.Models.Models.Inputs;
+﻿namespace UIComponents.Models.Models.Inputs;
 
 /// <summary>
 /// This is a input for a <see cref="bool?"/> can result in true, false, null

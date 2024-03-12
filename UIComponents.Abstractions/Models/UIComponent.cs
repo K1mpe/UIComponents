@@ -1,4 +1,6 @@
-﻿namespace UIComponents.Abstractions.Models;
+﻿using System.Xml.Linq;
+
+namespace UIComponents.Abstractions.Models;
 
 
 /// <summary>
@@ -96,6 +98,8 @@ public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScr
 
     public static string DefaultIdentifier(string UICType, object renderer = null)
     {
+        if (UICType.StartsWith("UIC"))
+            UICType = UICType.Substring(3);
         return $"/UIComponents/ComponentViews/{UICType}/{renderer ?? "Default"}";
     }
 
