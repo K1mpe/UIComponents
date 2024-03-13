@@ -55,7 +55,7 @@ public static class UICConfigure
     /// </remarks>
     public static UicConfigOptions AddDefaultGenerators(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IUICStoredEvents, StoredComponents>();
+        serviceCollection.AddSingleton<IUICStoredEvents, StoredEvents>();
         serviceCollection.AddSingleton<IUICStoredComponents, StoredComponents>();
         configOptions.AddAndRegisterGenerator<UICPropTypeGenerator>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInitialPartial>(serviceCollection);

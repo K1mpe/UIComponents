@@ -94,16 +94,16 @@ namespace UIComponents.Web.Tests.Controllers
             try
             {
 
-                var yesNo = UICQuestionYesNo.Create("Test Ja / nee", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
+                var yesNo = UICQuestionYesNo.Create("Test Ja / nee", "Wilt u deze vraag beantwoorden?", _uicQuestionService, question => question.Icon = QuestionIconType.Warning);
 
                 var answered = _uicQuestionService.TryAskQuestion(yesNo, TimeSpan.FromMinutes(1), 1, out bool boolean);
                 if (boolean)
                 {
                     var dayOfWeek = UICQuestionSelectEnum<DayOfWeek>.Create("Favorite day", "What is your favorite day?", _uicQuestionService, question =>
                     {
-                        question.Icon = QuestionIconType.Success;
+                        question.Icon = QuestionIconType.Info;
                     });
-                    answered = _uicQuestionService.TryAskQuestion(dayOfWeek, TimeSpan.FromMinutes(1), new() { 1, 2, 3, 4 }, out DayOfWeek favoriteDay);
+                    answered = _uicQuestionService.TryAskQuestion(dayOfWeek, TimeSpan.FromMinutes(1),  1, out DayOfWeek favoriteDay);
 
                 }
 

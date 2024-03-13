@@ -4,6 +4,7 @@ internal class QuestionPersistance
 {
     public string Id { get; set; }
     public AutoResetEvent AutoResetEvent { get; set; }
+    public string DebugIdentifier { get; set; }
     public bool Answered { get; set; }
     public string Response { get; set; }
 }

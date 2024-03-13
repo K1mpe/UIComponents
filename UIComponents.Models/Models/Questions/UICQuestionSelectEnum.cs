@@ -14,9 +14,9 @@ namespace UIComponents.Models.Models.Questions
         #region Ctor
         public UICQuestionSelectEnum() : base()
         {
-            foreach(var value in Enum.GetNames(typeof(T)))
+            foreach(var enumName in Enum.GetNames(typeof(T)))
             {
-                SelectListItems.Add(new(value, value));
+                SelectListItems.Add(new() { Value = enumName, Text = UIComponents.Defaults.TranslationDefaults.TranslateEnums(typeof(T), enumName)});
             }
         }
         public UICQuestionSelectEnum(Translatable title, Translatable message) : this()

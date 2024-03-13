@@ -43,7 +43,7 @@
         @(guid).fire({
             title: @await Html.Translate(L, Model.Title, "'"),
             text: @await Html.Translate(L, Model.Message, "'"),
-            icon: @Html.JsEncode(Model.Icon?.ToString() ?? string.Empty, "'"),
+            icon: @Html.JsEncode(Model.Icon?.ToString().ToLower() ?? string.Empty, "'"),
             reverseButtons: @Json.Serialize(Model.InvertButtons),
             allowOutsideClick: @Json.Serialize(Model.CanClickOutSideModalToClose && canCancel),
             allowEscapeKey: @Json.Serialize(canCancel),

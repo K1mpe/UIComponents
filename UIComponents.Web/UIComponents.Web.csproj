@@ -7,14 +7,16 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.1.12</Version>
+	<Version>1.1.13</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <ItemGroup>
 	  <EmbeddedResource Include="UIComponents\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="UIComponents\Root\**" Pack="true" />
+	  <Content Remove="UIComponents\ComponentViews\RenderMultiple.cshtml" />
 	  <EmbeddedResource Include="README.md" />
+	  <EmbeddedResource Include="UIComponents\ChangeLog\**" />
   </ItemGroup>
 	
 

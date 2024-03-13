@@ -8,7 +8,7 @@ public interface IUICStoredEvents
     /// <param name="func">Function that should be triggered</param>
     /// <param name="singleUse">If true, this function can only be called once</param>
     /// <returns></returns>
-    public string SubscribeIncommingEvent(Func<Dictionary<string, string>, Task> func, bool singleUse);
+    public string SubscribeIncommingEvent(Func<Dictionary<string, string>, Task> func, TimeSpan lifeTime, bool singleUse);
 
     /// <summary>
     /// Use the key given by <see cref="SubscribeIncommingEvent(Func{Dictionary{string, string}, Task}, bool)"/> to execute the function

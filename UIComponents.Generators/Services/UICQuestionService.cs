@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Models.HtmlResponse;
+using UIComponents.Models.Models.Questions;
 
 namespace UIComponents.Generators.Services;
 
@@ -10,15 +11,13 @@ public class UICQuestionService : IUICQuestionService
     private readonly IUICSignalRService _signalRService;
     private readonly IUICStoredComponents _storedComponents;
     private static readonly Dictionary<string, QuestionPersistance> _questionPersistance = new();
-    private readonly IUICUserNotificationCollection _userNotificationCollection;
     private readonly ILogger _logger;
 
-    public UICQuestionService(ILogger<UICQuestionService> logger, IUICStoredComponents storedComponents, IUICSignalRService signalRService, IUICUserNotificationCollection userNotificationCollection = null)
+    public UICQuestionService(ILogger<UICQuestionService> logger, IUICStoredComponents storedComponents, IUICSignalRService signalRService)
     {
         _storedComponents = storedComponents;
         _logger = logger;
         _signalRService = signalRService;
-        _userNotificationCollection = userNotificationCollection;
     }
 
 
@@ -82,9 +81,10 @@ public class UICQuestionService : IUICQuestionService
     protected bool AskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds, out string result)
     {
         result = string.Empty;
+
         try
         {
-            var key = _storedComponents.StoreComponent(question, userIds.Count == 1);
+            var key = _storedComponents.StoreComponentForUsers(question, userIds, userIds.Count == 1);
             question.Id = key;
 
             var fetchComponent = new FetchComponent()
@@ -97,24 +97,31 @@ public class UICQuestionService : IUICQuestionService
                 {
                     Id = key,
                     AutoResetEvent = new(false),
+                    DebugIdentifier =  question.DebugIdentifier
                 };
             }
-
+            _logger.LogInformation($"Asking question {question.DebugIdentifier} to users: {string.Join(", ", userIds)}");
             foreach (var userId in userIds)
             {
-                if(userId == null)
+                
+                if (userId == null)
                     continue;
                 _= _signalRService.SendUIComponentToUser(fetchComponent, userId.ToString());
-                if (_userNotificationCollection != null)
-                    _userNotificationCollection.AddNotificationToUserCollection(userId.ToString(), question, timeout);
             }
+
             _questionPersistance[key].AutoResetEvent.WaitOne(timeout);
             result = _questionPersistance[key].Response;
             return _questionPersistance[key].Answered;
         }
-        catch
+        catch(NullReferenceException)
         {
             //No response received within timespan
+            _logger.LogError($"No response was received for {question.DebugIdentifier}");
+            return false;
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex, $"Error for question {question.DebugIdentifier}");
             return false;
         }
         finally
@@ -123,7 +130,6 @@ public class UICQuestionService : IUICQuestionService
             {
                 _questionPersistance.Remove(question.Id);
             }
-
         }
 
     }
@@ -138,9 +144,14 @@ public class UICQuestionService : IUICQuestionService
         {
             if (_questionPersistance.TryGetValue(key, out var question))
             {
+                _logger.LogInformation($"Answered question {question.DebugIdentifier} with '{response}'");
                 question.Response = response;
                 question.Answered = true;
                 question.AutoResetEvent.Set();
+            }
+            else
+            {
+                _logger.LogWarning("Tried to answer question that does not exist.");
             }
         }
     }
@@ -150,6 +161,7 @@ public class UICQuestionService : IUICQuestionService
         {
             if (_questionPersistance.TryGetValue(key, out var question))
             {
+                _logger.LogInformation($"Question {question.DebugIdentifier} was cancelled");
                 question.AutoResetEvent.Set();
             }
         }

@@ -35,10 +35,13 @@ public abstract class UICQuestionBase : IUIQuestionComponent, IUIComponent
 
     public QuestionIconType? Icon { get; set; }
 
+    public TimeSpan? RemoveAfterTimeout { get; set; }
     /// <summary>
     /// This option is only available if <see cref="ButtonCancel"/>.Render is true
     /// </summary>
     public bool CanClickOutSideModalToClose { get; set; } = true;
+
+    public string DebugIdentifier => Title?.ToString()??Message.ToString()??string.Empty;
     #endregion
 
     #region Methods
@@ -61,5 +64,5 @@ public enum QuestionIconType
     Error,
     Warning,
     Info,
-    question
+    Question
 }

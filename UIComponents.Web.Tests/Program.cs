@@ -32,7 +32,6 @@ builder.Services.AddMvc();
 
 builder.Services.AddUIComponentWeb(config =>
 {
-    UIComponents.Defaults.TranslationDefaults.ButtonDelete = new Translatable("Button.Delete");
     config.CheckPermissionServiceType = true;
     config.CheckLanguageServiceType = false;
     config.AddDefaultGenerators(builder.Services);

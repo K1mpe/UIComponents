@@ -129,7 +129,6 @@ public static class UICBuilderExtensions
         }
         if (options.ReplaceReadMe)
         {
-
             string targetRoote = $"{dir}\\UIComponents\\";
             string sourceRoute = $"{currentAssemblyName}";
             if (!Directory.Exists(targetRoote))
@@ -137,7 +136,7 @@ public static class UICBuilderExtensions
                 Directory.CreateDirectory(targetRoote);
             }
 
-            var readmes = manifestNames.Where(x => x.EndsWith(".md")).OrderBy(x => x);
+            var readmes = manifestNames.Where(x => x.EndsWith("README.md")).OrderBy(x => x);
 
 
             var jsDestination = $"{targetRoote}\\README.md";
@@ -145,6 +144,34 @@ public static class UICBuilderExtensions
                 File.Delete(jsDestination);
 
             using (var readMeFile = File.Create(jsDestination))
+            {
+                foreach (var readme in readmes)
+                {
+                    using (var resourceStream = currentAssembly.GetManifestResourceStream(readme))
+                    {
+                        resourceStream!.CopyTo(readMeFile);
+                    }
+                }
+            }
+
+        }
+        if (true)
+        {
+            string targetRoote = $"{dir}\\UIComponents\\";
+            string sourceRoute = $"{currentAssemblyName}.UIComponents.ChangeLog.";
+            if (!Directory.Exists(targetRoote))
+            {
+                Directory.CreateDirectory(targetRoote);
+            }
+
+            var readmes = manifestNames.Where(x => x.Contains(sourceRoute) && x.EndsWith(".md")).OrderByDescending(x => x);
+
+
+            var destination = $"{targetRoote}\\ChangeLog.md";
+            if (File.Exists(destination))
+                File.Delete(destination);
+
+            using (var readMeFile = File.Create(destination))
             {
                 foreach (var readme in readmes)
                 {

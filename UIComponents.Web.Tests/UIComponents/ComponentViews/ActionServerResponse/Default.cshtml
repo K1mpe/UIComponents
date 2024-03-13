@@ -22,7 +22,7 @@
 @model UICActionServerResponse
 
 @{
-    string key = storedEvents.SubscribeIncommingEvent(Model.Function, Model.SingleUse);
+    string key = storedEvents.SubscribeIncommingEvent(Model.Function, Model.Timeout, Model.SingleUse);
 }
 
 @if (Model.GetVariableData != null)

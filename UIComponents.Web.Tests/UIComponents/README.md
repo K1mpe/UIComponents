@@ -1,7 +1,7 @@
 # Required
-## C#
+## c#
 In program.cs, add the this to the builder.
-```C#
+```c#
 builder.Services.AddUIComponentWeb(config =>
 {
     config.AddDefaultGenerators(builder.Services);
@@ -25,14 +25,19 @@ Make sure that all overrides of this javascript code come after the importing of
 Create items manually or use the IUIComponentService to generate components.
 
 ### Rendering components from view
-```C#
+```c#
 @await myComponent.InvokeAsync(Component)
 ```
+
+Rendering a Task< IUIComponent > is also supported
+```c#
+@await _uic.CreateComponentAsync(testModel).InvokeAsync(Component)
+```
 ### Rendering components from controller
-```C#
+```c#
 public IActionResult RenderMyComponent(){
     var myComponent = ...
-    return View('/UIComponents/ComponentViews/Render.cshtml', myComponent);
+    return View("/UIComponents/ComponentViews/Render.cshtml", myComponent);
 }
 ```
 
@@ -42,7 +47,7 @@ Each generator needs a Name, orderNumber and a function.
 - Name: Might be usefull when a error occurs or logging
 - Order: From low to high, default generators are around 1000.
 - Function: gets arguments and the existing result from previous generators
-```C#
+```c#
 config.AddGenerator(GeneratorHelper.SelectListItems("DataBase SelectList", 1000, async (args, existing) =>
 {
     //If there is a existing result, do not change anything
@@ -58,7 +63,7 @@ config.AddGenerator(GeneratorHelper.SelectListItems("DataBase SelectList", 1000,
 }));
 ```
 
-```C#
+```c#
 config.AddGenerator(GeneratorHelper.ObjectGenerator(typeof(IDbEntity), "AddingSignalRRefresh", 2000, async (args, existing) =>
 {
     await Task.Delay(0);
@@ -87,18 +92,18 @@ config.AddGenerator(GeneratorHelper.ObjectGenerator(typeof(IDbEntity), "AddingSi
 ```
 # Database entities (IDbEntity)
 Set the IDbEntity on your database classes, so these are recognised as database models and the Id can be mapped
-```C#
+```c#
 public class BaseEntity: IDbEntity<long>
 {
-    public Long Id{get;set;}
+    public long Id { get; set; }
 }
 
-public class BaseEntity : IDbEntity<string>
+public class BaseEntity : IDbEntity<Guid>
 {
-    public string Guid{get;set;}
+    public Guid Guid { get; set; }
 
-    //If the Id of the object is something else then 'Id', you can map it privately like this
-    string IDBEntity.Id => Guid;
+    // If the Id of the object is something else then 'Id', you can map it privately like this
+    string IDbEntity.Id => Guid;
 }
 ```
 
@@ -112,7 +117,7 @@ There are 3 categories for these handlers:
 
 After getting a response from the server, the client will loop through these methods, until one method returns a value.
 If no handlers return a value, the entire response will be returned
-```Javascript
+``` Javascript
 <script src="~/uic/js/uic.js" asp-append-version="true"></script>
 
 <script>
@@ -129,19 +134,92 @@ uic.getpost.defaultHandlers.push( (response) => {
 </script>
 ```
 
+# Available services
+
+## IUIComponentService
+This service can auto generate components based on the existing generators.
+
+You can inject the **IUIComponentService** directly in a view, controller or service.
+```c#
+private readonly IUIComponentService _uic;
+
+TestModel testModel = new TestModel();
+
+var myComponent = await _uic.CreateComponentAsync(testModel);
+```
+
+You can change the options of the generators by providing a **UICOptions** object.
+```c#
+//Create
+var componentWithOptions = await _uic.CreateComponentAsync(testModel, new UICOptions()
+{
+    ExcludedProperties = "Id, IsDeleted",
+    ShowEditButton = false,
+};
+
+```
+To change the default values of these options, these can be configured from the **UIComponents.Defaults.OptionDefaults**.
+```c#
+UIComponents.Defaults.OptionDefaults.ReverseButtonOrder = true;
+```
+
+You can also Inherit the UICOptions object and set default values in the constructor
+```c#
+public class UICCreateOptions : UICOptions
+{
+    public UICCreateOptions(){
+        ReplaceSaveButtonWithCreateButton = true;
+        InputGroupSingleRow = true;
+        ShowEditButton = false;
+        ShowDeleteButton = false;
+        ShowCancelButton = true;
+        IdHidden = true;
+    }
+}
+```
+
+You can create a single input field from a object
+> :warning: This propertyselector can only be nested 1 level!
+```c#
+var dateInput = await _uic.CreateComponentAsync(testModel, x => x.Date);
+var dateInputWithOptions = await _uic.CreateComponentAsync(testModel, x => x.Date, new(){
+    InputGroupSingleRow = false;
+});
+```
+
+
+## IUICStoredComponents
+You can use this interface if you want to send something to a user (F.e. a complex notification or popup).
+This service is also used by the **IUICQuestionService**.
+
+### Receiving notification on page load
+When loading a page, you can check if there are any remaining notifications for the user, and display these notifications.
+```c#
+var allNotifications = _uicStoredComponents.GetComponentsByUser(currentUserId);
+```
+:warning: If a component is stored as single use, this will automatically be removed from the collection.
+This means you should never call this method if you do not intent on sending these notifications to the user.
+The .InvokeAsync(Component) method does support lists or null to render
+
+## IUICQuestionService
+You can use the IUICQuestionService if you want to ask questions to the client before continuing in code.
+:warning: The questionservice does require the **IUICSignalRService** service to be implemented by the user!
+
+
+
 
 
 # Register services
 
 ## IUICLanguageService
 To enable translations, Implement the **IUICLanguageService** and make sure this is also registrated as this type.
-```C#
+```c#
 builder.Services.AddScoped<IUICLanguageService, LanguageService>();
 ```
 If you do not wish to use this service, disable the check in the builder configuration.
 
 Without a languageService, all Translatables will take the last part of the key as defaultValue
-```C#
+```c#
 builder.Services.AddUIComponentWeb(config =>
 {
     config.CheckLanguageServiceType = false;
@@ -192,12 +270,12 @@ uic.translation = {
 
 ## IUICPermissionService
 To enable permission checks, Implement the **IUICPermissionService** and make sure this is also registrated as this type.
-```C#
+```c#
 builder.Services.AddScoped<IUICPermissionService, PermissionService>();
 ```
 If you do not wish to use this service, disable the check in the builder configuration.
 Without the permissionservice, all permissionchecks will result in true.
-```C#
+```c#
 builder.Services.AddUIComponentWeb(config =>
 {
     config.CheckPermissionServiceType = false;
@@ -205,15 +283,10 @@ builder.Services.AddUIComponentWeb(config =>
 });
 ```
 
-## IUICQuestionService
-This interface is implemented and does not need a custom implementation.
-You can use the IUICQuestionService if you want to ask questions to the client before continuing in code.
-The questionservice does require the IUICSignalRService service to be implemented by the user!
-
 ## IUICSignalRService
 Implement the IUICSignalRService interface in your solution to enable IUICQuestionService. 
 This is not required for the UICSignalR model.
-```C#
+```c#
 public class SignalRService : IUICSignalRService
 {
     #region Ctor
@@ -242,7 +315,7 @@ public class SignalRService : IUICSignalRService
 }
 ```
 After implementing the implementation of the scripts, you also need to assign the userId clientSide.
-```C#
+```c#
 <script src="~/uic/js/uic.js" asp-append-version="true"></script>
 <script>
     uic.signalR.currentUserId = @UserId;
@@ -282,8 +355,99 @@ uic.signalR = {
 # Option defaults
 If you want to set some default values, you can access them in the UIComponents.Defaults namespace.
 It is recommended to only change these in the builder config to not change the behavior while the program is running.
-```C#
+```c#
 UIComponents.Defaults.OptionDefaults.ReverseButtonOrder = true;
 UIComponents.Defaults.ColorDefaults.ButtonSave = new Color("primary");
 UIComponents.Defaults.TranslationDefaults.ButtonDelete = new Translatable("Button.Delete");
+```
+
+
+# Attributes
+There are several attibutes available that influence the behavior of the generators.
+
+## FakeForeignKey
+This attribute can identify a property as foreignKey without influencing the database.
+You can also mark this foreignKey as optional
+```c#
+[FakeForeignKey(typeof(User), false)]
+public long UserId { get; set; }
+```
+
+## UICIgnoreAttribute
+Properties with this attribute are always ignored by the generators and will not be visualised
+```c#
+[UICIgnoreAttribute]
+public bool IsDeleted { get; set; }
+```
+
+## UICInheritAttribute
+When creating view models, you can use this attribute to make the generators look at the other class attributes.
+```c#
+[UICInheritAttribute(typeof(User))]
+public string EmailAddress { get; set; }
+```
+If the propertyname does not match the name of the inherite object, you can also give the source name.
+```c#
+[UICInheritAttribute(typeof(User), nameof(User.Email)]
+public string EmailAddress { get; set; }
+```
+
+This attribute can also be placed on the class, This will inherit all properties with the same name.
+You can also add multiple types. The first type match will have priority.
+
+In this example, the LastName will not be rendered, and the GroupName will have a span text.
+```c#
+[UICInheritAttribute(typeof(User), typeof(UserGroup)]
+public class UserViewModel
+{
+    public string EmailAddress { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+
+    public string GroupName { get; set; }
+}
+public class User
+{
+    public string EmailAddress { get; set; }
+    public string FirstName { get; set; }
+
+    [UICIgnoreAttribute]
+    public string LastName { get; set; }
+}
+public class UserGroup
+{
+    [UICSpan('This is the name of the group')]
+    public string GroupName { get; set; }
+}
+```
+
+## UICPropertyTypeAttribute
+Normally the generators will automatically detect what type of PropertyType to use, but you can also manually assign this.
+
+:warning: If a property name contains "Color" and is a string input, this will be detected as a color input with a HEX value by default.
+```c#
+public class TestModel
+{
+    [UICPropertyType(UICPropertyType.String)]
+    public string MySkinColor { get; set; }
+
+    [UICPropertyType(UICPropertyType.MultilineText)]
+    public string Description { get; set; }
+}
+```
+
+
+## UICSpanAttribute / UICTooltipAttribute
+Applying one of this attributes will add a info textbox and both work in a very simular way.
+
+- UICSpanAttribute will generate a spantext under the input
+- UICTooltipAttribute will generate a tooltip on the input and label. The label may also get a info icon to indicate there is a tooltip available.
+
+
+The **first** parameter of this attribute is the **default text**, and the **second** paramater is the resourceKey.
+If you do not provide the resourceKey, This key will automatically be generated.
+You can overwrite these defaultKeys in the **UIComponents.Defaults.TranslationDefaults** namespace.
+```c#
+UIComponents.Defaults.TranslationDefaults.DefaultInfoSpanKey = (propInfo, propertyType) => { ... };
+UIComponents.Defaults.TranslationDefaults.DefaultTooltipKey = (propInfo, propertyType) => { ... };
 ```

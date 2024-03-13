@@ -25,6 +25,11 @@ public class UICActionServerResponse : IUIAction
     public Func<Dictionary<string, string>, Task> Function { get; set; }
     public bool SingleUse { get; set; }
 
+    /// <summary>
+    /// This is the maximum time this connection can exist. Cleaning up the connection after this time.
+    /// </summary>
+    public TimeSpan Timeout { get; set; } = TimeSpan.FromHours(1);
+
     public object Data { get; set; }
 
     /// <summary>

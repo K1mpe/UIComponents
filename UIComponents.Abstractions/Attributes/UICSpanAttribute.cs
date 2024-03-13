@@ -9,7 +9,7 @@ public class UICSpanAttribute : Attribute
 	/// <param name="defaultText"></param>
 	public UICSpanAttribute(string defaultText, string translationKey=null)
 	{
-		TranslationModel = new Translatable(defaultText, translationKey);
+		TranslationModel = new Translatable(translationKey, defaultText);
 	}
 
 	public Translatable TranslationModel { get; init; }
