@@ -74,7 +74,7 @@
 
     <text>
         if (!CSS.supports('color', currentValue)) {
-            span.text(@await Html.Translate(L, TranslationDefaults.ValidateColor(propertyName)));
+            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateColor(propertyName)));
         }
 
 
@@ -85,7 +85,7 @@
                 {
     <text>
         if (currentValue.length == 0)
-        span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
     </text>
                 }
 

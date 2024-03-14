@@ -76,8 +76,8 @@
                 var translatable = TranslationDefaults.TranslateEnums(typeof(DayOfWeek), dayOfWeek);
                 var translateMultiple = new Translatable($"{translatable.ResourceKey}s");
                 <text>
-                    dayOfWeek.push(@(await Html.Translate(L, translatable, "'")).toLowerCase());
-                    daysOfWeek.push(@(await Html.Translate(L, translateMultiple, "'")).toLowerCase());
+                    dayOfWeek.push(@(await Html.TranslateJs(L, translatable, "'")).toLowerCase());
+                    daysOfWeek.push(@(await Html.TranslateJs(L, translateMultiple, "'")).toLowerCase());
                 </text>
             }
 
@@ -171,7 +171,7 @@
             function setFormattedString() {
                 var value = uic.getValue($('#@id'));
                 formattedString = "";
-                formattedString += @await Html.Translate(L, new("RecurringDate.Format.Every"), "'");
+                formattedString += @await Html.TranslateJs(L, new("RecurringDate.Format.Every"), "'");
                 formattedString += " ";
 
                 let selectedDays = 0;
@@ -190,15 +190,15 @@
 
                 let recurringWeeks = value.@nameof(RecurringWeekly.EveryXWeeks)
                 if (recurringWeeks > 1) {
-                    formattedString += @(await Html.Translate(L, new("RecurringDays.Format.nWeeks", "{0} weeks on", "{0}"))).format(recurringWeeks);
+                    formattedString += @(await Html.TranslateJs(L, new("RecurringDays.Format.nWeeks", "{0} weeks on", "{0}"))).format(recurringWeeks);
                     formattedString += " ";
 
                     if (selectedDays == 2 && value.@nameof(RecurringWeekly.Saturday) && value.@nameof(RecurringWeekly.Sunday)) {
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Weekends"),"'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Weekends"),"'")).toLowerCase();
                     } else if (selectedDays == 5 && !value.@nameof(RecurringWeekly.Saturday) && !value.@nameof(RecurringWeekly.Sunday)) {
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.WeeksOnWeekdays", "weeks on weekdays"), "'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.WeeksOnWeekdays", "weeks on weekdays"), "'")).toLowerCase();
                     } else if (selectedDays == 7) {
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Day", "Day"), "'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Day", "Day"), "'")).toLowerCase();
                     } else{
                         if (value.@nameof(RecurringWeekly.Monday)) {
                             formattedString += `${daysOfWeek[1]}, `;
@@ -232,11 +232,11 @@
                 }
                 else{
                     if (selectedDays == 2 && value.@nameof(RecurringWeekly.Saturday) && value.@nameof(RecurringWeekly.Sunday)) {
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Weekend"))).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Weekend"))).toLowerCase();
                     } else if (selectedDays == 5 && !value.@nameof(RecurringWeekly.Saturday) && !value.@nameof(RecurringWeekly.Sunday)) {
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Weekday"), "'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Weekday"), "'")).toLowerCase();
                     } else if (selectedDays == 7) {
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Day"), "'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Day"), "'")).toLowerCase();
                     } else {
                         if (value.@nameof(RecurringWeekly.Monday)) {
                             formattedString += `${dayOfWeek[1]}, `;

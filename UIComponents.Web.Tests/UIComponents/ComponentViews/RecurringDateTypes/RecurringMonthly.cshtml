@@ -122,19 +122,19 @@
                     styleText = styleText.replaceAll("\n", "").trim().toLowerCase();
 
                 formattedString = "";
-                formattedString += @await Html.Translate(L, new("RecurringDate.Format.The"), "'");
+                formattedString += @await Html.TranslateJs(L, new("RecurringDate.Format.The"), "'");
                 formattedString += " ";
                 formattedString += instanceText;
                 formattedString += " ";
                 formattedString += styleText;
                 formattedString +=" ";
-                formattedString += @(await Html.Translate(L, new("RecurringDate.Format.OfEvery", "Of every"), "'")).toLowerCase();
+                formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.OfEvery", "Of every"), "'")).toLowerCase();
                 formattedString += " ";
                 if(value.@nameof(RecurringMonthly.EveryXMonths)> 1){
                     formattedString += ` ${value.@nameof(RecurringMonthly.EveryXMonths)} `;
-                    formattedString += @(await Html.Translate(L, new("Common.Month+", "Months"), "'")).toLowerCase();
+                    formattedString += @(await Html.TranslateJs(L, new("Common.Month+", "Months"), "'")).toLowerCase();
                 } else{
-                    formattedString += @(await Html.Translate(L, new("Common.Month"), "'")).toLowerCase();
+                    formattedString += @(await Html.TranslateJs(L, new("Common.Month"), "'")).toLowerCase();
                 }
 
                 

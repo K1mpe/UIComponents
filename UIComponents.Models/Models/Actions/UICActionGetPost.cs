@@ -19,6 +19,12 @@ public class UICActionGetPost : UIComponent, ISubmitAction
         Action = action;
         Data = data;
     }
+    public UICActionGetPost(ActionTypeEnum actionType, string url, object data = null)
+    {
+        ActionType = actionType;
+        Url = url;
+        Data = data;
+    }
 
     public UICActionGetPost()
     {
@@ -107,6 +113,10 @@ public class UICActionGet : UICActionGetPost
     public UICActionGet(string controller, string action, object data = null) : base(ActionTypeEnum.Get, controller, action, data)
     {
     }
+    public UICActionGet(string url, object data = null) : base(ActionTypeEnum.Get, url, data)
+    {
+        
+    }
 
     public UICActionGet()
     {
@@ -117,6 +127,10 @@ public class UICActionGet : UICActionGetPost
 public class UICActionPost : UICActionGetPost
 {
     public UICActionPost(string controller, string action, object data = null): base(ActionTypeEnum.Post, controller, action, data) 
+    {
+
+    }
+    public UICActionPost(string url, object data = null) : base(ActionTypeEnum.Post, url, data)
     {
 
     }

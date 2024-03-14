@@ -20,7 +20,7 @@ public class UICGeneratorInputMultiline : UICGeneratorProperty
         input.Value = args.PropertyValue?.ToString()?? string.Empty;
 
         if (args.Configuration.TryGetPermissionService(out var permissionService))
-            input.Readonly = !(await permissionService!.CanEdit(args.ClassObject!) && await permissionService.CanEditProperty(args.ClassObject, args.PropertyName));
+            input.Readonly = !(await permissionService!.CanEditObject(args.ClassObject!) && await permissionService.CanEditProperty(args.ClassObject, args.PropertyName));
 
 
 

@@ -30,7 +30,7 @@
 
     @if (Model.Required)
     {
-        <span class="text-danger" title="@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(labelText), null)">*</span>
+        <span class="text-danger" title="@await Html.TranslateHtml(L, TranslationDefaults.ValidationIsRequired(labelText))">*</span>
     }
     @if(!string.IsNullOrWhiteSpace(Model.GetAttribute("title")))
     {

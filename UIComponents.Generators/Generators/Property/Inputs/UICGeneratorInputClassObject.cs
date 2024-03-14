@@ -22,11 +22,13 @@ public class UICGeneratorInputClassObject : UICGeneratorProperty
         if (args.PropertyType == null)
             return GeneratorHelper.Next<IUIComponent>();
 
-        if (args.PropertyValue == null)
+        if (args.PropertyType == typeof(string) || !args.PropertyType.IsClass)
             return GeneratorHelper.Next<IUIComponent>();
 
-        if(args.PropertyType == typeof(string) || !args.PropertyType.IsClass)
-            return GeneratorHelper.Next<IUIComponent>();
+        if (args.PropertyValue == null)
+            return GeneratorHelper.Success(null, false);
+
+        
 
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, null, args.CallCollection);
         var newArgs = new UICPropertyArgs(args.PropertyValue, null, null, args.Options, cc, args.Configuration);

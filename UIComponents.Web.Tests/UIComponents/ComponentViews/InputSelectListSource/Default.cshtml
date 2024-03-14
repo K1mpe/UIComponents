@@ -55,7 +55,7 @@
             element.children().remove();
 
             if(selectListItems == undefined || selectListItems.length == 0 || selectListItems == false){
-                element.append($('<option>', {text: @await Html.Translate(L, Model.InputSelectList.NoItemsText)}));
+                element.append($('<option>', {text: @await Html.TranslateJs(L, Model.InputSelectList.NoItemsText)}));
             } else{
                 @switch (Model.Sorting)
         {

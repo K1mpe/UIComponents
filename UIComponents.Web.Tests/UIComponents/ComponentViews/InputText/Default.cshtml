@@ -59,7 +59,7 @@
                 {
                     <text>
                         if (currentValue.length > @Model.ValidationMaxLength.Value)
-                            span.text(@await Html.Translate(L, TranslationDefaults.ValidateMaxLength(propertyName, Model.ValidationMaxLength.Value)));
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMaxLength(propertyName, Model.ValidationMaxLength.Value)));
                     </text>
                 }
 
@@ -67,7 +67,7 @@
                 {
                     <text>
                         if (@(Model.ValidationMinLength.Value) > currentValue.length && currentValue.length > 0)
-                            span.text(@await Html.Translate(L, TranslationDefaults.ValidateMinLength(propertyName, Model.ValidationMinLength.Value)));
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMinLength(propertyName, Model.ValidationMinLength.Value)));
                     </text>
                 }
 
@@ -75,7 +75,7 @@
                 {
                     <text>
                         if (currentValue.length == 0)
-                            span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
                     </text>
                 }
             }

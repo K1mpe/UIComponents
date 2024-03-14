@@ -82,7 +82,7 @@ public class UICTabs : UIComponent, IUICHasChildren<IUICTab>, IUICTab
 
         #endregion
 
-        #region Interface
+    #region Interface
 
     List<IUICTab> IUICHasChildren<IUICTab>.Children => Tabs;
 
@@ -92,6 +92,7 @@ public class UICTabs : UIComponent, IUICHasChildren<IUICTab>, IUICTab
     public IHeader Header { get; set; } = new UICCardHeader(new Translatable("Tab.NoHeader"));
 
     IUICHasAttributes IUICTab.Content => this;
+
 
     #endregion
 }

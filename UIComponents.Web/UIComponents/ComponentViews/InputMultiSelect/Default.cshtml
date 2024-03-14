@@ -131,7 +131,7 @@
     }
     else if (Model.NoItemsText != null)
     {
-        <option disabled>@await Html.Translate(L, Model.NoItemsText, null)</option>
+        <option disabled>@await Html.TranslateHtml(L, Model.NoItemsText)</option>
     }
 
 

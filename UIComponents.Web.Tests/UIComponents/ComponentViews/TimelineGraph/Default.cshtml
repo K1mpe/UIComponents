@@ -248,7 +248,7 @@
 
         <text>
         graphs[@Html.JsEncode(graph.LineGraphId, "'")] = {
-            label: @await Html.Translate(L, graph.Label),
+            label: @await Html.TranslateJs(L, graph.Label),
             data: @Json.Serialize(graph.Points),
             stepped: @Json.Serialize(graph.Stepped),
             fill: @Json.Serialize(graph.Fill),

@@ -12,7 +12,7 @@ public partial class IconDefaults
     public static UICIcon RefreshIcon = new UICIcon("fas fa-sync");
 
     public static UICIcon Add = new UICIcon("fas fa-plus");
-    public static UICIcon Trash = new UICIcon("fas fa-trash-can");
+    public static UICIcon Delete = new UICIcon("fas fa-trash-can");
 
     public static UICIcon ButtonCardCollapse = new UICIcon("fas fa-minus");
     public static UICIcon ButtonCardExpend = new UICIcon("fas fa-plus");

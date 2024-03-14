@@ -8,7 +8,7 @@ namespace UIComponents.Models.Models;
 /// <summary>
 /// This is just a list of multiple components
 /// </summary>
-public class UICGroup : UIComponent, IUIAction, IUICHasChildren<IUIComponent>
+public class UICGroup : UIComponent, IUIAction, IUICHasChildren<IUIComponent>, IUICHasAttributesAndChildren
 {
     #region Fields
     public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);

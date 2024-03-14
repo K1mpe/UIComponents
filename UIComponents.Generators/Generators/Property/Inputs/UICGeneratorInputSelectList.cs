@@ -39,7 +39,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
         if(showButtonAdd && args.Configuration.TryGetPermissionService(out var permissionService))
         {
             var propertyType = args.PropertyType.BaseType ?? args.PropertyType;
-            showButtonAdd = await permissionService!.CanCreate(propertyType);
+            showButtonAdd = await permissionService!.CanCreateType(propertyType);
 
             if (showButtonAdd && args.CallCollection.Caller is UICInputGroup inputGroup)
             {

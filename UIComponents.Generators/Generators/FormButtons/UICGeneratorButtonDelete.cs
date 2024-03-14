@@ -16,12 +16,12 @@ public class UICGeneratorButtonDelete : UICGeneratorProperty
     {
         if(args.Configuration.TryGetPermissionService(out var permissionService))
         {
-            if (!await permissionService!.CanDelete(args.ClassObject))
+            if (!await permissionService!.CanDeleteObject(args.ClassObject))
                 return GeneratorHelper.Success<IUIComponent>(null, false);
         }
         if(args.ClassObject is IDbEntity dbEntity)
         {
-            var button = new UICButtonDelete(args.ClassObject.GetType().Name, dbEntity.Id);
+            var button = new UICButtonDelete(args.ClassObject.GetType(), dbEntity.Id);
 
             return GeneratorHelper.Success<IUIComponent>(button, true);
         }

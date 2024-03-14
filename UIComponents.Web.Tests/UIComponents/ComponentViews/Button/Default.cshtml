@@ -70,7 +70,7 @@
 {
     <a href="@navigate.Href" @Html.Raw(Model.GetHtmlAttributes())>
         @await Model.PrependButtonIcon.InvokeAsync(Component)
-        @await Html.Translate(L, Model.ButtonText, null)
+        @await Html.TranslateHtml(L, Model.ButtonText)
         @await Model.AppendButtonIcon.InvokeAsync(Component)
     </a>
 }
@@ -78,7 +78,7 @@ else
 {
     <button type="@type" @Html.Raw(Model.GetHtmlAttributes())>
         @await Model.PrependButtonIcon.InvokeAsync(Component)
-        @await Html.Translate(L, Model.ButtonText, null)
+        @await Html.TranslateHtml(L, Model.ButtonText)
         @await Model.AppendButtonIcon.InvokeAsync(Component)
 
         @if (Model.OnClick != null)

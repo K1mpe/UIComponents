@@ -87,7 +87,7 @@
                 {
                     <text>
                         if (currentValue > new moment(@Json.Serialize(Model.ValidationMaximumDate.Value)))
-                            span.text(@await Html.Translate(L, TranslationDefaults.ValidateMaxValue(propertyName, Model.ValidationMaximumDate.Value)));
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMaxValue(propertyName, Model.ValidationMaximumDate.Value)));
                     </text>
                 }
 
@@ -95,14 +95,14 @@
                 {
                     <text>
                         if (new moment(@Json.Serialize(Model.ValidationMinimumDate.Value)) > currentValue)
-                            span.text(@await Html.Translate(L, TranslationDefaults.ValidateMinValue(propertyName, Model.ValidationMinimumDate.Value)));
+                        span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMinValue(propertyName, Model.ValidationMinimumDate.Value)));
                     </text>
                 }
                 @if (Model.ValidationRequired)
                 {
                     <text>
                         if (currentValue.length == 0)
-                            span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                        span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
                     </text>
                 }
             }

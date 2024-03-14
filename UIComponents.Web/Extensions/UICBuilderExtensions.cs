@@ -127,7 +127,7 @@ public static class UICBuilderExtensions
 
             
         }
-        if (options.ReplaceReadMe)
+        if (options.AddReadMe)
         {
             string targetRoote = $"{dir}\\UIComponents\\";
             string sourceRoute = $"{currentAssemblyName}";
@@ -155,7 +155,7 @@ public static class UICBuilderExtensions
             }
 
         }
-        if (true)
+        if (options.AddChangeLog)
         {
             string targetRoote = $"{dir}\\UIComponents\\";
             string sourceRoute = $"{currentAssemblyName}.UIComponents.ChangeLog.";
@@ -167,7 +167,7 @@ public static class UICBuilderExtensions
             var readmes = manifestNames.Where(x => x.Contains(sourceRoute) && x.EndsWith(".md")).OrderByDescending(x => x);
 
 
-            var destination = $"{targetRoote}\\ChangeLog.md";
+            var destination = $"{targetRoote}\\CHANGELOG.md";
             if (File.Exists(destination))
                 File.Delete(destination);
 

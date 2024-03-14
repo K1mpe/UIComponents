@@ -21,7 +21,12 @@ public class Translatable
     public override string ToString()
     {
         if (!string.IsNullOrEmpty(DefaultValue))
-            return string.Format(DefaultValue, Arguments);
+        {
+            if (Arguments.Any())
+                return string.Format(DefaultValue, Arguments);
+            else return DefaultValue;
+        }
+            
 
         if (ResourceKey.Contains(".") && !ResourceKey.Trim().EndsWith("."))
             return ResourceKey.Split('.').Last();

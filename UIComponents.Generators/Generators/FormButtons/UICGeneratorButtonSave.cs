@@ -16,7 +16,7 @@ public class UICGeneratorButtonSave : UICGeneratorProperty
     {
         if(args.Configuration.TryGetPermissionService(out var permissionService))
         {
-            if (!await permissionService.CanEdit(args.ClassObject))
+            if (!await permissionService.CanEditObject(args.ClassObject))
                 return GeneratorHelper.Success<IUIComponent>(null, false);
         }
 

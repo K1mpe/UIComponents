@@ -46,10 +46,10 @@
 
                 <!--begin::Info-->
                 <div class="ms-4">
-                    <h3 class="fs-5 fw-bold text-gray-900 mb-1">@await Html.Translate(L, Model.Text, null)</h3>
+                    <h3 class="fs-5 fw-bold text-gray-900 mb-1">@await Html.TranslateHtml(L, Model.Text, null)</h3>
                     @if (Model.DisplayFileCountMessage)
                     {
-                        <span class="fs-7 fw-semibold text-gray-400">@await Html.Translate(L, TranslationDefaults.FileUploadMaxFiles(Model.MaxFileCount))</span>
+                        <span class="fs-7 fw-semibold text-gray-400">@await Html.TranslateHtml(L, TranslationDefaults.FileUploadMaxFiles(Model.MaxFileCount))</span>
                     }
                     
                 </div>

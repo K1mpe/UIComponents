@@ -24,6 +24,7 @@ public class UICIcon : UIComponent, IUICIcon
     public UICIcon(string icon) : this()
     {
         Icon = icon;
+        RenderConditions.Add(()=>!string.IsNullOrEmpty(icon));
     }
 
     #endregion

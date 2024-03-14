@@ -9,22 +9,17 @@ namespace UIComponents.Web.Tests.Services
 {
     public class PermissionService : IUICPermissionService
     {
-        public Task<bool> CanCreate<T>(T obj) where T : class
+        public Task<bool> CanCreateType(Type type)
         {
             return Task.FromResult(true);
         }
 
-        public Task<bool> CanCreate(Type type)
+        public Task<bool> CanDeleteObject<T>(T obj) where T : class
         {
             return Task.FromResult(true);
         }
 
-        public Task<bool> CanDelete<T>(T obj) where T : class
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task<bool> CanEdit<T>(T newObject, T oldObject = null) where T : class
+        public Task<bool> CanEditObject<T>(T oldObject) where T : class
         {
             return Task.FromResult(true);
         }
@@ -34,7 +29,7 @@ namespace UIComponents.Web.Tests.Services
             return Task.FromResult(true);
         }
 
-        public Task<bool> CanView<T>(T obj) where T : class
+        public Task<bool> CanViewObject<T>(T obj) where T : class
         {
             return Task.FromResult(true);
         }

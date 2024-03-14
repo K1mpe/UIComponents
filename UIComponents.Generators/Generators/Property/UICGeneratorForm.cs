@@ -31,7 +31,7 @@ public class UICGeneratorForm : UICGeneratorProperty
             return GeneratorHelper.Next<IUIComponent>();
 
         if (args.Configuration.TryGetPermissionService(out var permissionService))
-            if (!args.Options.ReplaceSaveButtonWithCreateButton && !await permissionService.CanEdit(args.ClassObject!))
+            if (!args.Options.ReplaceSaveButtonWithCreateButton && !await permissionService.CanEditObject(args.ClassObject!))
                 return GeneratorHelper.Next<IUIComponent>();
 
         var form = new UICForm();

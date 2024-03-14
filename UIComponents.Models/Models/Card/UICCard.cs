@@ -4,7 +4,7 @@ using UIComponents.Models.Models.Buttons;
 
 namespace UIComponents.Models.Models.Card;
 
-public class UICCard : UIComponent, IUICTab
+public class UICCard : UIComponent, IUICCardLike
 {
 
     #region Ctor
@@ -30,7 +30,7 @@ public class UICCard : UIComponent, IUICTab
     /// </summary>
     public UICGroup Body { get; set; } = new();
 
-    public UICGroup? Footer { get; set; }
+    public UICGroup Footer { get; set; } = new();
 
 
     /// <summary>
@@ -62,7 +62,13 @@ public class UICCard : UIComponent, IUICTab
     /// If not empty, set this as the maximum width of the card
     /// </summary>
     public string MaxWidth { get; set; }
-    public IUICHasAttributes Content => Body;
+
+
+    IUICHasAttributesAndChildren IUICCardLike.Content => Body;
+
+    IUICHasAttributesAndChildren IUICCardLike.Footer => Footer;
+
+
 
 
 

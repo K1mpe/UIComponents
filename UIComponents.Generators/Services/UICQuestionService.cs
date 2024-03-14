@@ -13,7 +13,7 @@ public class UICQuestionService : IUICQuestionService
     private static readonly Dictionary<string, QuestionPersistance> _questionPersistance = new();
     private readonly ILogger _logger;
 
-    public UICQuestionService(ILogger<UICQuestionService> logger, IUICStoredComponents storedComponents, IUICSignalRService signalRService)
+    public UICQuestionService(ILogger<UICQuestionService> logger, IUICStoredComponents storedComponents, IUICSignalRService signalRService = null)
     {
         _storedComponents = storedComponents;
         _logger = logger;
@@ -80,6 +80,8 @@ public class UICQuestionService : IUICQuestionService
     }
     protected bool AskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds, out string result)
     {
+        if (_signalRService == null)
+            throw new Exception($"There is no implementation for {nameof(IUICSignalRService)} registrated.");
         result = string.Empty;
 
         try

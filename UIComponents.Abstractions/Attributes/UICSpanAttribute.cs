@@ -1,5 +1,6 @@
 ﻿namespace UIComponents.Abstractions.Attributes;
 
+[AttributeUsage(AttributeTargets.Property)]
 public class UICSpanAttribute : Attribute
 {
 	/// <summary>

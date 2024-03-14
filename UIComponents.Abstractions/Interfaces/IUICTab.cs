@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Abstractions.Interfaces;
 
-public interface IUICTab
+public interface IUICTab : IUIComponent
 {
     public IHeader Header { get; }
     public IUICHasAttributes Content { get;}

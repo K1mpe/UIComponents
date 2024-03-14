@@ -70,7 +70,7 @@
                 {
                     <text>
                         if (currentValue > @Model.ValidationMaxValue.Value)
-                            span.text(@await Html.Translate(L, TranslationDefaults.ValidateMaxValue(propertyName, Model.ValidationMaxValue.Value)));
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMaxValue(propertyName, Model.ValidationMaxValue.Value)));
                     </text>
                 }
 
@@ -78,7 +78,7 @@
                 {
                     <text>
                         if (@(Model.ValidationMinValue.Value) > currentValue)
-                            span.text(@await Html.Translate(L, TranslationDefaults.ValidateMinValue(propertyName, Model.ValidationMinValue.Value)));
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMinValue(propertyName, Model.ValidationMinValue.Value)));
                     </text>
                 }
 
@@ -86,7 +86,7 @@
                 {
                     <text>
                         if (currentValue.length == 0)
-                            span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
                     </text>
                 }
             }

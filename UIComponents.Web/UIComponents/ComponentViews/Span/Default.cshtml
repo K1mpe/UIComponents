@@ -16,4 +16,4 @@
 @inject IUICLanguageService L
 @model UICSpan
 
-<span @Html.Raw(Model.GetHtmlAttributes())>@await Html.Translate(L, Model.Text, null)</span>
+<span @Html.Raw(Model.GetHtmlAttributes())>@await Html.TranslateHtml(L, Model.Text)</span>

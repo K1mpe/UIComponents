@@ -1278,13 +1278,13 @@ $(document).ready(function () {
         }
     },
 
-    delete: async function (controller, id, title = "", message = "", data = {}) {
+    delete: async function (url, id, title = "", message = "", data = {}) {
         try {
-            var content = await uic.getpost.get(`/${controller}/Delete`, { id, title, message, data });
+            var content = await uic.getpost.get(url, { id, title, message, data });
             $('body').append(content);
 
         } catch (ex) {
-            ErrorBox(ex);
+            console.error(ex);
         }
     },
     

@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Models.Models.Card;
 
-public class UICModal: UIComponent
+public class UICModal: UIComponent, IUICCardLike
 {
     #region Ctor
     public UICModal(Translatable title) : this(new UICCardHeader() { Title = title })
@@ -22,7 +22,7 @@ public class UICModal: UIComponent
 
     public UICGroup Body { get; set; } = new();
 
-    public UICGroup? Footer { get; set; }
+    public UICGroup Footer { get; set; } = new();
 
     public bool ShowCloseButton { get; set; } = true;
 
@@ -45,7 +45,11 @@ public class UICModal: UIComponent
     public bool RemoveModalOnClose { get; set; } = true;
 
     public ModalSize Width { get; set; } = ModalSize.Auto;
-    
+
+    IUICHasAttributesAndChildren IUICCardLike.Content => Body;
+
+    IUICHasAttributesAndChildren IUICCardLike.Footer => Footer;
+
     #endregion
 
     #region Methods

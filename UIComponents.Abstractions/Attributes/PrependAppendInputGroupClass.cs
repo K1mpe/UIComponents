@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Abstractions.Attributes;
 
-
+[AttributeUsage(AttributeTargets.Class)]
 /// <summary>
 /// Use this attribute to overwrite the default input-group-text class for appends or prepends in input groups
 /// </summary>

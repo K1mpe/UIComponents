@@ -38,7 +38,7 @@
             {
                 <span class="icon"></span>
             }
-            @await Html.Translate(L,Model.Content, null)
+            @await Html.TranslateHtml(L, Model.Content)
         </span>
     </li>
 }
@@ -55,7 +55,7 @@ else if (Model.OnClick is UICActionNavigate navigate)
             {
                 <span class="icon"></span>
             }
-            @await Html.Translate(L,Model.Content, null)
+            @await Html.TranslateHtml(L, Model.Content)
         </a>
     </li>
 }
@@ -81,7 +81,7 @@ else
         {
             <span class="icon"></span>
         }
-        @await Html.Translate(L,Model.Content, null)</a>
+        @await Html.TranslateHtml(L,Model.Content, null)</a>
     </li>
     //Create the script for the click on the dropdown item, and store it for later. This script will be rendered after all dropdown items.
     

@@ -19,13 +19,11 @@ public static class UICExtensions
             return list;
         foreach (var prop in element.GetType().GetProperties())
         {
-
             if (prop.GetCustomAttribute<IgnoreGetChildrenFunctionAttribute>() != null)
                 continue;
 
             if (prop.PropertyType.IsAssignableTo(typeof(IUIComponent)))
             {
-
                 var value = prop.GetValue(element);
                 if (value == null)
                     continue;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net;
 using System.Text.Encodings.Web;
 using UIComponents.Abstractions.Interfaces.Services;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace UIComponents.Web.Extensions;
 
@@ -38,11 +39,25 @@ public static class TranslateExtensions
         return content;
     }
 
-    public static async Task<IHtmlContent>Translate(this IHtmlHelper htmlHelper, IUICLanguageService languageService, Translatable translateable, string brackets = "'")
+    public static async Task<IHtmlContent>TranslateJs(this IHtmlHelper htmlHelper, IUICLanguageService languageService, Translatable translateable, string brackets = "'")
     {
         if (translateable == null)
             return htmlHelper.JsEncode(null, brackets);
         var translated = await languageService.Translate(translateable);
         return htmlHelper.JsEncode(translated, brackets);
+    }
+
+    public static async Task<IHtmlContent>TranslateHtml(this IHtmlHelper htmlHelper, IUICLanguageService languageService, Translatable translatable, string brackets = null)
+    {
+        HtmlContentBuilder content = new();
+        if (brackets != null)
+            content.AppendHtml(htmlHelper.Raw(brackets));
+
+        content.AppendHtml(htmlHelper.Raw(await languageService.Translate(translatable)));
+
+        if (brackets != null)
+            content.AppendHtml(htmlHelper.Raw(brackets));
+
+        return content;
     }
 }

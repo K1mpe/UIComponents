@@ -28,7 +28,7 @@
 <div @Html.Raw(Model.GetHtmlAttributes())>
     <div class="modal-title">
         @await Model.PrependTitle.InvokeAsync(Component)
-        @await Html.Translate(L, Model.Title, null)
+        @await Html.TranslateHtml(L, Model.Title)
         @await Model.AppendTitle.InvokeAsync(Component)
     </div>
     @if (Model.Buttons.AnyHasValue())

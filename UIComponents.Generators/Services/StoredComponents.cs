@@ -12,7 +12,7 @@ public class StoredComponents : IUICStoredComponents
     #endregion
 
     #region Ctor
-    public StoredComponents(ILogger<StoredComponents> logger, IUICSignalRService signalRService)
+    public StoredComponents(ILogger<StoredComponents> logger, IUICSignalRService signalRService=null)
     {
         _logger = logger;
         _ = ClearStorageRecurring();
@@ -151,6 +151,9 @@ public class StoredComponents : IUICStoredComponents
 
     public Task SendComponentToUserSignalR(IUIComponent component, object userId)
     {
+        if (_signalRService == null)
+            throw new Exception($"There is no implementation for {nameof(IUICSignalRService)} registrated.");
+
         if (userId == null)
             throw new ArgumentNullException(nameof(userId));
 

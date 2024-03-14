@@ -15,7 +15,7 @@ public class UICGeneratorButtonCreate : UICGeneratorProperty
     {
         if(args.Configuration.TryGetPermissionService(out var permissionService))
         {
-            if (!await permissionService!.CanCreate(args.ClassObject))
+            if (!await permissionService!.CanCreateType(args.ClassObject.GetType()))
                 return GeneratorHelper.Success<IUIComponent>(null, false);
         }
         var form = args.CallCollection.Components.Where(c => c is UICForm).OfType<UICForm>().FirstOrDefault();

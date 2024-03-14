@@ -58,7 +58,7 @@ else
             {
                 <span class="icon"></span>
             }
-        @await Html.Translate(L,Model.Content, null)
+        @await Html.TranslateHtml(L,Model.Content, null)
         </a>
         <ul class="dropdown-menu">
             @foreach (var item in subItems)

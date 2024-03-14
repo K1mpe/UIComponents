@@ -23,7 +23,7 @@ namespace UIComponents.Web.Tests.Models
 
         public bool? ThreeStateBool { get; set; }
 
-        [UICSpan("Dit is een spantekst")]
+        [UICSpan("<span class='text-warning'>Dit</span> <blub>is een <sub>spantekst</sub>  &|é@\"#'([§^è!ç{0})-¨[^$*]ù%´µ``<>\\")]
         public int Number { get; set; }
 
         public double Decimal { get; set; }

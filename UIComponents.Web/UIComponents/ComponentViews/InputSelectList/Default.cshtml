@@ -65,7 +65,7 @@ Model.AddScript(
         {
         <text>
             if (currentValue == null || currentValue =='')
-            span.text(@await Html.Translate(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
         </text>
         }
     }
@@ -84,7 +84,7 @@ Model.AddScript(
 <select @Html.Raw(Model.GetHtmlAttributes())>
     @if (Model.Placeholder != null)
     {
-            <option disabled hidden selected>@await Html.Translate(L, Model.Placeholder, null)</option>
+            <option disabled hidden selected>@await Html.TranslateHtml(L, Model.Placeholder, null)</option>
     }
     @if (Model.SelectListItems.Any())
     {
@@ -101,7 +101,7 @@ Model.AddScript(
     }
     else if(Model.NoItemsText != null)
     {
-        <option disabled>@await Html.Translate(L, Model.NoItemsText, null)</option>
+        <option disabled>@await Html.TranslateHtml(L, Model.NoItemsText, null)</option>
     }
 </select>
 

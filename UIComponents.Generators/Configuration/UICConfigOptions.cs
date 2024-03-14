@@ -39,7 +39,8 @@ public partial class UicConfigOptions
     /// </summary>
     public bool ReplaceComponents { get; set; } = true;
 
-    public bool ReplaceReadMe { get; set; } = true;
+    public bool AddReadMe { get; set; }
+    public bool AddChangeLog { get; set; }
 
     public bool CheckLanguageServiceType { get; set; } = true;
     public bool CheckPermissionServiceType { get; set; } = true;

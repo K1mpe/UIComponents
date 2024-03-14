@@ -130,9 +130,9 @@
 
         function AddIncludedRow(text, data){
             let tr = $('<tr>')
-                .append($('<td>').append($('<i>', {class: 'fas fa-plus text-success', title: @await Html.Translate(L, new("RecurringDate.Included"))})))
+                .append($('<td>').append($('<i>', {class: 'fas fa-plus text-success', title: @await Html.TranslateJs(L, new("RecurringDate.Included"))})))
                 .append($('<td>').append($('<span>', {class: 'recurring-text'}).text(text)))
-                .append($('<td>').append($('<i>', {class: '@Html.JsEncode(IconDefaults.Trash.Icon) text-danger btn-delete-row'})));
+                .append($('<td>').append($('<i>', {class: '@Html.JsEncode(IconDefaults.Delete.Icon) text-danger btn-delete-row'})));
                 
             tr.attr('data-value', data);
             tr.addClass('included');
@@ -142,9 +142,9 @@
         };
         function AddExcludedRow(text, data){
             let tr = $('<tr>')
-                .append($('<td>').append($('<i>', {class: 'fas fa-minus text-warning', title: @await Html.Translate(L, new("RecurringDate.Excluded"))})))
+                .append($('<td>').append($('<i>', {class: 'fas fa-minus text-warning', title: @await Html.TranslateJs(L, new("RecurringDate.Excluded"))})))
                 .append($('<td>').append($('<span>', {class: 'recurring-text'}).text(text)))
-                .append($('<td>').append($('<i>', {class: '@Html.JsEncode(IconDefaults.Trash.Icon) text-danger btn-delete-row', title: @await Html.Translate(L, TranslationDefaults.ButtonDelete, "'")})));
+                .append($('<td>').append($('<i>', {class: '@Html.JsEncode(IconDefaults.Delete.Icon) text-danger btn-delete-row', title: @await Html.TranslateJs(L, TranslationDefaults.ButtonDelete, "'")})));
 
             tr.attr('data-value', data);
             tr.addClass('excluded');
@@ -238,10 +238,10 @@
                 let end = value.@nameof(RecurringDateItem.EndDate);
 
                 if(moment(start) > moment())
-                    text += " "+ @(await Html.Translate(L, new("RecurringDate.Format.From"))).toLowerCase()+" "+start;
+                    text += " "+ @(await Html.TranslateJs(L, new("RecurringDate.Format.From"))).toLowerCase()+" "+start;
 
                 if(end.length)
-                    text += " " + @(await Html.Translate(L, new("RecurringDate.Format.Until"))).toLowerCase()+" "+end;
+                    text += " " + @(await Html.TranslateJs(L, new("RecurringDate.Format.Until"))).toLowerCase()+" "+end;
 
                 included.push(text);
             });
@@ -258,20 +258,20 @@
                         excluded.push("multipleExceptions")
             });
 
-            let title = @await Html.Translate(L, new("RecurringDate.Format.ComplexPattern", "Complex pattern"), "'");
+                    let title = @await Html.TranslateJs(L, new("RecurringDate.Format.ComplexPattern", "Complex pattern"), "'");
             if(!included.length)
             {
-                title = @await Html.Translate(L, new("RecurringDate.Format.Never"), "'");
+                    title = @await Html.TranslateJs(L, new("RecurringDate.Format.Never"), "'");
             } else if(included.length == 1){
                 title = included[0];
                 if(excluded.length){
                     title +=" ";
                     if(excluded.length == 1){
-                        title += @(await Html.Translate(L, new("RecurringDate.Format.Except"), "'")).toLowerCase();
+                        title += @(await Html.TranslateJs(L, new("RecurringDate.Format.Except"), "'")).toLowerCase();
                         title += " ";
                         title += excluded[0].toLowerCase();
                     }else{
-                        title += @(await Html.Translate(L, new("RecurringDate.Format.WithExceptions", "With exceptions"), "'")).toLowerCase();
+                        title += @(await Html.TranslateJs(L, new("RecurringDate.Format.WithExceptions", "With exceptions"), "'")).toLowerCase();
                     }
                 }
             }

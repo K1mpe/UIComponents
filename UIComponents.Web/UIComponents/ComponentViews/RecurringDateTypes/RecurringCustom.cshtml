@@ -248,7 +248,7 @@
                 formattedString = "";
                 if(days.length){
                     if (!(months.length == 1 && years.length == 1)) {
-                        formattedString += @await Html.Translate(L, new("RecurringDate.Format.Every"), "'");
+                        formattedString += @await Html.TranslateJs(L, new("RecurringDate.Format.Every"), "'");
                         formattedString += " ";
                     }
                     if (days.length <= 5) {
@@ -256,7 +256,7 @@
                             if (i > 0){
                                 if (i == days.length - 1) {
                                     formattedString += " ";
-                                    formattedString += @(await Html.Translate(L, new("Common.And"), "'")).toLowerCase();
+                                    formattedString += @(await Html.TranslateJs(L, new("Common.And"), "'")).toLowerCase();
                                     formattedString += " ";
                                 } else {
                                     formattedString += ", ";
@@ -264,27 +264,27 @@
                             }
                             
                             formattedString += days[i];
-                            formattedString += @(await Html.Translate(L, new("RecurringDate.Format.th"), "'")).toLowerCase();
+                            formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.th"), "'")).toLowerCase();
                         }
                         formattedString += " ";
                     } else {
                         if (days.length >= 20) {
-                            formattedString = @await Html.Translate(L, new("RecurringDate.Format.Many"), "'");
+                            formattedString = @await Html.TranslateJs(L, new("RecurringDate.Format.Many"), "'");
                         } else {
-                            formattedString = @await Html.Translate(L, new("RecurringDate.Format.Multiple"), "'");
+                            formattedString = @await Html.TranslateJs(L, new("RecurringDate.Format.Multiple"), "'");
                         }
                         formattedString += " ";
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Days"), "'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Days"), "'")).toLowerCase();
                         formattedString += " ";
                     }
                 } else{
-                    formattedString += @await Html.Translate(L, new("RecurringDate.Format.Every"), "'");
+                    formattedString += @await Html.TranslateJs(L, new("RecurringDate.Format.Every"), "'");
                     formattedString += " ";
-                    formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Day", "Day"), "'")).toLowerCase();
+                    formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Day", "Day"), "'")).toLowerCase();
                     formattedString += " ";
                 }
                 if (months.length) {
-                    formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Of"), "'")).toLowerCase();
+                    formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Of"), "'")).toLowerCase();
                     formattedString += " ";
 
                     if(months.length <=3){
@@ -293,7 +293,7 @@
                             if (i > 0) {
                                 if (i == months.length - 1) {
                                     formattedString += " ";
-                                    formattedString += @(await Html.Translate(L, new("Common.And"), "'")).toLowerCase();
+                                    formattedString += @(await Html.TranslateJs(L, new("Common.And"), "'")).toLowerCase();
                                     formattedString += " ";
                                 } else {
                                     formattedString += ", ";
@@ -305,24 +305,24 @@
                         formattedString += " ";
                     }else{
                         if (months.length >= 6) {
-                            formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Many"), "'")).toLowerCase();
+                            formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Many"), "'")).toLowerCase();
                         } else {
-                            formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Multiple"), "'")).toLowerCase();
+                            formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Multiple"), "'")).toLowerCase();
                         }
                         formattedString += " ";
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Months"), "'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Months"), "'")).toLowerCase();
                         formattedString += " ";
                     }
                 }
                 if (years.length) {
-                    formattedString += @(await Html.Translate(L, new("RecurringDate.Format.In"), "'")).toLowerCase();
+                    formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.In"), "'")).toLowerCase();
                     formattedString += " ";
                     if (years.length <= 3) {
                         for (let i = 0; i < years.length; i++) {
                             if (i > 0) {
                                 if (i == years.length - 1) {
                                     formattedString += " ";
-                                    formattedString += @(await Html.Translate(L, new("Common.And"), "'")).toLowerCase();
+                                    formattedString += @(await Html.TranslateJs(L, new("Common.And"), "'")).toLowerCase();
                                     formattedString += " ";
                                 } else {
                                     formattedString += ", ";
@@ -333,12 +333,12 @@
                         formattedString += " ";
                     } else {
                         if (years.length >= 6) {
-                            formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Many"), "'")).toLowerCase();
+                            formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Many"), "'")).toLowerCase();
                         } else {
-                            formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Multiple"), "'")).toLowerCase();
+                            formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Multiple"), "'")).toLowerCase();
                         }
                         formattedString += " ";
-                        formattedString += @(await Html.Translate(L, new("RecurringDate.Format.Years"), "'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Years"), "'")).toLowerCase();
                     }
                 }
 

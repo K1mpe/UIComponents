@@ -6,44 +6,33 @@ public interface IUICPermissionService
     /// <summary>
     /// Check if the user can view this object
     /// </summary>
-    Task<bool> CanView<T>(T obj) where T : class;
-
+    Task<bool> CanViewObject<T>(T obj) where T : class;
 
     /// <summary>
-    /// Use the <see cref="CanViewProperties{T}(T, int?)"/> for a specific property
+    /// CHeck if the current user can view this property
     /// </summary>
     Task<bool> CanViewProperty<T>(T obj, string propertyName) where T : class;
 
-
     /// <summary>
-    /// Check if the user can view this object
-    /// <br>the properties of <paramref name="obj"/> could be used for specific validations</br>
+    /// Check if the current user can create a new instance of this type
     /// </summary>
-    /// <remarks>
-    /// returns false if <paramref name="obj"/> is null
-    /// </remarks>
-    Task<bool> CanCreate<T>(T obj) where T : class;
-
-    Task<bool> CanCreate(Type type);
-
+    /// <param name="type"></param>
+    /// <returns></returns>
+    Task<bool> CanCreateType(Type type);
 
     /// <summary>
     /// Check if the user can edit this object. 
-    /// <br>If <paramref name="oldObject"/> is not null, comparison with newObject can be used for specific validations</br>
     /// </summary>
-    Task<bool> CanEdit<T>(T newObject, T oldObject = null) where T : class;
-
-
-
+    Task<bool> CanEditObject<T>(T oldObject) where T : class;
 
     /// <summary>
-    /// Use the <see cref="CanEditProperties{T}(T, int?)(Type, int?)"/> for a specific property
+    /// Check if the current user can edit a property of this object
     /// </summary>
     Task<bool> CanEditProperty<T>(T obj, string propertyName) where T : class;
 
     /// <summary>
     /// Check if the user can delete this object
     /// </summary>
-    Task<bool> CanDelete<T>(T obj) where T : class;
+    Task<bool> CanDeleteObject<T>(T obj) where T : class;
 
 }

@@ -1,5 +1,6 @@
 ﻿namespace UIComponents.Abstractions.Attributes;
 
+
 /// <summary>
 /// UICGenerators will ignore this property
 /// </summary>
