@@ -93,7 +93,6 @@ namespace UIComponents.Web.Tests.Controllers
         {
             try
             {
-
                 var yesNo = UICQuestionYesNo.Create("Test Ja / nee", "Wilt u deze vraag beantwoorden?", _uicQuestionService, question => question.Icon = QuestionIconType.Warning);
 
                 var answered = _uicQuestionService.TryAskQuestion(yesNo, TimeSpan.FromMinutes(1), 1, out bool boolean);
@@ -230,12 +229,14 @@ namespace UIComponents.Web.Tests.Controllers
         {
             var item = new TestModel();
             item.SubClass = new();
-
+            item.SubClass.Ints = new() { 1, 2, 3 };
 
             var component = await _uic.CreateComponentAsync(item, new()
             {
                 SubClassesInCard = new(),
-                InputGroupSingleRow = false
+                InputGroupSingleRow = false,
+                ReplaceSaveButtonWithCreateButton = true,
+                PostForm= new UICActionPost("/home/Post")
             });
 
             return ViewOrPartial(component);

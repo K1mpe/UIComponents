@@ -68,10 +68,10 @@ public abstract class UICInput<T> : UICInput
 {
     public UICInput(string propertyName) : base(propertyName)
     {
-
+        Value = default(T);
     }
     public T Value {
-        get { return (T)ValueObject; }
+        get { return (T)ValueObject??default; }
         set { ValueObject = value; }
     }
 }

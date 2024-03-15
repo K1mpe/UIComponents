@@ -56,6 +56,6 @@ namespace UIComponents.Web.Tests.Models
         public string TestString { get; set; }
         public int Number { get; set; }
 
-        public List<int> Ints { get; set; } = new() { 1, 2, 3 };
+        public List<int> Ints { get; set; }
     }
 }
