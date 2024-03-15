@@ -23,7 +23,18 @@ public class UICPropertyArgs
     #region Properties
     public PropertyInfo? PropertyInfo { get; init; }
 
-    public object? PropertyValue { get => PropertyInfo?.GetValue(ClassObject); }
+    public object? PropertyValue { get
+        {
+            try
+            {
+                return PropertyInfo?.GetValue(ClassObject);
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
+             }
     public Type? PropertyType => PropertyInfo?.PropertyType;
     public string? PropertyName => PropertyInfo?.Name;
 

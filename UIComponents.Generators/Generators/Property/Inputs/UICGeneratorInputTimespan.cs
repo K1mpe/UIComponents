@@ -16,7 +16,10 @@ public class UICGeneratorInputTimespan : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
-        var input = new UICInputTimespan(args.PropertyName);
+        var input = new UICInputTimespan(args.PropertyName)
+        {
+            Parent = args.CallCollection.Caller
+        };
         input.Value = args.PropertyValue==null?null: (TimeSpan)args.PropertyValue;
 
         input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input)??false;

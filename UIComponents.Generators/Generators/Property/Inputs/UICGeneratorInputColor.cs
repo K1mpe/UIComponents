@@ -16,7 +16,10 @@ public class UICGeneratorInputColor : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
-        var input = new UICInputColor(args.PropertyName);
+        var input = new UICInputColor(args.PropertyName)
+        {
+            Parent = args.CallCollection.Caller
+        };
         input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
         input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input)??false;
 

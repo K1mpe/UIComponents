@@ -120,7 +120,7 @@ public class UICConfig
             try
             {
                 var generatorResult = await generator.GetResult(args, result);
-                if (generatorResult.Success)
+                if (generatorResult.Success && generatorResult.Result != null)
                 {
                     _logger.LogTrace("{0} Successfull result from generator {1} {2}: {3}",debugString, generator.Priority, generator.Name, generatorResult.Result?.ToString() ?? "null");
                     result = (TConverted?)generatorResult.Result;

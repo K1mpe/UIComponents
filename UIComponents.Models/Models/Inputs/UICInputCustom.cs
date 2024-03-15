@@ -14,6 +14,9 @@ public class UICInputCustom : UICInput
     #endregion
 
     #region Ctor
+    public UICInputCustom() : base(null)
+    {
+    }
     public UICInputCustom(RazerBlock razercode) : base(null)
     {
         Content = razercode.GetContent();

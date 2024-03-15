@@ -34,7 +34,10 @@ public class UICGeneratorForm : UICGeneratorProperty
             if (!args.Options.ReplaceSaveButtonWithCreateButton && !await permissionService.CanEditObject(args.ClassObject!))
                 return GeneratorHelper.Next<IUIComponent>();
 
-        var form = new UICForm();
+        var form = new UICForm()
+        {
+            Parent = args.CallCollection.Caller
+        };
         if (args.Options.PostForm == null)
         {
             var submit = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Post, args.ClassObject.GetType().Name, args.Options.ReplaceSaveButtonWithCreateButton ? "Create" : "Update")

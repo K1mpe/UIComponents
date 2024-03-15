@@ -16,7 +16,10 @@ public class UICGeneratorInputMultiline : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
-        var input = new UICInputMultiline(args.PropertyName);
+        var input = new UICInputMultiline(args.PropertyName)
+        {
+            Parent = args.CallCollection.Caller
+        };
         input.Value = args.PropertyValue?.ToString()?? string.Empty;
 
         if (args.Configuration.TryGetPermissionService(out var permissionService))

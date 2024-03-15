@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Extensions;
+﻿using System.Collections;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
 using UIComponents.Generators.Helpers;
 
@@ -11,22 +12,23 @@ public class UICGeneratorInputClassObject : UICGeneratorProperty
 {
     public UICGeneratorInputClassObject()
     {
-        RequiredCaller = UICGeneratorPropertyCallType.PropertyGroup;
+        RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult= false;
+        
     }
 
-    public override double Priority { get; set; }
+    public override double Priority { get; set; } = 1000;
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
         if (args.PropertyType == null)
             return GeneratorHelper.Next<IUIComponent>();
 
-        if (args.PropertyType == typeof(string) || !args.PropertyType.IsClass)
+        if (args.PropertyType == typeof(string) || !args.PropertyType.IsClass || args.PropertyType.IsAssignableTo(typeof(IEnumerable)))
             return GeneratorHelper.Next<IUIComponent>();
 
         if (args.PropertyValue == null)
-            return GeneratorHelper.Success(null, false);
+            return GeneratorHelper.Success<IUIComponent>(new UICInputCustom() { Render = false}, true);
 
         
 
@@ -34,8 +36,12 @@ public class UICGeneratorInputClassObject : UICGeneratorProperty
         var newArgs = new UICPropertyArgs(args.PropertyValue, null, null, args.Options, cc, args.Configuration);
         
         var result =await args.Configuration.GetGeneratedResultAsync<UICPropertyArgs, IUIComponent>($"Object for {args.PropertyType.Name}", newArgs, args.Options);
-        if (result is UIComponent component)
-            component.AddAttribute("name", args.PropertyName);
-        return GeneratorHelper.Success<IUIComponent>(result, true);
+
+        var input = new UICInputObject(args.PropertyName)
+        {
+            Parent = args.CallCollection.Caller,
+            Value = args.PropertyValue
+        }.Add(result);
+        return GeneratorHelper.Success<IUIComponent>(input, true);
     }
 }

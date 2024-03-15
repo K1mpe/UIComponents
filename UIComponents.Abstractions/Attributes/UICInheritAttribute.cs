@@ -69,7 +69,7 @@ public class UICInheritAttribute : Attribute
         {
             foreach(var type in classAttr.Types)
             {
-                var property2 = propertyInfo.DeclaringType.GetProperty(propertyInfo.Name);
+                var property2 = type.GetProperty(propertyInfo.Name);
                 if(property2 != null && property2.PropertyType.IsAssignableTo(propertyInfo.PropertyType))
                 {
                     inherit = property2;

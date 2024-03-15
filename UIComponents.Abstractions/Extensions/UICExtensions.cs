@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using UIComponents.Abstractions.Models;
 
@@ -12,9 +13,9 @@ public static class UICExtensions
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
-    public static List<IUIComponent> GetAllChildren(this IUIComponent element)
+    public static List<(IUIComponent Component, IUIComponent Parent)> GetAllChildren(this IUIComponent element)
     {
-        var list = new List<IUIComponent>();
+        var list = new List<(IUIComponent, IUIComponent)>();
         if (element == null)
             return list;
         foreach (var prop in element.GetType().GetProperties())
@@ -34,7 +35,7 @@ public static class UICExtensions
                 var UIC = (IUIComponent)value;
                 if (!UIC.HasValue())
                     continue;
-                list.Add(UIC);
+                list.Add(new(UIC, element));
                 list.AddRange(UIC.GetAllChildren());
             }
             if (prop.PropertyType.IsAssignableTo(typeof(IEnumerable)) && prop.PropertyType != typeof(string))
@@ -54,14 +55,52 @@ public static class UICExtensions
                         if (!componentValue.HasValue())
                             continue;
 
-                        list.Add(componentValue);
+                        list.Add(new(componentValue, element));
                         list.AddRange(componentValue.GetAllChildren());
                     }
                 }
             }
 
         }
-        return list.Where(x => x != null).ToList();
+        return list.Where(x => x.Item1 != null).ToList();
+    }
+
+    /// <summary>
+    /// Remove a direct child of this component, if this component contains this child.
+    /// </summary>
+    public static void RemoveComponent(this IUIComponent parent, IUIComponent child) 
+    {
+        foreach (var prop in parent.GetType().GetProperties())
+        {
+            if (prop.GetCustomAttribute<IgnoreGetChildrenFunctionAttribute>() != null)
+                continue;
+
+            if (prop.PropertyType.IsAssignableTo(typeof(IUIComponent)))
+            {
+                var value = prop.GetValue(parent);
+                if (value == child)
+                    value = null;
+                    continue;
+            }
+            if (prop.PropertyType.IsAssignableTo(typeof(IList)) && prop.PropertyType != typeof(string))
+            {
+                var subList = (IList)prop.GetValue(parent);
+                if (subList == null)
+                    continue;
+
+                for(int i = 0; i < subList.Count; i++)
+                {
+                    var value = subList[i];
+                    if (value == child)
+                    {
+                        subList[i] = null;
+                        break;
+                    }
+                        
+                }
+            }
+
+        }
     }
 
     public static void AssignParent(this IUIComponent element, IUIComponent parent)
@@ -160,13 +199,13 @@ public static class UICExtensions
     /// <returns></returns>
     public static List<T> FindAllChildrenOfType<T>(this IUIComponent element) where T : IUIComponent
     {
-        var typeResults = element.GetAllChildren().Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
+        var typeResults = element.GetAllChildren().Select(x=>x.Component).Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
         return typeResults;
     }
 
     public static T FindInputByPropertyName<T>(this IUIComponent element, string propertyName, Action<T> action= null) where T : UICInput
     {
-        var typeResults = element.GetAllChildren().Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
+        var typeResults = element.GetAllChildren().Select(x=>x.Component).Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
         var firstInput =  typeResults.Where(x => x.PropertyName.ToLower() == propertyName.ToLower()).FirstOrDefault();
 
         if(action != null)

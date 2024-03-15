@@ -22,14 +22,14 @@ public class UICGeneratorCard : UICGeneratorProperty
             return GeneratorHelper.Next();
 
         UICCard card = null;
-        if (args.CallCollection.Caller == null && args.Options.StartInCard != null)
+        if (args.CallCollection.Caller == null && !args.CallCollection.Components.Any() && args.Options.StartInCard != null)
             card = InternalHelper.CopyObject(args.Options.StartInCard);
-        else if (args.CallCollection.Caller != null && args.CallCollection.Components.Any(x=>x is not UICPartial) && args.Options.SubClassesInCard != null)
+        else if (args.CallCollection.Components.Any(x=>x is not UICPartial) && args.Options.SubClassesInCard != null)
             card = InternalHelper.CopyObject(args.Options.SubClassesInCard);
         if (card == null)
             return GeneratorHelper.Next();
 
-        
+        card.Parent = args.CallCollection.Caller;
         if (args.Options.ShowCardHeaders)
             card.Header = new UICCardHeader(TranslationDefaults.TranslateObject(args.ClassObject));
 

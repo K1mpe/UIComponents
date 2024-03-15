@@ -126,7 +126,7 @@ public static class UICExtensions
         collection.RenderParentId = id;
 
         var childCollections = new List<IUICScriptCollection>();
-        var childComponents = uiComponent.GetAllChildren();
+        var childComponents = uiComponent.GetAllChildren().Select(x => x.Component);
         foreach (var childComponent in childComponents)
         {
             if (childComponent is IUICHasScriptCollection hasCollection)

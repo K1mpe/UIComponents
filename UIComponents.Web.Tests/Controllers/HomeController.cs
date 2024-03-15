@@ -223,5 +223,22 @@ namespace UIComponents.Web.Tests.Controllers
                 return Json(items);
             }
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> TestSubClass()
+        {
+            var item = new TestModel();
+            item.SubClass = new();
+
+
+            var component = await _uic.CreateComponentAsync(item, new()
+            {
+                SubClassesInCard = new(),
+                InputGroupSingleRow = false
+            });
+
+            return ViewOrPartial(component);
+        }
     }
 }

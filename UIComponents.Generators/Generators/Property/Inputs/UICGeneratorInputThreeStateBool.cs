@@ -16,7 +16,10 @@ public class UICGeneratorInputThreeStateBool : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
-        var input = new UICInputCheckboxThreeState(args.PropertyName);
+        var input = new UICInputCheckboxThreeState(args.PropertyName)
+        {
+            Parent = args.CallCollection.Caller
+        };
         input.Value = args.PropertyValue==null?null:bool.Parse(args.PropertyValue.ToString());
         input.Color = args.Options.CheckboxColor;
         input.Renderer = args.Options.CheckboxRenderer;

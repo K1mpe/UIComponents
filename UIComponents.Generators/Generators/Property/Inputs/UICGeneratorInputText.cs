@@ -21,7 +21,14 @@ public class UICGeneratorInputText : UICGeneratorProperty
         if (args.PropertyInfo == null)
             return GeneratorHelper.Next<IUIComponent>();
 
-        var input = new UICInputText(args.PropertyName);
+        if (args.PropertyType != typeof(string))
+            return GeneratorHelper.Next<IUIComponent>();
+
+
+        var input = new UICInputText(args.PropertyName)
+        {
+            Parent = args.CallCollection.Caller
+        };
         input.Value = args.PropertyValue?.ToString()??string.Empty;
 
 

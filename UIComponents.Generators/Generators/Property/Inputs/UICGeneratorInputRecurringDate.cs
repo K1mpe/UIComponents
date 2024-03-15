@@ -22,7 +22,10 @@ public class UICGeneratorInputRecurringDate : UICGeneratorProperty
         if (!args.PropertyType.IsAssignableTo(typeof(RecurringDate)))
             return GeneratorHelper.Next<IUIComponent>();
 
-        var input = new UICInputRecurringDate(args.PropertyName);
+        var input = new UICInputRecurringDate(args.PropertyName)
+        {
+            Parent = args.CallCollection.Caller
+        };
 
         input.Value = args.PropertyValue == null ? null : (RecurringDate)args.PropertyValue;
 

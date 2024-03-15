@@ -16,7 +16,10 @@ public class UICGeneratorInputBool : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
-        var input = new UICInputCheckbox(args.PropertyName);
+        var input = new UICInputCheckbox(args.PropertyName)
+        {
+            Parent = args.CallCollection.Caller
+        };
         input.Value = bool.Parse(args.PropertyValue!.ToString());
         input.Color = args.Options.CheckboxColor;
         input.Renderer= args.Options.CheckboxRenderer;

@@ -18,7 +18,10 @@ public class UICGeneratorInputDateTime : UICGeneratorProperty
         if (args.UICPropertyType != Abstractions.Attributes.UICPropertyType.DateOnly && args.UICPropertyType != Abstractions.Attributes.UICPropertyType.DateTime)
             return GeneratorHelper.Next<IUIComponent>();
 
-        var input = new UICInputDatetime(args.PropertyName);
+        var input = new UICInputDatetime(args.PropertyName)
+        {
+            Parent = args.CallCollection.Caller
+        };
         input.Precision = args.Options.DatetimePrecision;
 
         if (args.UICPropertyType == Abstractions.Attributes.UICPropertyType.DateOnly)

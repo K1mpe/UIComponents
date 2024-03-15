@@ -18,7 +18,7 @@
 @model UICSignalR
 @{
     string id = Model.GetId();
-    foreach(var child in Model.GetAllChildren())
+    foreach(var child in Model.GetAllChildren().Select(x=>x.Component))
     {
         if (child is UIComponent component)
         {

@@ -18,7 +18,10 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
         bool showButtonAdd = args.Options.SelectListShowAddButtonIfAllowed;
-        var input = new UICInputSelectList(args.PropertyName, new());
+        var input = new UICInputSelectList(args.PropertyName, new())
+        {
+            Parent = args.CallCollection.Caller
+        };
         input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
         if(args.PropertyType.IsEnum && args.PropertyValue != null)
             input.Value = ((int)args.PropertyValue).ToString();

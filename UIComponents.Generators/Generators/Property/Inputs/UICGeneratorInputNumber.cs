@@ -20,7 +20,10 @@ public class UICGeneratorInputNumber : UICGeneratorProperty
         if (args.UICPropertyType != Abstractions.Attributes.UICPropertyType.Number && args.UICPropertyType != Abstractions.Attributes.UICPropertyType.Decimal)
             return GeneratorHelper.Next<IUIComponent>();
 
-        var input = new UICInputNumber(args.PropertyName);
+        var input = new UICInputNumber(args.PropertyName)
+        {
+            Parent = args.CallCollection.Caller
+        };
         input.Value = args.PropertyValue==null?null: double.Parse(args.PropertyValue!.ToString());
 
         input.AllowDecimalValues = args.UICPropertyType == Abstractions.Attributes.UICPropertyType.Decimal;

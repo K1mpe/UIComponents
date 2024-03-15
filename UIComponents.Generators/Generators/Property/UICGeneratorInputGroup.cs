@@ -11,7 +11,7 @@ namespace UIComponents.Generators.Generators.Property
             RequiredCaller = UICGeneratorPropertyCallType.PropertyGroup;
         }
 
-        public override double Priority { get; set; } = 1000;
+        public override double Priority { get; set; } = 1001;
 
 
         public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
@@ -28,11 +28,15 @@ namespace UIComponents.Generators.Generators.Property
                 return new UICGeneratorResponseNext<IUIComponent>();
             }
 
-            var inputGroup = new UICInputGroup();
+            var inputGroup = new UICInputGroup()
+            {
+                Parent = args.CallCollection.Caller
+            };
             inputGroup.Label = await args.Configuration.GetGeneratedResultAsync<IUIComponent, UICLabel>(UICGeneratorPropertyCallType.PropertyLabel, inputGroup, args);
             inputGroup.Input = await args.Configuration.GetGeneratedResultAsync<IUIComponent, UICInput>(UICGeneratorPropertyCallType.PropertyInput, inputGroup, args);
-            inputGroup.Input.DisplayName = TranslationDefaults.TranslateProperty(args.PropertyInfo, args.UICPropertyType.Value);
-            if (!inputGroup.Label.HasValue() && !inputGroup.Input.HasValue())
+            if(inputGroup.Input != null)
+                inputGroup.Input.DisplayName = TranslationDefaults.TranslateProperty(args.PropertyInfo, args.UICPropertyType.Value);
+            if (!inputGroup.Input.HasValue())
                 inputGroup.Render = false;
 
             inputGroup.Span = await args.Configuration.GetPropertyGroupSpanAsync(args, inputGroup);

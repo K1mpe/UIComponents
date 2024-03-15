@@ -35,7 +35,10 @@ public class UICGeneratorInputGroupSpan : UICGeneratorProperty
         if (string.IsNullOrEmpty(spanAttr.TranslationModel.ResourceKey))
             spanAttr.TranslationModel.ResourceKey = TranslationDefaults.DefaultInfoSpanKey(args.PropertyInfo, args.UICPropertyType.Value);
 
-        var span = new UICSpan(spanAttr.TranslationModel);
+        var span = new UICSpan(spanAttr.TranslationModel)
+        {
+            Parent = args.CallCollection.Caller
+        };
         return await Task.FromResult(GeneratorHelper.Success<IUIComponent>(span, true));
     }
 }

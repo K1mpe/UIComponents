@@ -23,7 +23,7 @@
     Model.AssignCollectionForChildren();
 
     if(!isSubForm)
-        Model.GetAllChildren().AddAttribute("formidentifier", $"#{id}");
+        Model.GetAllChildren().Select(x=>x.Component).AddAttribute("formidentifier", $"#{id}");
 
 }
 

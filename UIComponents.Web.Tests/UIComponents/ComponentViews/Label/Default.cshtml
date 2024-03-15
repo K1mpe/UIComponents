@@ -20,13 +20,11 @@
 @model UICLabel
 @{
     string labelText = await L.Translate(Model.LabelText);
-
-
 }
 
 <label @Html.Raw(Model.GetHtmlAttributes())>
     @await Model.PrependLabel.InvokeAsync(Component)
-    @Html.JsEncode(labelText)
+    @Html.Raw(labelText)
 
     @if (Model.Required)
     {

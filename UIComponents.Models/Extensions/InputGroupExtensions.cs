@@ -16,7 +16,7 @@ public static class InputGroupExtensions
     {
         if (element == null)
             return null;
-        var typeResults = element.GetAllChildren().Where(x => x.GetType().IsAssignableTo(typeof(UICInputGroup))).OfType<UICInputGroup>().ToList();
+        var typeResults = element.GetAllChildren().Select(x=>x.Component).Where(x => x.GetType().IsAssignableTo(typeof(UICInputGroup))).OfType<UICInputGroup>().ToList();
         return typeResults.Where(x => x.Input != null && x.Input.PropertyName != null && x.Input.PropertyName.ToLower() == propertyName.ToLower()).ToList();
     }
 }

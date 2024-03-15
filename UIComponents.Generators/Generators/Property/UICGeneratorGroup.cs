@@ -20,7 +20,7 @@ public class UICGeneratorGroup : UICGeneratorProperty
         if (args.ClassObject == null)
             return GeneratorHelper.Next<IUIComponent>();
 
-        var group = new UICGroup() { RenderSingleItem = true };
+        var group = new UICGroup() { Parent = args.CallCollection.Caller, RenderSingleItem = true };
 
         if(args.ClassObject is IUIComponent component)
         {

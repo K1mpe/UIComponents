@@ -55,7 +55,7 @@
                     {
                         ReplaceSaveButtonWithCreateButton = true,
                         ShowEditButton = false,
-                        IncludedProperties = "teststring, number, decimal, checkbox, enum, recurringDate",
+                        IncludedProperties = "teststring, number, decimal, checkbox, enum, recurringDate,SubClass",
                         PostForm = new UICActionPost("home", "post")
                     })).Add(await UIC.CreateComponentAsync(testModel, x => x.TestString)))
         .Add(new UICCard(new Translatable("Card.Edit"))
@@ -81,7 +81,7 @@
     tabs.FindInputGroupByPropertyName(nameof(TestModel.Enum), (input)=>{
         input.AppendInput.Add(new UICButton() { PrependButtonIcon = UICIcon.Add() });
     });
-
+    formTabs.Add(new UICCard("Subclass").AddPartial("Home", "TestSubClass"));
 
 
     tabs.Add(new UICCard(new UICCardHeader("Chart")).Add(new UICTimeLineGraph(), graph =>
@@ -89,6 +89,8 @@
         graph.Add(new("Graph1", "blub", "/home/GetTimelineChartData") { CacheData = true, RemoveCacheOnZoom = true, AdditionalPostData = new { UserId = 1 }, Fill = true });
         graph.Add(new("Graph2", "foo", "/home/GetTimelineChartData"){CacheData = true, RemoveCacheOnZoom = true, Tension=0.5});
     }));
+
+    
 
     int counter = 0;
     var testButton = new UICButton("Test")

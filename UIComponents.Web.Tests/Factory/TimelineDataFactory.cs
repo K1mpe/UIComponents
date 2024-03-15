@@ -33,7 +33,7 @@ public static class TimelineDataFactory
             _graphData1.Add(new(timestamp, lastValue));
             _graphData2.Add(new(timestamp, lastValue+100));
             start = start.AddSeconds(1);
-            Console.WriteLine($"{timestamp.ToLongDateString()} - {lastValue}");
+            //Console.WriteLine($"{timestamp.ToLongDateString()} - {lastValue}");
         }
 
 

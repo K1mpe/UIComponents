@@ -48,6 +48,8 @@ public abstract class UICInput : UIComponent
 
     public bool Readonly { get; set; }
     public bool Disabled { get; set; }
+
+    public object ValueObject { get; set; }
     #endregion
 
     #region Methods
@@ -57,12 +59,6 @@ public abstract class UICInput : UIComponent
         return $"{PropertyName} - {base.ToString()}";
     }
 
-    public object GetValue()
-    {
-        var prop = GetType().GetProperty(nameof(UICInput<string>.Value));
-        var result = prop.GetValue(this);
-        return result;
-    }
     #endregion
 
 
@@ -74,5 +70,8 @@ public abstract class UICInput<T> : UICInput
     {
 
     }
-    public T Value { get; set; }
+    public T Value {
+        get { return (T)ValueObject; }
+        set { ValueObject = value; }
+    }
 }

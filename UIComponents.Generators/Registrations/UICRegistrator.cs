@@ -32,7 +32,6 @@ public static class UICConfigure
         services.TryAddSingleton<IUICQuestionService, UICQuestionService>();
         services.TryAddSingleton<UicConfigOptions>(configuration);
         services.TryAddScoped<UICConfig>();
-
         config(configuration);
 
         if (!services.Where(x => x is IUICLanguageService).Any())
@@ -94,6 +93,8 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorInputTimespan>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputColor>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputRecurringDate>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorInputClassObject>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorInputList>(serviceCollection);
 
         return configOptions;
     }

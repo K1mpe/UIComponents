@@ -34,6 +34,8 @@ builder.Services.AddUIComponentWeb(config =>
 {
     config.CheckPermissionServiceType = true;
     config.CheckLanguageServiceType = false;
+    config.AddChangeLog = true;
+    config.AddReadMe = true;
     config.AddDefaultGenerators(builder.Services);
 });
 Console.WriteLine("");

@@ -17,6 +17,7 @@ namespace UIComponents.Web.Tests.Models
         public string TestString { get; set; }
 
         [UICPropertyType(UICPropertyType.MultilineText)]
+        [DisplayName("<i class='fas fa-user'></i><strong class='text-danger'>Description</strong>")]
         public string Description { get; set; }
 
         public bool Checkbox { get; set; }
@@ -39,7 +40,7 @@ namespace UIComponents.Web.Tests.Models
 
         public RecurringDate RecurringDate { get; set; }
 
-
+        public TestModel2 SubClass { get; set; }
     }
 
     public enum TestEnum
@@ -53,6 +54,8 @@ namespace UIComponents.Web.Tests.Models
     public class TestModel2
     {
         public string TestString { get; set; }
+        public int Number { get; set; }
 
+        public List<int> Ints { get; set; } = new() { 1, 2, 3 };
     }
 }

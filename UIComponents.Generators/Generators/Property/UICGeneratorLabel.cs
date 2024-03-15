@@ -22,7 +22,10 @@ public class UICGeneratorLabel : UICGeneratorProperty
         if(existingResult != null)
             return new UICGeneratorResponseNext<IUIComponent>();
 
-        var label = new UICLabel();
+        var label = new UICLabel()
+        {
+            Parent = args.CallCollection.Caller
+        };
 
         var displayNameAttr = args.PropertyInfo.GetCustomAttribute<DisplayNameAttribute>();
         bool hasInherit = UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inheritPropInfo);
