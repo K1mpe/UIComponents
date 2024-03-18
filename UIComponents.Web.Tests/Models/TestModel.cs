@@ -40,6 +40,7 @@ namespace UIComponents.Web.Tests.Models
 
         public RecurringDate RecurringDate { get; set; }
 
+        public TestModel SubModel { get; set; }
         public TestModel2 SubClass { get; set; }
     }
 

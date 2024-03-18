@@ -22,7 +22,7 @@
 @model UICQuestionYesNo
 @{
     string guid = "Question" + Guid.NewGuid().ToString("n");
-    bool canCancel = Model.ButtonCancel.HasValue() && !Model.ButtonCancel.Disabled;
+    bool canCancel = Model.CanCancel;
 }
 <div id="@Model.Id">
     <script>
@@ -35,7 +35,7 @@
             customClass: {
                 confirmButton: 'btn btn-@(Model.ButtonSubmit.Color?.ToLower()?? UIComponents.Defaults.ColorDefaults.ButtonDefault.ToLower())',
                 denyButton: 'btn btn-@(Model.ButtonNo.Color?.ToLower() ?? UIComponents.Defaults.ColorDefaults.ButtonDefault.ToLower())',
-                cancelButton: 'btn btn-@(Model.ButtonCancel.Color?.ToLower() ?? UIComponents.Defaults.ColorDefaults.ButtonDefault.ToLower())'
+                cancelButton: 'btn btn-@(Model.ButtonCancel.Color?.ToLower() ?? UIComponents.Defaults.ColorDefaults.ButtonDefault.ToLower())',
             },
             buttonsStyling: false
         });
@@ -44,12 +44,13 @@
             title: @await Html.TranslateJs(L, Model.Title, "'"),
             text: @await Html.TranslateJs(L, Model.Message, "'"),
             icon: @Html.JsEncode(Model.Icon?.ToString().ToLower() ?? string.Empty, "'"),
+            showCloseButton: @Json.Serialize(canCancel && Model.ShowClosebutton),
             reverseButtons: @Json.Serialize(Model.InvertButtons),
             allowOutsideClick: @Json.Serialize(Model.CanClickOutSideModalToClose && canCancel),
             allowEscapeKey: @Json.Serialize(canCancel),
             showConfirmButton: @Json.Serialize(Model.ButtonSubmit.HasValue()),
             showDenyButton: @Json.Serialize(Model.ButtonNo.HasValue()),
-            showCancelButton: @Json.Serialize(Model.ButtonCancel.HasValue()),
+            showCancelButton: @Json.Serialize(canCancel && Model.ButtonCancel.HasValue()),
             confirmButtonText: `@await Model.ButtonSubmit.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonSubmit.ButtonText, string.Empty) @await Model.ButtonSubmit.AppendButtonIcon.InvokeAsync(Component)`,
             denyButtonText: `@await Model.ButtonNo.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonNo.ButtonText, string.Empty) @await Model.ButtonNo.AppendButtonIcon.InvokeAsync(Component)`,
             cancelButtonText: `@await Model.ButtonCancel.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonCancel.ButtonText, string.Empty) @await Model.ButtonCancel.AppendButtonIcon.InvokeAsync(Component)`,

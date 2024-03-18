@@ -101,6 +101,7 @@ namespace UIComponents.Web.Tests.Controllers
                     var dayOfWeek = UICQuestionSelectEnum<DayOfWeek>.Create("Favorite day", "What is your favorite day?", _uicQuestionService, question =>
                     {
                         question.Icon = QuestionIconType.Info;
+                        question.CanCancel = false;
                     });
                     answered = _uicQuestionService.TryAskQuestion(dayOfWeek, TimeSpan.FromMinutes(1),  1, out DayOfWeek favoriteDay);
 
@@ -228,8 +229,9 @@ namespace UIComponents.Web.Tests.Controllers
         public async Task<IActionResult> TestSubClass()
         {
             var item = new TestModel();
-            item.SubClass = new();
-            item.SubClass.Ints = new() { 1, 2, 3 };
+            item.SubModel = new();
+            item.SubModel.SubClass = new();
+            item.SubModel.SubClass.Ints = new() { 1, 2, 3 };
 
             var component = await _uic.CreateComponentAsync(item, new()
             {

@@ -14,7 +14,7 @@ public abstract class UICQuestionBase : IUIQuestionComponent, IUIComponent
     {
         ButtonSubmit = new UICButton(new("Button.Send"))
         {
-            Color = ColorDefaults.ButtonSave
+            Color = ColorDefaults.ButtonSubmit
         };
         ButtonCancel = new UICButton(TranslationDefaults.ButtonCancel);
     }
@@ -30,6 +30,15 @@ public abstract class UICQuestionBase : IUIQuestionComponent, IUIComponent
     public Translatable Message { get; set; }
 
     public bool InvertButtons { get; set; }
+
+    /// <summary>
+    /// If false, these options are ingored : 
+    /// <br><see cref="ShowClosebutton"/></br>, 
+    /// <br><see cref="ButtonCancel"/></br>, 
+    /// <br><see cref="CanClickOutSideModalToClose"/></br>
+    /// </summary>
+    public bool CanCancel { get; set; } = true;
+    public bool ShowClosebutton { get; set; } = true;
     public UICButton ButtonSubmit { get; set; }
     public UICButton ButtonCancel { get; set; }
 

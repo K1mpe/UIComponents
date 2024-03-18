@@ -50,7 +50,6 @@ public class UICOptions
     /// </remarks>
     public string IncludedProperties { get; set; }
 
-
     /// <summary>
     /// If true, add all undefined properties after the included properties. This does not include <see cref="ExcludedProperties"/>
     /// </summary>
@@ -66,6 +65,10 @@ public class UICOptions
     /// </remarks>
     public string ExcludedProperties { get; set; } = OptionDefaults.ExcludedProperties;
 
+    /// <summary>
+    /// Auto exclude all properties that are included in the <see cref="PostForm"/>.<see cref="UICActionGetPost.Data"/>
+    /// </summary>
+    public bool ExcludePostDataProperties { get; set; } = OptionDefaults.ExcludePostDataProperties;
 
     #endregion
 

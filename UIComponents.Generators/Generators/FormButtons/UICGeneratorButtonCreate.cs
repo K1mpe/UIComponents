@@ -1,4 +1,5 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using UIComponents.Abstractions.Extensions;
+using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators.FormButtons;
 
@@ -25,7 +26,7 @@ public class UICGeneratorButtonCreate : UICGeneratorProperty
         var button = new UICButtonSave()
         {
             ButtonText = TranslationDefaults.ButtonCreate,
-        };
+        }.AddClass("btn-create");
 
         await Task.Delay(0);
         return GeneratorHelper.Success<IUIComponent>(button, true);

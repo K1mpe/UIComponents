@@ -7,7 +7,7 @@ public static class OptionDefaults
     public static bool IdHidden = true;
     public static bool HidereadonlyProperties = true;
     public static string ExcludedProperties = "IsDeleted";
-
+    public static bool ExcludePostDataProperties = false;
 
     public static bool HideEmptyInReadonly = false;
 

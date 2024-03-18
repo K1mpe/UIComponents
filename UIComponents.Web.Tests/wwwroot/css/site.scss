@@ -30,6 +30,11 @@
 @import '../lib/admin-lte/build/scss/parts/miscellaneous';
 
 
-
+// SweetAlert
+// ---------------------------------------------------
+.swal2-actions .btn:not(.swal2-styled) {
+    margin: 0.3125em;
+    padding: 0.625em 1.1em;
+}
 
 @import '../uic/css/uic.scss';

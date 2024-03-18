@@ -1,4 +1,15 @@
-﻿# 2024-03-15 (1.1.16)
+﻿# 2024-03-.. (1.1.19)
+- Fix for autogenerating translationkey for tooltip or infospan on properties with a displaynameattribute
+- Css fixes (Input-group && swal)
+- Defaults for UICModal
+
+# 2024-03-15 (1.1.18)
+ - Fixing bug of stackoverflow in subcards
+
+# 2024-03-15 (1.1.17)
+ - Fixing bug in getting value from empty object
+
+# 2024-03-15 (1.1.16)
 - Beter translation parsing for Html and Js
 - Fix for autogenerating translationkey for tooltip or infospan on properties with a displaynameattribute
 - Support for submodels as properties

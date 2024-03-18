@@ -22,6 +22,8 @@
     string id = Model.GetId();
     Model.AssignCollectionForChildren();
 
+    if (Model.Color != null)
+        Model.AddClass($"bg-{Model.Color.ToLower()}");
     if (Model.CollapseCardOnClick)
         Model.AddScript(
     @<text>

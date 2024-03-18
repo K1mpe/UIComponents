@@ -9,7 +9,7 @@ public class UICButtonSave : UICButton
     public UICButtonSave()
     {
         ButtonText = TranslationDefaults.ButtonSave;
-        Color = ColorDefaults.ButtonSave?? ColorDefaults.ButtonDefault;
+        Color = ColorDefaults.ButtonSubmit?? ColorDefaults.ButtonDefault;
         this.AddAttribute("class", "btn-save");
     }
 }

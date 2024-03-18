@@ -12,6 +12,8 @@ public class InternalHelper
     /// <returns></returns>
     public static T CopyObject<T>(T target)
     {
+        if (target == null)
+            return default;
         T result = Activator.CreateInstance<T>();
         foreach(var property in typeof(T).GetProperties())
         {

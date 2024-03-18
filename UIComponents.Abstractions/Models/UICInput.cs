@@ -49,6 +49,7 @@ public abstract class UICInput : UIComponent
     public bool Readonly { get; set; }
     public bool Disabled { get; set; }
 
+    [IgnoreGetChildrenFunction]
     public object ValueObject { get; set; }
     #endregion
 

@@ -153,11 +153,7 @@ i.uic-value-changed {
     // border-top-left-radius: 0;
     // border-bottom-left-radius: 0;
 
-    //.d-none
-    //.hidden
-    //[hidden]
-
-    > :not(.hidden:first-child):not(.input-group-prepend) {
+    > :not(:first-child):not(.input-group-prepend) {
         margin-left: -1px;
         @include border-left-radius(0);
     }
@@ -410,9 +406,7 @@ body .modal-dialog.auto { /* Width */
 /*#endregion Modal*/
 
 /*Sweet Alert*/
-.swal2-modal button:not(.swal2-styled) {
-    margin: .3125em;
-}
+
 /*#region Tabs*/
 .uic.card-tabs {
 

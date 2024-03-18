@@ -3,7 +3,7 @@
 
 public interface IUICCardLike : IUICTab
 {
-    public IHeader Header { get;}
+    public IHeader Header { get; }
     public IUICHasAttributesAndChildren Content { get; }
     IUICHasAttributes IUICTab.Content => Content;
 

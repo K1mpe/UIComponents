@@ -1,4 +1,5 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using UIComponents.Abstractions.Extensions;
+using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators.FormButtons;
 
@@ -27,7 +28,7 @@ public class UICGeneratorButtonSave : UICGeneratorProperty
         var button = new UICButtonSave()
         {
             ButtonText = TranslationDefaults.ButtonSave,
-        };
+        }.AddClass("btn-update");
 
         
 

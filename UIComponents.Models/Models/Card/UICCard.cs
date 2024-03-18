@@ -67,14 +67,6 @@ public class UICCard : UIComponent, IUICCardLike
     IUICHasAttributesAndChildren IUICCardLike.Content => Body;
 
     IUICHasAttributesAndChildren IUICCardLike.Footer => Footer;
-
-
-
-
-
-
-
-
     #endregion
 
     #region Methods

@@ -120,7 +120,7 @@ public static class TranslationDefaults
     public static Func<PropertyInfo, UICPropertyType, string> DefaultTooltipKey = (propertyInfo, propertyType) =>
     {
         var translateProperty = TranslateProperty(propertyInfo, propertyType);
-        if (translateProperty == (new Untranslated("")))
+        if (translateProperty.ResourceKey == (new Untranslated("")).ResourceKey)
             return $"{propertyInfo.DeclaringType.Name}.ToolTip.{propertyInfo.Name}";
         return translateProperty.ResourceKey.Replace(".Field.", ".Tooltip.");
     };
@@ -131,7 +131,7 @@ public static class TranslationDefaults
     public static Func<PropertyInfo, UICPropertyType, string> DefaultInfoSpanKey = (propertyInfo, propertyType) =>
     {
         var translateProperty = TranslateProperty(propertyInfo, propertyType);
-        if (translateProperty == (new Untranslated("")))
+        if (translateProperty.ResourceKey == (new Untranslated("").ResourceKey))
             return $"{propertyInfo.DeclaringType.Name}.Info.{propertyInfo.Name}";
         return translateProperty.ResourceKey.Replace(".Field.", ".Info.");
     };

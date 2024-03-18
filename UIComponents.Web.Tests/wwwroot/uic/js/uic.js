@@ -1971,7 +1971,7 @@ $(document).on('.uic.card-tabs .tab-pane', 'uic-help',()=> {
         //Check if the translation is already requested, call the fetchTranslationText on first request
         let cachedValue = uic.translation._defaultValues[translatable.ResourceKey];
         if (cachedValue == undefined) {
-            cachedValue = await fetchTranslationText(translatable);
+            cachedValue = await uic.translation.fetchTranslationText(translatable);
             uic.translation._defaultValues[translatable.ResourceKey] = cachedValue;
         }
 
