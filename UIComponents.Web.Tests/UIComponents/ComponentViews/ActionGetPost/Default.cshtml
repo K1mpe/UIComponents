@@ -35,7 +35,8 @@ else
     
 }
 
-let data = $.extend({}, variableContent, @Json.Serialize(Model.Data));
+let data = $.extend(true, {},@Json.Serialize(Model.DefaultData), variableContent, @Json.Serialize(Model.FixedData));
+console.log('postData', data);
 let postOptions = {};
 @if(Model.ClientSideOptions != null)
 {

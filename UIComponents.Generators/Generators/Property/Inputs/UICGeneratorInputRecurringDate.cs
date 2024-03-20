@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Models.RecurringDates;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Models.RecurringDates;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
@@ -6,7 +7,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputRecurringDate : UICGeneratorProperty
 {
-    public UICGeneratorInputRecurringDate()
+    public UICGeneratorInputRecurringDate(ILogger<UICGeneratorInputRecurringDate> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult = false;

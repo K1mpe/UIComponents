@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Models;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Models;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
@@ -9,7 +10,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 /// </summary>
 public class UICGeneratorPropertyEditPermission : UICGeneratorProperty
 {
-    public UICGeneratorPropertyEditPermission()
+    public UICGeneratorPropertyEditPermission(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult = true;

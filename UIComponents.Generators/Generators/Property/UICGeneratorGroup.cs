@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Extensions;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Models.UICGeneratorResponses;
 
@@ -7,7 +8,7 @@ namespace UIComponents.Generators.Generators.Property;
 public class UICGeneratorGroup : UICGeneratorProperty
 {
 
-    public UICGeneratorGroup()
+    public UICGeneratorGroup(ILogger<UICGeneratorGroup> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.ClassObject;
         HasExistingResult= false;
@@ -24,6 +25,7 @@ public class UICGeneratorGroup : UICGeneratorProperty
 
         if(args.ClassObject is IUIComponent component)
         {
+            _logger.LogDebug($"{args.ClassObject.GetType().Name}.{args.PropertyName} is a IUIComponent, not further evaluated by generators");
             group.Add(component);
             return GeneratorHelper.Success(group, false);
         }
@@ -36,14 +38,7 @@ public class UICGeneratorGroup : UICGeneratorProperty
             excludedProperties = args.Options.ExcludedProperties.ToLower().Split(",").Select(x=>x.Trim()).ToList();
         if (args.Options.IdHidden)
             excludedProperties.Add("Id");
-        if(args.Options.ExcludePostDataProperties)
-        {
-            try
-            {
-
-            }
-            catch { }
-        }
+        
 
 
         var includedProperties = new List<string>();
@@ -69,7 +64,8 @@ public class UICGeneratorGroup : UICGeneratorProperty
             group.Components.Add(await args.Configuration.GetChildComponentAsync(args.ClassObject, property, args.Options, cc));
         }
 
-        if(args.Options.InputGroupSingleRow)
+        
+        if (args.Options.InputGroupSingleRow)
         {
             var singleRow = new UICSingleRow(group.Components.ToList());
             group.Components.Clear();

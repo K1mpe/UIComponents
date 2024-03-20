@@ -30,7 +30,8 @@ namespace UIComponents.Web.Tests.Models
         public double Decimal { get; set; }
 
         [DisplayName("blub")]
-        public DateTime Date { get; set; }
+        [UICPropertyType(UICPropertyType.DateOnly)]
+        public DateTime? Date { get; set; }
 
         public TimeSpan TimeSpan { get; set; }
 

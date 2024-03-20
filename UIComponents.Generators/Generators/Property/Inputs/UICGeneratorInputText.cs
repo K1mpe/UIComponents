@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using UIComponents.Generators.Helpers;
@@ -8,7 +9,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputText : UICGeneratorProperty
 {
-    public UICGeneratorInputText()
+    public UICGeneratorInputText(ILogger<UICGeneratorInputText> logger) : base(logger)
     {
         UICPropertyType = Abstractions.Attributes.UICPropertyType.String;
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;

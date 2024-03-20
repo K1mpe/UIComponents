@@ -1,11 +1,12 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputBool : UICGeneratorProperty
 {
-    public UICGeneratorInputBool()
+    public UICGeneratorInputBool(ILogger<UICGeneratorInputBool> logger) : base(logger)
     {
         UICPropertyType = Abstractions.Attributes.UICPropertyType.Boolean;
         HasExistingResult= false;

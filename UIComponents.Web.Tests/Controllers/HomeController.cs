@@ -107,6 +107,7 @@ namespace UIComponents.Web.Tests.Controllers
 
                 }
 
+
                 var nextOccurences = post.RecurringDate.GetNextDates(30);
 
                 var serialized = post.RecurringDate.Serialize();
@@ -229,16 +230,17 @@ namespace UIComponents.Web.Tests.Controllers
         public async Task<IActionResult> TestSubClass()
         {
             var item = new TestModel();
-            item.SubModel = new();
-            item.SubModel.SubClass = new();
-            item.SubModel.SubClass.Ints = new() { 1, 2, 3 };
+            item.Number = 15;
+            item.Checkbox = true;
 
             var component = await _uic.CreateComponentAsync(item, new()
             {
-                SubClassesInCard = new(),
-                InputGroupSingleRow = false,
-                ReplaceSaveButtonWithCreateButton = true,
-                PostForm= new UICActionPost("/home/Post")
+                PostObjectAsDefault = true,
+                IncludedProperties = "TestString, Description, Date",
+                //SubClassesInCard = new(),
+                //InputGroupSingleRow = false,
+                //ReplaceSaveButtonWithCreateButton = true,
+                PostForm= new UICActionPost("/home/Post", new {Number = 3})
             });
 
             return ViewOrPartial(component);

@@ -65,10 +65,6 @@ public class UICOptions
     /// </remarks>
     public string ExcludedProperties { get; set; } = OptionDefaults.ExcludedProperties;
 
-    /// <summary>
-    /// Auto exclude all properties that are included in the <see cref="PostForm"/>.<see cref="UICActionGetPost.Data"/>
-    /// </summary>
-    public bool ExcludePostDataProperties { get; set; } = OptionDefaults.ExcludePostDataProperties;
 
     #endregion
 
@@ -84,6 +80,18 @@ public class UICOptions
     public bool HideEmptyInReadonly { get; set; } = OptionDefaults.HideEmptyInReadonly;
 
     public ISubmitAction PostForm { get; set; }
+
+    /// <summary>
+    /// Post all properties as <see cref="UICActionGetPost.DefaultData"/>. This means that properties that are not visualised, will still post their current value.
+    /// </summary>
+    public bool PostObjectAsDefault { get; set; } = OptionDefaults.PostObjectAsDefault;
+
+    /// <summary>
+    /// Post the Id property as <see cref="UICActionGetPost.FixedData"/>. This means this cannot be overwritten clientside
+    /// </summary>
+    /// <remarks>
+    /// Warning! Only works on classes that inherit from <see cref="IDbEntity"/></remarks>
+    public bool PostIdAsFixed { get; set; } = OptionDefaults.PostIdAsFixed;
 
     /// <summary>
     /// Replace the Save button with a Create button
@@ -160,13 +168,15 @@ public class UICOptions
 
     public UICDatetimeStep DatetimePrecision { get; set; } = UICDatetimeStep.Minute;
     public bool InputGroupSingleRow { get; set; } = true;
+
+    /// <summary>
+    /// If a input is required, visualise this on the label with a red *
+    /// </summary>
     public bool MarkLabelsAsRequired { get; set; } = true;
 
     public bool CheckReadPermissions { get; set; } = true;
     public bool CheckWritePermissions { get; set; } = true;
 
-    public bool EnableDefaultTooltipText { get; set; }
-    public bool EnableDefaultInfoSpanText { get; set; } = true;
 }
 public enum ButtonPosition
 {

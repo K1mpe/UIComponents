@@ -1,11 +1,12 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputDateTime : UICGeneratorProperty
 {
-    public UICGeneratorInputDateTime()
+    public UICGeneratorInputDateTime(ILogger<UICGeneratorInputDateTime> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult = false;

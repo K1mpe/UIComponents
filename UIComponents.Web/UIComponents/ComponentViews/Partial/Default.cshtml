@@ -63,7 +63,7 @@
 
         $('#@id').on('uic-source', ()=>{
             let source = '@Json.Serialize($"/{Model.GetHtml.Controller}/{Model.GetHtml.Action}")';
-            console.log('partial source', $('#@id'), source, @Json.Serialize(Model.GetHtml.Data));
+            console.log('partial source', $('#@id'), source, @Json.Serialize(Model.GetHtml.FixedData));
             return source;
         });
         

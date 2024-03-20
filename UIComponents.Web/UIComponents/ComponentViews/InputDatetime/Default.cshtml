@@ -29,10 +29,10 @@
     string step="";
 
     string dateTimeFormat = "yyyy-MM-ddTHH:mm";
+    
     switch (Model.Precision)
     {
         case UICDatetimeStep.Date:
-            step = "86400";
             dateTimeFormat = "yyyy-MM-dd";
             break;
         case UICDatetimeStep.Minute:

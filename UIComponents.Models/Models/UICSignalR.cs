@@ -8,7 +8,7 @@ namespace UIComponents.Models.Models;
 /// </summary>
 public class UICSignalR : UIComponent
 {
-
+    public override string RenderLocation => DefaultIdentifier(nameof(UICSignalR));
 
     #region Ctor
     public UICSignalR()
@@ -19,7 +19,7 @@ public class UICSignalR : UIComponent
     public UICSignalR(string subscriptionName, params string[] incommingArgs)
     {
         SubscriptionName = subscriptionName;
-        IncommingArgs = incommingArgs.ToList();
+        SubscriptionArguments = incommingArgs.ToList();
     }
 
     #endregion
@@ -35,12 +35,12 @@ public class UICSignalR : UIComponent
     /// <summary>
     /// Joining groups for signalR
     /// </summary>
-    public string JoinGroups { get; set; }
+    public string Group { get; set; }
 
     /// <summary>
     /// The names of the arguments that come from the SignalR call. Order is important!
     /// </summary>
-    public List<string> IncommingArgs { get; set; } = new();
+    public List<string> SubscriptionArguments { get; set; } = new();
 
     /// <summary>
     /// SignalR will not work if the parent is hidden.
@@ -53,7 +53,7 @@ public class UICSignalR : UIComponent
     /// <summary>
     /// The action that will be executed when the signalR arrives
     /// </summary>
-    /// <remarks>This action has access to the <see cref="IncommingArgs"/></remarks>
+    /// <remarks>This action has access to the <see cref="SubscriptionArguments"/></remarks>
     public IUIAction Action { get; set; } = new UICCustom();
     #endregion
 

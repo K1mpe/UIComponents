@@ -32,14 +32,14 @@
     <script>
         $(document).ready(async function () {
         //console.log('uic-signalR');
-        @if (!string.IsNullOrWhiteSpace(Model.JoinGroups))
+        @if (!string.IsNullOrWhiteSpace(Model.Group))
         {
             <text>
                 if (connection.state == signalR.HubConnectionState.Connected) {
-                    await connection.invoke("JoinGroup", '@Model.JoinGroups');
+                    await connection.invoke("JoinGroup", '@Model.Group');
                 }
                 EventManager.subscribe('connected', async () => {
-                    await connection.invoke("JoinGroup", '@Model.JoinGroups');
+                    await connection.invoke("JoinGroup", '@Model.Group');
 
                 });
             </text>
@@ -53,7 +53,7 @@
         else
         {
             <text>
-                await connection.on('@Model.SubscriptionName', async function (@string.Join(", ", Model.IncommingArgs)){
+                await connection.on('@Model.SubscriptionName', async function (@string.Join(", ", Model.SubscriptionArguments)){
                     @if (Model.DisableOnHidden)
                     {
                         <text>

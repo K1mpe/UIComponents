@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿using Microsoft.Extensions.Logging;
+using System.Collections;
 using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputList : UICGeneratorProperty
 {
-    public UICGeneratorInputList()
+    public UICGeneratorInputList(ILogger<UICGeneratorInputList> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult = false;

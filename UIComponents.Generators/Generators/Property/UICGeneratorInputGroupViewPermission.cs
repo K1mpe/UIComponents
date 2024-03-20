@@ -1,4 +1,6 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Generators.Generators.Property.Inputs;
+using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Models.UICGeneratorResponses;
 
 namespace UIComponents.Generators.Generators.Property;
@@ -9,6 +11,10 @@ namespace UIComponents.Generators.Generators.Property;
 /// </summary>
 public class UICGeneratorPropertyViewPermission : UICGeneratorProperty
 {
+    public UICGeneratorPropertyViewPermission(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
+    {
+
+    }
     public override double Priority { get; set; } = 1;
 
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
@@ -7,7 +8,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 public class UICGeneratorInputNumber : UICGeneratorProperty
 {
 
-    public UICGeneratorInputNumber()
+    public UICGeneratorInputNumber(ILogger<UICGeneratorInputNumber> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult = false;

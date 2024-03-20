@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Extensions;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
 using UIComponents.Generators.Helpers;
 
@@ -6,7 +7,7 @@ namespace UIComponents.Generators.Generators.FormButtons;
 
 public class UICGeneratorButtonToolbar : UICGeneratorProperty
 {
-    public UICGeneratorButtonToolbar()
+    public UICGeneratorButtonToolbar(ILogger<UICGeneratorButtonToolbar> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.ButtonToolbar;
         HasExistingResult = false;

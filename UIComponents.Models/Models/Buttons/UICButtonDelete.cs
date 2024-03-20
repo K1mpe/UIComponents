@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace UIComponents.Models.Models.Buttons;
 
@@ -17,7 +18,7 @@ public class UICButtonDelete : UICButton
     }
     public UICButtonDelete(string url, object id) : this()
     {
-        OnClick = new UICCustom($"await uic.form.delete('{url}', {id});");
+        OnClick = new UICCustom($"await uic.form.delete('{url}', {JsonSerializer.Serialize(id)});");
     }
 
     

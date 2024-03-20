@@ -1278,7 +1278,7 @@ $(document).ready(function () {
         }
     },
 
-    delete: async function (url, id, title = "", message = "", data = {}) {
+    delete: async function (url, id) {
         try {
             var content = await uic.getpost.get(url, { id, title, message, data });
             $('body').append(content);

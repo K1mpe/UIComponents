@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.Extensions.Logging;
+using System.ComponentModel;
+using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Models.UICGeneratorResponses;
 
@@ -6,7 +8,7 @@ namespace UIComponents.Generators.Generators.Property;
 
 public class UICGeneratorLabel : UICGeneratorProperty
 {
-    public UICGeneratorLabel()
+    public UICGeneratorLabel(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyLabel;
     }

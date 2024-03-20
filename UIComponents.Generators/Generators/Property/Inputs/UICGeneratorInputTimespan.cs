@@ -1,4 +1,5 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
@@ -6,7 +7,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 public class UICGeneratorInputTimespan : UICGeneratorProperty
 {
 
-    public UICGeneratorInputTimespan()
+    public UICGeneratorInputTimespan(ILogger<UICGeneratorInputTimespan> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         UICPropertyType = Abstractions.Attributes.UICPropertyType.Timespan;

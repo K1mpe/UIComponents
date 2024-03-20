@@ -1,11 +1,13 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Generators.Generators.Property.Inputs;
+using UIComponents.Generators.Helpers;
 using UIComponents.Models.Models.Card;
 
 namespace UIComponents.Generators.Generators.Property;
 
 public class UICGeneratorCard : UICGeneratorProperty
 {
-    public UICGeneratorCard()
+    public UICGeneratorCard(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.ClassObject;
         HasExistingResult = false;

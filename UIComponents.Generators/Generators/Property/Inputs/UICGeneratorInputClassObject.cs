@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.Extensions.Logging;
+using System.Collections;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
 using UIComponents.Generators.Helpers;
@@ -10,7 +11,8 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 /// </summary>
 public class UICGeneratorInputClassObject : UICGeneratorProperty
 {
-    public UICGeneratorInputClassObject()
+
+    public UICGeneratorInputClassObject(ILogger<UICGeneratorInputClassObject> logger): base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult= false;
@@ -28,9 +30,12 @@ public class UICGeneratorInputClassObject : UICGeneratorProperty
             return GeneratorHelper.Next<IUIComponent>();
 
         if (args.PropertyValue == null)
-            return GeneratorHelper.Success<IUIComponent>(new UICInputCustom() { Render = false}, true);
+        {
+            _logger.LogDebug($"{args.PropertyName} is an object and will not be rendered because the value was NULL");
+            return GeneratorHelper.Success<IUIComponent>(new UICInputCustom() { Render = false }, true);
+        }
 
-        
+
 
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, null, args.CallCollection);
         var newArgs = new UICPropertyArgs(args.PropertyValue, null, null, args.Options, cc, args.Configuration);

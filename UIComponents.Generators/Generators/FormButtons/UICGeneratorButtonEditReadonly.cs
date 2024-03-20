@@ -1,10 +1,11 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators.FormButtons;
 
 public class UICGeneratorButtonEditReadonly : UICGeneratorProperty
 {
-    public UICGeneratorButtonEditReadonly()
+    public UICGeneratorButtonEditReadonly(ILogger<UICGeneratorButtonEditReadonly> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.ButtonEditReadonly;
         HasExistingResult = false;

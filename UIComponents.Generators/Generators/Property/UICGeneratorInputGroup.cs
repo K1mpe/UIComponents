@@ -1,4 +1,6 @@
-﻿using UIComponents.Abstractions.Extensions;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
+using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Models.UICGeneratorResponses;
 
 namespace UIComponents.Generators.Generators.Property
@@ -6,7 +8,7 @@ namespace UIComponents.Generators.Generators.Property
     public class UICGeneratorInputGroup : UICGeneratorProperty
     {
 
-        public UICGeneratorInputGroup()
+        public UICGeneratorInputGroup(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
         {
             RequiredCaller = UICGeneratorPropertyCallType.PropertyGroup;
         }

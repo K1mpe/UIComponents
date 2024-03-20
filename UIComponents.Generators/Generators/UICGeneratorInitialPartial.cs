@@ -1,4 +1,6 @@
-﻿using UIComponents.Abstractions.Extensions;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
+using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Helpers;
 using UIComponents.Models.Models.Card;
 
@@ -7,7 +9,7 @@ namespace UIComponents.Generators.Generators;
 public class UICGeneratorInitialPartial : UICGeneratorProperty
 {
 
-    public UICGeneratorInitialPartial()
+    public UICGeneratorInitialPartial(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.ClassObject;
         HasExistingResult= false;

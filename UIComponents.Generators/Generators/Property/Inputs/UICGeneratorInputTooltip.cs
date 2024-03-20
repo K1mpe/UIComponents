@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Models;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Models;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
@@ -11,7 +12,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 public class UICGeneratorInputTooltip : UICGeneratorProperty
 {
 
-    public UICGeneratorInputTooltip()
+    public UICGeneratorInputTooltip(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult = true;

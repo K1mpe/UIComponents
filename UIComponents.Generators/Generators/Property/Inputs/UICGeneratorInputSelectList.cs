@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Logging;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Generators.Helpers;
 using UIComponents.Models.Extensions;
@@ -7,7 +8,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputSelectList : UICGeneratorProperty
 {
-    public UICGeneratorInputSelectList()
+    public UICGeneratorInputSelectList(ILogger<UICGeneratorInputSelectList> logger) : base(logger)
     {
         UICPropertyType = Abstractions.Attributes.UICPropertyType.SelectList;
         HasExistingResult = false;

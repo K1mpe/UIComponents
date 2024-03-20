@@ -1,10 +1,13 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators.FormButtons;
 
 public class UICGeneratorButtonCancel : UICGeneratorProperty
 {
-    public UICGeneratorButtonCancel()
+
+
+    public UICGeneratorButtonCancel(ILogger<UICGeneratorButtonCancel> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.ButtonCancel;
         HasExistingResult = false;

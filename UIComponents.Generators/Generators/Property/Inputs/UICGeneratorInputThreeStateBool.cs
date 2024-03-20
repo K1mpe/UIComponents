@@ -1,11 +1,12 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputThreeStateBool : UICGeneratorProperty
 {
-    public UICGeneratorInputThreeStateBool()
+    public UICGeneratorInputThreeStateBool(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
     {
         UICPropertyType = Abstractions.Attributes.UICPropertyType.ThreeStateBoolean;
         HasExistingResult = false;

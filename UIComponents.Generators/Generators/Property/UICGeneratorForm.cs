@@ -1,5 +1,7 @@
-﻿using UIComponents.Abstractions.Extensions;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
+using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Models.Models;
@@ -11,7 +13,7 @@ namespace UIComponents.Generators.Generators.Property;
 
 public class UICGeneratorForm : UICGeneratorProperty
 {
-    public UICGeneratorForm()
+    public UICGeneratorForm(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.ClassObject;
         HasExistingResult= false;
@@ -44,14 +46,21 @@ public class UICGeneratorForm : UICGeneratorProperty
             {
                 GetVariableData = form.TriggerGetValue()
             };
-            if (args.ClassObject is IDbEntity dbEntity)
-                submit.Data = new { Id = dbEntity.Id };
-
+            
             form.Submit = submit;
         }
         else
         {
             form.Submit = args.Options.PostForm;
+        }
+        if(form.Submit is UICActionGetPost getPost)
+        {
+            if (args.ClassObject is IDbEntity dbEntity && args.Options.PostIdAsFixed)
+                getPost.AddFixedData(nameof(dbEntity.Id), dbEntity.Id);
+            if (args.Options.PostObjectAsDefault)
+                getPost.AddDefaultData(args.ClassObject);
+            if(getPost.GetVariableData == null)
+                getPost.GetVariableData = form.TriggerGetValue();
         }
 
         var newCC = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, form, args.CallCollection);

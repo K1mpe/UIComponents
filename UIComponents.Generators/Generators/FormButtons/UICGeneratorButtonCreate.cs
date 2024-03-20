@@ -1,11 +1,12 @@
-﻿using UIComponents.Abstractions.Extensions;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators.FormButtons;
 
 public class UICGeneratorButtonCreate : UICGeneratorProperty
 {
-    public UICGeneratorButtonCreate()
+    public UICGeneratorButtonCreate(ILogger<UICGeneratorButtonCreate> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.ButtonCreate;
         HasExistingResult= false;

@@ -1,4 +1,5 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
@@ -6,7 +7,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 public class UICGeneratorInputColor : UICGeneratorProperty
 {
 
-    public UICGeneratorInputColor()
+    public UICGeneratorInputColor(ILogger<UICGeneratorInputColor> logger) : base(logger)
     {
         HasExistingResult= false;
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;

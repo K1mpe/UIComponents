@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Models;
+﻿using Microsoft.AspNetCore.Routing;
+using UIComponents.Abstractions.Models;
 
 namespace UIComponents.Models.Models.Actions;
 
@@ -17,13 +18,13 @@ public class UICActionGetPost : UIComponent, ISubmitAction
         ActionType = actionType;
         Controller = controller;
         Action = action;
-        Data = data;
+        FixedData = (new RouteValueDictionary(data)).ToDictionary(x => x.Key, x => x.Value);
     }
     public UICActionGetPost(ActionTypeEnum actionType, string url, object data = null)
     {
         ActionType = actionType;
         Url = url;
-        Data = data;
+        FixedData = (new RouteValueDictionary(data)).ToDictionary(x=> x.Key, x=>x.Value);
     }
 
     public UICActionGetPost()
@@ -40,8 +41,21 @@ public class UICActionGetPost : UIComponent, ISubmitAction
     public string Controller { get; set; }
     public string Action { get; set; }
 
+    /// <summary>
+    /// This will be included on post, This takes lowest priority and can be overwritten by <see cref="GetVariableData"/> and <see cref="FixedData"/>
+    /// </summary>
+    public Dictionary<string, object> DefaultData { get; set; } = new();
 
-    public object Data { get; set; }
+    /// <summary>
+    /// Before sending the request, this action is called client side to get additional properties.
+    /// <br>These properties have higher priority then <see cref="DefaultData"/> but lower than <see cref="FixedData"/></br>
+    /// </summary>
+    public IUIAction? GetVariableData { get; set; } = null;
+
+    /// <summary>
+    /// This will be included on post, and takes highest priority. This will overwrite all properties from <see cref="DefaultData"/> and <see cref="GetVariableData"/>
+    /// </summary>
+    public Dictionary<string, object> FixedData { get; set; } = new();
 
     /// <summary>
     /// If not empty, use the url instead of <see cref="Controller"/> and <see cref="Action"/>
@@ -60,11 +74,6 @@ public class UICActionGetPost : UIComponent, ISubmitAction
     public IUIAction? ClientSideOptions { get; set; } = null;
 
 
-    /// <summary>
-    /// Before sending the request, this action is called client side to get additional properties.
-    /// </summary>
-    /// If this result has the same properties as <see cref="Data"/>, the <see cref="Data"/> takes priority.
-    public IUIAction? GetVariableData { get; set; } = null;
 
     /// <summary>
     /// This is the name of the responsevalue
@@ -84,6 +93,37 @@ public class UICActionGetPost : UIComponent, ISubmitAction
     /// </summary>
     public IUIAction OnFailed { get; set; }
     #endregion
+
+
+    #region Methods
+    public UICActionGetPost AddDefaultData(string key, object value)
+    {
+        DefaultData[key] = value;
+        return this;
+    }
+    public UICActionGetPost AddDefaultData(object data)
+    {
+        foreach(var kvp in new RouteValueDictionary(data))
+        {
+            AddDefaultData(kvp.Key, kvp.Value);
+        }
+        return this;
+    }
+    public UICActionGetPost AddFixedData(string key, object value)
+    {
+        FixedData[key] = value;
+        return this;
+    }
+    public UICActionGetPost AddFixedData(object data)
+    {
+        foreach (var kvp in new RouteValueDictionary(data))
+        {
+            AddFixedData(kvp.Key, kvp.Value);
+        }
+        return this;
+    }
+    #endregion
+
 
     public enum ActionTypeEnum
     {

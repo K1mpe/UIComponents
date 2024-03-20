@@ -1,4 +1,6 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Generators.Generators.Property.Inputs;
+using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators.Property;
 
@@ -7,7 +9,7 @@ namespace UIComponents.Generators.Generators.Property;
 /// </summary>
 public class UICGeneratorInputGroupSpan : UICGeneratorProperty
 {
-    public UICGeneratorInputGroupSpan()
+    public UICGeneratorInputGroupSpan(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyGroupSpan;
         HasExistingResult = false;

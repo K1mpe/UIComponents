@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
@@ -11,7 +12,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 /// </summary>
 public class UICGeneratorDataAnnotationValidators : UICGeneratorProperty
 {
-    public UICGeneratorDataAnnotationValidators()
+    public UICGeneratorDataAnnotationValidators(ILogger<UICGeneratorDataAnnotationValidators> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
     }

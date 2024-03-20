@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Logging;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
@@ -6,7 +7,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputMultiline : UICGeneratorProperty
 {
-    public UICGeneratorInputMultiline()
+    public UICGeneratorInputMultiline(ILogger<UICGeneratorInputMultiline> logger) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         UICPropertyType = Abstractions.Attributes.UICPropertyType.MultilineText;
