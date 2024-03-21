@@ -1,0 +1,21 @@
+﻿@model DateTime
+@{
+    var container = @Html.IdForModel() + "-container";
+}
+
+@* DateTimePicker *@
+<div class="input-group" id="@container-dt" data-target-input="nearest" data-target-toggle="nearest">
+    <input type="text" class="form-control datetimepicker-input" id="@Html.IdForModel()" name="@Html.NameForModel()" value="@(Model > DateTime.MinValue ? Model : DateTime.Today)" data-target="#@container-dt" data-toggle="datetimepicker" autocomplete="off" />
+    <div class="input-group-append" data-target="#@container-dt" data-toggle="datetimepicker">
+        <div class="input-group-text"><i class="far fa-calendar"></i></div>
+    </div>
+</div>@**@
+
+<script>
+    $(document).ready(function () {
+
+        // DateTimePicker
+        // $('#@container-dt').datetimepicker({ format: 'L LT' });
+
+    });
+</script>

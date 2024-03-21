@@ -1,11 +1,24 @@
-﻿namespace UIComponents.Abstractions.Interfaces.ValidationRules;
+﻿using System.Reflection;
+
+namespace UIComponents.Abstractions.Interfaces.ValidationRules;
 
 public class ValidationRuleResult
 {
     public bool HasValidationErrors { get; set; }
 
-    public List<Translatable> ValidationErrors { get; set; }
+    public List<ValidationRuleResultError> ValidationErrors { get; set; } = new();
 
+
+    public ValidationRuleResult AddError(Translatable errorMessage, PropertyInfo? property)
+    {
+        HasValidationErrors = true;
+        ValidationErrors.Add(new()
+        {
+            ErrorMessage = errorMessage,
+            Property = property
+        });
+        return this;
+    }
 
     /// <summary>
     /// Result that validation rule does not contain any validation errors
@@ -19,21 +32,17 @@ public class ValidationRuleResult
     /// <summary>
     /// Result that contains a validation error
     /// </summary>
-    public static ValidationRuleResult HasError(Translatable errorMessage)
+    public static ValidationRuleResult HasError(Translatable errorMessage, PropertyInfo? property)
     {
-        return HasErrors(new List<Translatable>() { errorMessage });
+        var result = new ValidationRuleResult().AddError(errorMessage, property);
+        return result;
     }
 
-    /// <summary>
-    /// Result that contains multiple validation errors
-    /// </summary>
-    public static ValidationRuleResult HasErrors(IEnumerable<Translatable> errors)
-    {
-        return new()
-        {
-            HasValidationErrors = true,
-            ValidationErrors = errors.ToList()
-        };
-    }
+}
+
+public class ValidationRuleResultError
+{
+    public Translatable ErrorMessage { get; set; }
+    public PropertyInfo? Property { get; set; }
 }
 

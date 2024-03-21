@@ -30,8 +30,9 @@ form {
         }
 
         &.hide-empty .input-no-value {
-            display:none;
+            display: none;
         }
+
     }
 
     &:not(.readonly-form) {

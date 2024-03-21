@@ -77,6 +77,7 @@ namespace UIComponents.Web.Tests.Controllers
             return View();
         }
 
+
         public async Task<IActionResult> JsTreeItems(string id, bool initial)
         {
             var treeItems = new UICTreeItems();
@@ -232,18 +233,22 @@ namespace UIComponents.Web.Tests.Controllers
             var item = new TestModel();
             item.Number = 15;
             item.Checkbox = true;
+            item.SubClass = new();
 
             var component = await _uic.CreateComponentAsync(item, new()
             {
                 PostObjectAsDefault = true,
-                IncludedProperties = "TestString, Description, Date",
-                //SubClassesInCard = new(),
+                //IncludedProperties = "TestString, Description, Date",
+                SubClassesInCard = new(),
                 //InputGroupSingleRow = false,
                 //ReplaceSaveButtonWithCreateButton = true,
                 PostForm= new UICActionPost("/home/Post", new {Number = 3})
             });
-
-            return ViewOrPartial(component);
+            var x = new UICInputEditorTemplate("blub")
+            {
+                TemplateFor = nameof(DateTime)
+            };
+            return ViewOrPartial(x);
         }
     }
 }

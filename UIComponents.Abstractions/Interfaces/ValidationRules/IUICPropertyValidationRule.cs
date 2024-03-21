@@ -1,0 +1,45 @@
+﻿using System.Reflection;
+
+namespace UIComponents.Abstractions.Interfaces.ValidationRules;
+
+public interface IUICPropertyValidationRule
+{
+    public Type? PropertyType { get; }
+    public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj);
+}
+
+public interface IUICPropertyValidationRule<T> : IUICPropertyValidationRule
+{
+    public Type PropertyType => typeof(T);
+    public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj);
+}
+
+public interface IUICPropertyValidationRuleRequired : IUICPropertyValidationRule
+{
+    public Task<bool> IsRequired(PropertyInfo propertyInfo, object obj);
+}
+
+public interface IUICPropertyValidationRuleMinValue<TValueType> : IUICPropertyValidationRule<TValueType> where TValueType : struct
+{
+    Task<Nullable<TValueType>> MinValue(PropertyInfo propertyInfo, object obj);
+}
+
+public interface IUICPropertyValidationRuleMaxValue<TValueType> : IUICPropertyValidationRule<TValueType> where TValueType : struct
+{
+    Task<Nullable<TValueType>> MaxValue(PropertyInfo propertyInfo, object obj);
+}
+
+public interface IUICPropertyValidationRuleMinLength : IUICPropertyValidationRule<string>
+{
+    Task<int?> MinLength(PropertyInfo propertyInfo, object obj);
+}
+
+public interface IUICPropertyValidationRuleMaxLength : IUICPropertyValidationRule<string>
+{
+    Task<int?> MaxLength(PropertyInfo propertyInfo, object obj);
+}
+
+public interface IUICPropertyValidationRuleReadonly : IUICPropertyValidationRule
+{
+    Task<bool> IsReadonly(PropertyInfo propertyInfo, object obj);
+}

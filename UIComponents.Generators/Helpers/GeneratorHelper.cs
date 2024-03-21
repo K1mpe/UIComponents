@@ -131,6 +131,27 @@ public static class GeneratorHelper
         return generator;
     }
 
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGenerator<T>(string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> func)
+    {
+        return PropertyGenerator(typeof(T), name, priority, func);
+    }
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGenerator(Type propertyType, string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> func)
+    {
+        var generator = new UICCustomGenerator<UICPropertyArgs, IUIComponent>()
+        {
+            Name = name,
+            Priority = priority,
+            GetResult = async (args, existing) =>
+            {
+                if (args.PropertyInfo == null || !args.PropertyType!.IsAssignableTo(propertyType))
+                    return Next<IUIComponent>();
+
+                return await func(args, existing);
+            }
+        };
+        return generator;
+    }
+
     public static UICCustomGenerator<UICPropertyArgs, IUIComponent> ButtonGenerator(ButtonType buttonType, string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> func)
     {
         return new UICCustomGenerator<UICPropertyArgs, IUIComponent>()
@@ -290,15 +311,15 @@ public static class GeneratorHelper
     /// <summary>
     /// A generator response that is used when the current generator could not give a result and the next generator should be called.
     /// </summary>
-    public static UICGeneratorResponseNext<T> Next<T>()
+    public static IUICGeneratorResponse<T> Next<T>()
     {
         return new UICGeneratorResponseNext<T>();
     }
-    public static UICGeneratorResponseNext<IUIComponent> Next()
+    public static IUICGeneratorResponse<IUIComponent> Next()
     {
         return Next<IUIComponent>();
     }
-    public static Task<UICGeneratorResponseNext<IUIComponent>> NextAsync()
+    public static Task<IUICGeneratorResponse<IUIComponent>> NextAsync()
     {
         return Task.FromResult(Next<IUIComponent>());
     }
@@ -309,15 +330,15 @@ public static class GeneratorHelper
     /// <typeparam name="T"></typeparam>
     /// <param name="result">Result from the success</param>
     /// <param name="allowContinue">Allow other generators to manipulate this result</param>
-    public static UICGeneratorResponseSuccess<T> Success<T>(T result, bool allowContinue)
+    public static IUICGeneratorResponse<T> Success<T>(T result, bool allowContinue)
     {
         return new UICGeneratorResponseSuccess<T>(result, allowContinue);
     }
-    public static UICGeneratorResponseSuccess<IUIComponent> Success(IUIComponent result, bool allowContinue)
+    public static IUICGeneratorResponse<IUIComponent> Success(IUIComponent result, bool allowContinue)
     {
         return Success<IUIComponent>(result, allowContinue);
     }
-    public static Task<UICGeneratorResponseSuccess<IUIComponent>> SuccessAsync(IUIComponent result, bool allowContinue)
+    public static Task<IUICGeneratorResponse<IUIComponent>> SuccessAsync(IUIComponent result, bool allowContinue)
     {
         return Task.FromResult(Success(result, allowContinue));
     }

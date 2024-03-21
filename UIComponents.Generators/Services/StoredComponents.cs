@@ -193,10 +193,7 @@ public class StoredComponents : IUICStoredComponents
                 if (kvp.Value.MaxLifeTime < removeOlderThan)
                     _components.Remove(kvp.Key);
             }
-        }
-            
-        ClearStorage();
-        
+        }        
     }
 
     #endregion

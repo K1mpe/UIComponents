@@ -73,7 +73,11 @@
     }), dateItem =>
     {
         dateItem.FindFirstOfType<UICSingleRow>().AddClass("static-options");
-        dateItem.FindInputByPropertyName<UICInputDatetime>(nameof(RecurringDateItem.EndDate)).ValidationRequired = Model.ValidationEndRequired;
+        
+        try{ // may crash if inputgenerator has been overwritten 
+            dateItem.FindInputByPropertyName<UICInputDatetime>(nameof(RecurringDateItem.EndDate)).ValidationRequired = Model.ValidationEndRequired;
+        }catch{}
+        
     });
 
     optionsCard.Add(out var tabs, new UICTabs($"{id}RecurringTabs")

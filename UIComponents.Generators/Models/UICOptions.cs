@@ -177,6 +177,12 @@ public class UICOptions
     public bool CheckReadPermissions { get; set; } = true;
     public bool CheckWritePermissions { get; set; } = true;
 
+    public UICOptions AddDictionaryOption(string key, object value)
+    {
+        OptionsDictionary.Add(key, value);
+        return this;
+    }
+
 }
 public enum ButtonPosition
 {

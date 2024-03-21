@@ -1,10 +1,17 @@
-﻿# 2024-03-20 (1.1.19)
+﻿# 2024-03-20 (1.1.21)
+ - Fix stackoverflow
+
+# 2024-03-20 (1.1.20)
+ - Support for EditorTemplates / UIHint attribute
+
+# 2024-03-20 (1.1.19)
 - Fix for autogenerating translationkey for tooltip or infospan on properties with a displaynameattribute
 - Css fixes (Input-group && swal)
 - Defaults for UICModal
 - Renaming SignalR Properties
 - UICActionGetPost support for default data and dictionaries
-- Overwritable renderlocation for datetime
+- Overwritable renderlocation for datetime & defaults
+- Serialize Id in UICButtonDelete
 ﻿
 # 2024-03-15 (1.1.18)
  - Fixing bug of stackoverflow in subcards

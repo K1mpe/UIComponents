@@ -81,13 +81,13 @@ public static class TranslationDefaults
         return translatedType;
     };
 
-    public static Func<PropertyInfo, UICPropertyType, Translatable> TranslateProperty = (prop, uicPropType) =>
+    public static Func<PropertyInfo, UICPropertyType?, Translatable> TranslateProperty = (prop, uicPropType) =>
     {
         var translateAttr = prop.GetCustomAttribute<DisplayNameAttribute>();
         if (translateAttr != null)
             return translateAttr.DisplayName;
 
-        if (uicPropType == UICPropertyType.SelectList && prop.Name.EndsWith("Id") && prop.Name != "Id")
+        if (uicPropType != null && uicPropType == UICPropertyType.SelectList && prop.Name.EndsWith("Id") && prop.Name != "Id")
             return new Translatable($"{prop.DeclaringType!.Name}.Field.{prop.Name.Substring(0, prop.Name.Length - 2)}");
 
         return new Translatable($"{prop.DeclaringType!.Name}.Field.{prop.Name}");
@@ -99,11 +99,11 @@ public static class TranslationDefaults
     /// </summary>
     public static Func<string, Translatable> ValidationIsRequired = (translatedPropertyName) => new Translatable("Validation.Required", "{0} is required", translatedPropertyName);
 
-    public static Func<string, int, Translatable> ValidateMinLength = (translatedPropertyName, minLenght) => new Translatable("Validation.MinLength", "The value of {0} must be longer than {1}", translatedPropertyName, minLenght);
-    public static Func<string, int, Translatable> ValidateMaxLength = (translatedPropertyName, maxLength) => new Translatable("Validation.MaxLength", "The value of {0} must be shorter than {1}", translatedPropertyName, maxLength);
-    public static Func<string, object, Translatable> ValidateMinValue = (translatedPropertyName, minValue) => new Translatable("Validation.MinValue", "The value of {0} must be higher than or equal to {1}", translatedPropertyName, minValue);
-    public static Func<string, object, Translatable> ValidateMaxValue = (translatedPropertyName, maxValue) => new Translatable("Validation.MaxValue", "The value of {0} must be lower or equal to {1}", translatedPropertyName, maxValue);
-    public static Func<string, Translatable> ValidateColor = (translatedPropertyName) => new Translatable("Validation.Color.Invalid", "{0} has a invalid color", translatedPropertyName);
+    public static Func<Translatable, int, Translatable> ValidateMinLength = (translatedPropertyName, minLenght) => new Translatable("Validation.MinLength", "The value of {0} must be longer than {1}", translatedPropertyName, minLenght);
+    public static Func<Translatable, int, Translatable> ValidateMaxLength = (translatedPropertyName, maxLength) => new Translatable("Validation.MaxLength", "The value of {0} must be shorter than {1}", translatedPropertyName, maxLength);
+    public static Func<Translatable, object, Translatable> ValidateMinValue = (translatedPropertyName, minValue) => new Translatable("Validation.MinValue", "The value of {0} must be higher than or equal to {1}", translatedPropertyName, minValue);
+    public static Func<Translatable, object, Translatable> ValidateMaxValue = (translatedPropertyName, maxValue) => new Translatable("Validation.MaxValue", "The value of {0} must be lower or equal to {1}", translatedPropertyName, maxValue);
+    public static Func<Translatable, Translatable> ValidateColor = (translatedPropertyName) => new Translatable("Validation.Color.Invalid", "{0} has a invalid color", translatedPropertyName);
 
     public static Func<int, Translatable> FileUploadMaxFiles = (fileCount) =>
     {

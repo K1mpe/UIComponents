@@ -101,9 +101,16 @@ public class UICConfig
 
         foreach (var type in types)
         {
-            var generator = (IUICGenerator<TArgs, TResult>)scope.ServiceProvider.GetRequiredService(type);
+            try
+            {
+                var generator = (IUICGenerator<TArgs, TResult>)scope.ServiceProvider.GetRequiredService(type);
 
-            generators.Add(generator);
+                generators.Add(generator);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to get {type.FullName} from serviceProvider");
+            }
         }
         options.Generators.ForEach(x => {
             if (x is IUICGenerator<TArgs, TResult> generator)

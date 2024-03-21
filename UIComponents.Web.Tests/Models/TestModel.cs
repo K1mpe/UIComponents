@@ -29,9 +29,6 @@ namespace UIComponents.Web.Tests.Models
 
         public double Decimal { get; set; }
 
-        [DisplayName("blub")]
-        [UICPropertyType(UICPropertyType.DateOnly)]
-        public DateTime? Date { get; set; }
 
         public TimeSpan TimeSpan { get; set; }
 
@@ -43,6 +40,16 @@ namespace UIComponents.Web.Tests.Models
 
         public TestModel SubModel { get; set; }
         public TestModel2 SubClass { get; set; }
+
+
+
+        public DateTime DateTime { get; set; } = DateTime.Now;
+        public DateTime? DateTimeNull { get; set; }
+        public TimeOnly TimeOnly { get; set; }
+        public TimeOnly? TimeOnlyNull { get; set; }
+
+        public DateOnly Date { get; set; }
+        public DateOnly? DateNull { get; set; }
     }
 
     public enum TestEnum

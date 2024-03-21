@@ -79,7 +79,7 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorTooltip>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputTooltip>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorEnumSelectListItems>(serviceCollection);
-
+        configOptions.AddAndRegisterGenerator<UICGeneratorInputEditorTemplate>(serviceCollection);
 
         configOptions.AddAndRegisterGenerator<UICGeneratorInputGroup>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorLabel>(serviceCollection);

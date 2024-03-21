@@ -12,7 +12,7 @@ public class UICGeneratorInputDateTime : UICGeneratorProperty
         HasExistingResult = false;
     }
 
-    public override double Priority { get; set; }
+    public override double Priority { get; set; } = 1000;
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {

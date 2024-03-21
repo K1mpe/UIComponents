@@ -71,6 +71,9 @@
         //    .addClass("select2-container--bootstrap4")
         //    .find('.select2-selection__rendered').removeClass('px-0');
 
+
+        form.find('span').attr('hidden', false);
+
         form.find('input[type=checkbox]:not(.always-readonly)')
             .attr("readonly", false)
             .attr("disabled", false);

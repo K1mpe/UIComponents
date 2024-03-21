@@ -7,6 +7,7 @@ using UIComponents.Generators.Registrations;
 using UIComponents.Web.Extensions;
 using UIComponents.Web.Tests.Models;
 using UIComponents.Web.Tests.Services;
+using UIComponents.Web.Tests;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,8 @@ builder.Services.AddUIComponentWeb(config =>
     config.AddChangeLog = true;
     config.AddReadMe = true;
     config.AddDefaultGenerators(builder.Services);
+
+    
 });
 Console.WriteLine("");
 Console.WriteLine("-- Components are generated --");
