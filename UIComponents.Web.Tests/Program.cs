@@ -8,6 +8,7 @@ using UIComponents.Web.Extensions;
 using UIComponents.Web.Tests.Models;
 using UIComponents.Web.Tests.Services;
 using UIComponents.Web.Tests;
+using UIComponents.Web.Tests.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,15 @@ builder.Services.AddUIComponentWeb(config =>
     config.AddChangeLog = true;
     config.AddReadMe = true;
     config.AddDefaultGenerators(builder.Services);
+    config.AddDefaultValidators(builder.Services);
+
+    config.AddValidatorPropertyMinValue<int>(async (prop, obj) =>
+    {
+        await Task.Delay(0);
+        if (prop.Name == nameof(TestModel.Number))
+            return 15;
+        return null;
+    });
 
     
 });
@@ -57,6 +67,8 @@ builder.Services.AddSignalR(options =>
 builder.Services.AddSingleton<IUICSignalRService, SignalRService>();
 builder.Services.AddSingleton<SignalRService>();
 builder.Services.AddSingleton<MainHub>();
+builder.Services.AddScoped<TestModelValidator>();
+
 builder.Services.AddWebOptimizer(pipeline =>
 {
     var inProduction = builder.Environment.IsProduction();

@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Extensions.Logging;
 using UIComponents.Abstractions.Extensions;
+using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Helpers;
 using UIComponents.Models.Extensions;
 
@@ -8,11 +9,14 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputSelectList : UICGeneratorProperty
 {
-    public UICGeneratorInputSelectList(ILogger<UICGeneratorInputSelectList> logger) : base(logger)
+
+    private readonly IUICValidationService _validationService;
+    public UICGeneratorInputSelectList(ILogger<UICGeneratorInputSelectList> logger, IUICValidationService validationService) : base(logger)
     {
         UICPropertyType = Abstractions.Attributes.UICPropertyType.SelectList;
         HasExistingResult = false;
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
+        _validationService = validationService;
     }
 
     public override double Priority { get; set; } = 1000;
@@ -27,7 +31,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
         if(args.PropertyType.IsEnum && args.PropertyValue != null)
             input.Value = ((int)args.PropertyValue).ToString();
 
-        input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input)?? true;
+        input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
         input.SelectListItems = (await args.Configuration.GetSelectListItems(args, input)).ToUIC()?? new();
 
         if(!input.ValidationRequired && input.SelectListItems.Where(x => string.IsNullOrEmpty(x.Value?.ToString()??null)).Any())

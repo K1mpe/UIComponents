@@ -25,6 +25,7 @@ using UIComponents.Models.Models.Tree;
 using UIComponents.Web.Tests.Factory;
 using UIComponents.Web.Tests.Models;
 using UIComponents.Web.Tests.Services;
+using UIComponents.Web.Tests.Validators;
 
 namespace UIComponents.Web.Tests.Controllers
 {
@@ -35,13 +36,15 @@ namespace UIComponents.Web.Tests.Controllers
         private readonly IUICLanguageService _languageService;
         private readonly SignalRService _signalRService;
         private readonly IUICQuestionService _uicQuestionService;
-        public HomeController(ILogger<HomeController> logger, IUIComponentService uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService)
+        private readonly TestModelValidator _validator;
+        public HomeController(ILogger<HomeController> logger, IUIComponentService uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator)
         {
             _logger = logger;
             _uic = uic;
             _languageService = languageService;
             _signalRService = signalRService;
             _uicQuestionService = uicQuestionService;
+            _validator = validator;
         }
 
         public static int Counter { get; set; } = 0;
@@ -94,6 +97,11 @@ namespace UIComponents.Web.Tests.Controllers
         {
             try
             {
+                var validation = _validator.Validate(post);
+                if (!validation.IsValid)
+                {
+                    
+                }
                 var yesNo = UICQuestionYesNo.Create("Test Ja / nee", "Wilt u deze vraag beantwoorden?", _uicQuestionService, question => question.Icon = QuestionIconType.Warning);
 
                 var answered = _uicQuestionService.TryAskQuestion(yesNo, TimeSpan.FromMinutes(1), 1, out bool boolean);
@@ -244,11 +252,9 @@ namespace UIComponents.Web.Tests.Controllers
                 //ReplaceSaveButtonWithCreateButton = true,
                 PostForm= new UICActionPost("/home/Post", new {Number = 3})
             });
-            var x = new UICInputEditorTemplate("blub")
-            {
-                TemplateFor = nameof(DateTime)
-            };
-            return ViewOrPartial(x);
+
+
+            return ViewOrPartial(component);
         }
     }
 }

@@ -82,7 +82,6 @@ public enum UICGeneratorPropertyCallType
     /// </summary>
     PropertyInfoSpan,
 
-    PropertyRequired,
 
     /// <summary>
     /// SelectListItems for a selectlist.

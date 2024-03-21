@@ -20,6 +20,13 @@ public class ValidationRuleResult
         return this;
     }
 
+    public ValidationRuleResult ImportErrors(ValidationRuleResult importing)
+    {
+        foreach(var error in importing.ValidationErrors)
+            AddError(error.ErrorMessage, error.Property);
+        return this;
+    }
+
     /// <summary>
     /// Result that validation rule does not contain any validation errors
     /// </summary>
@@ -38,6 +45,7 @@ public class ValidationRuleResult
         return result;
     }
 
+    
 }
 
 public class ValidationRuleResultError

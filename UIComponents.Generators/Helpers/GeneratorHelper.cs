@@ -212,28 +212,6 @@ public static class GeneratorHelper
         };
     }
 
-    /// <summary>
-    /// Called when checking if a property is required
-    /// </summary>
-    /// <param name="name">Name that is used in debug</param>
-    /// <param name="priority">Lowest priority comes first</param>
-    /// <param name="func">Generator method</param>
-    public static UICCustomGenerator<UICPropertyArgs, bool?> RequiredCondition(string name, double priority, Func<UICPropertyArgs, bool?, Task<IUICGeneratorResponse<bool?>>> func)
-    {
-        var generator = new UICCustomGenerator<UICPropertyArgs, bool?>()
-        {
-            Name = name,
-            Priority = priority,
-            GetResult = async (args, existing) =>
-            {
-                if (args.CallCollection.CurrentCallType != UICGeneratorPropertyCallType.PropertyRequired)
-                    return Next<bool?>();
-
-                return await func(args, existing);
-            }
-        };
-        return generator;
-    }
 
     public static UICCustomGenerator<PropertyInfo, UICPropertyType?> PropertyTypeGenerator(string name, double priority, Func<PropertyInfo, UICPropertyType?, Task<IUICGeneratorResponse<UICPropertyType?>>> func) 
     {

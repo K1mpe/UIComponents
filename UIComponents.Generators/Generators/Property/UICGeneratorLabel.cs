@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.ComponentModel;
+using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Models.UICGeneratorResponses;
@@ -8,9 +9,12 @@ namespace UIComponents.Generators.Generators.Property;
 
 public class UICGeneratorLabel : UICGeneratorProperty
 {
-    public UICGeneratorLabel(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
+
+    private readonly IUICValidationService _validationService;
+    public UICGeneratorLabel(ILogger<UICGeneratorInputThreeStateBool> logger, IUICValidationService validationService) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyLabel;
+        _validationService = validationService;
     }
     public override double Priority { get; set; } = 1000;
 
@@ -52,7 +56,7 @@ public class UICGeneratorLabel : UICGeneratorProperty
 
         if (args.Options.MarkLabelsAsRequired)
         {
-            label.Required = await args.Configuration.IsPropertyRequired(args, label)??false;
+            label.Required = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
         }
         return GeneratorHelper.Success<IUIComponent>(label, true);
     }

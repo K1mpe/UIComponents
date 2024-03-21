@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.ComponentModel.Design;
 using UIComponents.Abstractions.Interfaces.Services;
+using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Generators.FormButtons;
 using UIComponents.Generators.Generators.Property.Inputs;
@@ -9,6 +10,7 @@ using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Services;
 using UIComponents.Generators.Services.Internal;
+using UIComponents.Generators.Validators;
 
 namespace UIComponents.Generators.Registrations;
 
@@ -32,6 +34,11 @@ public static class UICConfigure
         services.TryAddSingleton<IUICQuestionService, UICQuestionService>();
         services.TryAddSingleton<UicConfigOptions>(configuration);
         services.TryAddScoped<UICConfig>();
+
+        services.TryAddSingleton<IUICStoredEvents, StoredEvents>();
+        services.TryAddSingleton<IUICStoredComponents, StoredComponents>();
+        services.TryAddScoped<IUICValidationService, UICValidationService>();
+
         config(configuration);
 
         if (!services.Where(x => x is IUICLanguageService).Any())
@@ -54,8 +61,6 @@ public static class UICConfigure
     /// </remarks>
     public static UicConfigOptions AddDefaultGenerators(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IUICStoredEvents, StoredEvents>();
-        serviceCollection.AddSingleton<IUICStoredComponents, StoredComponents>();
         configOptions.AddAndRegisterGenerator<UICPropTypeGenerator>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInitialPartial>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorCard>(serviceCollection);
@@ -107,6 +112,24 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorButtonEditReadonly>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorButtonSave>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorButtonToolbar>(serviceCollection);
+
+        return configOptions;
+    }
+
+    public static UicConfigOptions AddDefaultValidators(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
+    {
+        configOptions.AddAndRegisterValidator<UICValidatorRequired>(serviceCollection);
+
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeInt>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeFloat>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeLong>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDouble>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDecimal>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeShort>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDate>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDateTime>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeTimeOnly>(serviceCollection);
+
 
         return configOptions;
     }

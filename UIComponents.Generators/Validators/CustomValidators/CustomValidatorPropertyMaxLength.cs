@@ -9,25 +9,11 @@ public class CustomValidatorPropertyMaxLength : IUICPropertyValidationRuleMaxLen
 
     public Type? PropertyType => typeof(object);
 
-    public async Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj)
+    public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj)
     {
-        if (CheckValidationErrorsFunc == null)
-        {
-            int? maxLength = await MaxLength(propertyInfo, obj);
-            if (maxLength == null)
-                return ValidationRuleResult.IsValid();
-
-            var value = propertyInfo.GetValue(obj)?.ToString()??string.Empty;
-            if(value.Length <= maxLength)
-                return ValidationRuleResult.IsValid();
-
-            var translatedProp = TranslationDefaults.TranslateProperty(propertyInfo, null);
-            var message = TranslationDefaults.ValidateMaxLength(translatedProp, maxLength.Value);
-            return ValidationRuleResult.HasError(message, propertyInfo);
-        }
-
-
-        return await CheckValidationErrorsFunc(propertyInfo, obj);
+        return CheckValidationErrorsFunc == null
+            ? IUICPropertyValidationRuleMaxLength.DefaultValidationErrors(this, propertyInfo, obj)
+            : CheckValidationErrorsFunc(propertyInfo, obj);
     }
 
     public Task<int?> MaxLength(PropertyInfo propertyInfo, object obj)

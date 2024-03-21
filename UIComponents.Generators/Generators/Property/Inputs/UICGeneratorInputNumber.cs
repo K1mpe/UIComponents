@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
@@ -7,11 +8,12 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputNumber : UICGeneratorProperty
 {
-
-    public UICGeneratorInputNumber(ILogger<UICGeneratorInputNumber> logger) : base(logger)
+    private readonly IUICValidationService _uicValidationService;
+    public UICGeneratorInputNumber(ILogger<UICGeneratorInputNumber> logger, IUICValidationService uicValidationService) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult = false;
+        _uicValidationService = uicValidationService;
     }
 
     public override double Priority { get; set; } = 1000;
@@ -28,26 +30,43 @@ public class UICGeneratorInputNumber : UICGeneratorProperty
         input.Value = args.PropertyValue==null?null: double.Parse(args.PropertyValue!.ToString());
 
         input.AllowDecimalValues = args.UICPropertyType == Abstractions.Attributes.UICPropertyType.Decimal;
-        input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input) ?? false;
+        input.ValidationRequired = await _uicValidationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
 
-        var rangeAttr = args.PropertyInfo.GetCustomAttribute<RangeAttribute>();
-        if(rangeAttr != null)
+        var propType = Nullable.GetUnderlyingType(args.PropertyType) ?? args.PropertyType;
+        switch (propType.Name)
         {
-            try
-            {
-                if ((int)rangeAttr.Minimum > int.MinValue)
-                    input.ValidationMinValue = (int)rangeAttr.Minimum;
-            }
-            catch { }
-            try
-            {
-                if ((int)rangeAttr.Maximum < int.MaxValue)
-                    input.ValidationMaxValue = (int)rangeAttr.Maximum;
-            }
-            catch { }
-
-            
+            case nameof(Int16):
+                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<short>(args.PropertyInfo, args.ClassObject));
+                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<short>(args.PropertyInfo, args.ClassObject));
+                break;
+            case nameof(Int32):
+                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<int>(args.PropertyInfo, args.ClassObject));
+                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<int>(args.PropertyInfo, args.ClassObject));
+                break;
+            case nameof(Int64):
+                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<long>(args.PropertyInfo, args.ClassObject));
+                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<long>(args.PropertyInfo, args.ClassObject));
+                break;
+            case nameof(Single):
+                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<float>(args.PropertyInfo, args.ClassObject));
+                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<float>(args.PropertyInfo, args.ClassObject));
+                break;
+            case nameof(Double):
+                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<double>(args.PropertyInfo, args.ClassObject));
+                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<double>(args.PropertyInfo, args.ClassObject));
+                break;
+            case nameof(Decimal):
+                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<decimal>(args.PropertyInfo, args.ClassObject));
+                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<decimal>(args.PropertyInfo, args.ClassObject));
+                break;
         }
+        int? ParseValue(object value)
+        {
+            if (value == null)
+                return null;
+            return int.Parse(value.ToString());
+        }
+        
 
         return GeneratorHelper.Success<IUIComponent>(input, true);
     }

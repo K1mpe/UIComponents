@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 
@@ -7,11 +8,13 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 
 public class UICGeneratorInputMultiline : UICGeneratorProperty
 {
-    public UICGeneratorInputMultiline(ILogger<UICGeneratorInputMultiline> logger) : base(logger)
+    private readonly IUICValidationService _validationService;
+    public UICGeneratorInputMultiline(ILogger<UICGeneratorInputMultiline> logger, IUICValidationService validationService) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         UICPropertyType = Abstractions.Attributes.UICPropertyType.MultilineText;
         HasExistingResult = false;
+        _validationService = validationService;
     }
     public override double Priority { get; set; }
 
@@ -28,7 +31,9 @@ public class UICGeneratorInputMultiline : UICGeneratorProperty
 
 
 
-        input.ValidationRequired = await args.Configuration.IsPropertyRequired(args, input) ?? false;
+        input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
+        input.ValidationMinLength = await _validationService.ValidatePropertyMinLength(args.PropertyInfo, args.ClassObject);
+        input.ValidationMaxLength = await _validationService.ValidatePropertyMaxLength(args.PropertyInfo, args.ClassObject);
 
         return GeneratorHelper.Success<IUIComponent>(input, true);
 

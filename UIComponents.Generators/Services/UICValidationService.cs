@@ -15,7 +15,7 @@ public class UICValidationService : IUICValidationService
     #endregion
 
     #region Ctor
-    public UICValidationService(ILogger logger, UicConfigOptions config)
+    public UICValidationService(ILogger<UICValidationService> logger, UicConfigOptions config)
     {
         _logger = logger;
         _config = config;
@@ -68,7 +68,11 @@ public class UICValidationService : IUICValidationService
 
                 var validatorResult = await validator.CheckValidationErrors(propertyInfo, obj);
                 foreach (var error in validatorResult.ValidationErrors)
-                    result.AddError(error.ErrorMessage, error.Property);
+                {
+                    _logger.LogDebug($"ValidationError for {propertyInfo.DeclaringType.Name} => {propertyInfo.Name}: {error.ErrorMessage}");
+                    result.AddError(error.ErrorMessage, error.Property??propertyInfo);
+                }
+
             }
             catch (Exception ex)
             {
@@ -120,7 +124,7 @@ public class UICValidationService : IUICValidationService
                     var result = await maxLengthValidator.MaxValue(propertyInfo, obj);
                     if (result == null)
                         continue;
-                    if (maxValue == null || result.Value.CompareTo(maxValue.Value) < 1)
+                    if (maxValue == null || result.Value.CompareTo(maxValue.Value) < 0)
                         maxValue = result;
                 }
             }
@@ -173,7 +177,7 @@ public class UICValidationService : IUICValidationService
                     var result = await minLengthValidator.MinValue(propertyInfo, obj);
                     if (result == null)
                         continue;
-                    if (maxValue == null || result.Value.CompareTo(maxValue.Value) < 1)
+                    if (maxValue == null || result.Value.CompareTo(maxValue.Value) > 0)
                         maxValue = result;
                 }
             }

@@ -142,6 +142,18 @@ public class UICConfig
 
                 if (result == null)
                 {
+                    if(args is UICPropertyArgs propArgs)
+                    {
+                        switch (propArgs.CallCollection.CurrentCallType)
+                        {
+                            //Do not log any debug if these calltypes have no result
+                            case UICGeneratorPropertyCallType.PropertyGroupSpan:
+                            case UICGeneratorPropertyCallType.PropertyTooltip:
+                            case UICGeneratorPropertyCallType.PropertyInfoSpan:
+                                continue;
+                        }
+                    }
+
                     if (!generators.Where(x => x.Priority > generator.Priority).Any())
                         _logger.LogDebug("{0} Generators did not find a result", debugString);
                 }
@@ -193,17 +205,6 @@ public class UICConfig
         return GetGeneratedResultAsync<Translatable?>(UICGeneratorPropertyCallType.PropertyTooltip, caller, args);
     }
 
-    /// <summary>
-    /// Check if a property is required, if no result is found return false
-    /// </summary>
-    /// <param name="oldArgs"></param>
-    /// <param name="caller"></param>
-    /// <param name="options"></param>
-    /// <returns></returns>
-    public Task<bool?> IsPropertyRequired(UICPropertyArgs oldArgs,  IUIComponent caller)
-    {
-        return GetGeneratedResultAsync<bool?>(UICGeneratorPropertyCallType.PropertyRequired, caller, oldArgs);
-    }
 
     public Task<List<SelectListItem>?> GetSelectListItems(UICPropertyArgs args, IUIComponent caller)
     {

@@ -13,10 +13,9 @@ public class CustomValidatorPropertyRequired : IUICPropertyValidationRuleRequire
 
     public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj)
     {
-        if(CheckValidationErrorsFunc == null)
-            throw new ArgumentNullException(nameof(CheckValidationErrorsFunc));
-
-        return CheckValidationErrorsFunc(propertyInfo, obj);
+        return CheckValidationErrorsFunc == null 
+            ? IUICPropertyValidationRuleRequired.DefaultValidationErrors(this, propertyInfo, obj)
+            :CheckValidationErrorsFunc(propertyInfo, obj);
     }
 
     public Task<bool> IsRequired(PropertyInfo propertyInfo, object obj)

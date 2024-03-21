@@ -150,6 +150,17 @@ public partial class UicConfigOptions
 
     #region Add Validators
 
+    public UicConfigOptions AddAndRegisterValidator(Type type, IServiceCollection serviceCollection)
+    {
+        InternalGeneratorHelper.CheckType<IUICPropertyValidationRule>(type);
+        serviceCollection.AddScoped(type);
+        AddValidator(type);
+        return this;
+    }
+    public UicConfigOptions AddAndRegisterValidator<T>(IServiceCollection serviceCollection) where T : class, IUICPropertyValidationRule
+    {
+        return AddAndRegisterValidator(typeof(T), serviceCollection);
+    }
     /// <summary>
     /// Add a validator for a property of a object. This will be used by <see cref="IUICValidationService"/> 
     /// </summary>
@@ -167,6 +178,7 @@ public partial class UicConfigOptions
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
+        if(!type.IsAssignableTo(typeof(IUICPropertyValidationRule)))
             throw new ArgumentException($"{type.Name} is not assignable to {nameof(IUICPropertyValidationRule)}");
 
         if (type.IsAssignableTo(typeof(IUICPropertyValidationRule)))
@@ -183,7 +195,7 @@ public partial class UicConfigOptions
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyRequired(
         Func<PropertyInfo, object, Task<bool>> isRequiredFunc,
-        Func<PropertyInfo, object, Task<ValidationRuleResult>> checkValidationErrorsFunc
+        Func<PropertyInfo, object, Task<ValidationRuleResult>> checkValidationErrorsFunc = null
         )
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyRequired()

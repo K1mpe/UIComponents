@@ -9,28 +9,12 @@ public class CustomValidatorPropertyMinValue<TValue> : IUICPropertyValidationRul
 
     public Type? PropertyType => typeof(object);
 
-    public async Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj)
+    public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj)
     {
-        if (CheckValidationErrorsFunc == null)
-        {
-            var value = await MinValue(propertyInfo, obj);
-            if (value == null)
-                return ValidationRuleResult.IsValid();
-
-            var propValue = propertyInfo.GetValue(obj);
-            if (propValue == null)
-                return ValidationRuleResult.IsValid();
-
-            var convertedVal = (TValue)propValue;
-            if (convertedVal.CompareTo(value) > -1)
-                return ValidationRuleResult.IsValid();
-
-            var property = TranslationDefaults.TranslateProperty(propertyInfo, null);
-            var message = TranslationDefaults.ValidateMaxValue(property, value.Value);
-            return ValidationRuleResult.HasError(message, propertyInfo);
-        }
-
-        return await CheckValidationErrorsFunc(propertyInfo, obj);
+        
+        return CheckValidationErrorsFunc == null
+            ? IUICPropertyValidationRuleMinValue<TValue>.DefaultValidationErrors(this, propertyInfo, obj)
+            : CheckValidationErrorsFunc(propertyInfo, obj);
     }
 
     public Task<Nullable<TValue>> MinValue(PropertyInfo propertyInfo, object obj)

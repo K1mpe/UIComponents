@@ -97,7 +97,7 @@ public static class TranslationDefaults
     /// <summary>
     /// Function takes a already translated propertyName and creates a validation message
     /// </summary>
-    public static Func<string, Translatable> ValidationIsRequired = (translatedPropertyName) => new Translatable("Validation.Required", "{0} is required", translatedPropertyName);
+    public static Func<Translatable, Translatable> ValidationIsRequired = (translatedPropertyName) => new Translatable("Validation.Required", "{0} is required", translatedPropertyName);
 
     public static Func<Translatable, int, Translatable> ValidateMinLength = (translatedPropertyName, minLenght) => new Translatable("Validation.MinLength", "The value of {0} must be longer than {1}", translatedPropertyName, minLenght);
     public static Func<Translatable, int, Translatable> ValidateMaxLength = (translatedPropertyName, maxLength) => new Translatable("Validation.MaxLength", "The value of {0} must be shorter than {1}", translatedPropertyName, maxLength);
