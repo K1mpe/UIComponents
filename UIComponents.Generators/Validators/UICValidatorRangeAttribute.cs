@@ -6,26 +6,34 @@ namespace UIComponents.Generators.Validators;
 
 public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleMinValue<T>, IUICPropertyValidationRuleMaxValue<T> where T : struct, IComparable
 {
+    private readonly ILogger _logger;
+
+    protected UICValidatorRangeAttribute(ILogger logger, IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<T>> minValidator, IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<T>> maxValidator)
+    {
+        _logger = logger;
+    }
 
     public Type? PropertyType => typeof(T);
 
-    public async Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj)
-    {
-        var result = new ValidationRuleResult();
-
-        var minResult = await IUICPropertyValidationRuleMinValue<T>.DefaultValidationErrors(this, propertyInfo, obj);
-        result.ImportErrors(minResult);
-        var maxResult = await IUICPropertyValidationRuleMaxValue<T>.DefaultValidationErrors(this, propertyInfo, obj);
-        result.ImportErrors(maxResult);
-        return result;
-            
-    }
 
     public Task<T?> MaxValue(PropertyInfo propertyInfo, object obj)
     {
         var rangeAttr = propertyInfo.GetCustomAttribute<RangeAttribute>();
         if (rangeAttr != null)
-            return Task.FromResult((T?)rangeAttr.Minimum);
+        {
+            _logger.LogDebug($"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name} has maximum value by {nameof(RangeAttribute)}: {rangeAttr.Maximum}");
+            return Task.FromResult((T?)rangeAttr.Maximum);
+        }
+        if(UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inherit))
+        {
+            rangeAttr = inherit.GetCustomAttribute<RangeAttribute>();
+            if (rangeAttr != null)
+            {
+                _logger.LogDebug($"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name} has maximum value by {nameof(RangeAttribute)}: {rangeAttr.Maximum} on Inherit property ({inherit.DeclaringType?.Name}.{inherit.Name})");
+                return Task.FromResult((T?)rangeAttr.Maximum);
+            }
+        }
+            
         return Task.FromResult(default(T?));
     }
 
@@ -33,18 +41,112 @@ public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleM
     {
         var rangeAttr = propertyInfo.GetCustomAttribute<RangeAttribute>();
         if (rangeAttr != null)
+        {
+            _logger.LogDebug($"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name} has minimum value by {nameof(RangeAttribute)}: {rangeAttr.Minimum}");
             return Task.FromResult((T?)rangeAttr.Minimum);
+        }
+        if (UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inherit))
+        {
+            rangeAttr = inherit.GetCustomAttribute<RangeAttribute>();
+            if (rangeAttr != null)
+            {
+                _logger.LogDebug($"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name} has minimum value by {nameof(RangeAttribute)}: {rangeAttr.Minimum} on Inherit property ({inherit.DeclaringType?.Name}.{inherit.Name})");
+                return Task.FromResult((T?)rangeAttr.Minimum);
+            }
+        }
+
         return Task.FromResult(default(T?));
     }
 }
 
-public class UICValidatorRangeAttributeInt : UICValidatorRangeAttribute<int> { }
-public class UICValidatorRangeAttributeFloat : UICValidatorRangeAttribute<float> { }
-public class UICValidatorRangeAttributeLong : UICValidatorRangeAttribute<long> { }
-public class UICValidatorRangeAttributeDouble : UICValidatorRangeAttribute<double> { }
-public class UICValidatorRangeAttributeDecimal : UICValidatorRangeAttribute<decimal> { }
-public class UICValidatorRangeAttributeShort : UICValidatorRangeAttribute<short> { }
-public class UICValidatorRangeAttributeDate : UICValidatorRangeAttribute<DateOnly> { }
-public class UICValidatorRangeAttributeDateTime : UICValidatorRangeAttribute<DateTime> { }
-public class UICValidatorRangeAttributeTimeOnly : UICValidatorRangeAttribute<TimeOnly> { }
-public class UICValidatorRangeAttributeTimeSpan : UICValidatorRangeAttribute<TimeSpan> { }
+public class UICValidatorRangeAttributeInt : UICValidatorRangeAttribute<int>
+{
+    public UICValidatorRangeAttributeInt(
+        ILogger<UICValidatorRangeAttributeInt> logger, 
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<int>> minValidator, 
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<int>> maxValidator) 
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeFloat : UICValidatorRangeAttribute<float>
+{
+    public UICValidatorRangeAttributeFloat(ILogger<UICValidatorRangeAttributeFloat> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<float>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<float>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeLong : UICValidatorRangeAttribute<long>
+{
+    public UICValidatorRangeAttributeLong(ILogger<UICValidatorRangeAttributeLong> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<long>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<long>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeDouble : UICValidatorRangeAttribute<double>
+{
+    public UICValidatorRangeAttributeDouble(ILogger<UICValidatorRangeAttributeDouble> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<double>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<double>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeDecimal : UICValidatorRangeAttribute<decimal>
+{
+    public UICValidatorRangeAttributeDecimal(ILogger<UICValidatorRangeAttributeDecimal> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<decimal>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<decimal>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeShort : UICValidatorRangeAttribute<short>
+{
+    public UICValidatorRangeAttributeShort(ILogger<UICValidatorRangeAttributeShort> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<short>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<short>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeDate : UICValidatorRangeAttribute<DateOnly>
+{
+    public UICValidatorRangeAttributeDate(ILogger<UICValidatorRangeAttributeDate> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<DateOnly>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<DateOnly>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeDateTime : UICValidatorRangeAttribute<DateTime>
+{
+    public UICValidatorRangeAttributeDateTime(ILogger<UICValidatorRangeAttributeDateTime> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<DateTime>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<DateTime>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeTimeOnly : UICValidatorRangeAttribute<TimeOnly>
+{
+    public UICValidatorRangeAttributeTimeOnly(ILogger<UICValidatorRangeAttributeTimeOnly> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<TimeOnly>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TimeOnly>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeTimeSpan : UICValidatorRangeAttribute<TimeSpan>
+{
+    public UICValidatorRangeAttributeTimeSpan(ILogger<UICValidatorRangeAttributeTimeSpan> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<TimeSpan>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TimeSpan>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}

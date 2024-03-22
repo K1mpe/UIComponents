@@ -100,8 +100,10 @@ namespace UIComponents.Web.Tests.Controllers
                 var validation = _validator.Validate(post);
                 if (!validation.IsValid)
                 {
-                    
+                    var errors = validation.ToValidationErrors();
+                    return Json(errors);
                 }
+
                 var yesNo = UICQuestionYesNo.Create("Test Ja / nee", "Wilt u deze vraag beantwoorden?", _uicQuestionService, question => question.Icon = QuestionIconType.Warning);
 
                 var answered = _uicQuestionService.TryAskQuestion(yesNo, TimeSpan.FromMinutes(1), 1, out bool boolean);
@@ -241,7 +243,6 @@ namespace UIComponents.Web.Tests.Controllers
             var item = new TestModel();
             item.Number = 15;
             item.Checkbox = true;
-            item.SubClass = new();
 
             var component = await _uic.CreateComponentAsync(item, new()
             {
@@ -250,9 +251,10 @@ namespace UIComponents.Web.Tests.Controllers
                 SubClassesInCard = new(),
                 //InputGroupSingleRow = false,
                 //ReplaceSaveButtonWithCreateButton = true,
-                PostForm= new UICActionPost("/home/Post", new {Number = 3})
+                PostForm= new UICActionPost("/home/Post")
             });
 
+            component.FindInputByPropertyName<UICInputText>(nameof(TestModel.TestString)).ValidationMinLength = 0;
 
             return ViewOrPartial(component);
         }

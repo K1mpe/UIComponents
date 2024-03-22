@@ -188,6 +188,139 @@ var dateInputWithOptions = await _uic.CreateComponentAsync(testModel, x => x.Dat
 ```
 
 
+## IUICValidationService
+This service is available, and uses all implementations of **IUICPropertyValidationRule**.
+
+If there are multiple implementations are conflicting, the most exact value will be used.
+Validation Min value => one returns 0, other returns 10 => 10 will be set
+Validation Max value => one returns 20, other returns 50 => 20 will be set
+
+### Usage
+This service is automatically used by the **IUIComponentService** to set properties as required, assign minimum and maximum values.
+This service can also be used inside a **AbstractValidator< T >**. This will check all the availalble validationrules and handle the messages.
+
+
+```c#
+public class TestModelValidator : AbstractValidator<TestModel>
+{
+    private readonly IUICValidationService _validationService;
+    private readonly IUICLanguageService _languageService;
+
+    public TestModelValidator(IUICValidationService validationService, IUICLanguageService languageService)
+    {
+        _validationService = validationService;
+        _languageService = languageService;
+
+        //This method requires a AbstractValidator (this) and a implementations of the IUICLanguageService
+        _validationService.ValidateModel(this, _languageService);
+    }
+}
+```
+
+### Available interfaces for IUICPropertyValidationRules
+- IUICPropertyValidationRule< T > : ValidationRule that only works for this PropertyType (example: IUICPropertyValidationRule< int >)
+- IUICPropertyValidationRuleRequired : Can check if a property is required
+- IUICPropertyValidationRuleMinValue < TValue > : Assign a minimum value to a property
+- IUICPropertyValidationRuleMaxValue < TValue > : Assign a maximum value to a property
+- IUICPropertyValidationRuleMinLength : Assign a minimum length to a string
+- IUICPropertyValidationRuleMaxLength : Assign a maximum length to a string
+- IUICPropertyValidationRuleReadonly : Mark a property as readyonly
+
+### Predefined validationRules
+To include the predefined validators to the implementation, add the following line the configuration:
+```c#
+builder.Services.AddUIComponentWeb(config =>
+{
+    ...
+    config.AddDefaultValidators(builder.Services);
+});
+```
+
+#### UICValidatorRequired : IUICPropertyValidationRuleRequired
+Set required if **Required** attribute is set.
+Else, if property is not nullable, these check will run:
+- Has ForeignKeyAttribute
+- Has FakeForeignKeyAttribute with required on
+- Check UICInheritAttribute
+
+#### UICValidatorRangeAttribute< T > : IUICPropertyValidationRuleMinValue< T >, IUICPropertyValidationRuleMaxValue< T > where T : struct, IComparable
+Check the **RangeAttribute** on the current property or inherit property
+This implementation is type specific, and is currently only implemented for:
+- short
+- int
+- long
+- float
+- double
+- decimal
+- DateOnly
+- DateTime
+- TimeOnly
+- Timespan
+
+#### UICValidatorEditPermission : IUICPropertyValidationRuleReadonly
+Use the edit permission to check if the current user has permission to edit this property.
+Also checks the Inherit property (if available).
+
+### Adding custom ValidationRules
+
+
+#### Createing service on interface
+When adding custom validationRules, try using the most exact interface, as described above.
+If you use **IUICPropertyValidationRule**, this will be used in server validation, but will not be checked for MinValue requirement.
+Only these specific interfaces can check these options.
+
+```c#
+public class MyValidationRuleRequired : IUICPropertyValidationRuleRequired
+{
+    //The type this validation rule is used for, set as typeof(object) if used for any propertyType
+    public Type? PropertyType => typeof(object);
+
+    public async Task<bool> IsRequired(PropertyInfo propertyInfo, object obj)
+    {
+        //This function is used to mark a property with the validationrule when requesting the form
+    }
+```
+If you want to return custom messages or handling of the response, add the **IUICPropertyValidationValidationResultsImplementation** interface
+
+```c#
+public class MyValidationRuleRequired : IUICPropertyValidationRuleRequired, IUICPropertyValidationValidationResultsImplementation
+{
+    //The type this validation rule is used for, set as typeof(object) if used for any propertyType
+    public Type? PropertyType => typeof(object);
+
+    public async Task<bool> IsRequired(PropertyInfo propertyInfo, object obj)
+    {
+        //This function is used to mark a property with the validationrule when requesting the form
+    }
+    public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj)
+    {
+        ...
+    }
+```
+
+In the configuration, assign this validator
+```c#
+//Register this type to be used as a validator. Does not register service!
+config.AddValidatorProperty<MyValidationRuleRequired>();
+
+//This method assignes the type as a validator, but also register this service as scoped.
+config.AddAndRegisterGenerator<MyValidationRuleRequired>(builder.Services);
+```
+
+#### create a validator without a service or interface
+You can also create validators without creating a new class that implements the interface.
+Use one of the **AddValidatorProperty..** methods in the configuration.
+This way DOES NOT have support for dependency injection and always uses the default **DefaultValidationErrors** method.
+```c#
+config.AddValidatorPropertyRequired((propertyInfo, obj) =>
+{
+    ...
+});
+```
+
+
+
+
 ## IUICStoredComponents
 You can use this interface if you want to send something to a user (F.e. a complex notification or popup).
 This service is also used by the **IUICQuestionService**.
@@ -209,7 +342,7 @@ You can use the IUICQuestionService if you want to ask questions to the client b
 
 
 
-# Register services
+# Register services by implementer
 
 ## IUICLanguageService
 To enable translations, Implement the **IUICLanguageService** and make sure this is also registrated as this type.
@@ -279,6 +412,20 @@ Without the permissionservice, all permissionchecks will result in true.
 builder.Services.AddUIComponentWeb(config =>
 {
     config.CheckPermissionServiceType = false;
+    ...
+});
+```
+
+## IUICDefaultCheckValidationErrors< IUICPropertyValidationRuleReadonly >
+The UIComponents does not have a way to validate if a readonly property is changed.
+This means that when trying to validate there will be logged a error that this is not yet available (Error only occurs first time on each build).
+After this the error logging, the service will just return that there are no errors.
+
+You can disable this errormessage in the config, or create a implementation of this interface.
+```c#
+builder.Services.AddUIComponentWeb(config =>
+{
+    config.CheckPropertyValidatorReadonly = false;
     ...
 });
 ```

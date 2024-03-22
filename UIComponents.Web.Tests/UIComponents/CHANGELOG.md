@@ -1,4 +1,6 @@
 ﻿# 2024-03-20 (1.1.21)
+ - Adding Validators (See README.md)
+﻿# 2024-03-20 (1.1.21)
  - Fix stackoverflow
 
 # 2024-03-20 (1.1.20)

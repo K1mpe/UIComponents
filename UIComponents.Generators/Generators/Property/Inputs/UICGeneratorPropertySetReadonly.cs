@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Abstractions.Models;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
@@ -8,12 +9,15 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 /// <summary>
 /// Use the <see cref="IPermissionCurrentUserService"/> to make <see cref="UICInput"/> readonly if access denied
 /// </summary>
-public class UICGeneratorPropertyEditPermission : UICGeneratorProperty
+public class UICGeneratorPropertySetReadonly : UICGeneratorProperty
 {
-    public UICGeneratorPropertyEditPermission(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
+    private readonly IUICValidationService _validationService;
+
+    public UICGeneratorPropertySetReadonly(ILogger<UICGeneratorInputThreeStateBool> logger, IUICValidationService validationService) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
         HasExistingResult = true;
+        _validationService = validationService;
     }
 
     public override double Priority { get; set; } = 1005;
@@ -25,6 +29,8 @@ public class UICGeneratorPropertyEditPermission : UICGeneratorProperty
 
         if(existingResult is UICInput input && !input.Readonly)
         {
+            input.Readonly = await _validationService.ValidatePropertyReadonly(args.PropertyInfo, args.ClassObject);
+
             if(args.Configuration.TryGetPermissionService(out var permissionService))
             {
                 input.Readonly = !await permissionService.CanEditProperty(args.ClassObject, args.PropertyName);
@@ -39,8 +45,8 @@ public class UICGeneratorPropertyEditPermission : UICGeneratorProperty
 
                     input.Readonly = !await permissionService!.CanEditProperty(inheritInstance, inherit.Name);
                 }
-                return GeneratorHelper.Success<IUIComponent>(input, true);
             }
+            return GeneratorHelper.Success<IUIComponent>(input, true);
         }
         return GeneratorHelper.Next<IUIComponent>();
     }

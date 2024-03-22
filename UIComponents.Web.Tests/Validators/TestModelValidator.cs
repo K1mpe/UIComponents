@@ -23,5 +23,4 @@ public class TestModelValidator : AbstractValidator<TestModel>
 
         _validationService.ValidateModel(this, _languageService);
     }
-
 }

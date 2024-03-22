@@ -221,7 +221,6 @@
                 return result;
             });
             $('#@id').on('uic-setValue', (ev, setValue)=>{
-                console.log('setting value', setValue);
                 days = setValue.@nameof(RecurringCustomDate.Days);
                 months = setValue.@nameof(RecurringCustomDate.Months);
                 years = setValue.@nameof(RecurringCustomDate.Years);

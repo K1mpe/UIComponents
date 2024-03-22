@@ -104,7 +104,6 @@
             })
             $('#@id').on('uic-isInvalid', () => {
                 let value = uic.getValue($('#@id'));
-                console.log('check invalid');
                 if(!value.@(nameof(RecurringMonthly.Instance)).length)
                     return true;
                 

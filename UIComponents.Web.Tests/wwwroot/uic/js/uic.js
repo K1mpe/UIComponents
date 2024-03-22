@@ -1439,9 +1439,9 @@ $(document).ready(function () {
                         if ($(this).text() != "*")
                             $(this).text("");
                     });
-                    response.errors.forEach((item) => {
+                    response.Errors.forEach((item) => {
                         var propertyName = item.PropertyName;
-                        var errors = item.Errors;
+                        var errors = item.Error;
 
                         var spanElement = $(`span.field-validation-valid[data-valmsg-for="${propertyName}"]`);
                         if (!spanElement.length)

@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
+using UIComponents.Abstractions.Models.HtmlResponse;
 
 namespace UIComponents.Web.Extensions;
 
@@ -33,5 +34,21 @@ public static class IUICValidatorExtensions
                     return !result.HasValidationErrors;
                 }).WithMessage((model)=> languageService.Translate(message).Result);
         }
+    }
+
+
+
+    public static ValidationErrors ToValidationErrors(this FluentValidation.Results.ValidationResult ModelState)
+    {
+        var response = new ValidationErrors();
+        ModelState.Errors.ForEach(x =>
+        {
+            response.Errors.Add(new()
+            {
+                PropertyName = x.PropertyName,
+                Error = x.ErrorMessage
+            });
+        });
+        return response;
     }
 }

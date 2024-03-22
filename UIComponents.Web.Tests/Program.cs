@@ -41,15 +41,13 @@ builder.Services.AddUIComponentWeb(config =>
     config.AddDefaultGenerators(builder.Services);
     config.AddDefaultValidators(builder.Services);
 
-    config.AddValidatorPropertyMinValue<int>(async (prop, obj) =>
+    config.AddValidatorPropertyMinLength(async (propInfo, obj) =>
     {
         await Task.Delay(0);
-        if (prop.Name == nameof(TestModel.Number))
-            return 15;
+        if (propInfo.Name == nameof(TestModel.TestString))
+            return 5;
         return null;
-    });
-
-    
+    });    
 });
 Console.WriteLine("");
 Console.WriteLine("-- Components are generated --");

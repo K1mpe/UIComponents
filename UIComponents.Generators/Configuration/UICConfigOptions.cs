@@ -48,6 +48,8 @@ public partial class UicConfigOptions
 
     public bool CheckLanguageServiceType { get; set; } = true;
     public bool CheckPermissionServiceType { get; set; } = true;
+
+    public bool CheckPropertyValidatorReadonly { get; set; }
     #endregion
 
     #region Add Generators
@@ -154,7 +156,7 @@ public partial class UicConfigOptions
     {
         InternalGeneratorHelper.CheckType<IUICPropertyValidationRule>(type);
         serviceCollection.AddScoped(type);
-        AddValidator(type);
+        AddPropertyValidator(type);
         return this;
     }
     public UicConfigOptions AddAndRegisterValidator<T>(IServiceCollection serviceCollection) where T : class, IUICPropertyValidationRule
@@ -168,13 +170,13 @@ public partial class UicConfigOptions
     /// <returns></returns>
     public UicConfigOptions AddValidatorProperty<T>() where T : IUICPropertyValidationRule
     {
-        return AddValidator(typeof(T));
+        return AddPropertyValidator(typeof(T));
     }
 
     /// <summary>
     /// Add a validator for a property or a object. This will be used by <see cref="IUICValidationService"/> 
     /// </summary>
-    public UicConfigOptions AddValidator(Type type)
+    public UicConfigOptions AddPropertyValidator(Type type)
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
@@ -194,13 +196,11 @@ public partial class UicConfigOptions
     /// <param name="isRequiredFunc">Used by <see cref="UICInput"/> to set required property</param>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyRequired(
-        Func<PropertyInfo, object, Task<bool>> isRequiredFunc,
-        Func<PropertyInfo, object, Task<ValidationRuleResult>> checkValidationErrorsFunc = null
+        Func<PropertyInfo, object, Task<bool>> isRequiredFunc
         )
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyRequired()
         {
-            CheckValidationErrorsFunc = checkValidationErrorsFunc,
             IsRequiredFunc = isRequiredFunc
         });
         return this;
@@ -213,13 +213,11 @@ public partial class UicConfigOptions
     /// <param name="minValueFunc">Used by <see cref="UICInput"/> to set MinValue property</param>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyMinValue<TValue>(
-        Func<PropertyInfo, object, Task<Nullable<TValue>>> minValueFunc,
-        Func<PropertyInfo, object, Task<ValidationRuleResult>> checkValidationErrorsFunc = null
+        Func<PropertyInfo, object, Task<Nullable<TValue>>> minValueFunc
         ) where TValue : struct, IComparable
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyMinValue<TValue>()
         {
-            CheckValidationErrorsFunc = checkValidationErrorsFunc,
             MinValueFunc = minValueFunc
         });
         return this;
@@ -232,13 +230,11 @@ public partial class UicConfigOptions
     /// <param name="maxValueFunc">Used by <see cref="UICInput"/> to set MaxValue property</param>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyMaxValue<TValue>(
-        Func<PropertyInfo, object, Task<Nullable<TValue>>> maxValueFunc,
-        Func<PropertyInfo, object, Task<ValidationRuleResult>> checkValidationErrorsFunc = null
+        Func<PropertyInfo, object, Task<Nullable<TValue>>> maxValueFunc
         ) where TValue : struct, IComparable
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyMaxValue<TValue>()
         {
-            CheckValidationErrorsFunc = checkValidationErrorsFunc,
             MaxValueFunc = maxValueFunc
         });
         return this;
@@ -251,13 +247,11 @@ public partial class UicConfigOptions
     /// <param name="minLengthFunc">Used by <see cref="UICInputText.ValidationMinLength"/></param>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyMinLength(
-        Func<PropertyInfo, object, Task<int?>> minLengthFunc,
-        Func<PropertyInfo, object, Task<ValidationRuleResult>> checkValidationErrorsFunc = null
+        Func<PropertyInfo, object, Task<int?>> minLengthFunc
         )
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyMinLength()
         {
-            CheckValidationErrorsFunc = checkValidationErrorsFunc,
             MinLengthFunc = minLengthFunc
         });
         return this;
@@ -270,13 +264,11 @@ public partial class UicConfigOptions
     /// <param name="maxLengthFunc">Used by <see cref="UICInputText.ValidationMinLength"/></param>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyMaxLength(
-        Func<PropertyInfo, object, Task<int?>> maxLengthFunc,
-        Func<PropertyInfo, object, Task<ValidationRuleResult>> checkValidationErrorsFunc = null
+        Func<PropertyInfo, object, Task<int?>> maxLengthFunc
         )
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyMaxLength()
         {
-            CheckValidationErrorsFunc = checkValidationErrorsFunc,
             MaxLengthFunc = maxLengthFunc
         });
         return this;
@@ -293,13 +285,11 @@ public partial class UicConfigOptions
     /// </remarks>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyReadonly(
-        Func<PropertyInfo, object, Task<bool>> readonlyFunc,
-        Func<PropertyInfo, object, Task<ValidationRuleResult>> checkValidationErrorsFunc
+        Func<PropertyInfo, object, Task<bool>> readonlyFunc
         )
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyReadonly()
         {
-            CheckValidationErrorsFunc = checkValidationErrorsFunc,
             IsReadonlyFunc = readonlyFunc
         });
         return this;
@@ -322,7 +312,7 @@ public partial class UicConfigOptions
     }
 
 
-    public IList<IUICPropertyValidationRule> GetPropertyValidators(ILogger logger)
+    public IList<IUICPropertyValidationRule> GetPropertyValidators(ILogger logger, IServiceScope scope)
     {
         List<IUICPropertyValidationRule> rules = new List<IUICPropertyValidationRule>();
         rules.AddRange(_propertyValidationRules);
@@ -330,7 +320,7 @@ public partial class UicConfigOptions
         {
             try
             {
-                var instance = (IUICPropertyValidationRule)Activator.CreateInstance(type);
+                var instance = (IUICPropertyValidationRule)scope.ServiceProvider.GetService(type);
                 rules.Add(instance);
             }
             catch(Exception ex)

@@ -8,50 +8,87 @@ namespace UIComponents.Generators.Validators;
 
 public class UICValidatorRequired : IUICPropertyValidationRuleRequired
 {
-    public Type? PropertyType => typeof(object);
-
-    public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj)
+    private readonly ILogger _logger;
+    private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleRequired> _defaultValidator;
+    public UICValidatorRequired(IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleRequired> defaultValidator, ILogger<UICValidatorRequired> logger)
     {
-        return IUICPropertyValidationRuleRequired.DefaultValidationErrors(this, propertyInfo, obj);
+        _defaultValidator = defaultValidator;
+        _logger = logger;
     }
+
+    public Type? PropertyType => typeof(object);
 
     public async Task<bool> IsRequired(PropertyInfo propertyInfo, object obj)
     {
         await Task.Delay(0);
         var v1 = propertyInfo.GetCustomAttribute<RequiredAttribute>();
         if (v1 != null)
+        {
+            _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required => has {nameof(RequiredAttribute)}");
             return true;
+        }
+            
 
 
         if (propertyInfo.PropertyType.IsAssignableTo(typeof(Nullable<>)))
+        {
+            _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is NOT required => has nullable type");
             return false;
+        }
+            
 
         var foreignKey = propertyInfo.GetCustomAttribute<ForeignKeyAttribute>();
         if (foreignKey != null)
+        {
+            _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required => has {nameof(ForeignKeyAttribute)}");
             return true;
+        }
+            
 
         var fakeForeignKey = propertyInfo.GetCustomAttribute<FakeForeignKeyAttribute>();
         if (fakeForeignKey != null)
+        {
+            if(fakeForeignKey.IsRequired)
+                _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required => has {nameof(FakeForeignKeyAttribute)}");
             return fakeForeignKey.IsRequired;
+        }
+            
 
 
         if (UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inherit))
         {
             var v2 = inherit.GetCustomAttribute<RequiredAttribute>();
             if (v2 != null)
+            {
+                _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required because of {nameof(UICInheritAttribute)} => has {nameof(RequiredAttribute)}");
                 return true;
+            }
+               
 
 
             if (inherit.PropertyType.IsAssignableTo(typeof(Nullable<>)))
+            {
+                _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is NOT required because of {nameof(UICInheritAttribute)} => has nullable type");
                 return false;
+            }
+                
 
             var foreignKey2 = inherit.GetCustomAttribute<ForeignKeyAttribute>();
             if (foreignKey2 != null)
+            {
+                _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required because of {nameof(UICInheritAttribute)} => has {nameof(ForeignKeyAttribute)}");
                 return true;
+            }
+                
 
             var fakeForeignKey2 = inherit.GetCustomAttribute<FakeForeignKeyAttribute>();
             if (fakeForeignKey2 != null)
+            {
+                if(fakeForeignKey2.IsRequired)
+                    _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required because of {nameof(UICInheritAttribute)} => has {nameof(FakeForeignKeyAttribute)}");
                 return fakeForeignKey2.IsRequired;
+            }
+                
 
         }
         return false;
