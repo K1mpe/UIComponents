@@ -72,6 +72,7 @@ public static class UICConfigure
         configOptions.AddDefaultButtons(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorRequired>(serviceCollection);
 
+        AddDefaultValidationErrorHandlers(configOptions, serviceCollection);
         return configOptions;
 
 
@@ -80,13 +81,14 @@ public static class UICConfigure
     public static UicConfigOptions AddDefaultPropertyGenerators(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
     {
         configOptions.AddAndRegisterGenerator<UICGeneratorPropertyViewPermission>(serviceCollection);
-        configOptions.AddAndRegisterGenerator<UICGeneratorPropertySetReadonly>(serviceCollection);
+        //configOptions.AddAndRegisterGenerator<UICGeneratorPropertySetReadonly>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorDataAnnotationValidators>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputGroupSpan>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorTooltip>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputTooltip>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorEnumSelectListItems>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputEditorTemplate>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICFakeForeignKeyTypeGenerator>(serviceCollection);
 
         configOptions.AddAndRegisterGenerator<UICGeneratorInputGroup>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorLabel>(serviceCollection);
@@ -117,9 +119,9 @@ public static class UICConfigure
 
         return configOptions;
     }
-
-    public static UicConfigOptions AddDefaultValidators(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
+    public static UicConfigOptions AddDefaultValidationErrorHandlers(UicConfigOptions configOptions, IServiceCollection serviceCollection)
     {
+
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleRequired>, DefaultCheckValidationErrorsRequired>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinLength>, DefaultCheckValidationErrorsMinLength>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxLength>, DefaultCheckValidationErrorsMaxLength>();
@@ -146,8 +148,10 @@ public static class UICConfigure
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<DateTime>>, DefaultCheckValidationErrorsMaxValue<DateTime>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TimeOnly>>, DefaultCheckValidationErrorsMaxValue<TimeOnly>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TimeSpan>>, DefaultCheckValidationErrorsMaxValue<TimeSpan>>();
-
-
+        return configOptions;
+    }
+    public static UicConfigOptions AddDefaultValidators(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
+    {
         configOptions.AddAndRegisterValidator<UICValidatorRequired>(serviceCollection);
 
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeInt>(serviceCollection);

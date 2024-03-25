@@ -201,6 +201,11 @@ public class UICConfig
         return GetGeneratedResultAsync<PropertyInfo, UICPropertyType?>($"UICPropertyType for {ClassAndPropertyString(propertyInfo)}", propertyInfo, options);
     }
 
+    public Task<Type?>GetForeignKeyTypeAsync(PropertyInfo propertyInfo, UICOptions options)
+    {
+        return GetGeneratedResultAsync<PropertyInfo, Type?>($"ForeignKeyType for {ClassAndPropertyString(propertyInfo)}", propertyInfo, options);
+    }
+
     public Task<UICSpan?> GetPropertyGroupSpanAsync(UICPropertyArgs args, IUIComponent caller)
     {
         return GetGeneratedResultAsync<IUIComponent, UICSpan>(UICGeneratorPropertyCallType.PropertyGroupSpan, caller, args);

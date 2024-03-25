@@ -32,7 +32,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
             input.Value = ((int)args.PropertyValue).ToString();
 
         input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
-        input.SelectListItems = (await args.Configuration.GetSelectListItems(args, input)).ToUIC()?? new();
+        input.SelectListItems = (await args.Configuration.GetSelectListItems(args, input))?.ToUIC()?? new();
 
         if(!input.ValidationRequired && input.SelectListItems.Where(x => string.IsNullOrEmpty(x.Value?.ToString()??null)).Any())
             input.SelectListItems.Insert(0, new());
@@ -46,21 +46,25 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
 
         if(showButtonAdd && args.Configuration.TryGetPermissionService(out var permissionService))
         {
-            var propertyType = args.PropertyType.BaseType ?? args.PropertyType;
-            showButtonAdd = await permissionService!.CanCreateType(propertyType);
-
-            if (showButtonAdd && args.CallCollection.Caller is UICInputGroup inputGroup)
+            var propertyType = await args.Configuration.GetForeignKeyTypeAsync(args.PropertyInfo, args.Options);
+            if(propertyType != null)
             {
-                inputGroup.AppendInput.Add(new UICButton()
+                showButtonAdd = await permissionService!.CanCreateType(propertyType);
+
+                if (showButtonAdd && args.CallCollection.Caller is UICInputGroup inputGroup)
                 {
-                    AppendButtonIcon = IconDefaults.Add,
-                    Tooltip = new("Button.CreateOfType.Tooltip", "Create a new {0}", TranslationDefaults.TranslateType(propertyType)),
-                    OnClick = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Get, propertyType.Name, "create")
+                    inputGroup.AppendInput.Add(new UICButton()
                     {
-                        OnSuccess = new UICActionOpenResultAsModal()
-                    }
-                }.AddClass("hidden-readonly"));
-        }
+                        AppendButtonIcon = IconDefaults.Add,
+                        Tooltip = new("Button.CreateOfType.Tooltip", "Create a new {0}", TranslationDefaults.TranslateType(propertyType)),
+                        OnClick = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Get, propertyType.Name, "create")
+                        {
+                            OnSuccess = new UICActionOpenResultAsModal()
+                        }
+                    }.AddClass("hidden-readonly"));
+                }
+            }
+            
         }
         
 

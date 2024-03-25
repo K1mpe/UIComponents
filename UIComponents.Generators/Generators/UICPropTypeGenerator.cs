@@ -2,12 +2,20 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
+using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators;
 
 public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyType?>
 {
+    private readonly UICConfig _uICConfig;
+
+    public UICPropTypeGenerator(UICConfig uICConfig)
+    {
+        _uICConfig = uICConfig;
+    }
+
     public override double Priority { get; set; } = 1000;
 
     public override async Task<IUICGeneratorResponse<UICPropertyType?>> GetResponseAsync(PropertyInfo propertyInfo, UICPropertyType? existingResult)
@@ -67,7 +75,6 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
                 }
             }
 
-
             var foreignKey = propertyInfo.GetCustomAttribute<ForeignKeyAttribute>();
             if(foreignKey != null)
                 return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.SelectList, true);
@@ -78,6 +85,13 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
 
             if(UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inherit))
                 return await GetResponseAsync(inherit, existingResult);
+
+            var foreignKeyType = await _uICConfig.GetForeignKeyTypeAsync(propertyInfo, new());
+            if(foreignKeyType != null)
+            {
+                return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.SelectList, true);
+            }
+
 
             if(propertyInfo.PropertyType.IsAssignableTo(typeof(IEnumerable)) && propertyInfo.PropertyType != typeof(string))
                 type = propertyInfo.PropertyType.GetGenericArguments()[0];

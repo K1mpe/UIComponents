@@ -41,7 +41,6 @@ builder.Services.AddUIComponentWeb(config =>
     config.AddDefaultGenerators(builder.Services);
     config.AddDefaultValidators(builder.Services);
 
-    
 });
 Console.WriteLine("");
 Console.WriteLine("-- Components are generated --");

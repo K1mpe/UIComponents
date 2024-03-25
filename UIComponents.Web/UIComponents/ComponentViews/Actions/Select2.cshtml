@@ -47,7 +47,7 @@
         @if (Model.AfterChange.HasValue())
     {
         <text>
-            console.log('AfterChange', $(#'@Html.Raw(identifier)'));
+            console.log('AfterChange', $('#@Html.Raw(identifier)'));
             $('#@Html.Raw(identifier)').on('select2:close', async function (args) {
                 @await Model.AfterChange.InvokeAsync(Component)
             });

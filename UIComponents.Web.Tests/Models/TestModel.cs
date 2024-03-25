@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UIComponents.Abstractions.Attributes;
 using UIComponents.Abstractions.Models.RecurringDates;
 using UIComponents.Web.Tests.Models;
+using UIComponents.Web.Tests.Validators;
 
 namespace UIComponents.Web.Tests.Models
 {

@@ -223,6 +223,16 @@ public static class GeneratorHelper
         };
     }
 
+    public static UICCustomGenerator<PropertyInfo, Type?> ForeignKeyTypeGenerator(string name, double priority, Func<PropertyInfo, Type?, Task<IUICGeneratorResponse<Type?>>> func)
+    {
+        return new UICCustomGenerator<PropertyInfo, Type?>()
+        {
+            Name = name,
+            Priority = priority,
+            GetResult = func
+        };
+    }
+
     public static UICCustomGenerator<UICPropertyArgs, Translatable> PropertyToolTip(string name, double priority, Func<UICPropertyArgs, Translatable?, Task<IUICGeneratorResponse<Translatable>>> func)
     {
         return new UICCustomGenerator<UICPropertyArgs, Translatable>()

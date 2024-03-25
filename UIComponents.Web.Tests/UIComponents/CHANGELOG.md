@@ -1,4 +1,10 @@
-﻿# 2024-03-25 (1.1.22)
+﻿# 2024-03-25 (1.1.23)
+- Hide Sidepanel if no sidepanelcontent is available
+- Fix Actions for Select2 input
+- Always include defaultValidationErrorHandles in registration
+- Generator for foreignKey type
+
+# 2024-03-25 (1.1.22)
  - Adding Validators (See README.md)
  - Fix DeleteButton
  - Fix ContextMenu
