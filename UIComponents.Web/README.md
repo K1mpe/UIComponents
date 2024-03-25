@@ -598,3 +598,22 @@ You can overwrite these defaultKeys in the **UIComponents.Defaults.TranslationDe
 UIComponents.Defaults.TranslationDefaults.DefaultInfoSpanKey = (propInfo, propertyType) => { ... };
 UIComponents.Defaults.TranslationDefaults.DefaultTooltipKey = (propInfo, propertyType) => { ... };
 ```
+
+
+# Logging
+The services use ILogger for logging.
+You can set the minimum loglevel in appsettings.
+Loglevels can be seperated on namespaces.
+Used logLevels:
+- Trace : Very low loglevel, logs every generator or validator that is used
+- Debug : Usefull to locate why generators or validators do something in a certain way
+- Info : Usefull logs outside of debug, example: log the responses to **IUICQuestionService**
+- Error : Any errors or exceptions that may occur. Recommend to always see these errors
+```
+"Logging": {
+      "UIComponents" : "Information",
+      "UIComponents.Generators.Generators": "Information",
+      "UIComponents.Generators.Services": "Information",
+    }
+  },
+```

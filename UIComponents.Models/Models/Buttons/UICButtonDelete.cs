@@ -13,12 +13,12 @@ public class UICButtonDelete : UICButton
         this.AddAttribute("class", "btn-delete");
     }
 
-    public UICButtonDelete(Type type, object id) : this($"/{type.Name}/Delete", id)
+    public UICButtonDelete(Type type, object id) : this($"/{type.Name}/Delete", new { id = id })
     {
     }
-    public UICButtonDelete(string url, object id) : this()
+    public UICButtonDelete(string url, object data) : this()
     {
-        OnClick = new UICCustom($"await uic.form.delete('{url}', {JsonSerializer.Serialize(id)});");
+        OnClick = new UICCustom($"await uic.form.delete('{url}', {JsonSerializer.Serialize(data)});");
     }
 
     

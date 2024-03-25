@@ -7,6 +7,8 @@ namespace UIComponents.Generators.Models.Arguments;
 
 public class UICPropertyArgs
 {
+    private Type? _propertyType;
+    private object _propertyValue;
     #region Ctor
     public UICPropertyArgs(object classObject, PropertyInfo? property, UICPropertyType? propertyType, UICOptions options, UICCallCollection callCollection, UICConfig configuration)
     {
@@ -27,6 +29,8 @@ public class UICPropertyArgs
         {
             try
             {
+                if (_propertyValue != null)
+                    return _propertyValue;
                 return PropertyInfo?.GetValue(ClassObject);
             }
             catch(Exception ex)
@@ -35,7 +39,7 @@ public class UICPropertyArgs
             }
         }
              }
-    public Type? PropertyType => PropertyInfo?.PropertyType;
+    public Type? PropertyType => _propertyType??PropertyInfo?.PropertyType;
     public string? PropertyName => PropertyInfo?.Name;
 
     public UICPropertyType? UICPropertyType { get; init; }
@@ -49,6 +53,17 @@ public class UICPropertyArgs
     public UICConfig Configuration { get; init; }
 
     #endregion
+
+    public UICPropertyArgs SetPropertyType(Type type)
+    {
+        _propertyType = type;
+        return this;
+    }
+    public UICPropertyArgs SetPropertyValue(object obj)
+    {
+        _propertyValue = obj;
+        return this;
+    }
 }
 
 

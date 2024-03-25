@@ -31,7 +31,7 @@ public class UICGeneratorInputClassObject : UICGeneratorProperty
 
         if (args.PropertyValue == null)
         {
-            _logger.LogDebug($"{args.PropertyName} is an object and will not be rendered because the value was NULL");
+            _logger.LogDebug("{0} is an object and will not be rendered because the value was NULL", args.PropertyName);
             return GeneratorHelper.Success<IUIComponent>(new UICInputCustom() { Render = false }, true);
         }
 

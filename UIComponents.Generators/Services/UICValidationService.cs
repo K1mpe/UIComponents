@@ -120,7 +120,7 @@ public class UICValidationService : IUICValidationService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Exception in validating {property.DeclaringType.Name} => {property.Name}");
+                _logger.LogError(ex, "Exception in validating {0}", $"{property.DeclaringType.Name} => {property.Name}");
             }
         }
 
@@ -140,6 +140,7 @@ public class UICValidationService : IUICValidationService
             var validators = _config.GetPropertyValidators(_logger, scope);
             foreach (var validator in validators)
             {
+                _logger.LogTrace("Validating {0} with validator: {1}", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}", validator.GetType().FullName);
                 try
                 {
                     var propType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
@@ -230,7 +231,7 @@ public class UICValidationService : IUICValidationService
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Exception in validating {validator.GetType().FullName}");
+                    _logger.LogError(ex, "Exception in validating {0}", validator.GetType().FullName);
                 }
 
             }
@@ -261,7 +262,7 @@ public class UICValidationService : IUICValidationService
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Exception when validating max length of {obj.GetType().Name} => {propertyInfo.Name}");
+                    _logger.LogError(ex, "Exception when validating max length of {0}",  $"{obj.GetType().Name} => {propertyInfo.Name}");
                 }
             }
             return maxLength;
@@ -289,7 +290,7 @@ public class UICValidationService : IUICValidationService
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Exception when validating max length of {obj.GetType().Name} => {propertyInfo.Name}");
+                    _logger.LogError(ex, "Exception when validating max value of {0}",$"{obj.GetType().Name} => {propertyInfo.Name}");
                 }
             }
             return maxValue;
@@ -319,7 +320,7 @@ public class UICValidationService : IUICValidationService
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Exception when validating max length of {obj.GetType().Name} => {propertyInfo.Name}");
+                    _logger.LogError(ex, "Exception when validating min length of {0}", $"{obj.GetType().Name} => {propertyInfo.Name}");
                 }
             }
             return maxLength;
@@ -347,7 +348,7 @@ public class UICValidationService : IUICValidationService
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Exception when validating max length of {obj.GetType().Name} => {propertyInfo.Name}");
+                    _logger.LogError(ex, "Exception when validating max length of {0}", $"{obj.GetType().Name} => {propertyInfo.Name}");
                 }
             }
             return maxValue;
@@ -381,7 +382,7 @@ public class UICValidationService : IUICValidationService
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Exception in validating {validator.GetType().FullName}");
+                    _logger.LogError(ex, "Exception in validating {0}", validator.GetType().FullName);
                 }
 
             }
@@ -416,7 +417,7 @@ public class UICValidationService : IUICValidationService
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Exception in validating {validator.GetType().FullName}");
+                    _logger.LogError(ex, "Exception in validating {0}", validator.GetType().FullName);
                 }
 
             }

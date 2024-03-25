@@ -244,11 +244,15 @@
                     return results;
                 }
             },
+            isHTML: function (text) {
+                let document = new DOMParser().parseFromString(text, 'text/html');
+                return Array.from(document.body.childNodes).some(node => node.nodeType === 1);
+            },
         },
 
         //The html of the context-menu dropdown
         menu: function () {
-            var menu = $('<div>', { id: 'contextMenu', class: 'context-menu dropdown show' }).append($('<ul>', { class: 'dropdown-menu show dropdown-icons-left' }));
+            var menu = $('<div>', { id: 'contextMenu', class: 'uic context-menu dropdown show' }).append($('<ul>', { class: 'dropdown-menu show dropdown-icons-left' }));
             return menu;
         }
     },
@@ -516,7 +520,7 @@
 
         
 
-            if (!isHTML(element) && !element instanceof jQuery) {
+            if (!uic.contextMenu.default.functions.isHTML(element) && !element instanceof jQuery) {
                 console.error()
             }
             // element =
@@ -542,13 +546,13 @@
             }
 
             // text != 'mijn text'
-            if (!isHTML(text) && 'string' == typeof text) {
+            if (!uic.contextMenu.default.functions.isHTML(text) && 'string' == typeof text) {
                     text = `<a class="dropdown-item" href="#">${text}</a>`;
 
             }
 
 
-            if (!isHTML(text) && !text instanceof jQuery) {
+            if (!uic.contextMenu.default.functions.isHTML(text) && !text instanceof jQuery) {
                 console.error()
             }
             // text = <a class="dropdown-item">mijn text</a>
@@ -568,13 +572,13 @@
             }
 
             // icon == 'fas fa-icon'
-            if (!isHTML(icon) && 'string' == typeof icon) {
+            if (!uic.contextMenu.default.functions.isHTML(icon) && 'string' == typeof icon) {
                 icon = `<i class="${icon}"></i>`;
 
             }
 
 
-            if (!isHTML(icon) && !obj instanceof jQuery) {
+            if (!uic.contextMenu.default.functions.isHTML(icon) && !obj instanceof jQuery) {
                 console.error()
             }
             // icon = <a class="dropdown-item">mijn icon</a>

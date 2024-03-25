@@ -91,19 +91,20 @@ uic.setValue = function (element, value) {
         $(element).trigger('uic-setValue', value);
         return;
     }
-
-    if (Array.isArray(value)) {
-        var name = $(element).attr('name');
-        value.forEach(function (val, index) {
-            console.log(index, val);
-
-            var subElement = $(element).find(`[name="${name}"][data-array-index=${index}]`);
-            uic.setValue(subElement, val);
-        });
-        
-    }
-    else if (typeof value == "object" && value != null) {
+    if (element.attr('name') == undefined) {
         var properties = uic.getProperties(element);
+        if (properties.length == 1) {
+            uic.setValue(properties, value);
+            return;
+        }
+    }
+
+    if (typeof value == "object" && value != null) {
+        var properties = uic.getProperties(element);
+        if (properties.length == 1) {
+            uic.setValue(properties, value);
+            return;
+        }
         var valueProps = Object.getOwnPropertyNames(value);
         valueProps.forEach(function (item, index) {
             //console.log(index, item);
@@ -666,11 +667,15 @@ $(document).ready(function () {
                     return results;
                 }
             },
+            isHTML: function (text) {
+                let document = new DOMParser().parseFromString(text, 'text/html');
+                return Array.from(document.body.childNodes).some(node => node.nodeType === 1);
+            },
         },
 
         //The html of the context-menu dropdown
         menu: function () {
-            var menu = $('<div>', { id: 'contextMenu', class: 'context-menu dropdown show' }).append($('<ul>', { class: 'dropdown-menu show dropdown-icons-left' }));
+            var menu = $('<div>', { id: 'contextMenu', class: 'uic context-menu dropdown show' }).append($('<ul>', { class: 'dropdown-menu show dropdown-icons-left' }));
             return menu;
         }
     },
@@ -938,7 +943,7 @@ $(document).ready(function () {
 
         
 
-            if (!isHTML(element) && !element instanceof jQuery) {
+            if (!uic.contextMenu.default.functions.isHTML(element) && !element instanceof jQuery) {
                 console.error()
             }
             // element =
@@ -964,13 +969,13 @@ $(document).ready(function () {
             }
 
             // text != 'mijn text'
-            if (!isHTML(text) && 'string' == typeof text) {
+            if (!uic.contextMenu.default.functions.isHTML(text) && 'string' == typeof text) {
                     text = `<a class="dropdown-item" href="#">${text}</a>`;
 
             }
 
 
-            if (!isHTML(text) && !text instanceof jQuery) {
+            if (!uic.contextMenu.default.functions.isHTML(text) && !text instanceof jQuery) {
                 console.error()
             }
             // text = <a class="dropdown-item">mijn text</a>
@@ -990,13 +995,13 @@ $(document).ready(function () {
             }
 
             // icon == 'fas fa-icon'
-            if (!isHTML(icon) && 'string' == typeof icon) {
+            if (!uic.contextMenu.default.functions.isHTML(icon) && 'string' == typeof icon) {
                 icon = `<i class="${icon}"></i>`;
 
             }
 
 
-            if (!isHTML(icon) && !obj instanceof jQuery) {
+            if (!uic.contextMenu.default.functions.isHTML(icon) && !obj instanceof jQuery) {
                 console.error()
             }
             // icon = <a class="dropdown-item">mijn icon</a>
@@ -1281,9 +1286,9 @@ $(document).ready(function () {
         }
     },
 
-    delete: async function (url, id) {
+    delete: async function (url, data) {
         try {
-            var content = await uic.getpost.get(url, { id, title, message, data });
+            var content = await uic.getpost.get(url, data);
             $('body').append(content);
 
         } catch (ex) {
@@ -1697,9 +1702,12 @@ $(document).ready(function () {
         await partial.triggerHandler('uic-reloaded');
     }
 };
-$('body').on('uic-reload', (ev) => {
-    location.reload();
-});
+$(document).ready(() => {
+    $('body').on('uic-reload', (ev) => {
+        location.reload();
+    });
+})
+
 ﻿uic.sidePanel = uic.sidePanel || {
     initialize: function (container, startState) {
         container = $(container);

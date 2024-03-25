@@ -109,7 +109,7 @@ public class UICConfig
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, $"Failed to get {type.FullName} from serviceProvider");
+                _logger.LogError(ex, "Failed to get {0} from serviceProvider", type.FullName);
             }
         }
         options.Generators.ForEach(x => {
@@ -152,6 +152,12 @@ public class UICConfig
                             case UICGeneratorPropertyCallType.PropertyInfoSpan:
                                 continue;
                         }
+                        var ignoreAttr = propArgs.PropertyInfo?.GetCustomAttribute<UICIgnoreAttribute>()??null;
+                        if(ignoreAttr != null)
+                        {
+                            _logger.LogTrace("{0} is ignored by UICIgnoreAttr", propArgs.PropertyName);
+                            continue;
+                        }
                     }
 
                     if (!generators.Where(x => x.Priority > generator.Priority).Any())
@@ -176,7 +182,7 @@ public class UICConfig
 
         var args = new UICPropertyArgs(parentObject, propertyInfo, propType, options, cc, this);
         
-        return await GetGeneratedResultAsync<UICPropertyArgs, IUIComponent>($"{args.CallCollection.CurrentCallType} {args.ClassObject.GetType().Name}{((args.PropertyInfo == null)?"":$" => {args.PropertyInfo.Name}")}",args, options);
+        return await GetGeneratedResultAsync<UICPropertyArgs, IUIComponent>($"{args.CallCollection.CurrentCallType} {args.ClassObject.GetType().Name}{((args.PropertyInfo == null)?"":$" => {args.PropertyName}")}",args, options);
     }
 
     public Task<TResult?> GetGeneratedResultAsync<TResult>(UICGeneratorPropertyCallType callType, IUIComponent caller, UICPropertyArgs oldArgs)

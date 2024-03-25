@@ -117,9 +117,9 @@
         }
     },
 
-    delete: async function (url, id) {
+    delete: async function (url, data) {
         try {
-            var content = await uic.getpost.get(url, { id, title, message, data });
+            var content = await uic.getpost.get(url, data);
             $('body').append(content);
 
         } catch (ex) {

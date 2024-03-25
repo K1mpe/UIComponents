@@ -91,19 +91,20 @@ uic.setValue = function (element, value) {
         $(element).trigger('uic-setValue', value);
         return;
     }
-
-    if (Array.isArray(value)) {
-        var name = $(element).attr('name');
-        value.forEach(function (val, index) {
-            console.log(index, val);
-
-            var subElement = $(element).find(`[name="${name}"][data-array-index=${index}]`);
-            uic.setValue(subElement, val);
-        });
-        
-    }
-    else if (typeof value == "object" && value != null) {
+    if (element.attr('name') == undefined) {
         var properties = uic.getProperties(element);
+        if (properties.length == 1) {
+            uic.setValue(properties, value);
+            return;
+        }
+    }
+
+    if (typeof value == "object" && value != null) {
+        var properties = uic.getProperties(element);
+        if (properties.length == 1) {
+            uic.setValue(properties, value);
+            return;
+        }
         var valueProps = Object.getOwnPropertyNames(value);
         valueProps.forEach(function (item, index) {
             //console.log(index, item);

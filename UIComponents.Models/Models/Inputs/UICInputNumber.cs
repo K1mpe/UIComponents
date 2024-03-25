@@ -31,6 +31,10 @@ namespace UIComponents.Models.Models.Inputs
         public int? ValidationMinValue { get; set; }
         public int? ValidationMaxValue { get; set; }
 
+        public override double? Value { 
+            get => base.ValueObject==null? null : double.Parse(base.ValueObject.ToString()); 
+            set => base.Value = value; 
+        }
         #endregion
     }
 }

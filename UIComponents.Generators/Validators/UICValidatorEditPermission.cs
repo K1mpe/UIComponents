@@ -28,7 +28,7 @@ namespace UIComponents.Generators.Validators
             {
                 readOnly = !await permissionService.CanEditProperty(obj, propertyInfo.Name);
                 if(readOnly)
-                    _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is readonly => There is no edit permission");
+                    _logger.LogDebug("{0} is readonly => There is no edit permission", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
                 
                 
                 if (!readOnly && UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inherit))
@@ -42,7 +42,7 @@ namespace UIComponents.Generators.Validators
 
                     readOnly = !await permissionService!.CanEditProperty(inheritInstance, inherit.Name);
                     if(readOnly)
-                        _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is readonly => There is no edit permission for inherit property ({inherit.DeclaringType.Name}.{inherit.Name})");
+                        _logger.LogDebug("{0} is readonly => There is no edit permission for inherit property ({1})", $"{propertyInfo.DeclaringType.Name}.{ propertyInfo.Name}", $"{inherit.DeclaringType.Name}.{inherit.Name}");
                 }
             }
             return readOnly;

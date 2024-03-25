@@ -25,7 +25,7 @@ namespace UIComponents.Web.Tests.Models
         public bool? ThreeStateBool { get; set; }
 
         [UICSpan("<span class='text-warning'>Dit</span> <blub>is een <sub>spantekst</sub>  &|é@\"#'([§^è!ç{0})-¨[^$*]ù%´µ``<>\\")]
-        [Range(0, 20)]
+        [Range(10, 20)]
         public int Number { get; set; }
 
         public double Decimal { get; set; }
@@ -40,7 +40,9 @@ namespace UIComponents.Web.Tests.Models
         public RecurringDate RecurringDate { get; set; }
 
         public TestModel SubModel { get; set; }
-        public TestModel2 SubClass { get; set; }
+
+        public List<string> IntList { get; set; }
+        public List<TestModel2> ObjectList { get; set; }
 
 
 
@@ -60,6 +62,5 @@ namespace UIComponents.Web.Tests.Models
         public string TestString { get; set; }
         public int Number { get; set; }
 
-        public List<int> Ints { get; set; }
     }
 }

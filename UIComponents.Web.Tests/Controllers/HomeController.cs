@@ -243,19 +243,21 @@ namespace UIComponents.Web.Tests.Controllers
             var item = new TestModel();
             item.Number = 15;
             item.Checkbox = true;
-
+            item.IntList = new();
+            item.ObjectList = new()
+            {
+                new(){ Number = 1},
+                new(){
+                    Number = 2,
+                },
+            };
             var component = await _uic.CreateComponentAsync(item, new()
             {
                 PostObjectAsDefault = true,
-                //IncludedProperties = "TestString, Description, Date",
                 SubClassesInCard = new(),
-                //InputGroupSingleRow = false,
-                //ReplaceSaveButtonWithCreateButton = true,
+                ShowEditButton = false,
                 PostForm= new UICActionPost("/home/Post")
             });
-
-            component.FindInputByPropertyName<UICInputText>(nameof(TestModel.TestString)).ValidationMinLength = 0;
-
             return ViewOrPartial(component);
         }
     }

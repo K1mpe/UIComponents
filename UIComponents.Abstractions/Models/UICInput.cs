@@ -71,7 +71,7 @@ public abstract class UICInput<T> : UICInput
     {
         Value = default(T);
     }
-    public T Value {
+    public virtual T Value {
         get { return (T)ValueObject??default; }
         set { ValueObject = value; }
     }

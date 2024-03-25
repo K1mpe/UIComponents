@@ -14,7 +14,11 @@ public class DefaultCheckValidationErrorsRequired : IUICDefaultCheckValidationEr
             return ValidationRuleResult.IsValid();
 
         var value = propertyInfo.GetValue(obj);
-        if (value != default)
+        object defaultValue = null;
+        if (propertyInfo.PropertyType.IsValueType)
+            defaultValue = Activator.CreateInstance(propertyInfo.PropertyType);
+
+        if (value != defaultValue)
             return ValidationRuleResult.IsValid();
 
         var translatedProp = TranslationDefaults.TranslateProperty(propertyInfo, null);

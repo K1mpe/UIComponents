@@ -22,7 +22,7 @@ public class UICGeneratorInputEditorTemplate : UICGeneratorProperty
 
         var editorTemplate = new UICInputEditorTemplate()
         {
-            PropertyName = args.PropertyInfo.Name,
+            PropertyName = args.PropertyName,
             TemplateFor = uiHintAttr.UIHint,
             AdditionalData = uiHintAttr.ControlParameters
         };

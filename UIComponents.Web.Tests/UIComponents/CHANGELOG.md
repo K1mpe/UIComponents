@@ -1,6 +1,8 @@
-﻿# 2024-03-20 (1.1.21)
+﻿# 2024-03-25 (1.1.22)
  - Adding Validators (See README.md)
-﻿# 2024-03-20 (1.1.21)
+ - Fix DeleteButton
+ - Fix ContextMenu
+ - Adding ListInput﻿# 2024-03-20 (1.1.21)
  - Fix stackoverflow
 
 # 2024-03-20 (1.1.20)

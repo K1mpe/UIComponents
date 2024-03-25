@@ -24,7 +24,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
         var v1 = propertyInfo.GetCustomAttribute<RequiredAttribute>();
         if (v1 != null)
         {
-            _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required => has {nameof(RequiredAttribute)}");
+            _logger.LogDebug($"{{0}} is required => has {nameof(RequiredAttribute)}", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
             return true;
         }
             
@@ -32,7 +32,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
 
         if (propertyInfo.PropertyType.IsAssignableTo(typeof(Nullable<>)))
         {
-            _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is NOT required => has nullable type");
+            _logger.LogDebug("{0} is NOT required => has nullable type", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
             return false;
         }
             
@@ -40,7 +40,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
         var foreignKey = propertyInfo.GetCustomAttribute<ForeignKeyAttribute>();
         if (foreignKey != null)
         {
-            _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required => has {nameof(ForeignKeyAttribute)}");
+            _logger.LogDebug($"{{0}} is required => has {nameof(ForeignKeyAttribute)}", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
             return true;
         }
             
@@ -49,7 +49,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
         if (fakeForeignKey != null)
         {
             if(fakeForeignKey.IsRequired)
-                _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required => has {nameof(FakeForeignKeyAttribute)}");
+                _logger.LogDebug($"{{0}} is required => has {nameof(FakeForeignKeyAttribute)}", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
             return fakeForeignKey.IsRequired;
         }
             
@@ -60,7 +60,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
             var v2 = inherit.GetCustomAttribute<RequiredAttribute>();
             if (v2 != null)
             {
-                _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required because of {nameof(UICInheritAttribute)} => has {nameof(RequiredAttribute)}");
+                _logger.LogDebug($"{{0}} is required because of {nameof(UICInheritAttribute)} => has {nameof(RequiredAttribute)}", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
                 return true;
             }
                
@@ -68,7 +68,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
 
             if (inherit.PropertyType.IsAssignableTo(typeof(Nullable<>)))
             {
-                _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is NOT required because of {nameof(UICInheritAttribute)} => has nullable type");
+                _logger.LogDebug($"{{0}} is NOT required because of {nameof(UICInheritAttribute)} => has nullable type", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
                 return false;
             }
                 
@@ -76,7 +76,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
             var foreignKey2 = inherit.GetCustomAttribute<ForeignKeyAttribute>();
             if (foreignKey2 != null)
             {
-                _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required because of {nameof(UICInheritAttribute)} => has {nameof(ForeignKeyAttribute)}");
+                _logger.LogDebug($"{{0}} is required because of {nameof(UICInheritAttribute)} => has {nameof(ForeignKeyAttribute)}", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
                 return true;
             }
                 
@@ -85,7 +85,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
             if (fakeForeignKey2 != null)
             {
                 if(fakeForeignKey2.IsRequired)
-                    _logger.LogDebug($"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name} is required because of {nameof(UICInheritAttribute)} => has {nameof(FakeForeignKeyAttribute)}");
+                    _logger.LogDebug($"{{0}} is required because of {nameof(UICInheritAttribute)} => has {nameof(FakeForeignKeyAttribute)}", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
                 return fakeForeignKey2.IsRequired;
             }
                 

@@ -37,7 +37,7 @@ public abstract class UICGeneratorProperty : UICGeneratorBase<UICPropertyArgs, I
 
         if (RequiredPropertyType != null)
         {
-            if (!args.PropertyInfo?.PropertyType.IsAssignableTo(RequiredPropertyType) ?? false)
+            if (!args.PropertyType?.IsAssignableTo(RequiredPropertyType) ?? false)
                 return new UICGeneratorResponseNext<IUIComponent>();
         }
 

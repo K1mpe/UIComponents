@@ -25,7 +25,7 @@ public class UICGeneratorGroup : UICGeneratorProperty
 
         if(args.ClassObject is IUIComponent component)
         {
-            _logger.LogDebug($"{args.ClassObject.GetType().Name}.{args.PropertyName} is a IUIComponent, not further evaluated by generators");
+            _logger.LogDebug("{0} is a IUIComponent, not further evaluated by generators", $"{args.ClassObject.GetType().Name}.{args.PropertyName}");
             group.Add(component);
             return GeneratorHelper.Success(group, false);
         }

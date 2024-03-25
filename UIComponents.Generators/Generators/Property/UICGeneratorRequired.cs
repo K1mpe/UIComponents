@@ -18,7 +18,7 @@ public class UICGeneratorRequired : UICGeneratorBase<UICPropertyArgs, bool?>
             return GeneratorHelper.Success<bool?>(true, false);
 
 
-        if (args.PropertyInfo.PropertyType.IsAssignableTo(typeof(Nullable<>)))
+        if (args.PropertyType.IsAssignableTo(typeof(Nullable<>)))
             return GeneratorHelper.Success<bool?>(false, false);
 
         var foreignKey = args.PropertyInfo.GetCustomAttribute<ForeignKeyAttribute>();

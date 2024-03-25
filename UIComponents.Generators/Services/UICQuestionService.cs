@@ -102,7 +102,7 @@ public class UICQuestionService : IUICQuestionService
                     DebugIdentifier =  question.DebugIdentifier
                 };
             }
-            _logger.LogInformation($"Asking question {question.DebugIdentifier} to users: {string.Join(", ", userIds)}");
+            _logger.LogInformation("Asking question {0} to users: {1}", question.DebugIdentifier, string.Join(", ", userIds));
             foreach (var userId in userIds)
             {
                 
@@ -118,12 +118,12 @@ public class UICQuestionService : IUICQuestionService
         catch(NullReferenceException)
         {
             //No response received within timespan
-            _logger.LogError($"No response was received for {question.DebugIdentifier}");
+            _logger.LogError("No response was received for {0}", question.DebugIdentifier);
             return false;
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex, $"Error for question {question.DebugIdentifier}");
+            _logger.LogError(ex, "Error for question {0}", question.DebugIdentifier);
             return false;
         }
         finally
@@ -146,7 +146,7 @@ public class UICQuestionService : IUICQuestionService
         {
             if (_questionPersistance.TryGetValue(key, out var question))
             {
-                _logger.LogInformation($"Answered question {question.DebugIdentifier} with '{response}'");
+                _logger.LogInformation("Answered question {0} with '{1}'", question.DebugIdentifier, response);
                 question.Response = response;
                 question.Answered = true;
                 question.AutoResetEvent.Set();
@@ -163,7 +163,7 @@ public class UICQuestionService : IUICQuestionService
         {
             if (_questionPersistance.TryGetValue(key, out var question))
             {
-                _logger.LogInformation($"Question {question.DebugIdentifier} was cancelled");
+                _logger.LogInformation("Question {0} was cancelled", question.DebugIdentifier);
                 question.AutoResetEvent.Set();
             }
         }

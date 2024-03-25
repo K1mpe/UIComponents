@@ -53,6 +53,9 @@
         await partial.triggerHandler('uic-reloaded');
     }
 };
-$('body').on('uic-reload', (ev) => {
-    location.reload();
-});
+$(document).ready(() => {
+    $('body').on('uic-reload', (ev) => {
+        location.reload();
+    });
+})
+

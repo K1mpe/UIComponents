@@ -1,4 +1,6 @@
-﻿namespace UIComponents.Models.Models.Inputs;
+﻿using System.Text.Json;
+
+namespace UIComponents.Models.Models.Inputs;
 
 public class UICInputList : UICInput<object[]>
 {
@@ -19,12 +21,40 @@ public class UICInputList : UICInput<object[]>
     public Type ItemType { get; set; }
 
 
+    public bool ShowMoveButtons { get; set; } = true;
+    public UICButton MoveUpButton { get; set; } = new UICButton()
+    {
+        PrependButtonIcon = new UICIcon("fas fa-arrow-up"),
+        Tooltip = new("UICInputList.MoveUp", "Move this item up")
+    }.AddClass("hidden-readonly");
+    public UICButton MoveDownButton { get; set; } = new UICButton()
+    {
+        PrependButtonIcon = new UICIcon("fas fa-arrow-down"),
+        Tooltip = new("UICInputList.MoveDown", "Move this item down")
+    }.AddClass("hidden-readonly");
 
-    //public bool AllowAdd { get; set; }
-    //public UICButton AddButton { get; set; }
+    public UICButton AddButton { get; set; } = new UICButton()
+    {
+        ButtonText = new("Button.Add"),
+        PrependButtonIcon = new UICIcon(IconDefaults.Add.Icon)
+    }.AddClass("hidden-readonly");
 
-    //public bool AllowRemove { get; set; }
-    //public UICButton RemoveButton { get; set; }
+    public UICButton RemoveButton { get; set; } = new UICButton()
+    {
+        PrependButtonIcon = new UICIcon(IconDefaults.Delete.Icon),
+        Tooltip = TranslationDefaults.ButtonDelete
+    }.AddClass("hidden-readonly");
     #endregion
 
+
+    #region ClientSideMethods
+    public IUIAction TriggerAddInstance(object value = null)
+    {
+        return new UICCustom($"$('#{this.GetId()}').trigger('uic-add', {JsonSerializer.Serialize(value)});");
+    }
+    public IUIAction TriggerRemoveInstance(string instanceSelector)
+    {
+        return new UICCustom($"$('{instanceSelector}').trigger('uic-remove');");
+    }
+    #endregion
 }

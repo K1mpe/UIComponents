@@ -21,7 +21,7 @@ public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleM
         var rangeAttr = propertyInfo.GetCustomAttribute<RangeAttribute>();
         if (rangeAttr != null)
         {
-            _logger.LogDebug($"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name} has maximum value by {nameof(RangeAttribute)}: {rangeAttr.Maximum}");
+            _logger.LogDebug($"{{0}} has maximum value by {nameof(RangeAttribute)}: {{1}}", $"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name}", rangeAttr.Maximum);
             return Task.FromResult((T?)rangeAttr.Maximum);
         }
         if(UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inherit))
@@ -29,7 +29,7 @@ public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleM
             rangeAttr = inherit.GetCustomAttribute<RangeAttribute>();
             if (rangeAttr != null)
             {
-                _logger.LogDebug($"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name} has maximum value by {nameof(RangeAttribute)}: {rangeAttr.Maximum} on Inherit property ({inherit.DeclaringType?.Name}.{inherit.Name})");
+                _logger.LogDebug($"{{0}} has maximum value by {nameof(RangeAttribute)}: {{1}} on Inherit property ({{2}})", $"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name}", rangeAttr.Maximum, $"{inherit.DeclaringType?.Name}.{inherit.Name}");
                 return Task.FromResult((T?)rangeAttr.Maximum);
             }
         }
@@ -42,7 +42,7 @@ public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleM
         var rangeAttr = propertyInfo.GetCustomAttribute<RangeAttribute>();
         if (rangeAttr != null)
         {
-            _logger.LogDebug($"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name} has minimum value by {nameof(RangeAttribute)}: {rangeAttr.Minimum}");
+            _logger.LogDebug($"{{0}} has minimum value by {nameof(RangeAttribute)}: {{1}}", $"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name}", rangeAttr.Minimum);
             return Task.FromResult((T?)rangeAttr.Minimum);
         }
         if (UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inherit))
@@ -50,7 +50,7 @@ public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleM
             rangeAttr = inherit.GetCustomAttribute<RangeAttribute>();
             if (rangeAttr != null)
             {
-                _logger.LogDebug($"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name} has minimum value by {nameof(RangeAttribute)}: {rangeAttr.Minimum} on Inherit property ({inherit.DeclaringType?.Name}.{inherit.Name})");
+                _logger.LogDebug($"{{0}} has minimum value by {nameof(RangeAttribute)}: {{1}} on Inherit property ({{2}})", $"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name}", rangeAttr.Minimum, $"{inherit.DeclaringType?.Name}.{inherit.Name}");
                 return Task.FromResult((T?)rangeAttr.Minimum);
             }
         }

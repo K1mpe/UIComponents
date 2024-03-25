@@ -12,10 +12,19 @@ public class CommonHelper
     /// <param name="includedProperties">Only copy properties with these names, If null all properties are used</param>
     /// <param name="excludedProperties">Do not copy thesse properties</param>
     /// <returns></returns>
-    public static T CopyObject<T>(T target)
+    public static T CopyObject<T>(T target, Type? type = null)
     {
-        T result = Activator.CreateInstance<T>();
-        foreach (var property in typeof(T).GetProperties())
+
+        T result = default;
+
+        //If T is abstract (f.e. UICInput), activator cannot create a instance of abstract type
+        if (type == null)
+            Activator.CreateInstance<T>();
+        else 
+            result = (T)Activator.CreateInstance(type); // If type is provided, f.e. UICInputText, a instance can be made, and cast to T (abstract type)
+
+        var properties = type.GetProperties() ?? typeof(T).GetProperties();
+        foreach (var property in properties)
         {
             if (!property.CanWrite || !property.CanRead)
                 continue;
