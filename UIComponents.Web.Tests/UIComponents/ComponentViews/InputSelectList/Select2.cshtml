@@ -34,7 +34,8 @@
 
     if (Model.Readonly)
         Model.AddAttribute("class", "form-control-plaintext");
-
+    if (Model.AllowDynamicOptions)
+        Model.SearchableIfMinimimResults = 0;
 
     Model.AddScript(
     @<text>

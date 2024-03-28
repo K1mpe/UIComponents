@@ -65,13 +65,13 @@ public class UICPartial : UIComponent, IUICHasChildren<IUIComponent>
     #endregion
 
     #region Methods
-    public IUIAction? BeforeFetch { get; set; }
-    public IUIAction? AfterFetch { get; set; }
+    public IUICAction? BeforeFetch { get; set; }
+    public IUICAction? AfterFetch { get; set; }
     #endregion
 
 
     #region Triggers
-    public IUIAction TriggerReload()
+    public IUICAction TriggerReload()
     {
         throw new NotImplementedException();
     }

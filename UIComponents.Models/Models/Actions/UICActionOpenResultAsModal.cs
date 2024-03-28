@@ -2,10 +2,8 @@
 
 namespace UIComponents.Models.Models.Actions;
 
-public class UICActionOpenResultAsModal : UIComponent, IUIAction
+public class UICActionOpenResultAsModal : UIComponent, IUICAction
 {
-
-
     #region Ctor
     public UICActionOpenResultAsModal()
     {

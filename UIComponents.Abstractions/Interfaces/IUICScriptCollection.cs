@@ -3,11 +3,11 @@
     public interface IUICScriptCollection
     {
         string RenderParentId { get; set; }
-        void AddToScripts(IUIAction script);
-        void AddToScripts(IEnumerable<IUIAction> scripts);
+        void AddToScripts(IUICAction script);
+        void AddToScripts(IEnumerable<IUICAction> scripts);
         void AddToStyles(IUIComponent style);
         void AddToStyles(IEnumerable<IUIComponent> styles);
-        List<IUIAction> GetScripts(string renderParentId);
+        List<IUICAction> GetScripts(string renderParentId);
         List<IUIComponent> GetStyles(string renderParentId);
 
         /// <summary>

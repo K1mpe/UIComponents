@@ -18,11 +18,13 @@ public class UICButtonCollapseCard : UICToggleButton
 			PrependButtonIcon = IconDefaults.ButtonCardCollapse,
 			ButtonText = TranslationDefaults.ButtonCardCollapse
 		};
+		Card = card;
 	}
 
 	/// <summary>
 	/// The card that uses this button.
 	/// <br>If null, the closest parent is used.</br>
 	/// </summary>
+	[UICIgnoreGetChildrenFunction]
 	public UICCard? Card { get; set; }
 }

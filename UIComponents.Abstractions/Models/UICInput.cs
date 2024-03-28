@@ -49,7 +49,7 @@ public abstract class UICInput : UIComponent
     public bool Readonly { get; set; }
     public bool Disabled { get; set; }
 
-    [IgnoreGetChildrenFunction]
+    [UICIgnoreGetChildrenFunction]
     public object ValueObject { get; set; }
     #endregion
 
@@ -58,6 +58,11 @@ public abstract class UICInput : UIComponent
     public override string ToString()
     {
         return $"{PropertyName} - {base.ToString()}";
+    }
+
+    public IUICAction TriggerGetValue()
+    {
+        return new UICCustom($"uic.getValue('#{this.GetId()}');");
     }
 
     #endregion

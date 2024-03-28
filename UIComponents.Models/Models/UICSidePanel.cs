@@ -86,18 +86,18 @@ public class UICSidePanel : UIComponent
     /// <summary>
     /// Action triggered before the sidePanel switches to Overlay state.
     /// </summary>
-    public IUIAction BeforeOverlay { get; set; }
+    public IUICAction BeforeOverlay { get; set; }
 
     /// <summary>
     /// Action triggered after the sidePanel has switched to OverlayState.
     /// </summary>
-    public IUIAction AfterOverlay { get; set; }
+    public IUICAction AfterOverlay { get; set; }
 
-    public IUIAction BeforeCollapsed { get; set; }
-    public IUIAction AfterCollapsed { get; set; }
+    public IUICAction BeforeCollapsed { get; set; }
+    public IUICAction AfterCollapsed { get; set; }
 
-    public IUIAction BeforePinned { get; set; }
-    public IUIAction AfterPinned { get; set; }
+    public IUICAction BeforePinned { get; set; }
+    public IUICAction AfterPinned { get; set; }
 
     #endregion
 

@@ -7,18 +7,18 @@ public class UICScriptCollection : IUICScriptCollection
 
 
 
-    protected List<IUIAction> Scripts { get; set; } = new();
+    protected List<IUICAction> Scripts { get; set; } = new();
 
     protected List<IUIComponent> Styles { get; set; } = new();
     #endregion
 
     #region Methods
-    public void AddToScripts(IUIAction script)
+    public void AddToScripts(IUICAction script)
     {
         Scripts.Add(script);
     }
 
-    public void AddToScripts(IEnumerable<IUIAction> scripts)
+    public void AddToScripts(IEnumerable<IUICAction> scripts)
     {
         Scripts.AddRange(scripts);
     }
@@ -38,7 +38,7 @@ public class UICScriptCollection : IUICScriptCollection
     /// </summary>
     /// <param name="renderParentId"></param>
     /// <returns></returns>
-    public List<IUIAction> GetScripts(string renderParentId)
+    public List<IUICAction> GetScripts(string renderParentId)
     {
         if (RenderParentId != renderParentId)
             return new();

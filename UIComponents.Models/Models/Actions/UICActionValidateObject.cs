@@ -8,7 +8,7 @@ namespace UIComponents.Models.Models.Actions;
 /// <br>On valid comparison, trigger <see cref="OnMatch"/> action</br>
 /// <br>On invalid comparison, trigger <see cref="OnMisMatch"/> action</br>
 /// </summary>
-public class UICActionValidateObject : UIComponent, IUIAction
+public class UICActionValidateObject : UIComponent, IUICAction
 {
 
     #region Ctor
@@ -17,7 +17,7 @@ public class UICActionValidateObject : UIComponent, IUIAction
 
     }
 
-    public UICActionValidateObject(object matchObject, IUIAction onMatch)
+    public UICActionValidateObject(object matchObject, IUICAction onMatch)
     {
         MatchObject = matchObject;
         OnMatch = onMatch;
@@ -50,12 +50,12 @@ public class UICActionValidateObject : UIComponent, IUIAction
     /// <summary>
     /// This action will be executed when the object has a match
     /// </summary>
-    public IUIAction OnMatch { get; set; }
+    public IUICAction OnMatch { get; set; }
 
     /// <summary>
     /// This action will be executed when the object has no match
     /// </summary>
-    public IUIAction OnMisMatch { get; set; }
+    public IUICAction OnMisMatch { get; set; }
 
     #endregion
 }

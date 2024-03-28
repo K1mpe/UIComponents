@@ -20,7 +20,7 @@ public static class UICExtensions
             return list;
         foreach (var prop in element.GetType().GetProperties())
         {
-            if (prop.GetCustomAttribute<IgnoreGetChildrenFunctionAttribute>() != null)
+            if (prop.GetCustomAttribute<UICIgnoreGetChildrenFunctionAttribute>() != null)
                 continue;
 
             if (prop.PropertyType.IsAssignableTo(typeof(IUIComponent)))
@@ -72,7 +72,7 @@ public static class UICExtensions
     {
         foreach (var prop in parent.GetType().GetProperties())
         {
-            if (prop.GetCustomAttribute<IgnoreGetChildrenFunctionAttribute>() != null)
+            if (prop.GetCustomAttribute<UICIgnoreGetChildrenFunctionAttribute>() != null)
                 continue;
 
             if (prop.PropertyType.IsAssignableTo(typeof(IUIComponent)))
@@ -157,6 +157,35 @@ public static class UICExtensions
         return element.FindFirstChildOfType<T>(action);
     }
 
+    public static bool TryFindFirstOfType<T>(this IUIComponent element, Action<T> action) where T : IUIComponent
+    {
+        try
+        {
+            var result = FindFirstOfType<T>(element);
+            if(result == null)
+                return false;
+
+            action(result);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+    public static bool TryFindFirstOfType<T>(this IUIComponent element, out T result) where T : IUIComponent
+    {
+        try
+        {
+            result = FindFirstOfType<T>(element);
+            return result != null;
+        }
+        catch
+        {
+            result = default(T);
+            return false;
+        }
+    }
 
     /// <summary>
     /// Find all types on this element
@@ -189,7 +218,35 @@ public static class UICExtensions
             action(first);
         return first;
     }
+    public static bool TryFindChildFirstOfType<T>(this IUIComponent element, Action<T> action) where T : IUIComponent
+    {
+        try
+        {
+            var result = FindFirstChildOfType<T>(element);
+            if (result == null)
+                return false;
 
+            action(result);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+    public static bool TryFindChildFirstOfType<T>(this IUIComponent element, out T result) where T : IUIComponent
+    {
+        try
+        {
+            result = FindFirstChildOfType<T>(element);
+            return result != null;
+        }
+        catch
+        {
+            result = default(T);
+            return false;
+        }
+    }
     /// <summary>
     /// Find all types on this element
     /// </summary>
@@ -212,7 +269,35 @@ public static class UICExtensions
             action(firstInput);
         return firstInput;
     }
+    public static bool TryFindInputByPropertyName<T>(this IUIComponent element, string propertyName, Action<T> action) where T : UICInput
+    {
+        try
+        {
+            var result = FindInputByPropertyName<T>(element, propertyName);
+            if (result == null)
+                return false;
 
+            action(result);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+    public static bool TryFindInputByPropertyName<T>(this IUIComponent element, string propertyName, out T result) where T : UICInput
+    {
+        try
+        {
+            result = FindInputByPropertyName<T>(element, propertyName);
+            return result != null;
+        }
+        catch
+        {
+            result = default(T);
+            return false;
+        }
+    }
     /// <summary>
     /// Gets the Id from a element. Create a random id if none exists yet.
     /// </summary>

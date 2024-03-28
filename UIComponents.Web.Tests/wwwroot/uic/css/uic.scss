@@ -296,21 +296,24 @@ i.uic-value-changed {
 
     > .instance-buttons {
         display: flex;
+        align-items: center;
+        
 
         button, .btn {
-            border-bottom-left-radius: 0;
-            border-top-left-radius: 0;
             margin-left: -1px;
         }
 
         &.vertical {
             flex-direction: column;
+            align-items: stretch;
 
             button:not(:last-child), .btn:not(:last-child) {
                 border-bottom-right-radius: 0;
+                border-bottom-left-radius:0;
             }
 
             button:not(:first-child), .btn:not(:first-child) {
+                border-top-right-radius: 0;
                 border-top-right-radius: 0;
                 margin-top: -1px;
             }
@@ -320,6 +323,12 @@ i.uic-value-changed {
             button:not(:last-child), .btn:not(:last-child) {
                 border-bottom-right-radius: 0;
                 border-top-right-radius: 0;
+            }
+
+            button:not(:first-child), .btn:not(:first-child) {
+                border-bottom-left-radius: 0;
+                border-top-left-radius: 0;
+                margin-left:-1px;
             }
         }
     }

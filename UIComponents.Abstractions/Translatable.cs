@@ -13,9 +13,19 @@ public class Translatable
         Arguments = args;
     }
 
-
+    /// <summary>
+    /// The Key to Identify the translation
+    /// </summary>
     public string ResourceKey { get; set; }
+
+    /// <summary>
+    /// Default value for key, if no translation exists
+    /// </summary>
     public string DefaultValue { get; set; }
+
+    /// <summary>
+    /// Arguments to place inside de defaultValue. May include nested <see cref="Translatable"/>
+    /// </summary>
     public object[] Arguments { get; set; }
 
     public override string ToString()

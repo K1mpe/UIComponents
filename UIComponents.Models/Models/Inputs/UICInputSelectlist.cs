@@ -64,7 +64,7 @@ public class UICInputSelectList : UICInput<string>, IUICInputSelectList
     /// <summary>
     /// Action that is triggered on opening the selectlist
     /// </summary>
-    public IUIAction? OnListOpen { get; set; }
+    public IUICAction? OnListOpen { get; set; }
 
     public SelectListRenderer Renderer { get; set; } = SelectListRenderer.Select2;
 

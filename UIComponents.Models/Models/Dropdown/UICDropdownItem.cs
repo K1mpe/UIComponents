@@ -16,7 +16,7 @@ public class UICDropdownItem : UIComponent, IDropdownItem, IHasIcon<UICIcon>
 
     }
 
-    public UICDropdownItem(Translatable content, IUIAction onClick = null)
+    public UICDropdownItem(Translatable content, IUICAction onClick = null)
     {
         Content = content;
         if (onClick != null)
@@ -39,7 +39,7 @@ public class UICDropdownItem : UIComponent, IDropdownItem, IHasIcon<UICIcon>
     /// <remarks>
     /// Available args: e => eventArgs
     /// </remarks>
-    public IUIAction OnClick { get; set; } = new UICCustom();
+    public IUICAction OnClick { get; set; } = new UICCustom();
     public UICIcon Icon { get; set; }
 
 

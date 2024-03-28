@@ -23,6 +23,9 @@ public class UICCard : UIComponent, IUICCardLike
     #endregion
 
     #region Properties
+    /// <summary>
+    /// The header of the card, <see cref="UICCardHeader"/> is most used for this.
+    /// </summary>
     public IHeader Header { get; set; }
 
     /// <summary>
@@ -161,22 +164,27 @@ public class UICCard : UIComponent, IUICCardLike
         return Footer;
     }
 
-    /// <summary>
-    /// Get the current footer or create a new footer, ouput this footer
-    /// </summary>
-    public UICCard AddFooter(out UICGroup addedFooter, UICGroup footer = null)
+    public UICCard AddFooter(IUIComponent component)
     {
-        addedFooter = CreateFooter(footer);
+        CreateFooter().Add(component);
         return this;
     }
 
     /// <summary>
-    /// If the footer does not exist yet, create this footer. also configure the footer
+    /// Add a item to the footer and ouput this item
     /// </summary>
-    public UICCard AddFooter(Action<UICGroup> configure)
+    public UICCard AddFooter<T>(out T addedToFooter, T element) where T : IUIComponent
     {
-        var footer = CreateFooter(null);
-        configure(footer);
+        CreateFooter().Add(out addedToFooter, element);
+        return this;
+    }
+
+    /// <summary>
+    /// Add a item to the footer and configure the added item
+    /// </summary>
+    public UICCard AddFooter<T>(T addingToFooterElement, Action<T> configure) where T : IUIComponent
+    {
+        CreateFooter().Add(addingToFooterElement, configure);
         return this;
     }
 

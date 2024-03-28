@@ -6,7 +6,7 @@ namespace UIComponents.Models.Models.Actions;
 /// <summary>
 /// Navigate to a certain page.
 /// </summary>
-public class UICActionNavigate : IUIAction
+public class UICActionNavigate : IUICAction
 {
     public UICActionNavigate()
     {

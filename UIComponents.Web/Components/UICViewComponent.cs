@@ -51,7 +51,18 @@ public class UICViewComponent : ViewComponent
                     UIC.AddAttribute("disabled", "true");
                 }
         }
+        string renderLocation = element.RenderLocation;
+        if (element.RenderLocation.Length < 7)
+        {
+            renderLocation += ".cshtml";
+        }
+        else 
+        { 
+            var last7CharOfRenderLocation = element.RenderLocation.Substring(element.RenderLocation.Length - 7);
+            if (!last7CharOfRenderLocation.Contains("."))
+                renderLocation += ".cshtml";
+        }
         ViewData["UIC"] += $" => {element.RenderLocation}";
-        return View($"{element.RenderLocation}.cshtml", element);
+        return View(renderLocation, element);
     }
 }

@@ -6,7 +6,7 @@ namespace UIComponents.Models.Models.Actions;
 /// <summary>
 /// Close the nearest modal or popup, if no modal or popup is available, trigger "OnFailed"
 /// </summary>
-public class UICActionCloseModal : UIComponent, IUIAction
+public class UICActionCloseModal : UIComponent, IUICAction
 {
     #region Fields
     #endregion
@@ -20,8 +20,8 @@ public class UICActionCloseModal : UIComponent, IUIAction
 
     #region Properties
     /// <summary>
-    /// This function is called where there is no card available to close
+    /// This function is called where there is no modal available to close
     /// </summary>
-    public IUIAction OnFailed { get; set; } = new UICCustom();
+    public IUICAction OnFailed { get; set; } = new UICCustom();
     #endregion
 }

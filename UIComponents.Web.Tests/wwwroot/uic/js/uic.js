@@ -266,6 +266,12 @@ uic.getProperties = function (element) {
 // objectMissMatch => results in false if any property has a match with comparison. 
 uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
 
+    if (!$.isPlainObject(objectMissMatch) && objectMissMatch == comparison)
+            return false;
+
+    if (!$.isPlainObject(objectMatch))
+        return comparison == objectMatch;
+
     var comparisonProps = Object.getOwnPropertyNames(objectMissMatch);
 
     //Validate missmatch
@@ -1446,7 +1452,7 @@ $(document).ready(function () {
                     });
                     response.Errors.forEach((item) => {
                         var propertyName = item.PropertyName;
-                        var errors = item.Error;
+                        var errors = item.Errors;
 
                         var spanElement = $(`span.field-validation-valid[data-valmsg-for="${propertyName}"]`);
                         if (!spanElement.length)

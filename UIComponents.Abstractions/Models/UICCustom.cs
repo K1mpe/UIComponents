@@ -5,7 +5,7 @@ namespace UIComponents.Abstractions.Models;
 /// <summary>
 /// A custom component, requires <see cref="Content"/> to render. 
 /// </summary>
-public class UICCustom : UIComponent, IUIAction, IDropdownItem
+public class UICCustom : UIComponent, IUICAction, IDropdownItem
 {
     #region Fields
     private bool _render = true;

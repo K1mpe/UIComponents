@@ -266,6 +266,12 @@ uic.getProperties = function (element) {
 // objectMissMatch => results in false if any property has a match with comparison. 
 uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
 
+    if (!$.isPlainObject(objectMissMatch) && objectMissMatch == comparison)
+            return false;
+
+    if (!$.isPlainObject(objectMatch))
+        return comparison == objectMatch;
+
     var comparisonProps = Object.getOwnPropertyNames(objectMissMatch);
 
     //Validate missmatch

@@ -13,6 +13,7 @@ public class UICActionGetPost : UIComponent, ISubmitAction
     #endregion
 
     #region Ctor
+
     public UICActionGetPost(ActionTypeEnum actionType, string controller, string action, object data = null)
     {
         ActionType = actionType;
@@ -32,11 +33,10 @@ public class UICActionGetPost : UIComponent, ISubmitAction
 
     }
 
-
-
     #endregion
 
     #region Properties
+
     public ActionTypeEnum ActionType { get; set; }
     public string Controller { get; set; }
     public string Action { get; set; }
@@ -50,7 +50,7 @@ public class UICActionGetPost : UIComponent, ISubmitAction
     /// Before sending the request, this action is called client side to get additional properties.
     /// <br>These properties have higher priority then <see cref="DefaultData"/> but lower than <see cref="FixedData"/></br>
     /// </summary>
-    public IUIAction? GetVariableData { get; set; } = null;
+    public IUICAction? GetVariableData { get; set; } = null;
 
     /// <summary>
     /// This will be included on post, and takes highest priority. This will overwrite all properties from <see cref="DefaultData"/> and <see cref="GetVariableData"/>
@@ -71,7 +71,7 @@ public class UICActionGetPost : UIComponent, ISubmitAction
     /// <summary>
     /// A function that returns options. <see cref="Options"/> still takes priority over this
     /// </summary>
-    public IUIAction? ClientSideOptions { get; set; } = null;
+    public IUICAction? ClientSideOptions { get; set; } = null;
 
 
 
@@ -86,16 +86,18 @@ public class UICActionGetPost : UIComponent, ISubmitAction
     /// <remarks>
     /// ResultName is available for this action
     /// </remarks>
-    public IUIAction OnSuccess { get; set; }
+    public IUICAction OnSuccess { get; set; }
 
     /// <summary>
     /// This will be triggered after failing the request
     /// </summary>
-    public IUIAction OnFailed { get; set; }
+    public IUICAction OnFailed { get; set; }
+
     #endregion
 
 
     #region Methods
+
     public UICActionGetPost AddDefaultData(string key, object value)
     {
         DefaultData[key] = value;
@@ -122,6 +124,7 @@ public class UICActionGetPost : UIComponent, ISubmitAction
         }
         return this;
     }
+
     #endregion
 
 
@@ -139,7 +142,7 @@ public class UICActionGetPost : UIComponent, ISubmitAction
         /// These handlers will run before the default handlers
         /// <br>A handler takes the result from the request. If the handler does not return a result, the next handler will be triggered.</br>
         /// </summary>
-        public List<IUIAction> Handlers { get; set; } = new();
+        public List<IUICAction> Handlers { get; set; } = new();
 
         /// <summary>
         /// If a previous request is still running, cancel the previous request

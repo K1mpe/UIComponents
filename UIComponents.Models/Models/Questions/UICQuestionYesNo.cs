@@ -24,7 +24,7 @@ public class UICQuestionYesNo : UICQuestionBase, IUIQuestionComponent<bool>
 
     public UICButton ButtonNo { get; set; }
 
-    [IgnoreGetChildrenFunction]
+    [UICIgnoreGetChildrenFunction]
     public UICButton ButtonYes
     {
         get { return ButtonSubmit; }

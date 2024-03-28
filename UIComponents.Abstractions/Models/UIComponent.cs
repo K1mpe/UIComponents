@@ -48,11 +48,11 @@ public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScr
     /// <summary>
     /// The scriptcollection is used to store scripts and styles so they can be rendered together
     /// </summary>
-    public IUICScriptCollection ScriptCollection { get; set; } = new UICScriptCollection();
+    public virtual IUICScriptCollection ScriptCollection { get; set; } = new UICScriptCollection();
 
     public Dictionary<string, string> Attributes { get; set; } = new();
 
-    [IgnoreGetChildrenFunction]
+    [UICIgnoreGetChildrenFunction]
     public IUIComponent? Parent { get; set; }
     #endregion
 

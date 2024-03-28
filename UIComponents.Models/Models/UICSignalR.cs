@@ -54,7 +54,7 @@ public class UICSignalR : UIComponent
     /// The action that will be executed when the signalR arrives
     /// </summary>
     /// <remarks>This action has access to the <see cref="SubscriptionArguments"/></remarks>
-    public IUIAction Action { get; set; } = new UICCustom();
+    public IUICAction Action { get; set; } = new UICCustom();
     #endregion
 
 }

@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-namespace UIComponents.Web.TagHelpers;
+namespace UIComponents.Web.Taghelpers;
 
 /// <summary>
 /// A custom block of html or javascript that is converted to a UIComponent
 /// </summary>
 [HtmlTargetElement("uic-custom")]
-public class UIComponentTaghelper : TagHelper
+public class UICCustomTaghelper : TagHelper
 {
     [HtmlAttributeName("uic")]
     public IUIComponent UIC { get; set; }
@@ -17,7 +17,7 @@ public class UIComponentTaghelper : TagHelper
         var content = await output.GetChildContentAsync();
         var contentString = content.GetContent();
         output.Content.Clear();
-        if(UIC == null || !UIC.GetType().IsAssignableTo(typeof(UICCustom)))
+        if (UIC == null || !UIC.GetType().IsAssignableTo(typeof(UICCustom)))
         {
             throw new Exception("Before using a UIC in the UIComponentTaghelper, first assign it as a new UICCustom()");
         }

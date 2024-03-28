@@ -3,6 +3,6 @@
 namespace UIComponents.Models.Models.Actions;
 
 
-public class UICActionTriggerSubmit : UIComponent, IUIAction
+public class UICActionTriggerSubmit : UIComponent, IUICAction
 {
 }

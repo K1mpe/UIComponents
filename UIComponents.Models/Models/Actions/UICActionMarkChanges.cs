@@ -5,7 +5,7 @@
 /// This method uses the uic.markChanges() method.
 /// <br>This will change readonly values & notify the user of changed input fields.</br>
 /// </summary>
-public class UICActionMarkChanges : IUIAction
+public class UICActionMarkChanges : IUICAction
 {
     #region Fields
     public string RenderLocation => this.CreateDefaultIdentifier();
@@ -29,7 +29,7 @@ public class UICActionMarkChanges : IUIAction
     /// <summary>
     /// The component to set the value too
     /// </summary>
-    [IgnoreGetChildrenFunction]
+    [UICIgnoreGetChildrenFunction]
     public IUIComponent Component { get; set; }
 
     /// <summary>

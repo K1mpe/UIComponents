@@ -203,17 +203,17 @@ namespace UIComponents.Models.Models.Card
 
         #region Triggers
 
-        public IUIAction TriggerOpen()
+        public IUICAction TriggerOpen()
         {
             return new UICCustom($"$('#{this.GetId()}').trigger('uic-open');");
         }
 
-        public IUIAction TriggerClose()
+        public IUICAction TriggerClose()
         {
             return new UICCustom($"$('#{this.GetId()}').trigger('uic-close');");
         }
 
-        public IUIAction TriggerDestroy()
+        public IUICAction TriggerDestroy()
         {
             return new UICCustom($"$('#{this.GetId()}').trigger('uic-destroy');");
         }

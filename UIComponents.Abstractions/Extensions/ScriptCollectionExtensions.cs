@@ -15,7 +15,7 @@ public static class ScriptCollectionExtensions
         hasScriptCollection.ScriptCollection.AddToScripts(new UICCustom(razerCode));
     }
 
-    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, IUIAction scriptComponent)
+    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, IUICAction scriptComponent)
     {
         hasScriptCollection.ScriptCollection.AddToScripts(scriptComponent);
     }

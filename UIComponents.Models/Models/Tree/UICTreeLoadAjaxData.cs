@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Models.Models.Tree;
 
-public class UICTreeLoadAjaxData : IUIAction
+public class UICTreeLoadAjaxData : IUICAction
 {
     #region Interfaces
     public string RenderLocation => this.CreateDefaultIdentifier();
@@ -29,7 +29,7 @@ public class UICTreeLoadAjaxData : IUIAction
     /// <summary>
     /// A function that creates a property 'result' with the data required to parse in the JsTree
     /// </summary>
-    public IUIAction Result { get; set; }
+    public IUICAction Result { get; set; }
     /*
      
     public async Task<IActionResult> GetData(string id)

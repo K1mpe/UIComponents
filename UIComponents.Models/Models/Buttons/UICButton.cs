@@ -33,7 +33,7 @@ public class UICButton : UIComponent
     /// <remarks>
     /// ev => ClickEventArgs
     /// </remarks>
-    public IUIAction OnClick { get; set; } = new UICCustom();
+    public IUICAction OnClick { get; set; } = new UICCustom();
 
     public UICIcon PrependButtonIcon { get; set; }
     public UICIcon AppendButtonIcon { get; set; }

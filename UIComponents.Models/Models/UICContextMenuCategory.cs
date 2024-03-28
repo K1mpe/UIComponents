@@ -32,7 +32,7 @@ namespace UIComponents.Models.Models
         /// <remarks>
         /// (category, totalMenuItems) => {...}
         /// </remarks>
-        public IUIAction CategoryRenderer { get; set; }
+        public IUICAction CategoryRenderer { get; set; }
 
 
 

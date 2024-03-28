@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Models.Models.Actions;
 
-public class UICActionServerResponse : IUIAction
+public class UICActionServerResponse : IUICAction
 {
     #region Field
     public string RenderLocation => this.CreateDefaultIdentifier();
@@ -36,6 +36,6 @@ public class UICActionServerResponse : IUIAction
     /// Before sending the request, this action is called client side to get additional properties.
     /// </summary>
     /// If this result has the same properties as <see cref="Data"/>, the <see cref="Data"/> takes priority.
-    public IUIAction? GetVariableData { get; set; } = null;
+    public IUICAction? GetVariableData { get; set; } = null;
     #endregion
 }

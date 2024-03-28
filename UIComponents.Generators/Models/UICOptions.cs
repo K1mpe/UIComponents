@@ -38,7 +38,7 @@ public class UICOptions
     /// <summary>
     /// Hide all readonly properties
     /// </summary>
-    public bool HideReadonlyProperties { get; set; } = OptionDefaults.HidereadonlyProperties;
+    public bool HideReadonlyProperties { get; set; } = OptionDefaults.HideReadonlyProperties;
 
     /// <summary>
     /// A list with properties shown in the form, this is not case-sensitive.

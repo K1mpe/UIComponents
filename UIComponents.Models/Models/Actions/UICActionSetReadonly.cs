@@ -5,7 +5,7 @@ namespace UIComponents.Models.Models.Actions;
 /// <summary>
 /// This action will set a form as readonly
 /// </summary>
-public class UICActionSetReadonly : UIComponent, IUIAction
+public class UICActionSetReadonly : UIComponent, IUICAction
 {
 
     public UICActionSetReadonly() : base()

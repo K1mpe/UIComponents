@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Diagnostics;
+using System.Text;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Registrations;
 using UIComponents.Web.Components;
@@ -30,12 +31,23 @@ public static class UICBuilderExtensions
 
         var executingAssembly = Assembly.GetCallingAssembly();
         var currentAssembly = Assembly.GetExecutingAssembly();
-
+        var currentVersion = currentAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
         string root = executingAssembly.Location;
         var manifestNames = currentAssembly.GetManifestResourceNames();
         string currentAssemblyName = currentAssembly.GetName().Name;
         var dir = Directory.GetCurrentDirectory();
 
+
+        var versionFile = $"{dir}\\UIComponents\\Version.md";
+        if (options.OnlyReplaceNewerVersion)
+        {
+            if (File.Exists(versionFile))
+            {
+                var content = File.ReadAllText(versionFile);
+                if (content.StartsWith(currentVersion))
+                    return services;
+            }
+        }
 
         if (options.ReplaceScripts)
         {
@@ -127,6 +139,35 @@ public static class UICBuilderExtensions
 
             
         }
+        if (options.ReplaceTaghelpers)
+        {
+
+            string targetRoote = $"{dir}\\UIComponents\\Taghelpers\\";
+            string sourceRoute = $"{currentAssemblyName}.UIComponents.Taghelpers.";
+            if (!Directory.Exists(targetRoote))
+            {
+                Directory.CreateDirectory(targetRoote);
+            }
+
+            var components = manifestNames.Where(x => x.StartsWith(sourceRoute));
+
+            foreach (var component in components)
+            {
+                string componentDir = FixFilePath(component.Replace(sourceRoute, targetRoote));
+                var fileInfo = new FileInfo(componentDir);
+                Directory.CreateDirectory(fileInfo.DirectoryName);
+                if (File.Exists(componentDir))
+                    File.Delete(componentDir);
+
+                using (var componentFile = File.Create(componentDir))
+                {
+                    using (var resourceStream = currentAssembly.GetManifestResourceStream(component))
+                    {
+                        resourceStream!.CopyTo(componentFile);
+                    }
+                }
+            }
+        }
         if (options.AddReadMe)
         {
             string targetRoote = $"{dir}\\UIComponents\\";
@@ -183,6 +224,27 @@ public static class UICBuilderExtensions
             }
 
         }
+
+        #region CreateVersionFile
+        var targetFile = $"{dir}\\UIComponents\\Version.md";
+        if (File.Exists(targetFile))
+            File.Delete(targetFile);
+        using(var versionFileWriter = File.Create(targetFile))
+        {
+            string text = currentVersion;
+            text += Environment.NewLine;
+            text += Environment.NewLine;
+            text += "If you remove this file, the UIComponents will rebuild the file on next startup.";
+            text += Environment.NewLine;
+            text += $"This file is used for UIConfigOptions.${nameof(UicConfigOptions.OnlyReplaceNewerVersion)} if the version number matches";
+            text += Environment.NewLine;
+            text += $"If this version matches the version of UIComponents, no components, scripts, etc will be created on build with UIConfigOptions.${nameof(UicConfigOptions.OnlyReplaceNewerVersion)} on.";
+            text += Environment.NewLine;
+
+            var bytes = new UTF8Encoding(true).GetBytes(text);
+            versionFileWriter.Write(bytes, 0, bytes.Length);
+        }
+        #endregion
         return services;
     }
 

@@ -3,7 +3,7 @@
 /// <summary>
 /// These are the actions available for Inputs
 /// </summary>
-public class UICActions : UIComponent, IUIAction
+public class UICActions : UIComponent, IUICAction
 {
     #region Fields
 
@@ -11,11 +11,11 @@ public class UICActions : UIComponent, IUIAction
     /// <summary>
     /// This is a list of all the actions that are assigned in the UIActions class
     /// </summary>
-    public List<IUIAction> AllActions
+    public List<IUICAction> AllActions
     {
         get
         {
-            return new List<IUIAction>()
+            return new List<IUICAction>()
             {
                 OnClick,
                 OnChange,
@@ -43,27 +43,27 @@ public class UICActions : UIComponent, IUIAction
     /// <summary>
     /// Action triggered when clicking on the element
     /// </summary>
-    public IUIAction OnClick { get; set; } = new UICCustom();
+    public IUICAction OnClick { get; set; } = new UICCustom();
 
     /// <summary>
     /// Action triggered on each change (key-up)
     /// </summary>
-    public IUIAction OnChange { get; set; } = new UICCustom();
+    public IUICAction OnChange { get; set; } = new UICCustom();
 
     /// <summary>
     /// Action triggered after the value has updated (focus out & change)
     /// </summary>
-    public IUIAction AfterChange { get; set; } = new UICCustom();
+    public IUICAction AfterChange { get; set; } = new UICCustom();
 
     /// <summary>
     /// Action triggered when element gets focus
     /// </summary>
-    public IUIAction OnFocus { get; set; } = new UICCustom();
+    public IUICAction OnFocus { get; set; } = new UICCustom();
 
     /// <summary>
     /// Action triggered when element loses focus
     /// </summary>
-    public IUIAction OnLoseFocus { get; set; } = new UICCustom();
+    public IUICAction OnLoseFocus { get; set; } = new UICCustom();
 
 
     /// <summary>

@@ -13,14 +13,14 @@ public class UICContextMenuItem : IUIComponent, IUICHasScriptCollection
     {
     }
 
-    public UICContextMenuItem(Func<string> selector, IDropdownItem dropdownItem, IUIAction onClick = null)
+    public UICContextMenuItem(Func<string> selector, IDropdownItem dropdownItem, IUICAction onClick = null)
     {
         Selector = selector;
         DropdownItem = dropdownItem;
         OnClick = onClick;
     }
 
-    public UICContextMenuItem(string selector, IDropdownItem dropdownItem, IUIAction onClick = null) : this(() => selector, dropdownItem, onClick)
+    public UICContextMenuItem(string selector, IDropdownItem dropdownItem, IUICAction onClick = null) : this(() => selector, dropdownItem, onClick)
     {
     }
 
@@ -74,7 +74,7 @@ public class UICContextMenuItem : IUIComponent, IUICHasScriptCollection
     /// <br> clickedElement: the lowest element where the contextMenu has opened</br>
     /// <br> event: the clickevent</br>
     /// </remarks>
-    public IUIAction OnClick { get; set; }
+    public IUICAction OnClick { get; set; }
 
     /// <summary>
     /// Optional: A function that returns a string with the text that is displayed in the menuItem
@@ -83,7 +83,7 @@ public class UICContextMenuItem : IUIComponent, IUICHasScriptCollection
     /// <br> target: the target that matches the selector</br>
     /// <br> clickedElement: the lowest element where the contextMenu has opened</br>
     /// </remarks>
-    public IUIAction Text { get; set; }
+    public IUICAction Text { get; set; }
 
     /// <summary>
     /// Optional: A function that returns a string with the text that is displayed in the tooltip
@@ -92,7 +92,7 @@ public class UICContextMenuItem : IUIComponent, IUICHasScriptCollection
     /// <br> target: the target that matches the selector</br>
     /// <br> clickedElement: the lowest element where the contextMenu has opened</br>
     /// </remarks>
-    public IUIAction Title { get; set; }
+    public IUICAction Title { get; set; }
 
     /// <summary>
     /// Optional: A function that returns a object where each property is set as a attribute
@@ -101,7 +101,7 @@ public class UICContextMenuItem : IUIComponent, IUICHasScriptCollection
     /// <br> target: the target that matches the selector</br>
     /// <br> clickedElement: the lowest element where the contextMenu has opened</br>
     /// </remarks>
-    public new IUIAction Attributes { get; set; }
+    public new IUICAction Attributes { get; set; }
 
     IUICScriptCollection IUICHasScriptCollection.ScriptCollection { get; set; } = new UICScriptCollection();
 

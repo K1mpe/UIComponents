@@ -12,6 +12,36 @@ public static class InputGroupExtensions
             action(first);
         return first;
     }
+    public static bool TryFindInputGroupByPropertyName(this IUIComponent element, string propertyName, Action<UICInputGroup> action)
+    {
+        try
+        {
+            var result = FindInputGroupByPropertyName(element, propertyName);
+            if (result == null)
+                return false;
+
+            action(result);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+    public static bool TryFindInputGroupByPropertyName(this IUIComponent element, string propertyName, out UICInputGroup result)
+    {
+        try
+        {
+            result = FindInputGroupByPropertyName(element, propertyName);
+            return result != null;
+        }
+        catch
+        {
+            result = null;
+            return false;
+        }
+    }
+
     public static List<UICInputGroup> FindInputGroupsByPropertyName(this IUIComponent element, string propertyName)
     {
         if (element == null)

@@ -44,17 +44,25 @@ public class UICInputList : UICInput<object[]>
         PrependButtonIcon = new UICIcon(IconDefaults.Delete.Icon),
         Tooltip = TranslationDefaults.ButtonDelete
     }.AddClass("hidden-readonly");
+
+    public ButtonOrientationEnum ButtonOrientation { get; set; }
     #endregion
 
 
     #region ClientSideMethods
-    public IUIAction TriggerAddInstance(object value = null)
+    public IUICAction TriggerAddInstance(object value = null)
     {
         return new UICCustom($"$('#{this.GetId()}').trigger('uic-add', {JsonSerializer.Serialize(value)});");
     }
-    public IUIAction TriggerRemoveInstance(string instanceSelector)
+    public IUICAction TriggerRemoveInstance(string instanceSelector)
     {
         return new UICCustom($"$('{instanceSelector}').trigger('uic-remove');");
     }
     #endregion
+    public enum ButtonOrientationEnum
+    {
+        Auto,
+        Horizontal,
+        Vertical
+    }
 }

@@ -25,13 +25,22 @@ public partial class UicConfigOptions
     #endregion
 
 
-   
+
 
     #region Properties
+
     /// <summary>
-    /// Replace the wwwroot/uic/uic.js file
+    /// The replace parameters only work if there is no version file in the UIComponents folder or the file is not the same version
     /// </summary>
-    public bool ReplaceScripts { get; set; } = true;
+    /// <remarks>
+    /// <br><see cref="ReplaceComponents"/>   </br>
+    /// <br><see cref="ReplaceCss"/>          </br>
+    /// <br><see cref="ReplaceScripts"/>      </br>
+    /// <br><see cref="ReplaceTaghelpers"/>   </br>
+    /// <br><see cref="AddReadMe"/>           </br>
+    /// <br><see cref="AddChangeLog"/>        </br>
+    /// </remarks>
+    public bool OnlyReplaceNewerVersion { get; set; } = true;
 
     /// <summary>
     /// Replace the wwwroot/uic/uic.scss
@@ -43,6 +52,12 @@ public partial class UicConfigOptions
     /// </summary>
     public bool ReplaceComponents { get; set; } = true;
 
+    /// <summary>
+    /// Replace the wwwroot/uic/uic.js file
+    /// </summary>
+    public bool ReplaceScripts { get; set; } = true;
+
+    public bool ReplaceTaghelpers { get; set; } = true;
     public bool AddReadMe { get; set; }
     public bool AddChangeLog { get; set; }
 

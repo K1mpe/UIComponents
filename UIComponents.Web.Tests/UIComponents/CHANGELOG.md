@@ -1,4 +1,9 @@
-﻿# 2024-03-25 (1.1.23)
+﻿# 2024-03-28 (1.1.24)
+- Fix mark changes
+- Renderlocation can now end with .cshtml  (automatically add .cshtml if the last 7 characters do not contain a point)
+- TryFind... extension methods
+- Adding UICCustomTaghelper
+- Including extra documentation﻿# 2024-03-25 (1.1.23)
 - Hide Sidepanel if no sidepanelcontent is available
 - Fix Actions for Select2 input
 - Always include defaultValidationErrorHandles in registration

@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Models.Models.Actions;
 
-public class UICActionGetValue : UIComponent, IUIAction
+public class UICActionGetValue : UIComponent, IUICAction
 {
     #region ctor
     public UICActionGetValue()
@@ -19,7 +19,7 @@ public class UICActionGetValue : UIComponent, IUIAction
     #endregion
 
     #region Properties
-    [IgnoreGetChildrenFunction]
+    [UICIgnoreGetChildrenFunction]
     public IUIComponent Component { get; set; }
 
     public string Selector { get; set; }

@@ -23,7 +23,6 @@ public class UICButtonCreate : UICButton
         {
             OnClick = new UICActionNavigate($"/{type.Name}/Create");
         }
-
     }
 
 }

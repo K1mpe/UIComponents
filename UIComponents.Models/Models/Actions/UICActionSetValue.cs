@@ -8,7 +8,7 @@ namespace UIComponents.Models.Models.Actions;
 /// <remarks>
 /// If you want to change the value of a editable form, use <see cref="UICActionMarkChanges"/> to notify the user of the changes
 /// </remarks>
-public class UICActionSetValue : UIComponent, IUIAction
+public class UICActionSetValue : UIComponent, IUICAction
 {
 
     #region Ctor
@@ -29,7 +29,7 @@ public class UICActionSetValue : UIComponent, IUIAction
     /// <summary>
     /// The component to set the value too
     /// </summary>
-    [IgnoreGetChildrenFunction]
+    [UICIgnoreGetChildrenFunction]
     public IUIComponent Component { get; set; }
 
     /// <summary>

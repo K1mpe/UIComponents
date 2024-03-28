@@ -38,7 +38,7 @@
     if (Model.Header?.Color != null)
         Model.AddAttribute("class", $"card-{Model.Header.Color.ToLower()}");
 
-    if (Model.DefaultClosed)
+    if (Model.DefaultClosed && Model.Header.HasValue() && !Model.HideHeader)
         Model.AddAttribute("class", "collapsed-card");
 
     if (!string.IsNullOrEmpty(Model.MinWidth))
@@ -89,7 +89,7 @@
                 
         </text>
 
-        @if (Model.RememberCollapsedState)
+        @if (Model.RememberCollapsedState && Model.Header.HasValue() && !Model.HideHeader)
         {
             <text>
                 try{

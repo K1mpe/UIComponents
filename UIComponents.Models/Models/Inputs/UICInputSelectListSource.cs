@@ -3,7 +3,7 @@ using UIComponents.Abstractions.Interfaces.Inputs;
 
 namespace UIComponents.Models.Models.Inputs;
 
-public class UICInputSelectListSource : IUIAction
+public class UICInputSelectListSource : IUICAction
 {
 
     public string RenderLocation => this.CreateDefaultIdentifier();
@@ -29,7 +29,7 @@ public class UICInputSelectListSource : IUIAction
 
 
     #region Properties
-    [IgnoreGetChildrenFunction]
+    [UICIgnoreGetChildrenFunction]
     public IUICInputSelectList InputSelectList { get; set; }
 
     /// <summary>
@@ -55,7 +55,7 @@ public class UICInputSelectListSource : IUIAction
     /// <br>    })</br>
     /// <br>    return results</br>
     /// </remarks>
-    public IUIAction? MapToSelectListItems { get; set; } = null;
+    public IUICAction? MapToSelectListItems { get; set; } = null;
 
     /// <summary>
     /// When page is loaded, do not load the select list
@@ -76,7 +76,7 @@ public class UICInputSelectListSource : IUIAction
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public IUIAction TriggerRefresh(){
+    public IUICAction TriggerRefresh(){
         if (InputSelectList == null)
             return null;
 

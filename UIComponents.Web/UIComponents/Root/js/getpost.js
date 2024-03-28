@@ -24,7 +24,7 @@
                     });
                     response.Errors.forEach((item) => {
                         var propertyName = item.PropertyName;
-                        var errors = item.Error;
+                        var errors = item.Errors;
 
                         var spanElement = $(`span.field-validation-valid[data-valmsg-for="${propertyName}"]`);
                         if (!spanElement.length)

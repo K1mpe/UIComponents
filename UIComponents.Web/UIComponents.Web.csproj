@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.1.23</Version>
+	<Version>1.1.24</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -15,14 +15,30 @@
 	  <EmbeddedResource Include="UIComponents\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="UIComponents\Root\**" Pack="true" />
 	  <Content Remove="UIComponents\ComponentViews\RenderMultiple.cshtml" />
-	  <EmbeddedResource Include="README.md" />
 	  <EmbeddedResource Include="UIComponents\ChangeLog\**" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Compile Remove="UIComponents\Taghelpers\UIComponentTaghelper\**" />
+    <Content Remove="UIComponents\Taghelpers\UIComponentTaghelper\**" />
+    <EmbeddedResource Remove="UIComponents\Taghelpers\UIComponentTaghelper\**" />
+    <None Remove="UIComponents\Taghelpers\UIComponentTaghelper\**" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Compile Remove="UIComponents\Taghelpers\UICCustomTaghelper.cs" />
   </ItemGroup>
 	
   <ItemGroup>
     <None Remove="UIComponents\ChangeLog\2024-03-15.md" />
     <None Remove="UIComponents\ChangeLog\2024-03-20.md" />
     <None Remove="UIComponents\ChangeLog\2024-03-22.md" />
+    <None Remove="UIComponents\ChangeLog\2024-03-28.md" />
+    <EmbeddedResource Include="UIComponents\Taghelpers\UICCustomTaghelper.cs" />
+    <EmbeddedResource Include="..\README.md" Link="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Include="UIComponents\ComponentViews\ActionDelayedAction\Default.cshtml" />
   </ItemGroup>
 	
 
@@ -39,14 +55,4 @@
     <ProjectReference Include="..\UIComponents.Generators\UIComponents.Generators.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-	  <Folder Include="Taghelpers\UIComponentTaghelper" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="UIComponents\ComponentViews\InputList\Default.cshtml" />
-    <None Include="UIComponents\ComponentViews\InputObject\Default.cshtml" />
-  </ItemGroup>
-
- 
 </Project>

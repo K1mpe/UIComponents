@@ -34,6 +34,7 @@
 
     Model.AddScript(
         @<text>
+
         $('#@id').on('uic-help', ()=>{
             console.log("ListInput $('#@id').trigger('uic-setValue', value) => Sets the value of all list items");
             console.log("ListInput $('#@id').trigger('uic-setValue-index', [value, index]) => Sets the value of the item at this index");
@@ -97,15 +98,21 @@
             $('#@id > .input-instances').html('');
             triggerChange();
         });
-
+        let counter = 0;
         $('#@id').on('uic-add', (ev, value)=>{
             let instanceList = $('#@id > .input-instances');
             let currentChildCount = instanceList.children().length;
-            instanceList.append($('#@id > .input-template > .input-instance').clone());
+
+            counter++;
+            let clone = $('#@id > template').html()
+            .replaceAll(@Html.Raw("/(?<=\\s)for=\"(.*?)\"/g"), `for=\"$1_${counter}\"`)    // Replace for="…" => for="…_1"
+            .replaceAll(@Html.Raw("/(?<=\\s)id=\"(.*?)\"/g"), `id=\"$1_${counter}\"`)      // Replace id="…" => id="…_1"
+            .replaceAll(@Html.Raw("/(\"|'|`)#(.*?)(?=\\1|\\s)/g"), `$&_${counter}`);       // Replace $('#…') => $('#…_1');
+            instanceList.append(clone);
             if(value != undefined)
                 $('#@id').trigger('uic-setValue-index', [value, currentChildCount]);
-                
-            triggerChange();
+
+        triggerChange();
         });
 
         $('#@id').on('uic-remove', (ev, index) =>{
@@ -140,35 +147,52 @@
         function setButtonDirection(){
             $('#@id .input-instances > .input-instance').each((index, item)=>{
                 let buttons = $(item).find('> .instance-buttons');
-                buttons.removeClass('vertical');
-                let buttonCount = buttons.children().length;
-                let input = $($(item).children()[0])
-                input.css('max-height', '1px');
-                let buttonHeight = buttons.height();
-                input.css('max-height', '');
+                @switch(Model.ButtonOrientation){
+                    case UICInputList.ButtonOrientationEnum.Horizontal:
+                        <text>
+                        return;
+                        </text>
+                    break;
+                    case UICInputList.ButtonOrientationEnum.Vertical:
+                        <text>
+                        buttons.addClass('vertical');
+                        return;
+                        </text>
+                    break;
+                    case UICInputList.ButtonOrientationEnum.Auto:
+                    <text>
+                        buttons.removeClass('vertical');
+                        let buttonCount = buttons.children().length;
+                        let input = $($(item).children()[0])
+                        input.css('max-height', '1px');
+                        let buttonHeight = buttons.height();
+                        input.css('max-height', '');
 
-                let inputHeight = input.height();
-                if(inputHeight >= (buttonCount * buttonHeight))
-                    buttons.addClass('vertical');
+                        let inputHeight = input.height();
+                        if(inputHeight >= (buttonCount * buttonHeight))
+                        buttons.addClass('vertical');
+                    </text>
+                    break;
+                }
             })
         }
-    @foreach(var value in Model.Value)
-    {
-        <text>
-            console.log('adding', @Json.Serialize(value));
-            $('#@id').trigger('uic-add', @Json.Serialize(value));
-        </text>
-    }
+        @foreach(var value in Model.Value)
+        {
+            <text>
+                console.log('adding', @Json.Serialize(value));
+                $('#@id').trigger('uic-add', @Json.Serialize(value));
+            </text>
+        }
         </text>);
 }
 
 <div @Html.Raw(Model.GetHtmlAttributes())>
     <div class="input-instances">
+
     </div>
-    <div class="input-template d-none">
+    <template class="input-template">
         <div class="input-instance">
-            @await Model.SingleInstanceInput.InvokeAsync(Component)
-            
+            @await Model.SingleInstanceInput.InvokeAsync(Component)     
             <div class="instance-buttons">
                 @if (Model.ShowMoveButtons)
                 {
@@ -178,6 +202,6 @@
                 @await Model.RemoveButton.InvokeAsync(Component)
             </div> 
         </div>
-    </div>
+    </template>
     @await Model.AddButton.InvokeAsync(Component)
 </div>

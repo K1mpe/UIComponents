@@ -34,6 +34,7 @@ builder.Services.AddMvc();
 
 builder.Services.AddUIComponentWeb(config =>
 {
+    config.OnlyReplaceNewerVersion = false;
     config.CheckPermissionServiceType = true;
     config.CheckLanguageServiceType = false;
     config.AddChangeLog = true;

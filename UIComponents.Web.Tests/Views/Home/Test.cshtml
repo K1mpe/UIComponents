@@ -136,6 +136,14 @@
             .AddCenter(new UICButton(new Translatable("CenterR 4")))
             .AddCenter(new UICButton(new Translatable("CenterR 5")))
         ));
-        #endregion
+    #endregion
+
+    #region Taghelper
+    accordion.Add(new UICCard("CustomTaghelper").Add(out var taghelper, new UICCustom()));
+    #endregion
 }
+<uic-custom uic="taghelper">
+    <h1>Taghelper</h1>
+</uic-custom>
+
 @await accordion.InvokeAsync(Component)
