@@ -1,4 +1,6 @@
-﻿namespace UIComponents.Models.Models.Dropdown;
+﻿using UIComponents.Models.Helpers;
+
+namespace UIComponents.Models.Models.Dropdown;
 
 [PrependAppendInputGroupClass("input-group-button")]
 public class UICDropdown : UIComponent, IUICHasChildren<IDropdownItem>
@@ -70,7 +72,7 @@ public class UICDropdown : UIComponent, IUICHasChildren<IDropdownItem>
     #region Converters
     public UICDropdownSubMenu ConvertToSubMenu()
     {
-        var subMenu = CommonHelper.Convert<UICDropdownSubMenu>(this);
+        var subMenu = InternalHelper.ConvertObject<UICDropdownSubMenu>(this);
         if(Button is UICButton button)
         {
             subMenu.Content = button.ButtonText;

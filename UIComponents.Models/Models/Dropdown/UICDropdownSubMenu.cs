@@ -1,4 +1,6 @@
-﻿namespace UIComponents.Models.Models.Dropdown;
+﻿using UIComponents.Models.Helpers;
+
+namespace UIComponents.Models.Models.Dropdown;
 
 public class UICDropdownSubMenu : UICDropdownItem, IUICHasChildren<IDropdownItem>
 {
@@ -62,7 +64,7 @@ public class UICDropdownSubMenu : UICDropdownItem, IUICHasChildren<IDropdownItem
     #region Converters
     public UICDropdown ConvertToDropdown(UICDropdown parentDropdown = null)
     {
-        var dropdown = CommonHelper.Convert<UICDropdown>(this);
+        var dropdown = InternalHelper.ConvertObject<UICDropdown>(this);
         if(parentDropdown.Button is UICButton dropdownButton)
         {
             dropdownButton.ButtonText = Content;

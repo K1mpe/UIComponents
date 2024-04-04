@@ -167,6 +167,7 @@ public class UICOptions
     #endregion
 
     public UICDatetimeStep DatetimePrecision { get; set; } = UICDatetimeStep.Minute;
+    public UICTimeonlyEnum TimeOnlyPrecision { get; set; } = UICTimeonlyEnum.Minute;
     public bool InputGroupSingleRow { get; set; } = true;
 
     /// <summary>

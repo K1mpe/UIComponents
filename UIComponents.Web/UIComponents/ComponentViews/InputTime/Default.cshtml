@@ -1,0 +1,127 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICInputTime
+
+@inject IUICLanguageService L
+
+@{
+    Model.AddAttribute("class", "form-control");
+
+
+
+
+    string step = "";
+
+    string timeFormat = string.Empty;
+
+    switch (Model.Precision)
+    {
+        case UICTimeonlyEnum.Minute:
+            step = (Model.Step * 60).ToString();
+            timeFormat = "HH:mm";
+            break;
+        case UICTimeonlyEnum.Second:
+            step = (Model.Step).ToString();
+            timeFormat = "HH:mm:ss";
+            break;
+        case UICTimeonlyEnum.Milliseconds:
+            step = $".{Model.Step}";
+            timeFormat = "HH:mm:ss.fff";
+            break;
+    }
+    Model.AddAttribute("step", step);
+
+    string id = Model.GetId();
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id}");
+    }
+
+   
+
+    if (Model.ValidationMinTime.HasValue)
+        Model.AddAttribute("min", Model.ValidationMinTime.Value.ToString(timeFormat));
+
+    if (Model.ValidationMaxTime.HasValue)
+        Model.AddAttribute("max", Model.ValidationMaxTime.Value.ToString(timeFormat));
+
+    if (Model.Value != null)
+        Model.AddAttribute("value", Model.Value.Value.ToString(timeFormat));
+}
+
+
+
+<input type="time" @Html.Raw(Model.GetHtmlAttributes()) />
+
+
+@{
+
+    string propertyName = Model.PropertyName;
+    if (Model.DisplayName != null)
+        propertyName = await L.Translate(Model.DisplayName);
+
+    <script>
+
+        $(document).ready(function () {
+            console.log('validation');
+            function validateInput(element) {
+                var currentValue = new moment(element.val(), @Html.JsEncode(timeFormat, "'"));
+                var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+                span.text("");
+                
+        @if (Model.ValidationMaxTime != null)
+        {
+            <text>
+                if (currentValue > new moment('@Model.ValidationMaxTime.Value.ToString(timeFormat)', @Html.JsEncode(timeFormat, "'")))
+                    span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMaxValue(propertyName, Model.ValidationMaxTime.Value)));
+            </text>
+        }
+
+        @if (Model.ValidationMinTime != null)
+        {
+            <text>
+                if (new moment('@Model.ValidationMinTime.Value.ToString(timeFormat)', @Html.JsEncode(timeFormat, "'")) > currentValue)
+                    span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMinValue(propertyName, Model.ValidationMinTime.Value)));
+            </text>
+        }
+        @if (Model.ValidationRequired)
+        {
+            <text>
+                if (currentValue.length == 0)
+                    span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+            </text>
+        }
+                    }
+
+            $('#@id').keyup(function () {
+                validateInput($(this));
+            });
+            $('#@id').change(function () {
+                validateInput($(this));
+            });
+            $('#@id').blur(function () {
+                validateInput($(this));
+            });
+
+        });
+    </script>
+}
+
+
+@await Model.Actions.InvokeAsync(Component)

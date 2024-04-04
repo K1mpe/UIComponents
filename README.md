@@ -1378,6 +1378,9 @@ Else, if property is not nullable, these check will run:
 - Has FakeForeignKeyAttribute with required on
 - Check UICInheritAttribute
 
+#### UICValidatorRequired : IUICPropertyValidationRuleRequired
+Set readonly if **Readonly** attribute is set and has value true.
+
 #### UICValidatorRangeAttribute< T > : IUICPropertyValidationRuleMinValue< T >, IUICPropertyValidationRuleMaxValue< T > where T : struct, IComparable
 Check the **RangeAttribute** on the current property or inherit property
 This implementation is type specific, and is currently only implemented for:

@@ -7,7 +7,6 @@ global using UIComponents.Abstractions.Interfaces;
 global using UIComponents.Abstractions.Models;
 global using UIComponents.Abstractions.Varia;
 global using UIComponents.Models.Extensions;
-global using UIComponents.Models.Helpers;
 global using UIComponents.Models.Models;
 global using UIComponents.Models.Models.Actions;
 global using UIComponents.Models.Models.Buttons;

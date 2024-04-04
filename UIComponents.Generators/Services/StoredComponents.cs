@@ -24,7 +24,7 @@ public class StoredComponents : IUICStoredComponents
     /// <summary>
     /// The timespan the components can be stored
     /// </summary>
-    public TimeSpan ClearComponents { get; set; } = TimeSpan.FromHours(1);
+    public static TimeSpan ClearComponents { get; set; } = TimeSpan.FromHours(1);
     #endregion
 
     #region Methods
@@ -90,10 +90,13 @@ public class StoredComponents : IUICStoredComponents
     /// Store a component and get a key for later use (Example: Can be send through signalR)
     /// </summary>
     /// <param name="component">The component that should be stored</param>
+    /// <param name="userIds">Can be empty if not for a specific user.</param>
     /// <param name="singleUse">If true, component is removed after a single get request</param>
     /// <returns></returns>
     public string StoreComponentForUsers(IUIComponent component, IEnumerable<object> userIds, bool singleUse)
     {
+        if (userIds == null)
+            userIds = new List<string>();
         lock (_components)
         {
             string key = string.Empty;

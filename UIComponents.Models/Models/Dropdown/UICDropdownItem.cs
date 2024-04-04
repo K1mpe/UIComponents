@@ -1,4 +1,5 @@
 ﻿using UIComponents.Abstractions.Models;
+using UIComponents.Models.Helpers;
 using UIComponents.Models.Models.Icons;
 
 namespace UIComponents.Models.Models.Dropdown;
@@ -51,7 +52,7 @@ public class UICDropdownItem : UIComponent, IDropdownItem, IHasIcon<UICIcon>
 
     public virtual UICButton ConvertToButton(UICDropdown dropdown = null)
     {
-        var button = CommonHelper.Convert<UICButton>(Icon);
+        var button = InternalHelper.ConvertObject<UICButton>(Icon);
         if(dropdown != null && dropdown.Button is UICButton dropdownButton)
         {
             button = dropdownButton;

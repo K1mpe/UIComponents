@@ -25,13 +25,13 @@ namespace UIComponents.Web.Tests.Models
 
         public bool? ThreeStateBool { get; set; }
 
-        [UICSpan("<span class='text-warning'>Dit</span> <blub>is een <sub>spantekst</sub>  &|é@\"#'([§^è!ç{0})-¨[^$*]ù%´µ``<>\\")]
+        [UICSpan("<span class='text-warning'>Dit</span> <blub>is een <sub>spantekst</sub>  &|é@#\"'([§^è!ç{0})-¨[^$*]ù%´µ``<>\\")]
         [Range(10, 20)]
         public int Number { get; set; }
 
         public double Decimal { get; set; }
 
-
+        [ReadOnly(true)]
         public TimeSpan TimeSpan { get; set; }
 
         public TestEnum Enum { get; set; }
@@ -48,6 +48,7 @@ namespace UIComponents.Web.Tests.Models
 
 
         public DateTime DateTime { get; set; } = DateTime.Now;
+        public TimeOnly TimeOnly { get; set; }
     }
 
     public enum TestEnum

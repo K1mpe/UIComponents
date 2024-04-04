@@ -258,7 +258,17 @@ namespace UIComponents.Web.Tests.Controllers
                 ShowEditButton = false,
                 PostForm= new UICActionPost("/home/Post")
             });
-            return ViewOrPartial(component);
+
+            var timeOnly = new UICInputTime("blub")
+            {
+                Value = new TimeOnly(10, 30),
+                ValidationMinTime = new TimeOnly(6, 0),
+                ValidationMaxTime = new TimeOnly(12, 00),
+                Precision = UICTimeonlyEnum.Minute,
+                Step = 10
+            };
+            var inputGroup = new UICInputGroup("Test", timeOnly);
+            return ViewOrPartial(inputGroup);
         }
     }
 }

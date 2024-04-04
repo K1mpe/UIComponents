@@ -34,11 +34,20 @@ public class UICGeneratorPropertyViewPermission : UICGeneratorProperty
         {
             if(UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inheritInfo))
             {
-                if (!await permissionService!.CanViewObject(inheritInfo.DeclaringType))
-                    return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
+                try
+                {
+                    var instance = Activator.CreateInstance(inheritInfo.DeclaringType);
+                    if (!await permissionService!.CanViewObject(instance))
+                        return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
 
-                if (!await permissionService.CanViewProperty(inheritInfo.DeclaringType, inheritInfo.Name))
-                    return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
+                    if (!await permissionService.CanViewProperty(instance, inheritInfo.Name))
+                        return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error Creating Inherit permissions");
+                }
+                
             }
             if(!await permissionService.CanViewProperty(args.ClassObject, args.PropertyName!))
                 return new UICGeneratorResponseSuccess<IUIComponent>(null, false);

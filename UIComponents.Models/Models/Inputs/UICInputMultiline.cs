@@ -1,4 +1,5 @@
 ﻿using UIComponents.Abstractions.Models;
+using UIComponents.Models.Helpers;
 
 namespace UIComponents.Models.Models.Inputs;
 
@@ -45,6 +46,6 @@ public class UICInputMultiline : UICInput<string>
     #endregion
 
     #region Converters
-    public UICInputText ConvertToSingleLine() => CommonHelper.Convert<UICInputText>(this);
+    public UICInputText ConvertToSingleLine() => InternalHelper.ConvertObject<UICInputText>(this);
     #endregion
 }

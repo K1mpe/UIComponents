@@ -31,7 +31,7 @@ public class UICGeneratorPropertySetReadonly : UICGeneratorProperty
         {
             input.Readonly = await _validationService.ValidatePropertyReadonly(args.PropertyInfo, args.ClassObject);
 
-            if(args.Configuration.TryGetPermissionService(out var permissionService))
+            if(!input.Readonly && args.Configuration.TryGetPermissionService(out var permissionService))
             {
                 input.Readonly = !await permissionService.CanEditProperty(args.ClassObject, args.PropertyName);
                 if(!input.Readonly && UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inherit))

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Helpers;
+using UIComponents.Models.Helpers;
 using UIComponents.Models.Models.Card;
 
 namespace UIComponents.Generators.Generators.Property;
@@ -25,13 +26,13 @@ public class UICGeneratorCard : UICGeneratorProperty
 
         UICCard card = null;
         if (args.CallCollection.Caller == null && !args.CallCollection.Components.Any() && args.Options.StartInCard != null)
-            card = InternalHelper.CopyObject(args.Options.StartInCard);
+            card = InternalHelper.CloneObject(args.Options.StartInCard, true);
         else if (args.CallCollection.Components.Any(x=>x is not UICPartial) && args.Options.SubClassesInCard != null)
         {
-            card = InternalHelper.CopyObject(args.Options.SubClassesInCard);
+            card = InternalHelper.CloneObject(args.Options.SubClassesInCard, true);
             card.Body = new();
-            card.Footer = InternalHelper.CopyObject(args.Options.SubClassesInCard.Footer);
-            card.Header = InternalHelper.CopyObject(args.Options.SubClassesInCard.Header);
+            card.Footer = InternalHelper.CloneObject(args.Options.SubClassesInCard.Footer, false);
+            card.Header = InternalHelper.CloneObject(args.Options.SubClassesInCard.Header, false);
         }
             
         if (card == null)

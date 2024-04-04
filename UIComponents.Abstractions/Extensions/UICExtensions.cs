@@ -265,7 +265,7 @@ public static class UICExtensions
         var typeResults = element.GetAllChildren().Select(x=>x.Component).Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
         var firstInput =  typeResults.Where(x => x.PropertyName.ToLower() == propertyName.ToLower()).FirstOrDefault();
 
-        if(action != null)
+        if(action != null && firstInput != null)
             action(firstInput);
         return firstInput;
     }

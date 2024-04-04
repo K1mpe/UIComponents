@@ -1,4 +1,6 @@
-﻿namespace UIComponents.Models.Models.Buttons;
+﻿using UIComponents.Models.Helpers;
+
+namespace UIComponents.Models.Models.Buttons;
 
 [PrependAppendInputGroupClass("input-group-button")]
 public class UICButton : UIComponent
@@ -45,7 +47,7 @@ public class UICButton : UIComponent
     #region Converters
     public UICDropdownItem ConvertToDropdownItem()
     {
-        var dropdownItem = CommonHelper.Convert<UICDropdownItem>(this);
+        var dropdownItem = InternalHelper.ConvertObject<UICDropdownItem>(this);
         dropdownItem.Content = ButtonText;
         dropdownItem.Icon = PrependButtonIcon;
         dropdownItem.OnClick= OnClick;

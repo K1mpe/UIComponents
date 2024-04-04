@@ -32,6 +32,10 @@ public class DefaultCheckValidationErrorsMinValue<TValue> : IUICDefaultCheckVali
 {
     public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleMinValue<TValue> validator, PropertyInfo propertyInfo, object obj)
     {
+        var type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+        if (!type.IsAssignableTo(typeof(TValue)))
+            return ValidationRuleResult.IsValid();
+
         var value = await validator.MinValue(propertyInfo, obj);
         if (value == null)
             return ValidationRuleResult.IsValid();
@@ -54,6 +58,10 @@ public class DefaultCheckValidationErrorsMaxValue<TValue> : IUICDefaultCheckVali
 {
     public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleMaxValue<TValue> validator, PropertyInfo propertyInfo, object obj)
     {
+        var type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+        if (!type.IsAssignableTo(typeof(TValue)))
+            return ValidationRuleResult.IsValid();
+
         var value = await validator.MaxValue(propertyInfo, obj);
         if (value == null)
             return ValidationRuleResult.IsValid();
@@ -121,7 +129,7 @@ public class DefaultCheckValidationErrorsReadonly : IUICDefaultCheckValidationEr
 
     public Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleReadonly validator, PropertyInfo propertyInfo, object obj)
     {
-        if (_uicConfigOptions.CheckPropertyValidatorReadonly)
+        if (!_uicConfigOptions.CheckPropertyValidatorReadonly)
         {
             _logger.LogTrace($"{nameof(DefaultCheckValidationErrorsReadonly)} is disabled in the uicConfig.");
             return Task.FromResult(ValidationRuleResult.IsValid());
@@ -133,7 +141,7 @@ public class DefaultCheckValidationErrorsReadonly : IUICDefaultCheckValidationEr
             return Task.FromResult(ValidationRuleResult.IsValid());
         }
 
-
+        HasChecked = true;
         _logger.LogError($"There is no valid implementation registrated for {nameof(IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleReadonly>)}. Please create implementation or disable this in the config options => options.{nameof(UicConfigOptions.CheckPropertyValidatorReadonly)} = false");
         return Task.FromResult(ValidationRuleResult.IsValid());
     }

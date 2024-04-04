@@ -89,6 +89,7 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorEnumSelectListItems>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputEditorTemplate>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICFakeForeignKeyTypeGenerator>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorPropertySetReadonly>(serviceCollection);
 
         configOptions.AddAndRegisterGenerator<UICGeneratorInputGroup>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorLabel>(serviceCollection);
@@ -96,6 +97,7 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorInputMultiline>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputNumber>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputDateTime>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorInputTimeOnly>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputSelectList>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputBool>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputThreeStateBool>(serviceCollection);
@@ -153,6 +155,7 @@ public static class UICConfigure
     public static UicConfigOptions AddDefaultValidators(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
     {
         configOptions.AddAndRegisterValidator<UICValidatorRequired>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorReadonlyAttribute>(serviceCollection);
 
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeInt>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeFloat>(serviceCollection);

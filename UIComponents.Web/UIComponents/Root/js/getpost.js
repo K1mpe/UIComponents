@@ -24,15 +24,20 @@
                     });
                     response.Errors.forEach((item) => {
                         var propertyName = item.PropertyName;
-                        var errors = item.Errors;
+                        var errors = item.Error;
 
                         var spanElement = $(`span.field-validation-valid[data-valmsg-for="${propertyName}"]`);
                         if (!spanElement.length)
                             spanElement = $(`span.field-validation-valid[data-valmsg-for$=".${propertyName}"]`);
                         if (!spanElement.length) {
-                            var spanElement = $(`span[for=${propertyName}]`);
-                            spanElement.removeClass();
-                            spanElement.addClass("text-danger");
+                            try {
+                                var spanElement = $(`span[for=${propertyName}]`);
+                                spanElement.removeClass();
+                                spanElement.addClass("text-danger");
+                            } catch {
+                                //May crash silently if propertyName contains []
+                            }
+                            
                         }
                         spanElement.text(errors);
                         makeToast('error', null, errors, { timeOut: 60000, closeButton: true, progressBar: true, extendedTimeOut: 10000 });

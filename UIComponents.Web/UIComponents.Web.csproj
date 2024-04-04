@@ -7,13 +7,14 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.1.24</Version>
+	<Version>1.1.26</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <ItemGroup>
 	  <EmbeddedResource Include="UIComponents\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="UIComponents\Root\**" Pack="true" />
+	  <Content Remove="UIComponents\ComponentViews\InputTime\Default.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\RenderMultiple.cshtml" />
 	  <EmbeddedResource Include="UIComponents\ChangeLog\**" />
   </ItemGroup>
@@ -34,6 +35,8 @@
     <None Remove="UIComponents\ChangeLog\2024-03-20.md" />
     <None Remove="UIComponents\ChangeLog\2024-03-22.md" />
     <None Remove="UIComponents\ChangeLog\2024-03-28.md" />
+    <None Remove="UIComponents\ChangeLog\2024-04-02.md" />
+    <None Remove="UIComponents\ChangeLog\2024-04-04.md" />
     <EmbeddedResource Include="UIComponents\Taghelpers\UICCustomTaghelper.cs" />
     <EmbeddedResource Include="..\README.md" Link="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

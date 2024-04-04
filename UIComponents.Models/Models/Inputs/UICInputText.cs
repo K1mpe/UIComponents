@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using UIComponents.Abstractions.Models;
+using UIComponents.Models.Helpers;
 
 namespace UIComponents.Models.Models.Inputs;
 
@@ -38,7 +39,7 @@ public class UICInputText : UICInput<string>
     #region Converters
     public UICInputMultiline CovertToMultiline()
     {
-        return CommonHelper.Convert<UICInputMultiline>(this);
+        return InternalHelper.ConvertObject<UICInputMultiline>(this);
     }
     #endregion
 }

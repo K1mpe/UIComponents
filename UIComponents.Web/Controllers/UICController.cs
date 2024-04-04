@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using UIComponents.Abstractions.Interfaces.Services;
+using UIComponents.Generators.Helpers;
+using UIComponents.Models.Helpers;
 
 namespace UIComponents.Web.Controllers;
 
@@ -9,32 +12,53 @@ public class UICController : Controller
 
     private readonly IUICStoredEvents _storedEvents;
     private readonly IUICStoredComponents _components;
-
+    private readonly ILogger _logger;
     #endregion
 
     #region Ctor
-    public UICController(IUICStoredEvents storedEvents, IUICStoredComponents components)
+    public UICController(IUICStoredEvents storedEvents, IUICStoredComponents components, ILogger<UICController> logger)
     {
         _storedEvents = storedEvents;
         _components = components;
+        _logger = logger;
     }
     #endregion
 
     [HttpPost]
     public async Task<IActionResult> PostEvent(string key, Dictionary<string, string> values)
     {
-        await _storedEvents.IncommingSignalRTrigger(key, values);
-        return Json(true);
+        try
+        {
+            await _storedEvents.IncommingSignalRTrigger(key, values);
+            return Json(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Failed to post event on key {key}");
+            throw;
+        }
+        
     }
 
     [HttpGet]
     public IActionResult GetComponent(string key)
     {
-        var result = _components.GetComponent(key);
+        try
+        {
+            var result = _components.GetComponent(key);
+
+            //var clone = InternalHelper.CloneObject(result, true, result.GetType());
+            var clone = result;
+            if (IsAjaxReques(Request))
+                return PartialView("/UIComponents/ComponentViews/Render.cshtml", clone);
+            return View("/UIComponents/ComponentViews/Render.cshtml", clone);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Failed to get component on key {key}");
+            throw;
+        }
         
-        if(IsAjaxReques(Request))
-            return PartialView("/UIComponents/ComponentViews/Render.cshtml", result);
-        return View("/UIComponents/ComponentViews/Render.cshtml", result);
     }
 
     public bool IsAjaxReques(HttpRequest request)

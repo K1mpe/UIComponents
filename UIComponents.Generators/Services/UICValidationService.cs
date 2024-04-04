@@ -147,75 +147,154 @@ public class UICValidationService : IUICValidationService
                     if (validator.PropertyType != null && !propType.IsAssignableTo(validator.PropertyType))
                         continue;
 
-                    ValidationRuleResult validatorResult = null;
+                    ValidationRuleResult validatorResult = ValidationRuleResult.IsValid();
                     if (validator is IUICPropertyValidationValidationResultsImplementation implementation)
                         validatorResult = await implementation.CheckValidationErrors(propertyInfo, obj);
                     else
                     {
                         //Find the default validator
                         if (validator is IUICPropertyValidationRuleRequired required)
-                            validatorResult = await _defaultRequired.DefaultValidationErrors(required, propertyInfo, obj);
+                        {
+                            if(await required.IsRequired(propertyInfo, obj))
+                            {
+                                validatorResult = await _defaultRequired.DefaultValidationErrors(required, propertyInfo, obj);
+                            }
+                        }
+                            
 
                         else if (validator is IUICPropertyValidationRuleReadonly readOnly)
-                            validatorResult = await _defaultReadonly.DefaultValidationErrors(readOnly, propertyInfo, obj);
+                        {
+                            if (await readOnly.IsReadonly(propertyInfo, obj))
+                            {
+                                validatorResult = await _defaultReadonly.DefaultValidationErrors(readOnly, propertyInfo, obj);
+                            }
+                        }
+                            
 
                         else if (validator is IUICPropertyValidationRuleMinLength minLength)
-                            validatorResult = await _defaultMinLength.DefaultValidationErrors(minLength, propertyInfo, obj);
+                        {
+                            if((await minLength.MinLength(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultMinLength.DefaultValidationErrors(minLength, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMaxLength maxLength)
-                            validatorResult = await _defaultMaxLength.DefaultValidationErrors(maxLength, propertyInfo, obj);
+                        {
+                            if((await maxLength.MaxLength(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultMaxLength.DefaultValidationErrors(maxLength, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<short> minValueShort)
-                            validatorResult = await _defaultshortMinValue.DefaultValidationErrors(minValueShort, propertyInfo, obj);
-
+                        {
+                            if((await minValueShort.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultshortMinValue.DefaultValidationErrors(minValueShort, propertyInfo, obj);
+                        }
+                           
                         else if (validator is IUICPropertyValidationRuleMaxValue<short> maxValueShort)
-                            validatorResult = await _defaultshortMaxValue.DefaultValidationErrors(maxValueShort, propertyInfo, obj);
+                        {
+                            if((await maxValueShort.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultshortMaxValue.DefaultValidationErrors(maxValueShort, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<int> minValueInt)
-                            validatorResult = await _defaultintMinValue.DefaultValidationErrors(minValueInt, propertyInfo, obj);
+                        {
+                            if((await minValueInt.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultintMinValue.DefaultValidationErrors(minValueInt, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMaxValue<int> maxValueInt)
-                            validatorResult = await _defaultintMaxValue.DefaultValidationErrors(maxValueInt, propertyInfo, obj);
+                        {
+                            if((await maxValueInt.MaxValue(propertyInfo, obj)).HasValue) 
+                                validatorResult = await _defaultintMaxValue.DefaultValidationErrors(maxValueInt, propertyInfo, obj);
+                        }
+                            
 
                         else if (validator is IUICPropertyValidationRuleMinValue<long> minValueLong)
-                            validatorResult = await _defaultlongMinValue.DefaultValidationErrors(minValueLong, propertyInfo, obj);
+                        {
+                            if((await minValueLong.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultlongMinValue.DefaultValidationErrors(minValueLong, propertyInfo, obj);
+                        }
                         else if (validator is IUICPropertyValidationRuleMaxValue<long> maxValueLong)
-                            validatorResult = await _defaultlongMaxValue.DefaultValidationErrors(maxValueLong, propertyInfo, obj);
+                        {
+                            if((await maxValueLong.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultlongMaxValue.DefaultValidationErrors(maxValueLong, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<float> minValueFloat)
-                            validatorResult = await _defaultfloatMinValue.DefaultValidationErrors(minValueFloat, propertyInfo, obj);
+                        {
+                            if((await minValueFloat.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultfloatMinValue.DefaultValidationErrors(minValueFloat, propertyInfo, obj);
+                        }
                         else if (validator is IUICPropertyValidationRuleMaxValue<float> maxValueFloat)
-                            validatorResult = await _defaultfloatMaxValue.DefaultValidationErrors(maxValueFloat, propertyInfo, obj);
+                        {
+                            if((await maxValueFloat.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultfloatMaxValue.DefaultValidationErrors(maxValueFloat, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<double> minValueDouble)
-                            validatorResult = await _defaultdoubleMinValue.DefaultValidationErrors(minValueDouble, propertyInfo, obj);
+                        {
+                            if((await minValueDouble.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultdoubleMinValue.DefaultValidationErrors(minValueDouble, propertyInfo, obj);
+                        }
                         else if (validator is IUICPropertyValidationRuleMaxValue<double> maxValueDouble)
-                            validatorResult = await _defaultdoubleMaxValue.DefaultValidationErrors(maxValueDouble, propertyInfo, obj);
+                        {
+                            if((await maxValueDouble.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultdoubleMaxValue.DefaultValidationErrors(maxValueDouble, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<decimal> minValueDecimal)
-                            validatorResult = await _defaultdecimalMinValue.DefaultValidationErrors(minValueDecimal, propertyInfo, obj);
+                        {
+                            if((await minValueDecimal.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultdecimalMinValue.DefaultValidationErrors(minValueDecimal, propertyInfo, obj);
+                        }
                         else if (validator is IUICPropertyValidationRuleMaxValue<decimal> maxValueDecimal)
-                            validatorResult = await _defaultdecimalMaxValue.DefaultValidationErrors(maxValueDecimal, propertyInfo, obj);
+                        {
+                            if((await maxValueDecimal.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultdecimalMaxValue.DefaultValidationErrors(maxValueDecimal, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<DateTime> minValueDateTime)
-                            validatorResult = await _defaultDateTimeMinValue.DefaultValidationErrors(minValueDateTime, propertyInfo, obj);
+                        {
+                            if((await minValueDateTime.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultDateTimeMinValue.DefaultValidationErrors(minValueDateTime, propertyInfo, obj);
+                        }
                         else if (validator is IUICPropertyValidationRuleMaxValue<DateTime> maxValueDateTime)
-                            validatorResult = await _defaultDateTimeMaxValue.DefaultValidationErrors(maxValueDateTime, propertyInfo, obj);
+                        {
+                            if((await maxValueDateTime.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultDateTimeMaxValue.DefaultValidationErrors(maxValueDateTime, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<DateOnly> minValueDateOnly)
-                            validatorResult = await _defaultDateOnlyMinValue.DefaultValidationErrors(minValueDateOnly, propertyInfo, obj);
-                        else if (validator is IUICPropertyValidationRuleMaxValue<DateOnly> maxValueDateOnly)
-                            validatorResult = await _defaultDateOnlyMaxValue.DefaultValidationErrors(maxValueDateOnly, propertyInfo, obj);
+                        {
+                            if((await minValueDateOnly.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultDateOnlyMinValue.DefaultValidationErrors(minValueDateOnly, propertyInfo, obj);
+                        }
+                        else if (validator is IUICPropertyValidationRuleMaxValue<DateOnly> maxValueDateOnly) 
+                        {
+                            if((await maxValueDateOnly.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultDateOnlyMaxValue.DefaultValidationErrors(maxValueDateOnly, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<TimeOnly> minValueTimeOnly)
-                            validatorResult = await _defaultTimeOnlyMinValue.DefaultValidationErrors(minValueTimeOnly, propertyInfo, obj);
+                        {
+                            if((await minValueTimeOnly.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultTimeOnlyMinValue.DefaultValidationErrors(minValueTimeOnly, propertyInfo, obj);
+                        }
                         else if (validator is IUICPropertyValidationRuleMaxValue<TimeOnly> maxValueTimeOnly)
-                            validatorResult = await _defaultTimeOnlyMaxValue.DefaultValidationErrors(maxValueTimeOnly, propertyInfo, obj);
+                        {
+                            if((await maxValueTimeOnly.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultTimeOnlyMaxValue.DefaultValidationErrors(maxValueTimeOnly, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<TimeSpan> minValueTimeSpan)
-                            validatorResult = await _defaultTimespanMinValue.DefaultValidationErrors(minValueTimeSpan, propertyInfo, obj);
+                        {
+                            if((await minValueTimeSpan.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultTimespanMinValue.DefaultValidationErrors(minValueTimeSpan, propertyInfo, obj);
+                        }
                         else if (validator is IUICPropertyValidationRuleMaxValue<TimeSpan> maxValueTimeSpan)
-                            validatorResult = await _defaultTimespanMaxValue.DefaultValidationErrors(maxValueTimeSpan, propertyInfo, obj);
+                        {
+                            if((await maxValueTimeSpan.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultTimespanMaxValue.DefaultValidationErrors(maxValueTimeSpan, propertyInfo, obj);
+                        }
 
                         else
                             throw new Exception($"There is no ValidationErrors method available for {validator.GetType().FullName}. Add the {nameof(IUICPropertyValidationValidationResultsImplementation)} interface to fix this problem.");
@@ -243,6 +322,8 @@ public class UICValidationService : IUICValidationService
     {
         if (!propertyInfo.PropertyType.IsAssignableTo(typeof(string)))
             return null;
+
+        bool hasInherit = UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inheritPropertyInfo);
         using (var scope = _serviceProvider.CreateScope())
         {
             var validators = _config.GetPropertyValidators(_logger, scope);

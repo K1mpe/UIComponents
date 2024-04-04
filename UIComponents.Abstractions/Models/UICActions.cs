@@ -26,13 +26,17 @@ public class UICActions : UIComponent, IUICAction
         }
     }
 
-    public override bool Render { get => AllActions.Where(x => x != null).Any(); set => throw new Exception("Cannot set Render attribute on UIActions"); }
+    public override bool Render { get => AllActions.Where(x => x != null).Any(); set => base.Render = value; }
     #endregion
 
     #region Ctor
     public UICActions(Func<string> id) : base()
     {
         Id = id;
+    }
+    public UICActions()
+    {
+        
     }
     #endregion
 

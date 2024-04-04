@@ -13,14 +13,22 @@ public class UICInputList : UICInput<object[]>
     public UICInputList(string propertyName) : base(propertyName)
     {
     }
-
+    public UICInputList() : base(null)
+    {
+        
+    }
     #endregion
 
     #region Properties
-    public UICInput SingleInstanceInput { get; set; }
+    public UICInput SingleInstanceInput { get; set; } 
     public Type ItemType { get; set; }
 
+    /// <summary>
+    /// When clicking the <see cref="AddButton"/>, a new instance with these default values.
+    /// </summary>
+    public object DefaultValueAdd { get; set; }
 
+    public CreateNewInstanceEnum CreateNewInstanceMethod { get; set; } = CreateNewInstanceEnum.ReplaceIds;
     public bool ShowMoveButtons { get; set; } = true;
     public UICButton MoveUpButton { get; set; } = new UICButton()
     {
@@ -64,5 +72,18 @@ public class UICInputList : UICInput<object[]>
         Auto,
         Horizontal,
         Vertical
+    }
+
+    public enum CreateNewInstanceEnum
+    {
+        /// <summary>
+        /// Store the <see cref="SingleInstanceInput"/> clientside and replace the Ids using regex.
+        /// </summary>
+        ReplaceIds,
+
+        /// <summary>
+        /// Store the <see cref="SingleInstanceInput"/> serverside and generate a new instance on each add.
+        /// </summary>
+        GetRequest,
     }
 }

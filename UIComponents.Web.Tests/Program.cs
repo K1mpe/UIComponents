@@ -37,6 +37,7 @@ builder.Services.AddUIComponentWeb(config =>
     config.OnlyReplaceNewerVersion = false;
     config.CheckPermissionServiceType = true;
     config.CheckLanguageServiceType = false;
+    config.CheckPropertyValidatorReadonly = false;
     config.AddChangeLog = true;
     config.AddReadMe = true;
     config.AddDefaultGenerators(builder.Services);

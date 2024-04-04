@@ -63,6 +63,11 @@ public enum UICPropertyType
     DateTime,
 
     /// <summary>
+    /// A field to display time without date
+    /// </summary>
+    TimeOnly,
+
+    /// <summary>
     /// A time duration
     /// </summary>
     Timespan,

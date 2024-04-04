@@ -58,7 +58,7 @@ public partial class UicConfigOptions
     public bool ReplaceScripts { get; set; } = true;
 
     public bool ReplaceTaghelpers { get; set; } = true;
-    public bool AddReadMe { get; set; }
+    public bool AddReadMe { get; set; } = true;
     public bool AddChangeLog { get; set; }
 
     public bool CheckLanguageServiceType { get; set; } = true;
