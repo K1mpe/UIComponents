@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel.Design;
+using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Configuration;
@@ -71,7 +72,7 @@ public static class UICConfigure
         configOptions.AddDefaultPropertyGenerators(serviceCollection);
         configOptions.AddDefaultButtons(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorRequired>(serviceCollection);
-
+        configOptions.AddDefaultFileExplorerServices(serviceCollection);
         AddDefaultValidationErrorHandlers(configOptions, serviceCollection);
         return configOptions;
 
@@ -171,5 +172,12 @@ public static class UICConfigure
         return configOptions;
     }
 
+    public static UicConfigOptions AddDefaultFileExplorerServices(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
+    {
+        serviceCollection.TryAddSingleton<IFileExplorerPathMapper, UICFileExplorerPathMapper>();
+        serviceCollection.TryAddScoped<IFileExplorerService, UICFileExplorerService>();
+
+        return configOptions;
+    }
 
 }

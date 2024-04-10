@@ -40,8 +40,10 @@
         //add a new line on enter in a textarea
         $('#@id').keydown(function (e) {
             if (e.keyCode == '13') { //enter
-                var currentRows = $(this).attr('rows');
+                var currentRows = $(this).val().split('\n').length;
                 currentRows = +currentRows + 1;
+                if (currentRows < @Json.Serialize(Model.MinRows ?? 1))
+                    currentRows = @Json.Serialize(Model.MinRows ?? 1);
                 if(currentRows <= @Json.Serialize(Model.MaxRows??int.MaxValue))
                     $(this).attr('rows', currentRows);
             }

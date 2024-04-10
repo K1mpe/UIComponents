@@ -1,0 +1,63 @@
+﻿using UIComponents.Abstractions.Interfaces.FileExplorer;
+
+namespace UIComponents.Abstractions.Models.FileExplorer;
+
+public class UICFileInfo : IRelativePath
+{
+    public string Thumbnail { get; set; }
+    public string Icon { get; set; }
+
+    public string FileName
+    {
+        get
+        {
+            if(Extension == "folder")
+            {
+                var parts= RelativePath.Split("\\");
+                return parts[parts.Length - 2];
+            }
+            return RelativePath.Split("\\").Last();
+        }
+    }
+
+    public string FileType { get; set; }
+
+    public string Extension { get
+        {
+            if (RelativePath.EndsWith("\\"))
+                return "folder";
+            return RelativePath.Split(".").Last();
+        }
+    }
+
+    public DateTime Created { get; set; }
+    public DateTime LastModified { get; set; }
+
+    public string Size { get
+        {
+            if (SizeValue == null)
+                return string.Empty;
+
+            if (SizeValue > 100000000000)
+                return $"{Math.Round(SizeValue.Value / 1000000000000f, 3)} TB";
+            if (SizeValue > 100000000)
+                return $"{Math.Round(SizeValue.Value / 1000000000f, 3)} GB";
+            if (SizeValue > 100000)
+                return $"{Math.Round(SizeValue.Value / 1000000f, 3)} MB";
+            if (SizeValue > 100)
+                return $"{Math.Round(SizeValue.Value / 1000f, 3)} KB";
+            return $"{SizeValue} B";
+        } }
+    public long? SizeValue { get; set; }
+
+
+    public bool CanOpen { get; set; }
+    public bool CanMove { get; set; }
+    public bool CanDelete { get; set; }
+    public bool CanRename { get; set; }
+
+
+    public string AbsolutePathReference { get; set; }
+
+    public string RelativePath { get; set; }
+}

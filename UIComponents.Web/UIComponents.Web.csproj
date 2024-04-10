@@ -35,8 +35,10 @@
     <None Remove="UIComponents\ChangeLog\2024-03-20.md" />
     <None Remove="UIComponents\ChangeLog\2024-03-22.md" />
     <None Remove="UIComponents\ChangeLog\2024-03-28.md" />
+    <None Remove="UIComponents\ChangeLog\2024-04-...md" />
     <None Remove="UIComponents\ChangeLog\2024-04-02.md" />
     <None Remove="UIComponents\ChangeLog\2024-04-04.md" />
+    <None Remove="UIComponents\Root\js\fileExplorer.js" />
     <EmbeddedResource Include="UIComponents\Taghelpers\UICCustomTaghelper.cs" />
     <EmbeddedResource Include="..\README.md" Link="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

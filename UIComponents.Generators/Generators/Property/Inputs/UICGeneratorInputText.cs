@@ -39,7 +39,12 @@ public class UICGeneratorInputText : UICGeneratorProperty
         var dataTypeAttribute = args.PropertyInfo.GetCustomAttribute<DataTypeAttribute>();
         if(dataTypeAttribute != null)
             input.Type = dataTypeAttribute.DataType;
-
+        else if(UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inherit))
+        {
+            dataTypeAttribute = inherit.GetCustomAttribute<DataTypeAttribute>();
+            if (dataTypeAttribute != null)
+                input.Type = dataTypeAttribute.DataType;
+        }
 
         input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
         input.ValidationMinLength = await _validationService.ValidatePropertyMinLength(args.PropertyInfo, args.ClassObject);

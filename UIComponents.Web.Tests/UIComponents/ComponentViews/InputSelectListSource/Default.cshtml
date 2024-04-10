@@ -64,8 +64,8 @@
         case UICInputSelectListSource.ItemSorting.Text_Ascending:
             <text>
                 selectListItems = selectListItems.sort((a, b) =>{
-                let textA = a.Text.toUpperCase() || '';
-                let textB = b.Text.toUpperCase() || '';
+                let textA = a.Text?.toUpperCase() || '';
+                let textB = b.Text?.toUpperCase() || '';
                 if(textA > textB)
                 return 1;
                 else if(textB > textA)
@@ -77,8 +77,8 @@
         case UICInputSelectListSource.ItemSorting.Text_Decending:
             <text>
                 selectListItems = selectListItems.sort((a, b) =>{
-                let textA = a.Text.toUpperCase() || '';
-                let textB = b.Text.toUpperCase() || '';
+                let textA = a.Text?.toUpperCase() || '';
+                let textB = b.Text?.toUpperCase() || '';
                 if(textA > textB)
                 return -1;
                 else if(textB > textA)
@@ -90,8 +90,8 @@
         case UICInputSelectListSource.ItemSorting.Value_Ascending:
             <text>
                 selectListItems = selectListItems.sort((a, b) =>{
-                let valueA = a.Value.toUpperCase() || '';
-                let valueB = b.Value.toUpperCase() || '';
+                let valueA = a.Value?.toUpperCase() || '';
+                let valueB = b.Value?.toUpperCase() || '';
                 if(valueA > valueB)
                 return 1;
                 else if(valueB > valueA)
@@ -103,8 +103,8 @@
         case UICInputSelectListSource.ItemSorting.Value_Decending:
             <text>
                 selectListItems = selectListItems.sort((a, b) =>{
-                let valueA = a.Value.toUpperCase() || '';
-                let valueB = b.Value.toUpperCase() || '';
+                let valueA = a.Value?.toUpperCase() || '';
+                let valueB = b.Value?.toUpperCase() || '';
                 if(valueA > valueB)
                 return -1;
                 else if(valueB > valueA)

@@ -20,9 +20,12 @@
 
         
     },
+    translateKey: async function (key) {
+        return await uic.translation.translate({ ResourceKey: key });
+    },
     //The function that requests the service to give the translation
     fetchTranslationText: async function (translatable) {
-        let defaultValue = translatable.DefaultValue || translatable.ResourceKey.split('.').last();
+        let defaultValue = translatable.DefaultValue || translatable.ResourceKey.split('.').slice(-1)[0];
         return defaultValue.format(translatable.Arguments);
     },
 

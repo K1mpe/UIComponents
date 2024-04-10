@@ -1,4 +1,5 @@
 ﻿
+@using System.ComponentModel.DataAnnotations
 @using UIComponents.Defaults;
 @using UIComponents.Abstractions.Interfaces;
 @using UIComponents.Abstractions.Interfaces.Services;
@@ -28,8 +29,20 @@
     }
 
     string type = "text";
+
     switch (Model.Type)
     {
+        case DataType.Custom:
+            break;
+        case DataType.PhoneNumber:
+            type = "tel";
+            break;
+        case DataType.Currency:
+            type = "number";
+            break;
+        case DataType.EmailAddress:
+            type = "email";
+            break;
         default:
             type = Model.Type.ToString().ToLower();
             break;

@@ -1,0 +1,90 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Models.FileExplorer
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.FileExplorer;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICFileExplorer
+
+@{
+    Model.AddClass("file-explorer-container");
+    string id = Model.GetId();
+
+    Model.AssignCollectionForChildren();
+    Model.AddAttribute("data-controller", Model.ControllerName);
+
+    Model.AddScript(@<text>
+
+        let filterModel = @Json.Serialize(new GetFilesForDirectoryFilterModel(){
+            AbsolutePathReference = Model.AbsolutePathReference,
+            RelativePath = Model.StartDirectory,
+        })
+
+        let getFilesForDirectoryResultModel = null;
+
+        $('#@id').on('uic-help', ()=>{
+
+        });
+
+        $('#@id').on('uic-reload', (ev)=>{
+            ev.stopPropagation();
+        });
+
+        $('#@id').on('uic-getFilterModel', ()=>{
+            return filterModel;
+        });
+        $('#@id').on('uic-getLastDirectoryResult', ()=>{
+            console.log('GetLastResult',getFilesForDirectoryResultModel);
+            return getFilesForDirectoryResultModel;
+        });
+        $('#@id').on('uic-setLastDirectoryResult', (ev, value)=>{
+            ev.stopPropagation();
+            getFilesForDirectoryResultModel = value;
+        });
+
+        $('#@id').on('uic-setRenderer', (ev, value)=>{
+            ev.stopPropagation();
+            console.log('setting renderer', value);
+            $('#@id .file-explorer-main').attr('data-renderer', value);
+            uic.fileExplorer.renderFiles($('#@id'));
+        });
+
+        uic.fileExplorer.loadRelativeDir($('#@id'), @Html.JsEncode(Model.StartDirectory??Model.RootDirectory,"'"));
+        </text>);
+}
+
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    @await Model.TopContainer.InvokeAsync(Component)
+    <div class="file-explorer-body">
+        <div class="file-explorer-left">
+            @await Model.Left.InvokeAsync(Component)
+        </div>
+        <div>
+            @await Model.TopMain.InvokeAsync(Component)
+            <div class="file-explorer-main" data-renderer="@Html.Raw(Model.RenderMethod)">
+            </div>
+            @await Model.BottomMain.InvokeAsync(Component)
+        </div>
+        <div class="file-explorer-right">
+            @await Model.Right.InvokeAsync(Component)
+        </div>
+    </div>
+    @await Model.BottomContainer.InvokeAsync(Component)
+</div>
+
+        
+@await Model.RenderStylesAndScripts(Component)

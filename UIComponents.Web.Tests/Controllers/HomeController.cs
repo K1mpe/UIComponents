@@ -16,6 +16,7 @@ using UIComponents.Models.Models;
 using UIComponents.Models.Models.Actions;
 using UIComponents.Models.Models.Buttons;
 using UIComponents.Models.Models.Card;
+using UIComponents.Models.Models.FileExplorer;
 using UIComponents.Models.Models.Graphs.TimeLineGraph;
 using UIComponents.Models.Models.Icons;
 using UIComponents.Models.Models.Inputs;
@@ -269,6 +270,17 @@ namespace UIComponents.Web.Tests.Controllers
             };
             var inputGroup = new UICInputGroup("Test", timeOnly);
             return ViewOrPartial(inputGroup);
+        }
+
+
+        [HttpGet]
+        public IActionResult Files()
+        {
+            var fileBrowser = new UICFileExplorer()
+            {
+                RootDirectory = "C:\\Jonas",
+            };
+            return ViewOrPartial(fileBrowser);
         }
     }
 }
