@@ -86,6 +86,17 @@
 
 /*#region FileExplorer*/
 .uic.file-explorer-container {
+    .file-explorer-body{
+        display:flex;
+        > :not(.file-explorer-left,.file-explorer-right){
+            flex-grow:1;
+        }
+        .explorer-tree{
+            max-width: 250px;
+            resize: auto;
+            overflow: auto;
+        }
+    } 
     .file-explorer-main {
         &[data-renderer='large'] {
             .explorer-thumbnail {
@@ -94,6 +105,7 @@
             }
         }
 
+
         .explorer-item {
             user-select: none;
 
@@ -101,12 +113,13 @@
                 background-color: #92e4fc50;
             }
 
-            &:hover {
+            &:not(.selected):hover {
                 background-color: #92e4fc10;
             }
         }
     }
 }
+
 /*#endregion FileExplorer*/
 /*#region Form*/
 form {

@@ -280,6 +280,8 @@ namespace UIComponents.Web.Tests.Controllers
             {
                 RootDirectory = "C:\\Jonas",
             };
+            fileBrowser.Left.Add(new UICGroup() { RenderWithoutContent = true }
+                .AddClass("explorer-tree"));
             return ViewOrPartial(fileBrowser);
         }
     }

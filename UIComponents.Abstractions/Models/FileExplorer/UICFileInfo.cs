@@ -13,10 +13,10 @@ public class UICFileInfo : IRelativePath
         {
             if(Extension == "folder")
             {
-                var parts= RelativePath.Split("\\");
+                var parts= RelativePath.Split("/");
                 return parts[parts.Length - 2];
             }
-            return RelativePath.Split("\\").Last();
+            return RelativePath.Split("/").Last();
         }
     }
 
@@ -24,7 +24,7 @@ public class UICFileInfo : IRelativePath
 
     public string Extension { get
         {
-            if (RelativePath.EndsWith("\\"))
+            if (RelativePath.EndsWith("/"))
                 return "folder";
             return RelativePath.Split(".").Last();
         }
@@ -60,4 +60,9 @@ public class UICFileInfo : IRelativePath
     public string AbsolutePathReference { get; set; }
 
     public string RelativePath { get; set; }
+
+    /// <summary>
+    /// If this item is a directory, check if there are subDictories. This is used by to prevent another ajax request from jsTree to get subfolders
+    /// </summary>
+    public bool DirectoryHasSubdirectories { get; set; } = true;
 }

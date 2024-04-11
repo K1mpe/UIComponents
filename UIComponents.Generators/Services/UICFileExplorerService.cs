@@ -132,7 +132,7 @@ public class UICFileExplorerService : IFileExplorerService
         var info = _pathMapper.GetRelativePath<UICFileInfo>(filepath);
         info.Thumbnail = await GetThumbnail(filepath);
         info.Icon = await GetIcon(filepath);
-
+        info.DirectoryHasSubdirectories = Directory.GetDirectories(filepath).Length > 0;
         var fileInfo = new DirectoryInfo(filepath);
         info.Created = fileInfo.CreationTime;
         info.LastModified = fileInfo.LastWriteTime;

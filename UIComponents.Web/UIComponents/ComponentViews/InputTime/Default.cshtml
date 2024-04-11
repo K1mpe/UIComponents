@@ -53,7 +53,7 @@
         Model.Actions.SetIdentifier($"#{id}");
     }
 
-   
+
 
     if (Model.ValidationMinTime.HasValue)
         Model.AddAttribute("min", Model.ValidationMinTime.Value.ToString(timeFormat));
@@ -79,35 +79,34 @@
     <script>
 
         $(document).ready(function () {
-            console.log('validation');
             function validateInput(element) {
                 var currentValue = new moment(element.val(), @Html.JsEncode(timeFormat, "'"));
                 var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
                 span.text("");
-                
+
         @if (Model.ValidationMaxTime != null)
         {
             <text>
-                if (currentValue > new moment('@Model.ValidationMaxTime.Value.ToString(timeFormat)', @Html.JsEncode(timeFormat, "'")))
-                    span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMaxValue(propertyName, Model.ValidationMaxTime.Value)));
+                            if (currentValue > new moment('@Model.ValidationMaxTime.Value.ToString(timeFormat)', @Html.JsEncode(timeFormat, "'")))
+                        span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMaxValue(propertyName, Model.ValidationMaxTime.Value)));
             </text>
         }
 
         @if (Model.ValidationMinTime != null)
         {
             <text>
-                if (new moment('@Model.ValidationMinTime.Value.ToString(timeFormat)', @Html.JsEncode(timeFormat, "'")) > currentValue)
-                    span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMinValue(propertyName, Model.ValidationMinTime.Value)));
+                            if (new moment('@Model.ValidationMinTime.Value.ToString(timeFormat)', @Html.JsEncode(timeFormat, "'")) > currentValue)
+                        span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMinValue(propertyName, Model.ValidationMinTime.Value)));
             </text>
         }
         @if (Model.ValidationRequired)
         {
             <text>
-                if (currentValue.length == 0)
-                    span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                            if (currentValue.length == 0)
+                        span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
             </text>
         }
-                    }
+                            }
 
             $('#@id').keyup(function () {
                 validateInput($(this));

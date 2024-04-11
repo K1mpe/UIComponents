@@ -126,7 +126,19 @@
             console.error(ex);
         }
     },
-    
+
+    setPopoverOnClickTooltipIcon: function () {
+        $('.tooltip-icon').each((index, item) => {
+            let title = $(item).parent().attr('title');
+            if (title.length) {
+                $(item).popover({
+                    content: title,
+                    trigger: 'focus click',
+                });
+                $(item).attr('title', null);
+            }
+        })
+    },
     select2: {
         //https://select2.org/searching
         searchMethod: function (params, data) {
@@ -251,3 +263,5 @@
         }
     }
 };
+$(document).ready(() => uic.form.setPopoverOnClickTooltipIcon());
+$(document).ajaxComplete(() => uic.form.setPopoverOnClickTooltipIcon());

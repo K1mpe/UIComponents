@@ -74,8 +74,9 @@ try{
         default:
             throw new NotImplementedException();
     }
-
-    @await Model.OnSuccess.InvokeAsync(Component);
+    if(@Model.ResultName != false){
+@await Model.OnSuccess.InvokeAsync(Component);
+    }
 
 } catch(ex){
     @await Model.OnFailed.InvokeAsync(Component);

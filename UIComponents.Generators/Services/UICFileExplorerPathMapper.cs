@@ -36,11 +36,11 @@ public class UICFileExplorerPathMapper : IFileExplorerPathMapper
             if (PathMapper.TryGetValue(relativePath.AbsolutePathReference, out var path))
             {
                 var fullpath = path + relativePath.RelativePath.Substring(1);
-                return fullpath;
+                return fullpath.Replace("/","\\");
             }
         }
 
-        return relativePath.RelativePath;
+        return relativePath.RelativePath.Replace("/", "\\");
     }
 
 
@@ -52,7 +52,7 @@ public class UICFileExplorerPathMapper : IFileExplorerPathMapper
             var instance = Activator.CreateInstance<T>();
             if (!dictValues.Any())
             {
-                instance.RelativePath = absolutePath;
+                instance.RelativePath = absolutePath.Replace("\\","/");
                 instance.AbsolutePathReference = string.Empty;
                 return instance;
             }
@@ -60,7 +60,7 @@ public class UICFileExplorerPathMapper : IFileExplorerPathMapper
             //Take the longest matching path
             var longest = dictValues.OrderByDescending(x => x.Key.Length).First();
             instance.AbsolutePathReference = longest.Key;
-            instance.RelativePath = "~" + absolutePath.Substring(longest.Value.Length);
+            instance.RelativePath = "~" + absolutePath.Substring(longest.Value.Length).Replace("\\", "/");
             return instance;
         }
     }

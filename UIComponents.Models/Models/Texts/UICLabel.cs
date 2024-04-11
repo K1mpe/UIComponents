@@ -27,7 +27,7 @@ public class UICLabel : UIComponent
     /// <summary>
     /// This icon is displayed only when the tooltip is not empty
     /// </summary>
-    public UICIcon TooltipIcon { get; set; } = IconDefaults.TooltipIcon;
+    public UICIcon TooltipIcon { get; set; } = new UICIcon(IconDefaults.TooltipIcon.Icon).AddClass("tooltip-icon");
 
     /// <summary>
     /// Adding a required marker behind this label

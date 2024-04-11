@@ -24,9 +24,16 @@
     Model.AddClass("file-explorer-container");
     string id = Model.GetId();
 
-    Model.AssignCollectionForChildren();
-    Model.AddAttribute("data-controller", Model.ControllerName);
+    if (!Model.RootDirectory.EndsWith("/"))
+        Model.RootDirectory += "/";
+    Model.RootDirectory = Model.RootDirectory.Replace("\\", "/");
 
+    Model.AssignCollectionForChildren();
+    Model
+        .AddAttribute("data-controller", Model.ControllerName)
+        .AddAttribute("data-rootAbsolutePath", Model.AbsolutePathReference)
+        .AddAttribute("data-rootDirectory", Model.RootDirectory)
+        .AddAttribute("for-explorer", id);
     Model.AddScript(@<text>
 
         let filterModel = @Json.Serialize(new GetFilesForDirectoryFilterModel(){
@@ -42,10 +49,14 @@
 
         $('#@id').on('uic-reload', (ev)=>{
             ev.stopPropagation();
+            uic.loadRelativeDir($('#@id'), filterModel.RelativePath);
         });
 
         $('#@id').on('uic-getFilterModel', ()=>{
             return filterModel;
+        });
+        $('#@id').on('uic-setFilterModel', (ev, value)=>{
+            filterModel = value;
         });
         $('#@id').on('uic-getLastDirectoryResult', ()=>{
             console.log('GetLastResult',getFilesForDirectoryResultModel);
@@ -63,9 +74,13 @@
             uic.fileExplorer.renderFiles($('#@id'));
         });
 
+        uic.fileExplorer.initialize.start($('#@id'));
         uic.fileExplorer.loadRelativeDir($('#@id'), @Html.JsEncode(Model.StartDirectory??Model.RootDirectory,"'"));
         </text>);
 }
+
+<link rel="stylesheet" href="~/lib/jstree/dist/themes/default/style.min.css" />
+<script src="/lib/jstree/dist/jstree.min.js"></script>
 
 <div @Html.Raw(Model.GetHtmlAttributes())>
     @await Model.TopContainer.InvokeAsync(Component)

@@ -1,14 +1,16 @@
-﻿# 2024-04-02 (1.1.26)
+﻿# 2024-04-11 (1.1.27)
+- Bugfix sorting selectlistsource empty text
+- Input Text Inherit DataType
+- Fix don't show tabs that don't render content
+- Label tooltip icon clickable for touch
+- FileExplorer in progress﻿# 2024-04-02 (1.1.26)
 - BugFixes Validator
 - Support for ReadonlyAttribute
 - Disable / Readonly support for Timespan
 ﻿# 2024-04-02 (1.1.25)
 - Bugfix permission
 - InputTimeOnly
-﻿# 2024-04-.. (1.1.27)
-- Bugfix sorting selectlistsource empty text
-- Input Text Inherit DataType
-- Fix don't show tabs that don't render content﻿# 2024-03-28 (1.1.24)
+﻿# 2024-03-28 (1.1.24)
 - Fix mark changes
 - Renderlocation can now end with .cshtml  (automatically add .cshtml if the last 7 characters do not contain a point)
 - TryFind... extension methods
