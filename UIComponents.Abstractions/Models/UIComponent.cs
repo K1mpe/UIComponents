@@ -6,7 +6,7 @@ namespace UIComponents.Abstractions.Models;
 /// <summary>
 /// The base for most UICs
 /// </summary>
-public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScriptCollection, IUICHasAttributes, IUICHasParent
+public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScriptCollection, IUICHasAttributes, IUICHasParent, IUICInitializeAsync
 {
     #region Fields
     private bool _render = true;
@@ -101,6 +101,14 @@ public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScr
         if (UICType.StartsWith("UIC"))
             UICType = UICType.Substring(3);
         return $"/UIComponents/ComponentViews/{UICType}/{renderer ?? "Default"}";
+    }
+
+    public virtual Task InitializeAsync()
+    {
+        this.AddClass("uic");
+        if (Hidden)
+            this.AddAttribute("hidden", "true");
+        return Task.CompletedTask;
     }
 
     #endregion

@@ -2190,7 +2190,7 @@ $(document).ready(() => {
 
     }
 };
-$(document).on('click', '[role="tab"]', async function (ev) {
+$(document).on('click', '.uic.card-tabs [role="tab"]', async function (ev) {
 
     let newTab = $(ev.target).closest('[role="tab"]');        // Newly activated tab
     ev.stopImmediatePropagation();

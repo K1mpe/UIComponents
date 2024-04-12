@@ -10,12 +10,16 @@
 ﻿# 2024-04-02 (1.1.25)
 - Bugfix permission
 - InputTimeOnly
-﻿# 2024-03-28 (1.1.24)
+﻿# 2024-03-28 (1.1.27)
 - Fix mark changes
 - Renderlocation can now end with .cshtml  (automatically add .cshtml if the last 7 characters do not contain a point)
 - TryFind... extension methods
 - Adding UICCustomTaghelper
-- Including extra documentation﻿# 2024-03-25 (1.1.23)
+- Including extra documentation
+
+# 2024-03-28 (1.1.28)
+- Bugfix non-UIC tabs
+- Bugfix InternalHelper﻿# 2024-03-25 (1.1.23)
 - Hide Sidepanel if no sidepanelcontent is available
 - Fix Actions for Select2 input
 - Always include defaultValidationErrorHandles in registration

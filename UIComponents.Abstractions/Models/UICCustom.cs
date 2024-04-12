@@ -5,7 +5,7 @@ namespace UIComponents.Abstractions.Models;
 /// <summary>
 /// A custom component, requires <see cref="Content"/> to render. 
 /// </summary>
-public class UICCustom : UIComponent, IUICAction, IDropdownItem
+public class UICCustom : UIComponent, IUICAction, IDropdownItem, IUICInitializeAsync
 {
     #region Fields
     private bool _render = true;
@@ -100,6 +100,11 @@ public class UICCustom : UIComponent, IUICAction, IDropdownItem
     {
         _renderLocation = location;
         return this;
+    }
+
+    public virtual Task InitializeAsync()
+    {
+        return Task.CompletedTask;
     }
 
     #endregion

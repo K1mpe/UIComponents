@@ -75,6 +75,8 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Test()
         {
+            //var component = await _uic.CreateComponentAsync(new TestModel());
+            //return ViewOrPartial(component);
             await Task.Delay(500);
             if(IsAjaxRequest(Request))
                 return PartialView();
@@ -139,8 +141,6 @@ namespace UIComponents.Web.Tests.Controllers
         public IActionResult GetTimelineChartData(RequestLineGraphDataModel request)
         {
             Counter++;
-            if (Counter % 20 > 5 && request.LineGraphId == "blub")
-                throw new Exception("Test");
             var data =(request.LineGraphId=="blub")? TimelineDataFactory.GetPoint1(request.StartLocal, request.EndLocal): TimelineDataFactory.GetPoint2(request.StartLocal, request.EndLocal);
             
             var x = request.AveragePerTimespan(data);

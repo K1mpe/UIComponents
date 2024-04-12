@@ -2,4 +2,5 @@
 
 public interface ISubmitAction: IUICAction
 {
+    string ResultName { get; }
 }

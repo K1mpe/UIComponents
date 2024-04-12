@@ -19,17 +19,25 @@ public class UICViewComponent : ViewComponent
         await Task.Delay(0);
 
         var renderProperty = element.GetType().GetProperties().Where(x => x.Name == nameof(UIComponent.Render)).FirstOrDefault();
-        if (element.TryGetPropertyValue<bool>(nameof(UIComponent.Render), out bool render))
+        if (element is IConditionalRender conditionalRender && !conditionalRender.Render)
         {
-            if (!render)
-                return View($"/UIComponents/ComponentViews/NoRender.cshtml", element);
+            return View($"/UIComponents/ComponentViews/NoRender.cshtml", element);
         }
 
-        if (element is UIComponent UIC)
+        if(element is IUICInitializeAsync initialisable)
         {
-            if (UIC.Hidden)
-                UIC.AddAttribute("hidden", "true");
-            if(_uicConfig.TryGetLanguageService(out var languageService))
+            await initialisable.InitializeAsync();
+
+            //Check again if the rendercondition has changed
+            if (element is IConditionalRender conditionalRender2 && !conditionalRender2.Render)
+            {
+                return View($"/UIComponents/ComponentViews/NoRender.cshtml", element);
+            }
+        }
+
+        if (element is IUICHasAttributes UIC)
+        {
+            if (_uicConfig.TryGetLanguageService(out var languageService))
             {
                 if (UIC.TryGetPropertyValue<Translatable>("Tooltip", out Translatable tooltip) && tooltip != null)
                     UIC.AddAttribute("title", await languageService.Translate(tooltip));
@@ -37,19 +45,6 @@ public class UICViewComponent : ViewComponent
                 if (UIC.TryGetPropertyValue<Translatable>(nameof(UICInput<string>.Placeholder), out Translatable placeholder) && placeholder != null)
                     UIC.AddAttribute("placeholder", await languageService.Translate(placeholder));
             }
-
-            UIC.AddAttribute("class", "uic");
-
-
-            if (UIC.TryGetPropertyValue<string>(nameof(UICInput.PropertyName), out string propertyName))
-                UIC.AddAttribute("name", propertyName);
-
-            if (UIC.TryGetPropertyValue<bool>(nameof(UICInput.Readonly), out bool readOnly))
-                if (readOnly)
-                {
-                    UIC.AddAttribute("readonly", "true");
-                    UIC.AddAttribute("disabled", "true");
-                }
         }
         string renderLocation = element.RenderLocation;
         if (element.RenderLocation.Length < 7)

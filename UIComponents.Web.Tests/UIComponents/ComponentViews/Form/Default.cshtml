@@ -73,16 +73,30 @@ else
             getPost.GetVariableData = new UICCustom($"uic.getValue($('#{id}'));");
         Model.AddScript(
             @<text>
-            $('#@id').off('submit');
-            $('#@id').on('submit', async function(ev){
-                ev.preventDefault();
-                ev.stopPropagation();
-                @await Model.Submit.InvokeAsync(Component)
+
+            $('#@id').on('uic-help', ()=>{
+                console.log("Form $('#@id').trigger('submit') => Submit this form");
+                console.log("Form await $('#@id').triggerHandler('awaitSubmit') => Submit this form and return the result");
             });
 
+            $('#@id').off('submit');
+            $('#@id').on('submit', function(ev){
+                ev.preventDefault();
+                ev.stopPropagation();
+                $('#@id').triggerHandler('awaitSubmit');
+            });
+            $('#@id').on('awaitSubmit', async (ev) =>{
+                ev.preventDefault();
+                ev.stopPropagation();
+                
+                @await Model.Submit.InvokeAsync(Component)
+                return @Html.Raw(Model.Submit.ResultName);
+            } )
             </text>
         );
-    }
+
+        
+   }
 }
 
 @await Model.RenderStylesAndScripts(Component)

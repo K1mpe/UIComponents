@@ -1,4 +1,5 @@
-﻿namespace UIComponents.Abstractions.Models;
+﻿
+namespace UIComponents.Abstractions.Models;
 
 
 public abstract class UICInput : UIComponent
@@ -54,6 +55,19 @@ public abstract class UICInput : UIComponent
     #endregion
 
     #region Methods
+
+    public override Task InitializeAsync()
+    {
+        this.AddAttribute("name", PropertyName);
+
+        if (Readonly)
+        {
+            this.AddAttribute("readonly", "true");
+            this.AddAttribute("disabled", "true");
+        }
+
+        return base.InitializeAsync();
+    }
 
     public override string ToString()
     {

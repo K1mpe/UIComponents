@@ -44,6 +44,8 @@ public class InternalHelper
 
     public static T MapAllProperties<T>(object copyFrom, T copyTo, bool deepCopy, Type type=null) where T: class
     {
+        if (copyFrom == null)
+            return default(T);
         if (copyTo == null)
             copyTo = Activator.CreateInstance<T>();
 
@@ -52,7 +54,7 @@ public class InternalHelper
         {
             if (!property.CanWrite)
                 continue;
-            var copyFromProp = copyFrom.GetType().GetProperty(property.Name);
+            var copyFromProp = copyFrom?.GetType().GetProperty(property.Name);
             if (copyFromProp == null || !copyFromProp.CanRead)
                 continue;
                 object value = copyFromProp.GetValue(copyFrom);
