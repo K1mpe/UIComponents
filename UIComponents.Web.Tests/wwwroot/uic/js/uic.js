@@ -427,7 +427,79 @@ uic.disableUsedListItems = function (...selects) {
 $(document).ready(function () {
     $('.card').on('expanded.lte.cardwidget', (ev) => { ev.stopPropagation(); $(ev.target).triggerHandler('uic-opened'); });
     $('.card').on('collapsed.lte.cardwidget', (ev) => { ev.stopPropagation(); $(ev.target).triggerHandler('uic-closed'); });
-});﻿uic.contextMenu = uic.contextMenu || {
+});﻿uic.changeWatcher = uic.changeWatcher || {
+    example: function () {
+        console.log('the changeWatcher uses the uic.getValue() method to check for changes. This means the selector can by any type of jquery selector, (input, select, div, form, ...)')
+        console.log('You need to create the watcher before any changes occur');
+        console.log('let watcher = uic.changeWatcher.create($($0)); => Watcher that only watches one element');
+        console.log('if(watcher.isChanged()){');
+        console.log('...');
+        console.log('}');
+        console.log('');
+        console.log('When SignalR updatesthe page, you can redefine the initial values of the watcher:');
+        console.log('uic.changeWatcher.setInitialValues($($0))');
+    },
+
+    //Create a new changewatcher
+    create: function (...$selectors) {
+
+        let watcher = {
+            elements: {},
+            //Method that gets all the changes and return them as a array
+            getChanges: function () {
+                let changes = [];
+                let elNames = Object.getOwnPropertyNames(this.elements);
+                elNames.forEach((elName) => {
+                    let currentVal = uic.getValue(elName);
+                    if (!uic.compareObjects(currentVal, this.elements[elName]))
+                        changes.push({
+                            element: elName,
+                            name: $(elName).attr('name'),
+                            initialValue: this.elements[elName],
+                            currentValue: currentVal
+                        });
+                })
+                return changes;
+            },
+            //Method that checks if the properties are changed, stops after first change.
+            isChanged: function () {
+                let elNames = Object.getOwnPropertyNames(this.elements);
+                for (let i = 0; i < elNames.length; i++)
+                {
+                    let elName = elNames[i];
+                    let currentVal = uic.getValue(elName);
+                    if (!uic.compareObjects(currentVal, this.elements[elName]))
+                        return true;
+                }
+                return false;
+            }
+        }
+        uic.changeWatcher.setInitialValues(watcher, $selectors);
+        return watcher;
+    },
+
+    //Provide this functino with a watcher and one or more selectors (array).
+    //The remembered values of these selectors is than stored as the new InitialValue. (Can be triggered by SignalRChange).
+    setInitialValues(watcher, $selectorsArray) {
+
+        if (!Array.isArray($selectorsArray))
+            $selectorsArray = [$selectorsArray];
+
+        $selectorsArray.forEach(($selector) => {
+            $selector.each((index, domEl) => {
+                let selector = `#${$(domEl).attr('id')}`;
+                if (selector == '#')
+                    selector = domEl;
+                let value = uic.getValue(selector);
+
+                watcher.elements[selector] = value;
+            })
+        });
+    },
+
+    
+};
+﻿uic.contextMenu = uic.contextMenu || {
 
 
     //Enable or disable the entire contextMenu functionality
@@ -1229,6 +1301,7 @@ $(document).ready(function () {
     {
         start: function (container) {
             uic.fileExplorer.initialize.jsTree(container);
+            uic.fileExplorer.initialize.previewWindow(container);
         },
         jsTree: function (container) {
             let containerId = container.attr('id');
@@ -1324,6 +1397,30 @@ $(document).ready(function () {
                 tree.jstree('deselect_all');
                 tree.jstree('select_node', lastNode);
             });
+        },
+        previewWindow: function (container) {
+            let containerId = container.attr('id');
+            let window = $(`[for-explorer="${containerId}"] .explorer-preview`);
+            container.on('click', '.explorer-item', async (ev) => {
+                window.html('');
+                let item = $(container).find('.explorer-item.selected');
+                if (item.length > 1)
+                    return;
+                let controller = container.attr('data-controller');
+                let absolutePath = item.attr('data-absolutepath');
+                let relativePath = item.attr('data-relativepath');
+                uic.partial.showLoadingOverlay(window);
+                await container.triggerHandler('uic-before-fetch-preview');
+                let preview = await uic.getpost.post(`/${controller}/Preview`, {
+                    pathModel: {
+                        AbsolutePathReference: absolutePath,
+                        RelativePath: relativePath
+                    }
+                });
+                uic.partial.hideLoadingOverlay(window);
+                if (preview != false)
+                    window.html(preview);
+            });
         }
     },
     loadRelativeDir: async function (container, directory) {
@@ -1334,13 +1431,17 @@ $(document).ready(function () {
         await uic.fileExplorer.renderFiles(container);
     },
     fetchFiles: async function (container, controller, getFilesForDirectoryFilterModel) {
+        let mainWindow = container.find('.file-explorer-main');
+        uic.partial.showLoadingOverlay(mainWindow);
         await container.triggerHandler('uic-before-fetch', getFilesForDirectoryFilterModel);
         container.trigger('uic-setFilterModel', getFilesForDirectoryFilterModel);
+
         var result = await uic.getpost.get(`/${controller}/GetFilesForDirectory`, getFilesForDirectoryFilterModel);
 
         if (result == null || result == false)
             throw ("Exception occured");
 
+        uic.partial.hideLoadingOverlay(mainWindow);
         container.trigger('uic-setLastDirectoryResult', result);
         await container.triggerHandler('uic-after-fetch', result, getFilesForDirectoryFilterModel);
     },
@@ -1365,7 +1466,6 @@ $(document).ready(function () {
             $(ev.target).closest('.explorer-item').addClass('selected');
         });
         container.find('.explorer-folder').on('uic-openExplorerItem', (ev) => {
-            ev.stopPropagation();
             let target = $(ev.target);
             let relativePath = target.attr('data-relativePath');
             uic.fileExplorer.loadRelativeDir(container, relativePath);
@@ -1378,13 +1478,81 @@ $(document).ready(function () {
                 return;
             }
 
-            openFile(explorerItem);
+            uic.fileExplorer.openFile(explorerItem);
         })
     },
     openFile: async function (explorerItem) {
+        console.log('openFile', explorerItem);
+        let container = explorerItem.closest('.file-explorer-container');
+        await container.triggerHandler('uic-before-open', explorerItem);
+        let controller = container.attr('data-controller');
+        let absolutePath = explorerItem.attr('data-absolutepath');
+        let relativePath = explorerItem.attr('data-relativepath');
+        await uic.fileExplorer.download(`/${controller}/DownloadFile`, {
+            pathModel: {
+                AbsoluePathReference: absolutePath,
+                relativePath: relativePath
+            }
+        });
+        var result = await uic.getpost.get(`/${controller}/GetFilesForDirectory`,);
 
+        if (result == null || result == false) {
+
+        }
+            throw ("Exception occured");
+
+        await container.triggerHandler('uic-after-open', explorerItem);
     },
+    download: async function (source, data) {
+        //https://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post
+        await $.ajax({
+            type: "POST",
+            url: source,
+            data: data,
+            xhrFields: {
+                responseType: 'blob' // to avoid binary data being mangled on charset conversion
+            },
+            success: function (blob, status, xhr) {
+                // check for a filename
+                var filename = "";
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                }
 
+                if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                    // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+                    window.navigator.msSaveBlob(blob, filename);
+                } else {
+                    var URL = window.URL || window.webkitURL;
+                    var downloadUrl = URL.createObjectURL(blob);
+
+                    if (filename) {
+                        // use HTML5 a[download] attribute to specify filename
+                        var a = document.createElement("a");
+                        // safari doesn't support this yet
+                        if (typeof a.download === 'undefined') {
+                            window.location.href = downloadUrl;
+                        } else {
+                            a.href = downloadUrl;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                        }
+                    } else {
+                        window.location.href = downloadUrl;
+                    }
+
+                    setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+                    makeToast("Success", "File successfully downloaded");
+                }
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                ErrorBox(errorThrown);
+            }
+        });
+    }
 };﻿uic.form = uic.form || {
     //Check if this element or any parent is hidden or collapsed
     isHidden: function (element) {

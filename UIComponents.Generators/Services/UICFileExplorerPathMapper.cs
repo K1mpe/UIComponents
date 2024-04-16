@@ -32,7 +32,7 @@ public class UICFileExplorerPathMapper : IFileExplorerPathMapper
         lock (PathMapper)
         {
             if (string.IsNullOrWhiteSpace(relativePath.AbsolutePathReference))
-                return relativePath.RelativePath;
+                return relativePath.RelativePath?.Replace("/", "\\");
             if (PathMapper.TryGetValue(relativePath.AbsolutePathReference, out var path))
             {
                 var fullpath = path + relativePath.RelativePath.Substring(1);

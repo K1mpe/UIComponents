@@ -15,7 +15,7 @@ namespace UIComponents.Web.Tests.Models
     public class TestModel
     {
         [UICTooltip("Dit is een test")]
-        public string TestString { get; set; }
+        public string TestString { get; set; } = "abc";
 
         [UICPropertyType(UICPropertyType.MultilineText)]
         [DisplayName("<i class='fas fa-user'></i><strong class='text-danger'>Description</strong>")]
@@ -43,12 +43,13 @@ namespace UIComponents.Web.Tests.Models
         public TestModel SubModel { get; set; }
 
         public List<string> IntList { get; set; }
+        [ReadOnly(true)]
         public List<TestModel2> ObjectList { get; set; }
 
 
 
         public DateTime DateTime { get; set; } = DateTime.Now;
-        public TimeOnly TimeOnly { get; set; }
+        //public TimeOnly TimeOnly { get; set; }
     }
 
     public enum TestEnum

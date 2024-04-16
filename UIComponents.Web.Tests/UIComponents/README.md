@@ -156,6 +156,8 @@ Example:
 </body>
 ```
 
+## changeWatcher
+You can use the uic.changeWatcher in javascript to check if properties are changed. more info can be found in the uic.js file.
 
 # Component Models
 

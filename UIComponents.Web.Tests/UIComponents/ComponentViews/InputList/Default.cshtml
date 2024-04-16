@@ -23,6 +23,8 @@
     string indexRef = id.Length > 7 ? id.Substring(3, 7) : "l"+Guid.NewGuid().ToString("n").Substring(0, 3);
     Model.SingleInstanceInput.AddAttribute("data-list-item", indexRef);
 
+    if(Model.Readonly)
+        Model.SingleInstanceInput.FindAllChildrenOfType<UICInput>().ForEach(x => x.Readonly = true);
 
     if(Model.AddButton.HasValue() && !Model.AddButton.OnClick.HasValue())
     {
@@ -32,44 +34,32 @@
     Model.MoveDownButton.AddClass("uic-btn-move-down");
     Model.RemoveButton.AddClass("uic-btn-delete-instance");
 
-    Model.AddScript(
-        @<text>
+
+    if (!Model.Readonly)
+    {
+        Model.AddScript(
+            @<text>
 
         $('#@id').on('uic-help', ()=>{
-            console.log("ListInput $('#@id').trigger('uic-setValue', value) => Sets the value of all list items");
-            console.log("ListInput $('#@id').trigger('uic-setValue-index', [value, index]) => Sets the value of the item at this index");
-            console.log("ListInput $('#@id').triggerHandler('uic-getValue') => Get the value of all list items");
-            console.log("ListInput $('#@id').triggerHandler('uic-getValue-index, index') => Get the value of the item at this index");
-            console.log("ListInput $('#@id').trigger('uic-clearValues') => Empty all listitems");
-            console.log("ListInput $('#@id').trigger('uic-add', value) => Add a new item to the list, value is optional");
-            console.log("ListInput $('#@id').trigger('uic-remove', index) => Remove the item at this index");
+        console.log("ListInput $('#@id').trigger('uic-setValue', value) => Sets the value of all list items");
+        console.log("ListInput $('#@id').trigger('uic-setValue-index', [value, index]) => Sets the value of the item at this index");
+        console.log("ListInput $('#@id').trigger('uic-clearValues') => Empty all listitems");
+        console.log("ListInput $('#@id').trigger('uic-add', value) => Add a new item to the list, value is optional");
+        console.log("ListInput $('#@id').trigger('uic-remove', index) => Remove the item at this index");
 
-            console.log("ListInput $('#@id').on('uic-change') => Something has changed in the list");
+        console.log("ListInput $('#@id').on('uic-change') => Something has changed in the list");
         });
         $('#@id').on('uic-help',  '> .input-instances > .input-instance', ()=>{
-            console.log("ListInput-Item $().trigger('uic-remove') => Remove this item");
-            console.log("ListInput-Item $().trigger('uic-move-up') => Move this item up");
-            console.log("ListInput-Item $().trigger('uic-move-down') => Move this item down");
+        console.log("ListInput-Item $().trigger('uic-remove') => Remove this item");
+        console.log("ListInput-Item $().trigger('uic-move-up') => Move this item up");
+        console.log("ListInput-Item $().trigger('uic-move-down') => Move this item down");
         })
 
-        function triggerChange(){
+        let triggerChange = function(){
             $('#@id').trigger('uic-change');
             $('#@id').change();
         }
-        $('#@id').on('uic-getValue', ()=>{
-            let results = [];
 
-            $('#@id > .input-instances [data-list-item="@indexRef"][name="@Model.PropertyName"]').each((index, item)=>{
-                let value = uic.getValue($(item));
-                results.push(value);
-            });
-            return results;
-        });
-
-        $('#@id').on('uic-getValue-index', (ev, index)=>{
-            ev.stopPropagation();
-            return uic.getValue($('#@id .input-instances .input-instance')[index]);
-        });
 
         $('#@id').on('uic-setValue', (ev, ...values) => {
             let inputList = $('#@id');
@@ -98,6 +88,101 @@
             $('#@id > .input-instances').html('');
             triggerChange();
         });
+
+        let counter = 0;
+        
+        $('#@id').on('uic-remove', (ev, index) =>{
+            ev.stopPropagation();
+            let instance = $('#@id > .input-instances .input-instance')[index];
+            $(instance).trigger('uic-remove');
+            triggerChange();
+        });
+        $('#@id').on('click', '.uic-btn-delete-instance', (ev) => $(ev.target).trigger('uic-remove'));
+        $('#@id').on('.input-instances > .input-instance').on('uic-remove', (ev)=>{
+            ev.stopPropagation();
+            $(ev.target).closest('.input-instance').remove();
+        });
+        $('#@id').on('click', '.uic-btn-move-up', (ev) => $(ev.target).trigger('uic-moveUp'));
+        $('#@id').on('click', '.uic-btn-move-down', (ev) => $(ev.target).trigger('uic-moveDown'));
+        $('#@id').on('uic-moveUp', '> .input-instances > .input-instance', (ev) =>{
+            ev.stopPropagation();
+        let el = $(ev.target).closest('.input-instance');
+        $(el).prev().before($(el));
+            triggerChange();
+        });
+        $('#@id').on('uic-moveDown', '> .input-instances > .input-instance', (ev) => {
+            ev.stopPropagation();
+            let el = $(ev.target).closest('.input-instance');
+            $(el).next().after($(el));
+            triggerChange();
+        });
+
+        $('#@id').on('uic-change', ()=>{
+            setButtonDirection();
+        });
+        function setButtonDirection(){
+            $('#@id .input-instances > .input-instance').each((index, item)=>{
+            let buttons = $(item).find('> .instance-buttons');
+            @switch(Model.ButtonOrientation){
+                case UICInputList.ButtonOrientationEnum.Horizontal:
+                    <text>
+                        return;
+                    </text>
+                break;
+                case UICInputList.ButtonOrientationEnum.Vertical:
+                    <text>
+                        buttons.addClass('vertical');
+                        return;
+                    </text>
+                break;
+                case UICInputList.ButtonOrientationEnum.Auto:
+                    <text>
+                        buttons.removeClass('vertical');
+                        let buttonCount = buttons.children().length;
+                        let input = $($(item).children()[0])
+                        input.css('max-height', '1px');
+                        let buttonHeight = buttons.height();
+                        input.css('max-height', '');
+
+                        let inputHeight = input.height();
+                        if(inputHeight >= (buttonCount * buttonHeight))
+                        buttons.addClass('vertical');
+                    </text>
+                break;
+            }
+        })
+        }
+       
+    </text>);
+    }
+    Model.AddScript(
+        @<text>
+
+        $('#@id').on('uic-help', ()=>{
+            console.log("ListInput $('#@id').triggerHandler('uic-getValue') => Get the value of all list items");
+            console.log("ListInput $('#@id').triggerHandler('uic-getValue-index, index') => Get the value of the item at this index");
+        });
+
+        let triggerChange = function(){
+        $('#@id').trigger('uic-change');
+        $('#@id').change();
+        }
+        
+        $('#@id').on('uic-getValue', ()=>{
+            let results = [];
+
+            $('#@id > .input-instances [data-list-item="@indexRef"][name="@Model.PropertyName"]').each((index, item)=>{
+                let value = uic.getValue($(item));
+                results.push(value);
+            });
+            return results;
+        });
+
+        $('#@id').on('uic-getValue-index', (ev, index)=>{
+            ev.stopPropagation();
+            return uic.getValue($('#@id .input-instances .input-instance')[index]);
+        });
+
         let counter = 0;
         $('#@id').on('uic-add', async (ev, value)=>{
             let instanceList = $('#@id > .input-instances');
@@ -133,31 +218,6 @@
         triggerChange();
         });
 
-        $('#@id').on('uic-remove', (ev, index) =>{
-            ev.stopPropagation();
-            let instance = $('#@id > .input-instances .input-instance')[index];
-            $(instance).trigger('uic-remove');
-            triggerChange();
-        });
-        $('#@id').on('click', '.uic-btn-delete-instance', (ev) => $(ev.target).trigger('uic-remove'));
-        $('#@id').on('.input-instances > .input-instance').on('uic-remove', (ev)=>{
-            ev.stopPropagation();
-            $(ev.target).closest('.input-instance').remove();
-        });
-        $('#@id').on('click', '.uic-btn-move-up', (ev) => $(ev.target).trigger('uic-moveUp'));
-        $('#@id').on('click', '.uic-btn-move-down', (ev) => $(ev.target).trigger('uic-moveDown'));
-        $('#@id').on('uic-moveUp', '> .input-instances > .input-instance', (ev) =>{
-            ev.stopPropagation();
-            let el = $(ev.target).closest('.input-instance');
-            $(el).prev().before($(el));
-            triggerChange();
-        });
-        $('#@id').on('uic-moveDown', '> .input-instances > .input-instance', (ev) => {
-            ev.stopPropagation();
-            let el = $(ev.target).closest('.input-instance');
-            $(el).next().after($(el));
-            triggerChange();
-        });
 
         $('#@id').on('uic-change', ()=>{
             setButtonDirection();
@@ -211,18 +271,25 @@
     <template class="input-template">
         <div class="input-instance">
             @await Model.SingleInstanceInput.InvokeAsync(Component)     
-            <div class="instance-buttons">
-                @if (Model.ShowMoveButtons)
-                {
-                    @await Model.MoveUpButton.InvokeAsync(Component)
-                }
-                @await Model.RemoveButton.InvokeAsync(Component)
-                @if(Model.ShowMoveButtons)
-                {
-                    @await Model.MoveDownButton.InvokeAsync(Component)
-                }
-            </div> 
+            @if (!Model.Readonly)
+            {
+                <div class="instance-buttons">
+                    @if (Model.ShowMoveButtons)
+                    {
+                        @await Model.MoveUpButton.InvokeAsync(Component)
+                    }
+                    @await Model.RemoveButton.InvokeAsync(Component)
+                    @if (Model.ShowMoveButtons)
+                    {
+                        @await Model.MoveDownButton.InvokeAsync(Component)
+                    }
+                </div>
+            }
         </div>
     </template>
-    @await Model.AddButton.InvokeAsync(Component)
+    @if (!Model.Readonly)
+    {
+        @await Model.AddButton.InvokeAsync(Component)
+    }
+    
 </div>

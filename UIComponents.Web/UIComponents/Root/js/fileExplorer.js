@@ -54,6 +54,7 @@
     {
         start: function (container) {
             uic.fileExplorer.initialize.jsTree(container);
+            uic.fileExplorer.initialize.previewWindow(container);
         },
         jsTree: function (container) {
             let containerId = container.attr('id');
@@ -149,6 +150,30 @@
                 tree.jstree('deselect_all');
                 tree.jstree('select_node', lastNode);
             });
+        },
+        previewWindow: function (container) {
+            let containerId = container.attr('id');
+            let window = $(`[for-explorer="${containerId}"] .explorer-preview`);
+            container.on('click', '.explorer-item', async (ev) => {
+                window.html('');
+                let item = $(container).find('.explorer-item.selected');
+                if (item.length > 1)
+                    return;
+                let controller = container.attr('data-controller');
+                let absolutePath = item.attr('data-absolutepath');
+                let relativePath = item.attr('data-relativepath');
+                uic.partial.showLoadingOverlay(window);
+                await container.triggerHandler('uic-before-fetch-preview');
+                let preview = await uic.getpost.post(`/${controller}/Preview`, {
+                    pathModel: {
+                        AbsolutePathReference: absolutePath,
+                        RelativePath: relativePath
+                    }
+                });
+                uic.partial.hideLoadingOverlay(window);
+                if (preview != false)
+                    window.html(preview);
+            });
         }
     },
     loadRelativeDir: async function (container, directory) {
@@ -159,13 +184,17 @@
         await uic.fileExplorer.renderFiles(container);
     },
     fetchFiles: async function (container, controller, getFilesForDirectoryFilterModel) {
+        let mainWindow = container.find('.file-explorer-main');
+        uic.partial.showLoadingOverlay(mainWindow);
         await container.triggerHandler('uic-before-fetch', getFilesForDirectoryFilterModel);
         container.trigger('uic-setFilterModel', getFilesForDirectoryFilterModel);
+
         var result = await uic.getpost.get(`/${controller}/GetFilesForDirectory`, getFilesForDirectoryFilterModel);
 
         if (result == null || result == false)
             throw ("Exception occured");
 
+        uic.partial.hideLoadingOverlay(mainWindow);
         container.trigger('uic-setLastDirectoryResult', result);
         await container.triggerHandler('uic-after-fetch', result, getFilesForDirectoryFilterModel);
     },
@@ -190,7 +219,6 @@
             $(ev.target).closest('.explorer-item').addClass('selected');
         });
         container.find('.explorer-folder').on('uic-openExplorerItem', (ev) => {
-            ev.stopPropagation();
             let target = $(ev.target);
             let relativePath = target.attr('data-relativePath');
             uic.fileExplorer.loadRelativeDir(container, relativePath);
@@ -203,11 +231,79 @@
                 return;
             }
 
-            openFile(explorerItem);
+            uic.fileExplorer.openFile(explorerItem);
         })
     },
     openFile: async function (explorerItem) {
+        console.log('openFile', explorerItem);
+        let container = explorerItem.closest('.file-explorer-container');
+        await container.triggerHandler('uic-before-open', explorerItem);
+        let controller = container.attr('data-controller');
+        let absolutePath = explorerItem.attr('data-absolutepath');
+        let relativePath = explorerItem.attr('data-relativepath');
+        await uic.fileExplorer.download(`/${controller}/DownloadFile`, {
+            pathModel: {
+                AbsoluePathReference: absolutePath,
+                relativePath: relativePath
+            }
+        });
+        var result = await uic.getpost.get(`/${controller}/GetFilesForDirectory`,);
 
+        if (result == null || result == false) {
+
+        }
+            throw ("Exception occured");
+
+        await container.triggerHandler('uic-after-open', explorerItem);
     },
+    download: async function (source, data) {
+        //https://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post
+        await $.ajax({
+            type: "POST",
+            url: source,
+            data: data,
+            xhrFields: {
+                responseType: 'blob' // to avoid binary data being mangled on charset conversion
+            },
+            success: function (blob, status, xhr) {
+                // check for a filename
+                var filename = "";
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                }
 
+                if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                    // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+                    window.navigator.msSaveBlob(blob, filename);
+                } else {
+                    var URL = window.URL || window.webkitURL;
+                    var downloadUrl = URL.createObjectURL(blob);
+
+                    if (filename) {
+                        // use HTML5 a[download] attribute to specify filename
+                        var a = document.createElement("a");
+                        // safari doesn't support this yet
+                        if (typeof a.download === 'undefined') {
+                            window.location.href = downloadUrl;
+                        } else {
+                            a.href = downloadUrl;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                        }
+                    } else {
+                        window.location.href = downloadUrl;
+                    }
+
+                    setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+                    makeToast("Success", "File successfully downloaded");
+                }
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                ErrorBox(errorThrown);
+            }
+        });
+    }
 };

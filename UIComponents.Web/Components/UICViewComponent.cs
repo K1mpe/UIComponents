@@ -58,6 +58,10 @@ public class UICViewComponent : ViewComponent
                 renderLocation += ".cshtml";
         }
         ViewData["UIC"] += $" => {element.RenderLocation}";
+
+        if (element is IUIComponentViewModel viewModelComponent)
+            return View(renderLocation, viewModelComponent.ViewModel);
+
         return View(renderLocation, element);
     }
 }

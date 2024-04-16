@@ -17,6 +17,11 @@ public interface IFileExplorerController
     /// <returns></returns>
     public Task<IActionResult> OpenFiles(RelativePathModel pathModel);
 
+    /// <summary>
+    /// Get a preview of a file
+    /// </summary>
+    public Task<IActionResult> Preview(RelativePathModel pathModel);
+
     public Task<IActionResult> DownloadFile(RelativePathModel pathModel);
 
     public Task<IActionResult> MoveFiles((RelativePathModel FromPath, RelativePathModel ToPath)[] files);

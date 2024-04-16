@@ -16,4 +16,8 @@ public class GetFilesForDirectoryFilterModel : IRelativePath
     /// If true, no folders will be displayed but all files in the subfolders are available.
     /// </summary>
     public bool FilesOnly { get; set; }
+
+    public bool UseThumbnails { get; set; }
+
+    public string RenderLocation { get; set; }
 }

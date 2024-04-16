@@ -6,8 +6,9 @@ public class UICActionRefresh : UICCustom
     /// <summary>
     /// Trigger reload on this element
     /// </summary>
-    public UICActionRefresh()
+    public UICActionRefresh(IUICHasAttributes target = null)
     {
+        Content = "$(this).trigger('uic-reload');";
     }
 
 

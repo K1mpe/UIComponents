@@ -1,16 +1,28 @@
+﻿# 2024-04-15 (1.1.30)
+- UICInputList support for readonly
+﻿# 2024-04-12 (1.1.29)
+- Introducing IUICInitializeAsync
+- await FormSubmit
+- Adding changeWatcher in web
 ﻿# 2024-04-11 (1.1.27)
 - Bugfix sorting selectlistsource empty text
 - Input Text Inherit DataType
 - Fix don't show tabs that don't render content
 - Label tooltip icon clickable for touch
-- FileExplorer in progress﻿# 2024-04-02 (1.1.26)
+- FileExplorer in progress
+﻿
+# 2024-04-02 (1.1.26)
 - BugFixes Validator
 - Support for ReadonlyAttribute
 - Disable / Readonly support for Timespan
-﻿# 2024-04-02 (1.1.25)
+﻿
+# 2024-04-02 (1.1.25)
 - Bugfix permission
 - InputTimeOnly
-﻿# 2024-03-28 (1.1.27)
+﻿# 2024-04-.. (1.1.31)
+- Css Fix Readonly form textarea
+﻿
+# 2024-03-28 (1.1.27)
 - Fix mark changes
 - Renderlocation can now end with .cshtml  (automatically add .cshtml if the last 7 characters do not contain a point)
 - TryFind... extension methods

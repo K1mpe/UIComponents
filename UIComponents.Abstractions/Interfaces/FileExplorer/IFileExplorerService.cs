@@ -15,6 +15,8 @@ namespace UIComponents.Abstractions.Interfaces.FileExplorer
 
         Task<GetFilesForDirectoryResultModel> GetFilesFromDirectoryAsync(GetFilesForDirectoryFilterModel filterModel, CancellationToken cancellationToken);
 
+        Task<UICFileInfo> GetFilePreviewAsync(RelativePathModel pathModel, CancellationToken cancellationToken);
+
         Task MoveFilesAsync((RelativePathModel FromPath, RelativePathModel ToPath)[] moveFiles);
 
     }

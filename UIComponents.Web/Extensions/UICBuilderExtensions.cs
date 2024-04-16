@@ -51,7 +51,6 @@ public static class UICBuilderExtensions
 
         if (options.ReplaceScripts)
         {
-
             string targetRoote = $"{dir}\\wwwroot\\uic\\js";
             string sourceRoute = $"{currentAssemblyName}.UIComponents.Root.";
             if (!Directory.Exists(targetRoote))
@@ -223,6 +222,36 @@ public static class UICBuilderExtensions
                 }
             }
 
+        }
+
+        if (options.AddFileExplorerImgs)
+        {
+
+            string targetRoote = $"{dir}\\wwwroot\\uic\\img\\file-explorer";
+            string sourceRoute = $"{currentAssemblyName}.UIComponents.Root.img.file_explorer";
+            if (!Directory.Exists(targetRoote))
+            {
+                Directory.CreateDirectory(targetRoote);
+            }
+
+            var imgs = manifestNames.Where(x => x.StartsWith(sourceRoute));
+
+            foreach (var img in imgs)
+            {
+                string componentDir = FixFilePath(img.Replace(sourceRoute, targetRoote));
+                var fileInfo = new FileInfo(componentDir);
+                Directory.CreateDirectory(fileInfo.DirectoryName);
+                if (File.Exists(componentDir))
+                    continue;
+
+                using (var componentFile = File.Create(componentDir))
+                {
+                    using (var resourceStream = currentAssembly.GetManifestResourceStream(img))
+                    {
+                        resourceStream!.CopyTo(componentFile);
+                    }
+                }
+            }
         }
 
         #region CreateVersionFile

@@ -10,10 +10,12 @@
     - [Interfaces](#interfaces)
         - [IUIComponent](#iuicomponent)
         - [IUIAction](#IUIAction)
+        - [UIComponentViewMode](#uicomponentviewmodel)
     - [Models](#models)
         - [UICCustom](#uiccustom)
             - [UICCustomTaghelper](#uiccustomtaghelper)
         - [Translatable](#translatable)
+        - [IUIComponentViewMode](#iuicomponentviewmodel)
         - [Actions](#actions)
             - [UICActionCloseModal](#uicactionclosemodal)
             - [UICActionDelayedAction](#uicactiondelayedaction)
@@ -156,6 +158,8 @@ Example:
 </body>
 ```
 
+## changeWatcher
+You can use the uic.changeWatcher in javascript to check if properties are changed. more info can be found in the uic.js file.
 
 # Component Models
 
@@ -313,6 +317,9 @@ public interface IUICAction : IUIComponent
 }
 ```
 
+### IUIComponentViewModel
+A interface that wraps around a viewModel, for more info, check [UIComponentViewModel](#uicomponentviewmodel)
+
 ## Models
 ### UICCustom
 
@@ -446,9 +453,38 @@ Translatable x = untranslatedText;
 
 //y => Translatable with key "Button.Translate" and defaultValue "Translate this button"
 Translatable y = serializedText;
-
-
 ```
+
+### UIComponentViewModel
+This component wraps around any viewmodel. Providing it with a renderlocation so you can use any ViewModel as a component.
+
+This has the same result as returning a View or Partial view, but can be used as a component instead.
+```c#
+public class UIComponentViewModel<T> : IUIComponentViewModel
+{
+    public UIComponentViewModel(string renderlocation, T viewModel)
+    {
+        RenderLocation = renderlocation;
+        ViewModel = viewModel;
+    }
+
+    public T ViewModel { get; set; }
+
+    public string RenderLocation { get; set; }
+    object IUIComponentViewModel.ViewModel => ViewModel;
+}
+```
+
+Example:
+```c#
+var vm = await _factory.CreateViewModelAsync();
+
+var card = new UICCard("TestCard")
+                .Add(new UIComponentViewModel("/Views/Shared/MyViewLocation", vm));
+
+return ViewOrPartial(card);
+```
+
 
 
 ### Actions

@@ -40,6 +40,7 @@ builder.Services.AddUIComponentWeb(config =>
     config.CheckPropertyValidatorReadonly = false;
     config.AddChangeLog = true;
     config.AddReadMe = true;
+    config.AddFileExplorerImgs = true;
     config.AddDefaultGenerators(builder.Services);
     config.AddDefaultValidators(builder.Services);
 

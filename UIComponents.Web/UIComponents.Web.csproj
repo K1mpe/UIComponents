@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.1.28</Version>
+	<Version>1.1.30</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -31,14 +31,29 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <None Remove="UIComponents\ChangeLog\2024-03-15.md" />
-    <None Remove="UIComponents\ChangeLog\2024-03-20.md" />
-    <None Remove="UIComponents\ChangeLog\2024-03-22.md" />
-    <None Remove="UIComponents\ChangeLog\2024-03-28.md" />
-    <None Remove="UIComponents\ChangeLog\2024-04-02.md" />
-    <None Remove="UIComponents\ChangeLog\2024-04-04.md" />
-    <None Remove="UIComponents\ChangeLog\2024-04-11.md" />
-    <None Remove="UIComponents\Root\js\fileExplorer.js" />
+    <None Remove="UIComponents\ChangeLog\2024-04-...md" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\7z.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\bak.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\db.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\doc.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\docx.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\exe.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\folder.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\pdf.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\tia.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\xlsx.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\xml.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\zap13.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\zap14.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\zap15.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\zap16.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\zip.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\extensions\zw1.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\photo.png" />
+    <None Remove="UIComponents\Root\img\file-explorer\unknown-file.png" />
+  </ItemGroup>
+	
+  <ItemGroup>
     <EmbeddedResource Include="UIComponents\Taghelpers\UICCustomTaghelper.cs" />
     <EmbeddedResource Include="..\README.md" Link="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -58,6 +73,85 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UIComponents.Generators\UIComponents.Generators.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\7z.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\bak.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\db.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\doc.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\docx.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\exe.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\folder.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\pdf.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\tia.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\xlsx.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\xml.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\zap13.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\zap14.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\zap15.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\zap16.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\zip.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\extensions\zw1.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\photo.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UIComponents\Root\img\file-explorer\unknown-file.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

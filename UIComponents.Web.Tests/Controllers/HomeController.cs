@@ -260,28 +260,24 @@ namespace UIComponents.Web.Tests.Controllers
                 PostForm= new UICActionPost("/home/Post")
             });
 
-            var timeOnly = new UICInputTime("blub")
-            {
-                Value = new TimeOnly(10, 30),
-                ValidationMinTime = new TimeOnly(6, 0),
-                ValidationMaxTime = new TimeOnly(12, 00),
-                Precision = UICTimeonlyEnum.Minute,
-                Step = 10
-            };
-            var inputGroup = new UICInputGroup("Test", timeOnly);
-            return ViewOrPartial(inputGroup);
+            return ViewOrPartial(component);
         }
 
 
         [HttpGet]
         public IActionResult Files()
         {
+            var x = new TestModel();
+            new UICCard().Add(new UIComponentViewModel("/Views/Shared/MyViewLocation", x));
+
             var fileBrowser = new UICFileExplorer()
             {
                 RootDirectory = "C:\\Jonas",
             };
             fileBrowser.Left.Add(new UICGroup() { RenderWithoutContent = true }
                 .AddClass("explorer-tree"));
+            fileBrowser.Right.Add(new UICGroup() { RenderWithoutContent = true }
+                .AddClass("explorer-preview"));
             return ViewOrPartial(fileBrowser);
         }
     }

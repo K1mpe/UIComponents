@@ -61,6 +61,8 @@ public partial class UicConfigOptions
     public bool AddReadMe { get; set; } = true;
     public bool AddChangeLog { get; set; }
 
+    public bool AddFileExplorerImgs { get; set; }
+
     public bool CheckLanguageServiceType { get; set; } = true;
     public bool CheckPermissionServiceType { get; set; } = true;
 
