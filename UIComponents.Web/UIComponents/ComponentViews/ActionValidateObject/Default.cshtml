@@ -11,8 +11,18 @@
 
 @model UICActionValidateObject
 
-if(uic.compareObjects(@Model.ReferenceObjectName, @Json.Serialize(Model.MatchObject) || {}, @Json.Serialize(Model.NotMatchObject) || {})){
+@if(Model.MatchObject == null && Model.NotMatchObject == null )
+{
     @await Model.OnMatch.InvokeAsync(Component)
-} else{
-    @await Model.OnMisMatch.InvokeAsync(Component)
 }
+else
+{
+    <text>
+        if(uic.compareObjects(@Model.ReferenceObjectName, @Json.Serialize(Model.MatchObject) || {}, @Json.Serialize(Model.NotMatchObject) || {})){
+            @await Model.OnMatch.InvokeAsync(Component)
+        } else{
+            @await Model.OnMisMatch.InvokeAsync(Component)
+        }
+    </text>
+}
+

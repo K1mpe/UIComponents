@@ -14,62 +14,67 @@
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
-
+@addTagHelper *, UIComponents.Web.Tests
 @model UICSignalR
 @{
     string id = Model.GetId();
-    foreach(var child in Model.GetAllChildren().Select(x=>x.Component))
+    foreach (var child in Model.GetAllChildren().Select(x => x.Component))
     {
         if (child is UIComponent component)
         {
             component.AddAttribute("identifier", $"#{id}");
         }
     }
+    Model.AssignCollectionForChildren();
+
+    Model.AddScript(@<text>
+        let uicSignalRSubscription = async function(){
+        @if (!string.IsNullOrWhiteSpace(Model.Group))
+    {
+        <text>
+            if (connection.state == signalR.HubConnectionState.Connected) {
+            await connection.invoke("JoinGroup", '@Model.Group');
+            }
+            EventManager.subscribe('connected', async () => {
+            await connection.invoke("JoinGroup", '@Model.Group');
+
+            });
+        </text>
+    }
+        @if (string.IsNullOrWhiteSpace(Model.SubscriptionName))
+    {
+        <text>
+            console.log('SignalR does not have a subscription!');
+        </text>
+    }
+    else
+    {
+        <text>
+            await connection.on('@Model.SubscriptionName', async function (@string.Join(", ", Model.SubscriptionArguments)){
+            //SignalR does not work anymore if the html element has been removed.
+            if (!$('#@id').length)
+            return;
+            @if (Model.DisableOnHidden)
+        {
+            <text>
+                if (uic.form.isHidden($('#@id'))){
+                return;
+                }
+            </text>
+        }
+
+            @await Model.Action.InvokeAsync(Component)
+
+            });
+        </text>
+    }
+        }
+        uicSignalRSubscription();
+
+    </text>);
 }
 
 
 <div @Html.Raw(Model.GetHtmlAttributes())>
-    <script>
-        $(document).ready(async function () {
-        //console.log('uic-signalR');
-        @if (!string.IsNullOrWhiteSpace(Model.Group))
-        {
-            <text>
-                if (connection.state == signalR.HubConnectionState.Connected) {
-                    await connection.invoke("JoinGroup", '@Model.Group');
-                }
-                EventManager.subscribe('connected', async () => {
-                    await connection.invoke("JoinGroup", '@Model.Group');
-
-                });
-            </text>
-        }
-        @if (string.IsNullOrWhiteSpace(Model.SubscriptionName))
-        {
-            <text>
-                    console.log('SignalR does not have a subscription!');
-            </text>
-        }
-        else
-        {
-            <text>
-                await connection.on('@Model.SubscriptionName', async function (@string.Join(", ", Model.SubscriptionArguments)){
-                    @if (Model.DisableOnHidden)
-                    {
-                        <text>
-                            if (uic.form.isHidden($('#@id'))){
-                                return;
-                            }
-                        </text>
-                    }
-
-                    @await Model.Action.InvokeAsync(Component)
-
-                });
-            </text>
-        }
-
-
-        });
-    </script>
+    @await Model.RenderStylesAndScripts(Component)
 </div>

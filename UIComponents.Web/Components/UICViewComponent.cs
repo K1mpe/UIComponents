@@ -8,15 +8,19 @@ namespace UIComponents.Web.Components;
 public class UICViewComponent : ViewComponent
 {
     private readonly UICConfig _uicConfig;
-
-    public UICViewComponent(UICConfig uicConfig)
+    private readonly IServiceProvider _serviceProvider;
+    public UICViewComponent(UICConfig uicConfig, IServiceProvider serviceProvider)
     {
         _uicConfig = uicConfig;
+        _serviceProvider = serviceProvider;
     }
 
     public async Task<IViewComponentResult> InvokeAsync(IUIComponent element)
     {
         await Task.Delay(0);
+
+        if (element is UICFactory factoryUser)
+            element = await factoryUser.CreateComponentFromFactoryAsync(_serviceProvider);
 
         var renderProperty = element.GetType().GetProperties().Where(x => x.Name == nameof(UIComponent.Render)).FirstOrDefault();
         if (element is IConditionalRender conditionalRender && !conditionalRender.Render)

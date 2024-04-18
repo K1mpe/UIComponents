@@ -14,6 +14,7 @@
 @using UIComponents.Models.Models.Texts
 @using UIComponents.Web.Extensions;
 @using UIComponents.Abstractions.Models.RecurringDates;
+@using UIComponents.Web.Tests.Factory
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -92,7 +93,9 @@
 
     tabs.Add(new UICCard("FileExplorer").AddPartial("home", "files"));
 
-
+    var factoryComponent = new UICFactory<TestComponentFactory>(f => f.CreateComponentAsync(2));
+    factoryComponent = new UICFactory<TestComponentFactory>("/Views/Home/TestViewModelFromFactory", async f => await f.CreateViewModelAsync(2));
+    tabs.Add(new UICCard("factoryComponent").Add(factoryComponent));
 
 }
 

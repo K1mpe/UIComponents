@@ -20,10 +20,10 @@
 @model UICTree
 
 @{
-    if(string.IsNullOrWhiteSpace(Model.Id))
+    if (string.IsNullOrWhiteSpace(Model.Id))
     {
         Model.SaveState = false;
-        Model.Id = "Tree"+Guid.NewGuid().ToString("N").Substring(0,4);
+        Model.Id = "Tree" + Guid.NewGuid().ToString("N").Substring(0, 4);
     }
 
     Model.AssignCollectionForChildren(Model.Id);
@@ -58,118 +58,139 @@
 
         expand_selected_onload: false,
         @if (Model.GetData.HasValue())
-        {
+    {
         <text>
             'data': async function(obj, callback)
             {
-                @await Model.GetData.InvokeAsync(Component)
+            @await Model.GetData.InvokeAsync(Component)
             }
         </text>
-        }
-        else if (Model.TreeItems.Any())
-        {
+    }
+    else if (Model.TreeItems.Any())
+    {
         <text>
             'data':[
             @foreach (var item in Model.TreeItems)
-            {
-                @await item.InvokeAsync(Component)
-            }
+        {
+            @await item.InvokeAsync(Component)
+        }
             ]
         </text>
-            }
+    }
         },
 
         @if (Model.EnableCheckbox)
-        {
-            string cascade = "";
-            if (Model.CheckboxCascadeUp)
-                cascade += "up";
-            if (Model.CheckboxCascadeDown)
-                cascade += "down";
-            <text>
-                'checkbox': {
-                keep_selected_style : false,
-                cascade: '@cascade',
-                three_state: @Json.Serialize(Model.CheckboxThreeState),
-                },
-            </text>
-        }
+    {
+    string cascade = "";
+    if (Model.CheckboxCascadeUp)
+    cascade += "up";
+    if (Model.CheckboxCascadeDown)
+    cascade += "down";
+        <text>
+            'checkbox': {
+            keep_selected_style : false,
+            cascade: '@cascade',
+            three_state: @Json.Serialize(Model.CheckboxThreeState),
+            },
+        </text>
+    }
 
         @if (Model.EnableDragAndDrop)
-        {
+    {
         <text>
             dnd : {
             //Prevents multiple checkboxes to be dragged
             drag_selection: false,
             },
         </text>
-        }
+    }
 
 
         @foreach (var component in Model.CustomComponents)
-        {
+    {
         @await component.InvokeAsync(Component)
-        }
+    }
 
         @if (plugins.Any())
-        {
+    {
         <text>
             "plugins": [@(Html.Raw(string.Join(", ", plugins.Select(x => $"\"{x}\""))))]
         </text>
-        }
+    }
         });
 
         @if (Model.OnMove.HasValue())
-        {
+    {
         <text>
             $('#@Model.Id').on('move_node.jstree', function(event, data){
             @await Model.OnMove.InvokeAsync(Component)
             });
         </text>
-        }
+    }
 
         $('#@Model.Id').on('uic-help', ()=>{
-            @if(Model.GetData != null)
-            {
-                <text>
-                console.log("jsTree $('#@Model.Id').trigger('uic-reload', 'node_id') => Reload the node with this Id, does not reload if node is not found");
-                console.log("jsTree $('#@Model.Id').trigger('uic-reload', 'node_id', true) => Reload the node with this Id, reloads the entire jsTree if node not found");
-                </text>
-            }
+        @if(Model.GetData != null)
+    {
+        <text>
+            //console.log("jsTree $('#@Model.Id li').trigger('uic-reload') => Reload this node");
+            console.log("jsTree $('#@Model.Id').trigger('uic-reload', 'node_id') => Reload the node with this Id, does not reload if node is not found");
+            console.log("jsTree $('#@Model.Id').trigger('uic-reload', ['node_id', true]) => Reload the node with this Id, reloads the entire jsTree if node not found");
+            console.log("jsTree $('#@Model.Id').trigger('uic-reloadParent', 'node_id') => Reload the parent of this node. This ensures that the node_id is refreshed.");
+            console.log("jsTree $('#@Model.Id').trigger('uic-reloadParent', ['node_id', true]) => Reload the entire tree if the node is not found.");
+        </text>
+    }
         });
-        $('#@Model.Id').on('uic-reload', (ev, node = null, reloadIfNotFound = false)=>{
-            let container = $('#@Model.Id');
-            if(container.length == 0)
-                return;
+        $('#@Model.Id').on('uic-reload', (ev, node=null, reloadIfNotFound = false)=>{
+        let container = $('#@Model.Id');
+        if(container.length == 0)
+        return;
 
-            ev.stopPropagation();
+        ev.stopPropagation();
 
-            uic.delayedAction.run('@(Model.Id+"UpdateTree")', 300, (triggers) =>{
-                if(reloadIfNotFound && (node == null || triggers.filter(x=>x == null).length))
-                {
-                    $('#@Model.Id').jstree(true).refresh();
-                } else
-                {
-                    container.css('min-height', container.height());
-                    if(triggers.isArray()){
-                        (new Set(triggers)).forEach((id)=>{
-                            $('#@Model.Id').jstree(true).refresh_node(id);
-                        });
-                    }
-                    
+        let $node = null;
+        if(node != null){
+        $node = $(`#${node}`);
+        if(!$node.length && !reloadIfNotFound)
+        return;
+        }
 
-                    setTimeout(()=> {
-                        container.css('min-height', '');
-                    }, 1000);
-                }
-            }, node);
+        uic.delayedAction.run('@(Model.Id+"UpdateTree")', 300, (triggers) =>{
+        if(reloadIfNotFound || (node == null || triggers.filter(x=>x == null).length))
+        {
+        $('#@Model.Id').jstree(true).refresh();
+        } else
+        {
+        container.css('min-height', container.height());
+        if(Array.isArray(triggers)){
+        (new Set(triggers)).forEach((node)=>{
+        if(node == null || !node.length)
+        return;
+        $('#@Model.Id').jstree(true).refresh_node(node.attr('id'));
+        });
+        }
+
+        setTimeout(()=> {
+        container.css('min-height', '');
+        }, 1000);
+        }
+        }, $node);
         });
 
-        $('#@Model.Id').on('uic-reload', 'li', (ev, reloadIfNotFound) =>{
-            ev.stopPropagation();
-            $('#@Model.Id').trigger('uic-reload', $(ev.target).att('id'), reloadIfNotFound);
-        })
+        $('#@Model.Id').on('uic-reloadParent', (ev, nodeId, reloadIfNotFound)=>{
+        ev.stopPropagation();
+        let $node = $(`#@Model.Id #${nodeId}`);
+        if(!$node.length && reloadIfNotFound){
+        $('#@Model.Id').trigger('uic-reload', [null, true]);
+        return;
+        }
+        let $parent = $node.parent().closest('li.jstree-node');
+        if(!$parent.length){
+        $('#@Model.Id').trigger('uic-reload',[ null, true]);
+        return;
+        }
 
+        $('#@Model.Id').trigger('uic-reload', $parent.attr('id'));
+        });
 
     </text>);
 }

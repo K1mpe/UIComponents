@@ -8,6 +8,7 @@ public class UICActionRefresh : UICCustom
     /// </summary>
     public UICActionRefresh(IUICHasAttributes target = null)
     {
+        Target = target;
         Content = "$(this).trigger('uic-reload');";
     }
 
@@ -21,6 +22,11 @@ public class UICActionRefresh : UICCustom
 
         if (Target != null)
             selector = Target.GetId();
+        else
+        {
+            string identifier = this.GetAttribute("identifier");
+            selector = identifier??selector;
+        }
 
         Content = $"$({selector}).trigger('uic-reload');";
         return base.InitializeAsync();

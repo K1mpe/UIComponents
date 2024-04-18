@@ -49,9 +49,7 @@ public class UICController : Controller
 
             //var clone = InternalHelper.CloneObject(result, true, result.GetType());
             var clone = result;
-            if (IsAjaxReques(Request))
-                return PartialView("/UIComponents/ComponentViews/Render.cshtml", clone);
-            return View("/UIComponents/ComponentViews/Render.cshtml", clone);
+            return ViewOrPartial(clone); 
         }
         catch (Exception ex)
         {
@@ -61,6 +59,12 @@ public class UICController : Controller
         
     }
 
+    public IActionResult ViewOrPartial(IUIComponent component)
+    {
+        if (IsAjaxReques(Request))
+            return PartialView("/UIComponents/ComponentViews/Render.cshtml", component);
+        return View("/UIComponents/ComponentViews/Render.cshtml", component);
+    }
     public bool IsAjaxReques(HttpRequest request)
     {
         if (request == null)

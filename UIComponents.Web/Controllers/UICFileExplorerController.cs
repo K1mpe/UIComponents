@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32.SafeHandles;
 using System;
@@ -94,12 +95,13 @@ namespace UIComponents.Web.Tests.Controllers
             });
         }
 
-
+        [HttpPost]
         public async Task<IActionResult> GetFilesForDirectory(GetFilesForDirectoryFilterModel fm)
         {
             try
             {
                 var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
+                return Json(result);
                 return ViewComponent(typeof(UICViewComponent), new UIComponentViewModel(fm.RenderLocation, result));
             }
             catch (OperationCanceledException)
@@ -140,14 +142,15 @@ namespace UIComponents.Web.Tests.Controllers
             }
         }
 
+        [HttpPost]
         public async Task<IActionResult> Preview(RelativePathModel pathModel)
         {
             try
             {
-                var x = Request;
                 var result = await _fileExplorerService.GetFilePreviewAsync(pathModel, HttpContext.RequestAborted);
-                
-                return PartialView(result);
+                if (result == null)
+                    return Json(false);
+                return ViewOrPartial(new UIComponentViewModel("/UIComponents/ComponentViews/FileExplorer/FilePreview",result));
             }
             catch (OperationCanceledException)
             {
@@ -171,6 +174,26 @@ namespace UIComponents.Web.Tests.Controllers
                 _logger.LogError(ex, ex.Message);
                 throw;
             }
+        }
+
+
+
+
+        protected IActionResult ViewOrPartial(IUIComponent component)
+        {
+            if (IsAjaxReques(Request))
+                return PartialView("/UIComponents/ComponentViews/Render.cshtml", component);
+            return View("/UIComponents/ComponentViews/Render.cshtml", component);
+        }
+        protected bool IsAjaxReques(HttpRequest request)
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            if (request.Headers != null)
+                return request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+            return false;
         }
     }
 }

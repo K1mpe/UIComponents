@@ -20,6 +20,12 @@ public static class ScriptCollectionExtensions
         hasScriptCollection.ScriptCollection.AddToScripts(scriptComponent);
     }
 
+    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, out UICCustom customForTaghelper)
+    {
+        customForTaghelper = new UICCustom();
+        hasScriptCollection.AddScript(customForTaghelper);
+    }
+
     public static void AddStyle(this IUICHasScriptCollection hasScriptCollection, IUIComponent styleComponent)
     {
         hasScriptCollection.ScriptCollection.AddToStyles(styleComponent);

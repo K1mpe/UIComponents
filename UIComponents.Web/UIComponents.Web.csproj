@@ -14,6 +14,7 @@
   <ItemGroup>
 	  <EmbeddedResource Include="UIComponents\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="UIComponents\Root\**" Pack="true" />
+	  <Content Remove="UIComponents\ComponentViews\FileExplorer\FilePreview.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\InputTime\Default.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\RenderMultiple.cshtml" />
 	  <EmbeddedResource Include="UIComponents\ChangeLog\**" />
@@ -51,6 +52,11 @@
     <None Remove="UIComponents\Root\img\file-explorer\extensions\zw1.png" />
     <None Remove="UIComponents\Root\img\file-explorer\photo.png" />
     <None Remove="UIComponents\Root\img\file-explorer\unknown-file.png" />
+    <None Remove="usings" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Content Include="usings" />
   </ItemGroup>
 	
   <ItemGroup>

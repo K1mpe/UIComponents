@@ -21,6 +21,9 @@ public class UICService : IUIComponentService
     #region Public methods
     public Task<IUIComponent?> CreateComponentAsync<T>(T classObject, UICOptions? options = null) where T : class
     {
+        if (classObject.GetType() == typeof(string)) 
+            throw new Exception($"String is not valid as {nameof(classObject)}");
+
         options = GetOptions(options);
 
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, null, null);

@@ -20,7 +20,8 @@ public class UICFileExplorerService : IFileExplorerService
         _permissionService = permissionService;
         _pathMapper = pathMapper;
         _logger = logger;
-        AddDefaultGenerators();
+        if(!FileExplorerGenerators.Any())
+            AddDefaultGenerators();
     }
 
 
@@ -142,13 +143,24 @@ public class UICFileExplorerService : IFileExplorerService
         return info;
     }
 
-    public Task<UICFileInfo> GetFilePreviewAsync(RelativePathModel pathModel, CancellationToken cancellationToken)
+    public async Task<UICFileInfo> GetFilePreviewAsync(RelativePathModel pathModel, CancellationToken cancellationToken)
     {
         var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
-        return CreateFileInfoFromDirectoryPath(absolutePath, new()
+        await Task.Delay(0);
+        if(File.Exists(absolutePath))
         {
-            UseThumbnails = true,
-        });
+            return await CreateFileInfoFromFilePath(absolutePath, new()
+            {
+                UseThumbnails = true,
+            });
+        }else if (Directory.Exists(absolutePath))
+        {
+            return await CreateFileInfoFromDirectoryPath(absolutePath, new() { 
+                UseThumbnails = true, 
+            });
+        }
+        return null;
+       
     }
     #endregion
 
@@ -190,7 +202,7 @@ public class UICFileExplorerService : IFileExplorerService
         {
             generators = FileExplorerGenerators.OrderBy(x => x.Score).ToList();
         }
-        foreach(var generator in FileExplorerGenerators.ToList())
+        foreach(var generator in generators)
         {
             try
             {

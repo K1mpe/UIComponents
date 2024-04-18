@@ -10,7 +10,7 @@
     - [Interfaces](#interfaces)
         - [IUIComponent](#iuicomponent)
         - [IUIAction](#IUIAction)
-        - [UIComponentViewMode](#uicomponentviewmodel)
+        - [UIComponentViewModel](#uicomponentviewmodel)
     - [Models](#models)
         - [UICCustom](#uiccustom)
             - [UICCustomTaghelper](#uiccustomtaghelper)
@@ -479,10 +479,10 @@ Example:
 ```c#
 var vm = await _factory.CreateViewModelAsync();
 
-var card = new UICCard("TestCard")
+var modal = new UICModal("TestCard")
                 .Add(new UIComponentViewModel("/Views/Shared/MyViewLocation", vm));
 
-return ViewOrPartial(card);
+return ViewOrPartial(modal);
 ```
 
 

@@ -19,9 +19,13 @@
 # 2024-04-02 (1.1.25)
 - Bugfix permission
 - InputTimeOnly
-﻿# 2024-04-.. (1.1.31)
+﻿# 2024-04-18 (1.1.31)
 - Css Fix Readonly form textarea
-﻿
+- Add IUIComponentViewModel and UIComponentViewModel
+- Fixes JsTree refresh
+- UICFactory implemented
+- Adding UICRedirectJson object
+- Minor Fix UICActionRefresh﻿
 # 2024-03-28 (1.1.27)
 - Fix mark changes
 - Renderlocation can now end with .cshtml  (automatically add .cshtml if the last 7 characters do not contain a point)

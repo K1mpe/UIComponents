@@ -97,7 +97,7 @@
             (response) => {
                 if (response.type == "Redirect") {
 
-                    if (!response.data.length)
+                    if (!response.url.length)
                         location.reload();
                     else
                         location.href = response.url;

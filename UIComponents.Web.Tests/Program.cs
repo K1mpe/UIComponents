@@ -9,6 +9,7 @@ using UIComponents.Web.Tests.Models;
 using UIComponents.Web.Tests.Services;
 using UIComponents.Web.Tests;
 using UIComponents.Web.Tests.Validators;
+using UIComponents.Web.Tests.Factory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +63,7 @@ builder.Services.AddSingleton<IUICSignalRService, SignalRService>();
 builder.Services.AddSingleton<SignalRService>();
 builder.Services.AddSingleton<MainHub>();
 builder.Services.AddScoped<TestModelValidator>();
+builder.Services.AddScoped<TestComponentFactory>();
 
 builder.Services.AddWebOptimizer(pipeline =>
 {

@@ -93,7 +93,7 @@
                             RelativePath: object.li_attr['data-relativePath'],
                             FoldersOnly: true
                         };
-                        let result = await uic.getpost.get(`/${controller}/GetFilesForDirectory`, filterModel);
+                        let result = await uic.getpost.post(`/${controller}/GetFilesForDirectory`, filterModel);
                         
                         try {
                             result.Files.forEach((item, index) => {
@@ -154,26 +154,38 @@
         previewWindow: function (container) {
             let containerId = container.attr('id');
             let window = $(`[for-explorer="${containerId}"] .explorer-preview`);
-            container.on('click', '.explorer-item', async (ev) => {
+            let eventFunction = async (ev) => {
                 window.html('');
                 let item = $(container).find('.explorer-item.selected');
-                if (item.length > 1)
+                if (item.length != 1)
                     return;
-                let controller = container.attr('data-controller');
-                let absolutePath = item.attr('data-absolutepath');
-                let relativePath = item.attr('data-relativepath');
-                uic.partial.showLoadingOverlay(window);
-                await container.triggerHandler('uic-before-fetch-preview');
-                let preview = await uic.getpost.post(`/${controller}/Preview`, {
-                    pathModel: {
-                        AbsolutePathReference: absolutePath,
-                        RelativePath: relativePath
-                    }
-                });
-                uic.partial.hideLoadingOverlay(window);
-                if (preview != false)
-                    window.html(preview);
-            });
+                if (uic.form.isHidden(window))
+                    return;
+
+                let canContinue = true;
+                item.one('dblclick', () => { canContinue = false });
+                setTimeout(async () => {
+                    if (!canContinue) 
+                        return;
+                    let controller = container.attr('data-controller');
+                    let absolutePath = item.attr('data-absolutepath');
+                    let relativePath = item.attr('data-relativepath');
+                    uic.partial.showLoadingOverlay(window);
+                    await container.triggerHandler('uic-before-fetch-preview');
+                    let preview = await uic.getpost.post(`/${controller}/Preview`, {
+                        pathModel: {
+                            AbsolutePathReference: absolutePath,
+                            RelativePath: relativePath
+                        }
+                    });
+                    uic.partial.hideLoadingOverlay(window);
+                    if (preview != false)
+                        window.html(preview);
+                }, 100);
+                
+            };
+            container.on('click', '.explorer-item', eventFunction);
+            container.on('')
         }
     },
     loadRelativeDir: async function (container, directory) {
@@ -186,10 +198,10 @@
     fetchFiles: async function (container, controller, getFilesForDirectoryFilterModel) {
         let mainWindow = container.find('.file-explorer-main');
         uic.partial.showLoadingOverlay(mainWindow);
-        await container.triggerHandler('uic-before-fetch', getFilesForDirectoryFilterModel);
+        container.trigger('uic-before-fetch', getFilesForDirectoryFilterModel);
         container.trigger('uic-setFilterModel', getFilesForDirectoryFilterModel);
 
-        var result = await uic.getpost.get(`/${controller}/GetFilesForDirectory`, getFilesForDirectoryFilterModel);
+        var result = await uic.getpost.post(`/${controller}/GetFilesForDirectory`, getFilesForDirectoryFilterModel);
 
         if (result == null || result == false)
             throw ("Exception occured");
@@ -225,7 +237,6 @@
         })
         container.find('.explorer-item').on('dblclick', (ev) => {
             let explorerItem = $(ev.target).closest('.explorer-item');
-
             if (uic.elementContainsEvent(explorerItem, 'uic-openExplorerItem')) {
                 explorerItem.trigger('uic-openExplorerItem');
                 return;

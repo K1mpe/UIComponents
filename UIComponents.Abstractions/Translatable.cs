@@ -74,7 +74,7 @@ public class Translatable
 /// </summary>
 public class Untranslated : Translatable
 {
-    public Untranslated(string text) : base("UntranslatedKey", "{0}", text)
+    public Untranslated(string text=null) : base("UntranslatedKey", "{0}", text)
     {
     }
 
