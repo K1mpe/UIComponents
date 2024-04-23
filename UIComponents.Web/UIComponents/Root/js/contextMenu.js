@@ -144,10 +144,22 @@
     },
 
     addMenuItem: function (menuItem) {
-        uic.contextMenu.menuItems.push(menuItem);
+        let existing = uic.contextMenu.menuItems.find(x => x.id == menuItem.id && x.selector == menuItem.selector);
+        if (existing != undefined) {
+            existing = $.extend({}, existing, menuItem);
+        }
+        else {
+            uic.contextMenu.menuItems.push(menuItem);
+        }
     },
     addCategory: function (category) {
-        uic.contextMenu.categories.push(category);
+        let existing = uic.contextMenu.categories.find(x => x.categoryId == category.categoryId);
+        if (existing != undefined) {
+            existing = $.extend({}, existing, category);
+        }
+        else {
+            uic.contextMenu.categories.push(category);
+        }
     },
 
     default: {

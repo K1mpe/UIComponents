@@ -33,7 +33,7 @@ public static class UICConfigure
     public static IServiceCollection AddUIComponent(this IServiceCollection services, Action<UicConfigOptions> config, out UicConfigOptions configOptions)
     {
         var configuration = new UicConfigOptions();
-        services.TryAddScoped<IUIComponentService, UICService>();
+        services.TryAddScoped<IUIComponentGenerator, UICGenerator>();
         services.TryAddSingleton<IUICQuestionService, UICQuestionService>();
         services.TryAddSingleton<UicConfigOptions>(configuration);
         services.TryAddScoped<UICConfig>();
@@ -69,6 +69,7 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorCard>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorForm>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorGroup>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGridColumnGenerator>(serviceCollection);
         configOptions.AddDefaultPropertyGenerators(serviceCollection);
         configOptions.AddDefaultButtons(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorRequired>(serviceCollection);

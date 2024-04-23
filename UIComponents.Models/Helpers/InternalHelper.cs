@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace UIComponents.Models.Helpers;
 
@@ -92,5 +94,12 @@ public class InternalHelper
             
         }
         return copyTo;
+    }
+
+    public static PropertyInfo GetPropertyInfoFromExpression<T, TProp>(Expression<Func<T, TProp>> expression) where T : class
+    {
+        MemberExpression memberExpression = (MemberExpression)expression.Body;
+        PropertyInfo propertyInfo = (PropertyInfo)memberExpression.Member;
+        return propertyInfo;
     }
 }

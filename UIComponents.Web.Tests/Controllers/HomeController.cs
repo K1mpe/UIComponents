@@ -33,12 +33,12 @@ namespace UIComponents.Web.Tests.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IUIComponentService _uic;
+        private readonly IUIComponentGenerator _uic;
         private readonly IUICLanguageService _languageService;
         private readonly SignalRService _signalRService;
         private readonly IUICQuestionService _uicQuestionService;
         private readonly TestModelValidator _validator;
-        public HomeController(ILogger<HomeController> logger, IUIComponentService uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator)
+        public HomeController(ILogger<HomeController> logger, IUIComponentGenerator uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator)
         {
             _logger = logger;
             _uic = uic;

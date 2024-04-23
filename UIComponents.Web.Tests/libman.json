@@ -126,7 +126,7 @@
         "dist/jsgrid-theme.css",
         "dist/jsgrid-theme.min.css",
         "dist/i18n/jsgrid-de.js",
-        "dist/i18n/jsgrid-fr.js"
+        "dist/i18n/jsgrid-fr.js",
       ]
     },
     {

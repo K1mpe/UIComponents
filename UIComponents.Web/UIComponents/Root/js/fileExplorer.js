@@ -56,6 +56,7 @@
             uic.fileExplorer.initialize.jsTree(container);
             uic.fileExplorer.initialize.previewWindow(container);
         },
+        //.explorer-tree
         jsTree: function (container) {
             let containerId = container.attr('id');
             let tree = $(`[for-explorer="${containerId}"] .explorer-tree`);
@@ -93,7 +94,7 @@
                             RelativePath: object.li_attr['data-relativePath'],
                             FoldersOnly: true
                         };
-                        let result = await uic.getpost.post(`/${controller}/GetFilesForDirectory`, filterModel);
+                        let result = await uic.getpost.post(`/${controller}/GetFilesForDirectoryJson`, filterModel);
                         
                         try {
                             result.Files.forEach((item, index) => {
@@ -151,6 +152,8 @@
                 tree.jstree('select_node', lastNode);
             });
         },
+
+        //.explorer-preview
         previewWindow: function (container) {
             let containerId = container.attr('id');
             let window = $(`[for-explorer="${containerId}"] .explorer-preview`);
@@ -192,36 +195,36 @@
         let controller = container.data('controller');
         let filterModel = container.triggerHandler('uic-getFilterModel');
         filterModel.RelativePath = directory;
-        await this.fetchFiles(container, controller, filterModel);
-        await uic.fileExplorer.renderFiles(container);
+        await this.loadMainWindow(container, controller, filterModel);
     },
-    fetchFiles: async function (container, controller, getFilesForDirectoryFilterModel) {
+    SetRenderer: async function (container, renderer) {
+        let controller = container.data('controller');
+        let filterModel = container.triggerHandler('uic-getFilterModel');
+        filterModel.RenderLocation = renderer;
+        await this.loadMainWindow(container, controller, filterModel);
+    },
+    loadMainWindow: async function (container, controller, getFilesForDirectoryFilterModel) {
         let mainWindow = container.find('.file-explorer-main');
         uic.partial.showLoadingOverlay(mainWindow);
         container.trigger('uic-before-fetch', getFilesForDirectoryFilterModel);
         container.trigger('uic-setFilterModel', getFilesForDirectoryFilterModel);
 
-        var result = await uic.getpost.post(`/${controller}/GetFilesForDirectory`, getFilesForDirectoryFilterModel);
+        let result = await uic.getpost.post(`/${controller}/GetFilesForDirectoryPartial`, getFilesForDirectoryFilterModel);
 
+
+        uic.partial.hideLoadingOverlay(mainWindow);
         if (result == null || result == false)
             throw ("Exception occured");
 
-        uic.partial.hideLoadingOverlay(mainWindow);
-        container.trigger('uic-setLastDirectoryResult', result);
+        mainWindow.html(result);
+        this.setMainEvents(container);
         await container.triggerHandler('uic-after-fetch', result, getFilesForDirectoryFilterModel);
     },
-    renderFiles: async function (container) {
-
-        let main = container.find('.file-explorer-main');
-        main.html('');
-
-        let renderMethodString = main.attr('data-renderer');
-        let renderMethod = uic.fileExplorer.renderMethods[renderMethodString];
-        await renderMethod(container);
-
-
-        uic.fileExplorer.setMainEvents(container);
-        container.trigger('uic-files-rendered');
+    loadCurrentDirectoryData: async function (container) {
+        let controller = container.data('controller');
+        let filterModel = container.triggerHandler('uic-getFilterModel');
+        let result = await uic.getpost.post(`/${controller}/GetFilesForDirectoryPartial`, filterModel);
+        return result;
     },
 
 
@@ -231,8 +234,8 @@
             $(ev.target).closest('.explorer-item').addClass('selected');
         });
         container.find('.explorer-folder').on('uic-openExplorerItem', (ev) => {
-            let target = $(ev.target);
-            let relativePath = target.attr('data-relativePath');
+            let target = $(ev.target).closest('.explorer-folder');
+            let relativePath = target.attr('data-relativepath');
             uic.fileExplorer.loadRelativeDir(container, relativePath);
         })
         container.find('.explorer-item').on('dblclick', (ev) => {
@@ -258,12 +261,7 @@
                 relativePath: relativePath
             }
         });
-        var result = await uic.getpost.get(`/${controller}/GetFilesForDirectory`,);
-
-        if (result == null || result == false) {
-
-        }
-            throw ("Exception occured");
+        
 
         await container.triggerHandler('uic-after-open', explorerItem);
     },

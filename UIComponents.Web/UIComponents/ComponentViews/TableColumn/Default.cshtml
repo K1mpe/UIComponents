@@ -1,0 +1,80 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Generators.Configuration
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Tables;
+@using UIComponents.Models.Models.Tables.TableColumns
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@inject IUICLanguageService L
+@inject UICConfig config
+@model UICTableColumn
+
+@{
+    await config.GenerateTableColumn(Model);
+
+    bool canView = true;
+    if(Model.PropertyInfo != null && (Model.CheckViewPermission || (Model.CheckEditPermission && Model.Editing)))
+    {
+        if (config.TryGetPermissionService(out var permissionService))
+        {
+            if (Model.CheckViewPermission)
+            {
+                if (!await permissionService.CanViewPropertyOfType(Model.PropertyInfo.DeclaringType, Model.PropertyInfo.Name))
+                {
+                    canView = false;
+                    return;
+                }
+            }
+            if (Model.CheckEditPermission && Model.Editing)
+            {
+                Model.Editing = await permissionService.CanEditPropertyOfType(Model.PropertyInfo.DeclaringType, Model.PropertyInfo.Name);
+            }
+        }
+    }
+    
+
+    if (!canView)
+        return;
+
+    Model.Css += UICTableColumn.VisibilityClass(Model.ColumnVisibility);
+}
+
+{
+    name:@Html.JsEncode(Model.PropertyInfo?.Name,"'"),
+    title: @await Html.TranslateJs(L, Model.Title, "'"),
+    css: @Html.JsEncode(Model.Css, "'"),
+    type: @Html.JsEncode(Model.Type, "'"),
+    align: @Html.JsEncode((Model.HorizontalAlignment??UICHorizontalAlignment.Left).ToString().ToLower(), "'"),
+
+
+@if(Model.SelectListItems != null && Model.SelectListItems.Any())
+{
+    <text>
+        items: [
+        @foreach(var item in Model.SelectListItems)
+        {
+        <text>
+            {Value: @Html.JsEncode(item.Value, "'"), Text: @Html.JsEncode(item.Text, "'")},
+        </text>
+        }
+        ],
+    </text>
+    
+}
+
+
+}

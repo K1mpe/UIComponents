@@ -1,7 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using UIComponents.Generators.Interfaces;
-using UIComponents.Generators.Models;
 
 namespace UIComponents.Generators.Helpers;
 
@@ -22,11 +20,5 @@ public static class InternalGeneratorHelper
             throw new ArgumentException($"{type.Name} is not assignable to {nameof(T)}");
     }
 
-    public static PropertyInfo GetPropertyInfoFromExpression<T, TProp>(Expression<Func<T, TProp>> expression) where T : class
-    {
-        MemberExpression memberExpression = (MemberExpression)expression.Body;
-        PropertyInfo propertyInfo = (PropertyInfo)memberExpression.Member;
-        return propertyInfo;
-    }
 
 }

@@ -63,7 +63,7 @@
         - [IUICStoredComponents](#iuicstoredcomponents)
         - [IUICQuestionService](#iuicquestionservice)
     - [Implementable service-interfaces](#register-services-by-implementer)
-        - [IUICLanguageService](#iuiclanguageservice)
+        - [IUICILanguageService](#iuiclanguageservice)
         - [IUICPermissionService](#iuicpermissionservice)
         - [IUICDefaultCheckValidationErrors&lt;IUICPropertyValidationRuleReadonly&gt;](#iuicdefaultcheckvalidationerrors)
         - [IUICSignalRService](#iuicsignalrservice)
@@ -408,7 +408,7 @@ Usage examples for javascript:
 ### Translatable
 Translatable is a object that can be assigned and will translated just before sending to the client, This means you can create these keys without language context or send it to multiple users in diffrent languages.
 
-To Translate these objects, you need to implement the [IUICLanguageService](#iuiclanguageservice) interface.
+To Translate these objects, you need to implement the [IUICILanguageService](#iuiclanguageservice) interface.
 
 ```c#
 /// <summary>
@@ -1375,14 +1375,14 @@ This service can also be used inside a **AbstractValidator< T >**. This will che
 public class TestModelValidator : AbstractValidator<TestModel>
 {
     private readonly IUICValidationService _validationService;
-    private readonly IUICLanguageService _languageService;
+    private readonly IUICILanguageService _languageService;
 
-    public TestModelValidator(IUICValidationService validationService, IUICLanguageService languageService)
+    public TestModelValidator(IUICValidationService validationService, IUICILanguageService languageService)
     {
         _validationService = validationService;
         _languageService = languageService;
 
-        //This method requires a AbstractValidator (this) and a implementations of the IUICLanguageService
+        //This method requires a AbstractValidator (this) and a implementations of the IUICILanguageService
         _validationService.ValidateModel(this, _languageService);
     }
 }
@@ -1519,10 +1519,10 @@ You can use the IUICQuestionService if you want to ask questions to the client b
 ## Register services developer
 optional, todo, unimplemented, ... services
 
-### IUICLanguageService
-To enable translations, Implement the **IUICLanguageService** and make sure this is also registrated as this type.
+### IUICILanguageService
+To enable translations, Implement the **IUICILanguageService** and make sure this is also registrated as this type.
 ```c#
-builder.Services.AddScoped<IUICLanguageService, LanguageService>();
+builder.Services.AddScoped<IUICILanguageService, ILanguageService>();
 ```
 If you do not wish to use this service, disable the check in the builder configuration.
 
@@ -1530,7 +1530,7 @@ Without a languageService, all [Translatables](#translatable) will take the last
 ```c#
 builder.Services.AddUIComponentWeb(config =>
 {
-    config.CheckLanguageServiceType = false;
+    config.CheckILanguageServiceType = false;
     ...
 });
 ```

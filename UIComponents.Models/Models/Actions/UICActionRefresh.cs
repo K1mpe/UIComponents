@@ -16,7 +16,7 @@ public class UICActionRefresh : UICCustom
     [UICIgnoreGetChildrenFunction]
     public IUICHasAttributes Target { get; set; } = null;
 
-    public override Task InitializeAsync()
+    protected override Task InitializeAsync()
     {
         string selector = "this";
 

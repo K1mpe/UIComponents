@@ -645,10 +645,22 @@ $(document).ready(function () {
     },
 
     addMenuItem: function (menuItem) {
-        uic.contextMenu.menuItems.push(menuItem);
+        let existing = uic.contextMenu.menuItems.find(x => x.id == menuItem.id && x.selector == menuItem.selector);
+        if (existing != undefined) {
+            existing = $.extend({}, existing, menuItem);
+        }
+        else {
+            uic.contextMenu.menuItems.push(menuItem);
+        }
     },
     addCategory: function (category) {
-        uic.contextMenu.categories.push(category);
+        let existing = uic.contextMenu.categories.find(x => x.categoryId == category.categoryId);
+        if (existing != undefined) {
+            existing = $.extend({}, existing, category);
+        }
+        else {
+            uic.contextMenu.categories.push(category);
+        }
     },
 
     default: {
@@ -1303,6 +1315,7 @@ $(document).ready(function () {
             uic.fileExplorer.initialize.jsTree(container);
             uic.fileExplorer.initialize.previewWindow(container);
         },
+        //.explorer-tree
         jsTree: function (container) {
             let containerId = container.attr('id');
             let tree = $(`[for-explorer="${containerId}"] .explorer-tree`);
@@ -1340,7 +1353,7 @@ $(document).ready(function () {
                             RelativePath: object.li_attr['data-relativePath'],
                             FoldersOnly: true
                         };
-                        let result = await uic.getpost.post(`/${controller}/GetFilesForDirectory`, filterModel);
+                        let result = await uic.getpost.post(`/${controller}/GetFilesForDirectoryJson`, filterModel);
                         
                         try {
                             result.Files.forEach((item, index) => {
@@ -1398,6 +1411,8 @@ $(document).ready(function () {
                 tree.jstree('select_node', lastNode);
             });
         },
+
+        //.explorer-preview
         previewWindow: function (container) {
             let containerId = container.attr('id');
             let window = $(`[for-explorer="${containerId}"] .explorer-preview`);
@@ -1439,36 +1454,36 @@ $(document).ready(function () {
         let controller = container.data('controller');
         let filterModel = container.triggerHandler('uic-getFilterModel');
         filterModel.RelativePath = directory;
-        await this.fetchFiles(container, controller, filterModel);
-        await uic.fileExplorer.renderFiles(container);
+        await this.loadMainWindow(container, controller, filterModel);
     },
-    fetchFiles: async function (container, controller, getFilesForDirectoryFilterModel) {
+    SetRenderer: async function (container, renderer) {
+        let controller = container.data('controller');
+        let filterModel = container.triggerHandler('uic-getFilterModel');
+        filterModel.RenderLocation = renderer;
+        await this.loadMainWindow(container, controller, filterModel);
+    },
+    loadMainWindow: async function (container, controller, getFilesForDirectoryFilterModel) {
         let mainWindow = container.find('.file-explorer-main');
         uic.partial.showLoadingOverlay(mainWindow);
         container.trigger('uic-before-fetch', getFilesForDirectoryFilterModel);
         container.trigger('uic-setFilterModel', getFilesForDirectoryFilterModel);
 
-        var result = await uic.getpost.post(`/${controller}/GetFilesForDirectory`, getFilesForDirectoryFilterModel);
+        let result = await uic.getpost.post(`/${controller}/GetFilesForDirectoryPartial`, getFilesForDirectoryFilterModel);
 
+
+        uic.partial.hideLoadingOverlay(mainWindow);
         if (result == null || result == false)
             throw ("Exception occured");
 
-        uic.partial.hideLoadingOverlay(mainWindow);
-        container.trigger('uic-setLastDirectoryResult', result);
+        mainWindow.html(result);
+        this.setMainEvents(container);
         await container.triggerHandler('uic-after-fetch', result, getFilesForDirectoryFilterModel);
     },
-    renderFiles: async function (container) {
-
-        let main = container.find('.file-explorer-main');
-        main.html('');
-
-        let renderMethodString = main.attr('data-renderer');
-        let renderMethod = uic.fileExplorer.renderMethods[renderMethodString];
-        await renderMethod(container);
-
-
-        uic.fileExplorer.setMainEvents(container);
-        container.trigger('uic-files-rendered');
+    loadCurrentDirectoryData: async function (container) {
+        let controller = container.data('controller');
+        let filterModel = container.triggerHandler('uic-getFilterModel');
+        let result = await uic.getpost.post(`/${controller}/GetFilesForDirectoryPartial`, filterModel);
+        return result;
     },
 
 
@@ -1478,8 +1493,8 @@ $(document).ready(function () {
             $(ev.target).closest('.explorer-item').addClass('selected');
         });
         container.find('.explorer-folder').on('uic-openExplorerItem', (ev) => {
-            let target = $(ev.target);
-            let relativePath = target.attr('data-relativePath');
+            let target = $(ev.target).closest('.explorer-folder');
+            let relativePath = target.attr('data-relativepath');
             uic.fileExplorer.loadRelativeDir(container, relativePath);
         })
         container.find('.explorer-item').on('dblclick', (ev) => {
@@ -1505,12 +1520,7 @@ $(document).ready(function () {
                 relativePath: relativePath
             }
         });
-        var result = await uic.getpost.get(`/${controller}/GetFilesForDirectory`,);
-
-        if (result == null || result == false) {
-
-        }
-            throw ("Exception occured");
+        
 
         await container.triggerHandler('uic-after-open', explorerItem);
     },
@@ -2027,7 +2037,189 @@ $(document).ajaxComplete(() => uic.form.setPopoverOnClickTooltipIcon());
 
 
 };
-﻿uic.modal = uic.modal || {
+﻿uic.jsgrid = uic.jsgrid || {
+    fieldRenderers: {
+        string: new jsGrid.Field({
+
+        }),
+    },
+    onInit: async function (id, loadUserPreference, args, sorter) {
+        var loadedFilter = {};
+        if (loadUserPreference) {
+            try {
+                //Download users last filters and set them in the filter row
+                var filterJson = localStorage.getItem(`Grid.${id}.Filters`) || '{}';
+                loadedFilter = $.parseJSON(filterJson);
+                setTimeout(() => {
+                    //console.log('grid-filters', loadedFilter, filterJson);
+                    $(args.grid.fields).each(function (index, item) {
+                        {
+                            var fieldName = item.name || '';
+                            $.each(loadedFilter, function (key, element) {
+                                {
+                                    if (key == fieldName && element != '' && item.filterControl != undefined) {
+                                        {
+                                            item.filterControl.val(element);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }, 10);
+
+            } catch (ex) {
+                console.error('Failed to save userPreference', ex);
+            }
+
+        }
+
+        //This timeout of 0 ms is to enable the jsGrid to render before sorting.
+        setTimeout(() => {
+            //Load grid data
+            try { //Try to sort data
+                if (sorter != null)
+                    $(`#${id}`).jsGrid('sort', sorter);
+            } catch { }
+            $(`#${id}`).jsGrid('loadData');
+        }, 20);
+    },
+
+
+    //filterSelectFilters = bool => if true will only show filters that are available in results.
+    //this option will not work when using a paged list!
+    filterSelectListFilters: async function (args, id) {
+
+        var grid = args.grid;
+        var data = grid.data;
+        for (var i = 0; i < grid.fields.length; i++) {
+            {
+                var field = grid.fields[i];
+                if (!field["items"])
+                    continue;
+                if (!field["all_items"])
+                    field["all_items"] = field["items"];
+                else if (grid.pagesize <= data.length)
+                    field["items"] = field["all_items"]; //undo filter if paged list
+                if (grid.pageSize > data.length)
+                    field["items"] = field["all_items"].filter(item => !item.Value || data.some(d => { { return d[field.name] == item.Value } }));
+                field["filterControl"].find("option").each((index, option) => {
+                    {
+                        if (field["items"].some(item => item.Value == option.value))
+                            $(option).show().prop("disabled", false);
+                        else
+                            $(option).hide().prop("disabled", true);
+                    }
+                });
+                field.items = field.all_items;
+                $(`#${id}`).trigger('uic-dataLoadedAndFiltered');
+            }
+        }
+    },
+
+
+    filterClientSide: function (filter, data) {
+        let filtered = [];
+
+        var filterNames = Object.getOwnPropertyNames(filter);
+
+        for (var i = 0; i < data.length; i++) {
+            let item = data[i];
+            let match = true;
+
+            for (var j = 0; j < filterNames.length; j++) {
+                let filterName = filterNames[j];
+                let filterValue = filter[filterName];
+                if (filterValue === null || filterValue === undefined || filterValue ==="")
+                    continue;
+                if(item[filterName] === undefined)
+                    continue;
+
+                //console.log(typeof item[filterName]);
+
+                // filter
+                if (typeof filterValue === "string") {
+                    match = (item[filterName] || "").toString().toLowerCase().includes(filterValue.toLowerCase())
+                }
+                else if (typeof filterValue === "object") {
+                    //Check if filter is dateTime
+                    if (filterValue.hasOwnProperty('Start') && filterValue.hasOwnProperty('End')) {
+                        var date = new moment(item[filterName]);
+                        var start = new moment(filterValue["Start"]);
+                        var end = new moment(filterValue["End"]);
+
+
+                        if (filterValue.hasOwnProperty('Start'))
+                            if (date < start)
+                                match = false;
+                        if (filterValue.hasOwnProperty('End'))
+                            if (date > end)
+                                match = false;
+                    }
+                } else {
+                    match = filterValue == item[filterName];
+                }
+
+
+                if (match === false)
+                    break;
+            }
+
+            if (match)
+                filtered.push(item);
+        }
+
+
+        return filtered;
+
+    },
+    pageClientSide: function (data, rowCount) {
+        if (data["data"] != undefined)
+            return data;
+
+        return {
+            itemsCount: data.length,
+            data: data.slice(0, rowCount)
+        };
+    },
+    loadData: async function (args, id, saveFiltersInUserPreference, dataSource, whereCondition, additionalData) {
+        if (saveFiltersInUserPreference) {
+            try {
+                await localStorage.setItem(`Grid.${id}.Filters`, JSON.stringify(args));
+            }
+            catch { }
+        }
+
+        var filter = $(`#${id}`).triggerHandler('Grid.GetFilters');
+        if (filter == undefined)
+            filter = args;
+        else {
+            try {
+                filter.pageIndex = args.pageIndex;
+                filter.pageSize = args.pageSize;
+                filter.sortField = args.sortField;
+                filter.sortOrder = args.sortOrder;
+            }
+            catch { }
+        }
+
+        var response = await uic.getpost.post(dataSource, { filter: filter, gridcondition: whereCondition, data: additionalData }, { CancelPreviousRequests: true });
+        return response;
+    },
+
+    //Create top and bottom pager if none exists
+    pager_generate: function (id, pagerSelector) {
+        if (!$(`${pagerSelector}`).length) {
+            if (pagerSelector.startsWith(".")) {
+                $(`#${id}-container`).prepend(`<div class="${pagerSelector.substring(1)}"></div>`);
+                $(`#${id}-container`).append(`<div class="${pagerSelector.substring(1)}"></div>`);
+            } else if (pagerSelector.startsWith("#")) {
+                $(`#${id}-container`).prepend(`<div id="${pagerSelector.substring(1)}"></div>`);
+            }
+
+        };
+    },
+};﻿uic.modal = uic.modal || {
     closeParent: function (item) {
         var modal = $(item).closest('.uic.modal');
         if (modal.length) {

@@ -103,12 +103,16 @@ public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScr
         return $"/UIComponents/ComponentViews/{UICType}/{renderer ?? "Default"}";
     }
 
-    public virtual Task InitializeAsync()
+    protected virtual Task InitializeAsync()
     {
         this.AddClass("uic");
         if (Hidden)
             this.AddAttribute("hidden", "true");
         return Task.CompletedTask;
+    }
+    Task IUICInitializeAsync.InitializeAsync()
+    {
+        return InitializeAsync();
     }
 
     #endregion

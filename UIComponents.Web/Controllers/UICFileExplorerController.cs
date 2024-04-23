@@ -96,13 +96,33 @@ namespace UIComponents.Web.Tests.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetFilesForDirectory(GetFilesForDirectoryFilterModel fm)
+        public async Task<IActionResult> GetFilesForDirectoryPartial(GetFilesForDirectoryFilterModel fm)
+        {
+            try
+            {
+                var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
+                string renderLocation = fm.RenderLocation;
+                if (!renderLocation.Contains("\\"))
+                    renderLocation = "/UIComponents/ComponentViews/FileExplorer/ExplorerViews/" + renderLocation;
+                return ViewComponent(typeof(UICViewComponent), new UIComponentViewModel(renderLocation, result));
+            }
+            catch (OperationCanceledException)
+            {
+                return Json(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetFilesForDirectoryJson(GetFilesForDirectoryFilterModel fm)
         {
             try
             {
                 var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
                 return Json(result);
-                return ViewComponent(typeof(UICViewComponent), new UIComponentViewModel(fm.RenderLocation, result));
             }
             catch (OperationCanceledException)
             {

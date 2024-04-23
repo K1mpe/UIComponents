@@ -38,9 +38,9 @@
             display: grid;
             grid-template-columns: minmax(@(Model.MinLabelWidth ?? "100px"), auto) minmax(@(Model.MinInputWidth ?? "auto"), 1fr);
             grid-template-rows: 1fr;
-            grid-row-gap: @(Model.MarginBetweenRows ?? "1rem");
-            grid-column-gap: @(Model.MarginBetweenColumns ?? "1rem");
-            padding-bottom: @(Model.MarginBetweenRows ?? "1rem");
+            grid-row-gap: @(Model.MarginBetweenRows ?? "0.25rem");
+            grid-column-gap: @(Model.MarginBetweenColumns ?? "0.25rem");
+            padding-bottom: @(Model.MarginBetweenRows ?? "0.25rem");
         }
     </text>);
 }

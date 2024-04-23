@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.1.30</Version>
+	<Version>1.1.31</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -52,6 +52,7 @@
     <None Remove="UIComponents\Root\img\file-explorer\extensions\zw1.png" />
     <None Remove="UIComponents\Root\img\file-explorer\photo.png" />
     <None Remove="UIComponents\Root\img\file-explorer\unknown-file.png" />
+    <None Remove="UIComponents\Root\js\jsGrid.js" />
     <None Remove="usings" />
   </ItemGroup>
 	

@@ -56,7 +56,7 @@ public abstract class UICInput : UIComponent
 
     #region Methods
 
-    public override Task InitializeAsync()
+    protected override Task InitializeAsync()
     {
         this.AddAttribute("name", PropertyName);
 

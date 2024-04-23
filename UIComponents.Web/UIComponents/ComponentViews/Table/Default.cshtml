@@ -1,0 +1,181 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Tables;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICTable
+
+@{
+
+    bool hasId = !String.IsNullOrEmpty(Model.GetAttribute("id"));
+    if (!hasId)
+        Model.SaveFiltersInLocalStorage = false;
+
+
+    string id = Model.GetId();
+    Model.AssignCollectionForChildren();
+
+    if (string.IsNullOrEmpty(Model.PagingSelector))
+        Model.PagingSelector = $"paging-{id}";
+
+    if (Model.Minimal)
+        Model.AddClass("jsgrid-minimal");
+
+
+    if (Model.PageSize != int.MaxValue && Model.PageSize > 0)
+        Model.AddScript(@<text>
+            uic.jsgrid.pager_generate(@Html.JsEncode(id, "'"), @Html.JsEncode(Model.PagingSelector,"'"));
+        </text>
+    );
+
+    if (Model.OnInsertButtonClick.HasValue())
+        Model.AddScript(@<text>
+            setTimeout(()=>{
+                $('#@id .jsgrid-insert-mode-button').off('click');
+                $('#@id .jsgrid-insert-mode-button').on('click', async(args)=>{
+                    @await Model.OnInsertButtonClick.InvokeAsync(Component)
+                });
+            },500);
+            </text>
+    );
+
+    if (Model.EnableTooltip)
+        Model.AddScript(@<text>
+            setTimeout(()=>{
+                $('#@id td').each(()=>{
+                    if($(this).attr('title'))
+                        return;
+                    $(this).attr('title', $(this).text());
+                });
+            }, 500);
+            </text>);
+
+    Model.AddScript(@<text>
+            $('#@id').on('uic-help', ()=>{
+                console.log("Table $('#@id').on('uic-dataLoadedAndFiltered') => Triggered after the selectlists are filtered.");
+            });
+
+
+            $('#@id').jsGrid({
+                height: @Html.JsEncode(Model.Height, "'"),
+                width: @Html.JsEncode(Model.Width,"'"),
+
+
+                filtering : @Json.Serialize(Model.Filtering),
+                inserting: @Json.Serialize(Model.EnableInsert && Model.OnInsertItem.HasValue()),
+                editing: @Json.Serialize(Model.EnableUpdate && Model.OnUpdateItem.HasValue()),
+                deleting: @Json.Serialize(Model.EnableDelete && Model.OnDeleteItem.HasValue()),
+                sorting: @Json.Serialize(Model.Sorting),
+                paging: true,
+                pageLoading: true,
+                pageSize: @Json.Serialize(Model.PageSize),
+
+                onInit: async function(args){
+                    @if(Model.OnInit.HasValue()){
+                        <text>
+                            @await Model.OnInit.InvokeAsync(Component)
+                        </text>
+                    } else{
+                        <text>
+                        let result = await uic.jsgrid.onInit('@id', @Json.Serialize(Model.SaveFiltersInLocalStorage), args, @Html.Raw(Model.Sorter?.ToString()??"null"));
+                        </text>
+                    }
+                    $('#@id').trigger('uic-initialized');
+                },
+                onDataLoaded: async function(args){
+                    @await Model.OnDataLoaded.InvokeAsync(Component)
+                    $('#@id').trigger('uic-dataLoaded', args);
+                },
+
+                fields: [
+            @foreach(var column in Model.Columns)
+            {
+                <text>
+                    @await column.InvokeAsync(Component)
+                </text>
+            }
+                ],
+                controller: {
+                    loadData: async (args) => {
+                        $('#@id').trigger('uic-beforeLoad');
+                        @if(Model.Data != null && Model.Data.Any()){
+                            <text>
+                                let result = uic.jsgrid.filterClientSide(args, @Json.Serialize(Model.Data));
+                                result = uic.jsgrid.pageClientSide(result, @Model.PageSize);
+                            </text>
+                        } else{
+                            <text>
+                                let result = await uic.jsgrid.loadData(args, @id, @Json.Serialize(Model.SaveFiltersInLocalStorage), @Html.JsEncode(Model.GetCondition(), "'"), @Json.Serialize(Model.PostData));
+                                
+                            </text>
+                        }
+                        
+                        $('#@id').trigger('uic-afterFetch', result);
+                        return result;
+                    },
+                    @if(Model.EnableInsert && Model.OnInsertItem.HasValue()){
+                        <text>
+                        insertItem: async function(item){
+                            $('#@id').trigger('uic-beforeInsert');
+                            @await Model.OnInsertItem.InvokeAsync(Component)
+                            $('#@id').trigger('uic-afterInsert');
+                        },
+                        </text>
+                    }
+                    @if(Model.EnableInsert && Model.OnUpdateItem.HasValue()){
+                        <text>
+                        updateItem: async function (item) {
+                            $('#@id').trigger('uic-beforeUpdate');
+                            @await Model.OnUpdateItem.InvokeAsync(Component)
+                            $('#@id').trigger('uic-afterUpdate');
+                        },
+                        </text>
+                    }
+                    @if(Model.EnableInsert && Model.OnDeleteItem.HasValue()){
+                        <text>
+                         deleteItem: async function(item){
+                            $('#@id').trigger('uic-beforeDelete');
+                            @await Model.OnDeleteItem.InvokeAsync(Component)
+                            $('#@id').trigger('uic-afterDelete');
+                        },
+                        </text>
+                    }
+                },
+                @if(Model.RowRenderer.HasValue()){
+                    <text>
+                    rowRenderer: (item, index)=>{
+                        @await Model.RowRenderer.InvokeAsync(Component)
+                    }
+                    </text>
+                }
+
+                @await Model.AdditionalConfig.InvokeAsync(Component)
+            });
+            </text>);
+}
+
+<div id="@($"{id}-container")">
+    <div @Html.Raw(Model.GetHtmlAttributes())>
+
+    </div>
+</div>
+
+@await Model.RenderStylesAndScripts(Component)
+
+<script>
+    
+</script>

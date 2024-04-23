@@ -5,6 +5,7 @@ using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Services;
 using UIComponents.Generators.Services.Internal;
+using UIComponents.Models.Models.Tables;
 using UIComponents.Models.Models.Texts;
 
 namespace UIComponents.Generators.Configuration;
@@ -216,6 +217,16 @@ public class UICConfig
         return GetGeneratedResultAsync<Translatable?>(UICGeneratorPropertyCallType.PropertyTooltip, caller, args);
     }
 
+    public async Task<UICTableColumn> GenerateTableColumn(UICTableColumn column)
+    {
+        if (column.IgnoreGenerators)
+            return column;
+        string debugString = $"Table column {ClassAndPropertyString(column.PropertyInfo) ?? column.Title}";
+        var options = new UICOptions();
+        var result = await GetGeneratedResultAsync<UICTableColumn, UICTableColumn>(debugString, column, options);
+        result.IgnoreGenerators = true;
+        return result;
+    }
 
     public Task<List<SelectListItem>?> GetSelectListItems(UICPropertyArgs args, IUIComponent caller)
     {
@@ -237,7 +248,7 @@ public class UICConfig
         return $"{propertyInfo.DeclaringType?.Name} => {propertyInfo.Name}";
     }
 
-
+    
     
 
 

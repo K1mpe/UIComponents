@@ -5,14 +5,15 @@ using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Models;
 using UIComponents.Generators.Models.Arguments;
+using UIComponents.Models.Models.Tables;
 
 namespace UIComponents.Generators.Services;
 
-public class UICService : IUIComponentService
+public class UICGenerator : IUIComponentGenerator
 {
     protected readonly UICConfig _configuration;
 
-    public UICService(UICConfig configuration)
+    public UICGenerator(UICConfig configuration)
     {
         _configuration = configuration;
     }
@@ -44,6 +45,12 @@ public class UICService : IUIComponentService
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.PropertyGroup, null, null);
         return _configuration.GetChildComponentAsync(classObject, propertyInfo, options!, cc);
     }
+
+
+    public Task<UICTableColumn> SupplementTableColumn(UICTableColumn tableColumn)
+    {
+        return _configuration.GenerateTableColumn(tableColumn);
+    }
     #endregion
 
 
@@ -71,5 +78,6 @@ public class UICService : IUIComponentService
             options = new();
         return options;
     }
+
     #endregion
 }

@@ -1,10 +1,12 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 using UIComponents.Generators.Models;
+using UIComponents.Models.Helpers;
+using UIComponents.Models.Models.Tables;
 
 namespace UIComponents.Generators.Interfaces;
 
-public interface IUIComponentService
+public interface IUIComponentGenerator
 {
 
     /// <summary>
@@ -36,4 +38,25 @@ public interface IUIComponentService
     /// <param name="options">Options with parameters to change the behavior of this service</param>
     /// <returns></returns>
     Task<IUIComponent?> CreateElementFromProperty(PropertyInfo propertyInfo, object classObject, UICOptions? options = null);
+
+
+    /// <summary>
+    /// Takes a existing <see cref="UICTableColumn"/> and generate the missing properties
+    /// </summary>
+    Task<UICTableColumn> SupplementTableColumn(UICTableColumn column);
+
+    /// <summary>
+    /// Create a new table column to be used by a <see cref="UICTable"/>
+    /// </summary>
+    Task<UICTableColumn> CreateTableColumnFromProperty(PropertyInfo propertyInfo)
+    {
+        return SupplementTableColumn(new UICTableColumn(propertyInfo));
+    }
+
+    /// <inheritdoc cref="CreateTableColumnFromProperty(PropertyInfo)"/>
+    Task<UICTableColumn> CreateTableColumnFromProperty<T>(Expression<Func<T, object>> expression) where T: class
+    {
+        var propInfo= InternalHelper.GetPropertyInfoFromExpression(expression);
+        return CreateTableColumnFromProperty(propInfo);
+    }
 }

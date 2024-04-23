@@ -6,6 +6,7 @@ using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Models.UICGeneratorResponses;
+using UIComponents.Models.Helpers;
 using UIComponents.Models.Models.Texts;
 
 namespace UIComponents.Generators.Helpers;
@@ -39,7 +40,7 @@ public static class GeneratorHelper
     /// <param name="func">Generator method</param>
     public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGenerator<T>(Expression<Func<T, object>> expression, string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> func) where T: class
     {
-        var propertyInfo = InternalGeneratorHelper.GetPropertyInfoFromExpression(expression);
+        var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(expression);
 
         var generator = new UICCustomGenerator<UICPropertyArgs, IUIComponent>()
         {

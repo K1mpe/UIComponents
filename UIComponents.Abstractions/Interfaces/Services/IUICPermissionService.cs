@@ -9,9 +9,14 @@ public interface IUICPermissionService
     Task<bool> CanViewObject<T>(T obj) where T : class;
 
     /// <summary>
-    /// CHeck if the current user can view this property
+    /// Check if the current user can view this property
     /// </summary>
     Task<bool> CanViewProperty<T>(T obj, string propertyName) where T : class;
+
+    /// <summary>
+    /// Check if this property can be viewed by the current user. This is used for a table that does not have access to a specific object to validate.
+    /// </summary>
+    Task<bool> CanViewPropertyOfType(Type type, string propertyName);
 
     /// <summary>
     /// Check if the current user can create a new instance of this type
@@ -29,6 +34,12 @@ public interface IUICPermissionService
     /// Check if the current user can edit a property of this object
     /// </summary>
     Task<bool> CanEditProperty<T>(T obj, string propertyName) where T : class;
+
+    /// <summary>
+    /// Check if this property can be edited by the current user. This is used for a table that does not have access to a specific object to validate.
+    /// </summary>
+    Task<bool> CanEditPropertyOfType(Type type, string propertyName);
+
 
     /// <summary>
     /// Check if the user can delete this object

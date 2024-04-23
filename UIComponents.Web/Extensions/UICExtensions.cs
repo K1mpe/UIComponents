@@ -73,6 +73,15 @@ public static class UICExtensions
         return component.Attributes.GetHtmlAttributes();
     }
 
+    public static IHtmlContent GetAttributesFromDictionary(this IHtmlHelper htmlHelper, Dictionary<string, string> dictionary)
+    {
+        string attributes = string.Empty;
+        foreach(var attr in dictionary)
+        {
+            attributes = string.Join(" ", attributes, $"{attr.Key.ToLower()}=\"{attr.Value}\"");
+        }
+        return htmlHelper.Raw(attributes);
+    }
 
 
 

@@ -29,12 +29,22 @@ namespace UIComponents.Web.Tests.Services
             return Task.FromResult(true);
         }
 
+        public Task<bool> CanEditPropertyOfType(Type type, string propertyName)
+        {
+            return Task.FromResult(true);
+        }
+
         public Task<bool> CanViewObject<T>(T obj) where T : class
         {
             return Task.FromResult(true);
         }
 
         public Task<bool> CanViewProperty<T>(T obj, string propertyName) where T : class
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> CanViewPropertyOfType(Type type, string propertyName)
         {
             return Task.FromResult(true);
         }

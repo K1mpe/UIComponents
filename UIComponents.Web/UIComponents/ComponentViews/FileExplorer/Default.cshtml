@@ -39,6 +39,7 @@
         let filterModel = @Json.Serialize(new GetFilesForDirectoryFilterModel(){
             AbsolutePathReference = Model.AbsolutePathReference,
             RelativePath = Model.StartDirectory,
+            RenderLocation= @Model.RenderMethod
         })
 
         let getFilesForDirectoryResultModel = null;

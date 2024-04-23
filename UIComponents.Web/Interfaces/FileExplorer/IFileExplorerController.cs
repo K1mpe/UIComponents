@@ -8,7 +8,13 @@ public interface IFileExplorerController
     /// This controllerfunction must return a JSON result with a <see cref="GetFilesForDirectoryResultModel"/>
     /// Can also return any Json response that is supported by the getPost
     /// </summary>
-    public Task<IActionResult> GetFilesForDirectory(GetFilesForDirectoryFilterModel fm);
+    public Task<IActionResult> GetFilesForDirectoryPartial(GetFilesForDirectoryFilterModel fm);
+
+    /// <summary>
+    /// This controllerfunction must return a JSON result with a <see cref="GetFilesForDirectoryResultModel"/>
+    /// Can also return any Json response that is supported by the getPost
+    /// </summary>
+    public Task<IActionResult> GetFilesForDirectoryJson(GetFilesForDirectoryFilterModel fm);
 
     /// <summary>
     /// Called when trying to open a file, may redirect to <see cref="DownloadFile(RelativePathModel)"/>
