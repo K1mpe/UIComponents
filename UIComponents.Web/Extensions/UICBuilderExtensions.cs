@@ -106,7 +106,7 @@ public static class UICBuilderExtensions
 
 
             #region ScriptCollectionFile
-            string collection = $"{dir}\\Views\\Shared\\_UicScripts.cshtml";
+            string collection = $"{dir}\\Views\\Shared\\_Scripts.UIC.cshtml";
             string collectionContent = string.Empty;
             AddScript("uic.js");
 

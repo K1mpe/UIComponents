@@ -24,12 +24,27 @@
     if (Model.Tooltip != null)
         Model.AddAttribute("title", await L.Translate(Model.Tooltip));
 
+    async Task<object> RenderBeforeOrAfter(IUIComponent component)
+    {
+        if(component is UICButton || component is UICInput)
+        {
+            <span onclick="event.stopPropagation()">
+                @await component.InvokeAsync(Component)
+            </span>
+        }
+        else
+        {
+            @await component.InvokeAsync(Component)
+        }
+        return null;
+    }
 }
 
 @if(Model.OnClick == null)
 {
     <li>
         <span @Html.Raw(Model.GetHtmlAttributes())>
+            @await RenderBeforeOrAfter(Model.BeforeContent)
             @if (Model.Icon.HasValue())
             {
                 @await Model.Icon.InvokeAsync(Component)
@@ -39,6 +54,7 @@
                 <span class="icon"></span>
             }
             @await Html.TranslateHtml(L, Model.Content)
+            @await RenderBeforeOrAfter(Model.AfterContent)
         </span>
     </li>
 }
@@ -47,6 +63,7 @@ else if (Model.OnClick is UICActionNavigate navigate)
     Model.AddAttribute("href", navigate.Href);
     <li>
         <a @Html.Raw(Model.GetHtmlAttributes())>
+            @await RenderBeforeOrAfter(Model.BeforeContent)
             @if (Model.Icon.HasValue())
             {
                 @await Model.Icon.InvokeAsync(Component)
@@ -56,6 +73,7 @@ else if (Model.OnClick is UICActionNavigate navigate)
                 <span class="icon"></span>
             }
             @await Html.TranslateHtml(L, Model.Content)
+            @await RenderBeforeOrAfter(Model.AfterContent)
         </a>
     </li>
 }
@@ -73,6 +91,7 @@ else
 
     <li>
         <a @Html.Raw(Model.GetHtmlAttributes())>
+            @await RenderBeforeOrAfter(Model.BeforeContent)
         @if (Model.Icon.HasValue())
         {
             @await Model.Icon.InvokeAsync(Component)
@@ -81,7 +100,9 @@ else
         {
             <span class="icon"></span>
         }
-        @await Html.TranslateHtml(L,Model.Content, null)</a>
+            @await Html.TranslateHtml(L, Model.Content, null)
+            @await RenderBeforeOrAfter(Model.AfterContent)
+        </a>
     </li>
     //Create the script for the click on the dropdown item, and store it for later. This script will be rendered after all dropdown items.
     

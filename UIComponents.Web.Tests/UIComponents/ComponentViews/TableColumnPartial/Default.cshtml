@@ -20,13 +20,16 @@
 
 @model UICTableColumnPartial
 
-@{
-    Model.GetPost.GetVariableData = new UICCustom("variableRowData");
-}
 {
-    type: 'uic-rowcontent',
-    func: async(variableRowData) =>{
+    type: @Html.JsEncode(Model.Type, "'"),
+    identifier: @Html.JsEncode(Model.Identifier, "'"),
+    loadContent: async(value, item) =>{
         @await Model.GetPost.InvokeAsync(Component)
+        return @Html.JsEncode(Model.GetPost.ResultName);
+    },
+    checkBeforeCellRender: function(value, item){
+        @await Model.Validation.InvokeAsync(Component)
+        return true;
     },
     multiple: @Json.Serialize(Model.Multiple)
 },

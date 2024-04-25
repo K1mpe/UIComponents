@@ -57,7 +57,7 @@ public class UICGroup : UIComponent, IUICAction, IUICHasChildren<IUIComponent>, 
             {
                 if (x == null)
                     return false;
-                if (x is IConditionalRender cr)
+                if (x is IUICConditionalRender cr)
                     return cr.Render;
                 return _render;
             }).Any();

@@ -31,7 +31,7 @@
     Model.AddAttribute("class", "custom-control-input");
 }
 
-<div class="custom-control custom-switch icheck-@Model.Color">
+<div class="custom-control custom-switch @(string.IsNullOrEmpty(Model.Color?.ToLower())?"":$"icheck-{Model.Color}")">
     <input type="checkbox" @Html.Raw(Model.GetHtmlAttributes()) />
     <label class="custom-control-label" for="@id"></label>
 </div>

@@ -23,7 +23,7 @@ public class UICViewComponent : ViewComponent
             element = await factoryUser.CreateComponentFromFactoryAsync(_serviceProvider);
 
         var renderProperty = element.GetType().GetProperties().Where(x => x.Name == nameof(UIComponent.Render)).FirstOrDefault();
-        if (element is IConditionalRender conditionalRender && !conditionalRender.Render)
+        if (element is IUICConditionalRender conditionalRender && !conditionalRender.Render)
         {
             return View($"/UIComponents/ComponentViews/NoRender.cshtml", element);
         }
@@ -33,7 +33,7 @@ public class UICViewComponent : ViewComponent
             await initialisable.InitializeAsync();
 
             //Check again if the rendercondition has changed
-            if (element is IConditionalRender conditionalRender2 && !conditionalRender2.Render)
+            if (element is IUICConditionalRender conditionalRender2 && !conditionalRender2.Render)
             {
                 return View($"/UIComponents/ComponentViews/NoRender.cshtml", element);
             }

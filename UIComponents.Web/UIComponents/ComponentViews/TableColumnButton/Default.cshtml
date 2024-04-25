@@ -1,0 +1,54 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Tables;
+@using UIComponents.Models.Models.Tables.TableColumns;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@inject IUICLanguageService L;
+@model UICTableColumnButton
+
+@{
+    string id = Model.Button.GetId();
+    Model.AddScript(@<text>
+        </text>);
+}
+{
+    type: "@Model.Type",
+    width: @Html.JsEncode(Model.Width, "'"),
+    title: @await Html.TranslateJs(L, Model.Title, "'"),
+    align: @Html.JsEncode(Model.Alignment.ToString().ToLower(), "'"),
+    buttonEl: function(value, item){
+        return `@await Model.Button.InvokeAsync(Component)`;
+    },
+    @if (Model.OnClick.HasValue())
+    {
+        <text>
+            onClick: function(value, item){
+                @await Model.OnClick.InvokeAsync(Component)
+            },
+        </text>
+    }
+
+    itemTemplate(value, item){
+        let button = this.buttonEl(value, item);
+        button = $(button);
+        button.on('click', (ev)=>{
+            ev.stopPropagation();
+            this.onClick(value, item);
+        })
+        return button;
+    },
+},

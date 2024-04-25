@@ -116,6 +116,27 @@ public static class UICExtensions
         return htmlContentBuilder;
     }
 
+
+    public static async Task<IHtmlContent> ConvertToJavascript(this Dictionary<string, object> dict, IUICLanguageService languageService, IHtmlHelper htmlHelper, IJsonHelper jsonHelper,  IViewComponentHelper componentHelper)
+    {
+        var collection = new HtmlContentBuilder();
+        foreach(var item in dict)
+        {
+            IHtmlContent content = null;
+            if (item.Value is IUIComponent component)
+                content = await component.InvokeAsync(componentHelper);
+            else if (item.Value is Translatable translatable)
+                content = await htmlHelper.TranslateJs(languageService, translatable, "'");
+            else 
+                content = jsonHelper.Serialize(item.Value);
+            collection.AppendHtml($"'{item.Key}': ");
+            collection.AppendHtml(content);
+            collection.Append(",");
+            collection.AppendLine();
+        }
+        return collection;
+    }
+
     #region ScriptCollection
 
 

@@ -249,7 +249,6 @@ public class UICConfig
     }
 
     
-    
 
 
     public class ButtonGenerator

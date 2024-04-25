@@ -6,7 +6,7 @@ namespace UIComponents.Abstractions.Models;
 /// <summary>
 /// The base for most UICs
 /// </summary>
-public abstract class UIComponent : IUIComponent, IConditionalRender, IUICHasScriptCollection, IUICHasAttributes, IUICHasParent, IUICInitializeAsync
+public abstract class UIComponent : IUIComponent, IUICConditionalRender, IUICHasScriptCollection, IUICHasAttributes, IUICHasParent, IUICInitializeAsync
 {
     #region Fields
     private bool _render = true;

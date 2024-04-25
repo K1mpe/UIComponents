@@ -43,6 +43,8 @@ public class UICDropdownItem : UIComponent, IDropdownItem, IHasIcon<UICIcon>
     public IUICAction OnClick { get; set; } = new UICCustom();
     public UICIcon Icon { get; set; }
 
+    public IUIComponent BeforeContent { get; set; } = new UICCustom();
+    public IUIComponent AfterContent { get; set; } = new UICCustom();
 
 
 

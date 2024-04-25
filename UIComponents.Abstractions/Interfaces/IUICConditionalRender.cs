@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Abstractions.Interfaces;
 
-public interface IConditionalRender
+public interface IUICConditionalRender
 {
     public bool Render { get; }
 }

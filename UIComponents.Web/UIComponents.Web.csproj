@@ -53,6 +53,7 @@
     <None Remove="UIComponents\Root\img\file-explorer\photo.png" />
     <None Remove="UIComponents\Root\img\file-explorer\unknown-file.png" />
     <None Remove="UIComponents\Root\js\jsGrid.js" />
+    <None Remove="UIComponents\Root\js\jsgridResize.js" />
     <None Remove="usings" />
   </ItemGroup>
 	
@@ -66,6 +67,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="UIComponents\ComponentViews\ActionDelayedAction\Default.cshtml" />
+    <None Include="UIComponents\ComponentViews\TableColumnButton\Default.cshtml" />
   </ItemGroup>
 	
 

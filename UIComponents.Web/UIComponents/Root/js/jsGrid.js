@@ -176,6 +176,14 @@
         };
     },
 
+    defaultHeaderTemplate: function (title, titleVisibiltiy, icon, iconvisibility, tooltip) {
+        let el = $('<span>', { title: tooltip || title });
+
+        if (icon != null)
+            el.append(icon.addClass(iconvisibility));
+        el.append($('<span>', { class: titleVisibiltiy }).append(title));
+        return el;
+    },
 
     fieldRenderers: {}, //This has the prototypes for fieldRenderers that are used by UIC generators. These are configured in the next block to enable $.extend()
 };
@@ -377,6 +385,182 @@
         }
     };
 
+    const GRID_ROW_CONTENT_ARRAY = "_ROW_CONTENT_ARRAY";
+    r.rowcontent = {
+        align: "center",
+
+        deleting: false,
+        editing: false,
+        details: false,
+        sorting: false,
+
+        url: null,
+        icon_up: "fa fa-chevron-down",
+        icon_down: "fa fa-chevron-right",
+        multiple: false,
+        before_cell_render: true,
+        identifier: "Id",
+        width:"25px",
+
+        // Triggered when any changes happen
+        rowContentChanged: $.noop,
+
+        itemTemplate: function (value, item) {
+            let _this = this;
+            let element = $("<i>", { "class": _this.icon_down });
+
+            return element;
+        },
+
+        cellRenderer: function (value, item) {
+            if (!this.checkBeforeCellRender(item))
+                return $("<td>");
+
+            let _this = this;
+
+            // Clicking the cell does not trigger the sidebar
+            var cell = $("<td onclick=\"event.stopPropagation();\">");
+
+            cell.append(this.itemTemplate(value, item));
+
+            cell.on("click", async function (e) {
+                e.stopPropagation();
+
+
+                if (_this._isRowOpened(_this._grid, item)) {
+                    // close this item 
+                    _this._closeRow(_this._grid, item);
+                }
+                else {
+                    if (!_this.multiple) {
+                        // close any items that are open
+                        _this._closeRows(_this._grid);
+                    }
+
+                    // open this item
+                    _this._openRow(_this._grid, item);
+                }
+
+                
+            });
+
+            return cell;
+        },
+
+        insertTemplate: $.noop,
+        editTemplate: $.noop,
+        insertValue: $.noop,
+        editValue: $.noop,
+
+        _init: function (grid) {
+            if (!Array.isArray(grid[GRID_ROW_CONTENT_ARRAY]))
+                grid[GRID_ROW_CONTENT_ARRAY] = [];
+        },
+
+        _isRowOpened: function (grid, item) {
+            let _this = this;
+            _this._init(grid);
+
+            let entry = grid[GRID_ROW_CONTENT_ARRAY].find(entry => entry.item[_this.identifier] === item[_this.identifier]);
+            if (!entry)
+                return false;
+
+            // Check if the content is still connected
+            if (!entry.content[0].isConnected) {
+                // remove from the array
+                let index = grid[GRID_ROW_CONTENT_ARRAY].indexOf(entry);
+                grid[GRID_ROW_CONTENT_ARRAY].splice(index, 1);
+
+                return false;
+            }
+
+            return true;
+        },
+
+        _closeRow: function (grid, item) {
+            let _this = this;
+            _this._init(grid);
+
+            // Find the entry on the grid
+            let entry = grid[GRID_ROW_CONTENT_ARRAY].find(entry => entry.item[_this.identifier] === item[_this.identifier]);
+            if (!entry)
+                return;
+
+            // Remove from the grid array
+            let index = grid[GRID_ROW_CONTENT_ARRAY].indexOf(entry);
+            grid[GRID_ROW_CONTENT_ARRAY].splice(index, 1);
+
+            // Remove the HTML
+            entry.content.remove();
+
+            // Set the correct icon
+            entry.row.find(`i.${_this.icon_up.replace(" ", ".")}`)
+                .removeClass(_this.icon_up)
+                .addClass(_this.icon_down);
+        },
+
+        _closeRows: function (grid) {
+            let _this = this;
+            _this._init(grid);
+
+            for (var index = 0; index < grid[GRID_ROW_CONTENT_ARRAY].length; index++) {
+                _this._closeRow(grid, grid[GRID_ROW_CONTENT_ARRAY][index].item);
+            }
+        },
+
+        _openRow: async function (grid, item) {
+            let _this = this;
+            _this._init(grid);
+
+            let row = grid.rowByItem(item);
+            let content = _this._appendEmptyRow(row, item);
+
+            content.trigger('uic-reload');
+            //await _this._loadContentRow(content, item);
+
+            grid[GRID_ROW_CONTENT_ARRAY].push({
+                item: item,
+                row: row,
+                content: content
+            });
+        },
+
+        _appendEmptyRow: function (itemRow, item) {
+            let contentRow = $("<tr>", { "class": "jsgrid-row" })
+                .append($("<td>", { "class": "jsgrid-cell jsgrid-partial-content", "colspan": this._grid.fields.length }));
+
+            contentRow.on('uic-reload', async(ev) => {
+                ev.stopPropagation();
+                uic.partial.showLoadingOverlay(contentRow);
+                let content = await this.loadContent(null, item);
+                uic.partial.hideLoadingOverlay(contentRow);
+                if (content != false)
+                    contentRow.find('td:first').html(content);
+            })
+            itemRow.after(contentRow);
+
+            // Change the icon
+            itemRow.find(`i.${this.icon_down.replace(" ", ".")}`)
+                .removeClass(this.icon_down)
+                .addClass(this.icon_up);
+
+            return contentRow;
+        },
+
+        //_loadContentRow: async function (contentRow, item) {
+        //    let cell = contentRow.find("td:first");
+        //    let data = {};
+        //    data[this.identifier] = item[this.identifier];
+        //    uic.partial.showLoadingOverlay(cell);
+
+        //    // Add a loading icon to that row
+        //    let content = await this.loadContent(null, item);
+        //    uic.partial.hideLoadingOverlay(cell);
+        //    if (content != false)
+        //        cell.html(content);
+        //}
+    }
+
     r.selectlist = {
         align: "center",
 
@@ -384,26 +568,13 @@
         nullable: true,
 
         itemTemplate: function (value) {
-            var items = this.items,
-                valueField = this.valueField,
-                textField = this.textField,
-                resultItem;
-
-            if (this.nullIsEmptyString && value === null)
-                value = '';
-
-            if (valueField) {
-                resultItem = $.grep(items, function (item, index) {
-                    return item[valueField] == value;
-                })[0] || {};
-            }
-            else {
-                resultItem = items[value];
-            }
-
-            var result = (textField ? resultItem[textField] : resultItem);
-
-            return (result === undefined || result === null) ? "" : result;
+            var items = this.items;
+            let text = value;
+            if (text == "0")
+                text = "";
+            let textVal = ""+value; // make sure the value is seen as text
+            let item = items.filter(x => x.Value === textVal);
+            return item[0]?.Text || text;
         },
 
         filterTemplate: function () {
@@ -464,7 +635,8 @@
                 valueField = this.valueField,
                 textField = this.textField,
                 selectedIndex = this.selectedIndex;
-
+            $result.append($("<option>")
+                .attr("value", null));
             $.each(this.items, function (index, item) {
                 var value = item.Value;
                 var text = item.Text;
@@ -482,7 +654,7 @@
             return $result;
         },
     };
-
+   
     r.timespan = {
         css: "timespan-field",            // redefine general property 'css'
         align: "center",              // redefine general property 'align'
@@ -491,7 +663,6 @@
 
         filter_start: null,
         filter_end: null,
-
         sorter: function (date1, date2) {
             return new Date(date1) - new Date(date2);
         },
@@ -502,6 +673,7 @@
             var mValue = moment.duration(value);
             if (mValue.asMilliseconds() == 0)
                 return null;
+
             //always show the full date
             return mValue.humanize();
         },
@@ -535,6 +707,13 @@
                 .prop("readonly", !!this.readOnly);
         },
 
+        cellRenderer: function (value, item) {
+            let content = this.itemTemplate(value, item);
+            let cell = $('<td>').attr('title', this.tooltip||value);
+            cell.append(content);
+
+            return cell;
+        }
         
 
     }
@@ -555,6 +734,11 @@
         },
         itemTemplate: function (value, item) {
             return this._renderCheckbox(value, true, this.nullable);
+        },
+        insertTemplate: function () {
+            let value = this.nullable?null:false;
+            let checkbox = this._renderCheckbox(value, true, this.nullable);
+            return checkbox;
         },
         editTemplate: function (value, item) {
             let checkbox = this._renderCheckbox(value, true, this.nullable);
@@ -610,4 +794,5 @@ $(document).ready(() => {
     SetRenderer("toggle");
     SetRenderer("selectlist");
     SetRenderer("timespan");
+    SetRenderer("rowcontent");
 });

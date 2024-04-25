@@ -73,7 +73,8 @@
             var controlColumn = new UICTableColumn()
             {
                 IgnoreGenerators = true,
-                Type="control"
+                Type="control",
+                HeaderTemplate = null, // set to null to enable initial loading
             };
             controlColumn.Options["inserting"] = Model.EnableInsert && Model.OnInsertItem.HasValue();
             controlColumn.Options["editButton"] = Model.EnableUpdate && Model.OnUpdateItem.HasValue();
@@ -117,7 +118,7 @@
                     $('#@id').trigger('uic-initialized');
                 },
                 onDataLoaded: async function(args){
-                    @await Model.OnDataLoaded.InvokeAsync(Component)
+                    @await Model.OnDataLoading.InvokeAsync(Component)
                     $('#@id').trigger('uic-dataLoaded', args);
                 },
 
@@ -154,7 +155,7 @@
                             </text>
                         }
                         
-                        $('#@id').trigger('uic-afterFetch', result);
+                        $('#@id').trigger('uic-afterFetch', [result, args]);
                         return result;
                     },
                     @if(Model.EnableInsert && Model.OnInsertItem.HasValue()){
@@ -195,6 +196,16 @@
 
                 @await Model.AdditionalConfig.InvokeAsync(Component)
             });
+
+            @if(Model.Resizable){
+                <text>
+                $('#@id').on('uic-afterFetch', ()=>{
+                    setTimeout(()=>{
+                        uic.jsgrid.resizeColumn($('#@id'));
+                    },1);
+                });
+                </text>
+            }
 
             </text>);
 }

@@ -11,15 +11,14 @@
         //Check if the translation is already requested, call the fetchTranslationText on first request
         let cachedValue = uic.translation._defaultValues[translatable.ResourceKey];
         if (cachedValue == undefined) {
-            cachedValue = await uic.translation.fetchTranslationText(translatable);
+            cachedValue = await uic.translation.translateKey(translatable.ResourceKey);
             uic.translation._defaultValues[translatable.ResourceKey] = cachedValue;
         }
 
         //Format the arguments in the text
-        return cachedValue.format(translatable.Arguments);
-
-        
+        return (cachedValue||translatable.DefaultValue).format(translatable.Arguments);
     },
+    //Get the translated defaultvalue for this key
     translateKey: async function (key) {
         return await uic.translation.translate({ ResourceKey: key });
     },
@@ -34,4 +33,4 @@
     _defaultValues: {
 
     }
-}
+};

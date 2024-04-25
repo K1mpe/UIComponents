@@ -25,7 +25,9 @@
 - Fixes JsTree refresh
 - UICFactory implemented
 - Adding UICRedirectJson object
-- Minor Fix UICActionRefresh﻿
+- Minor Fix UICActionRefresh
+- Adding 2 permissions to IUICPermissionService
+- Scriptloading changed﻿
 # 2024-03-28 (1.1.27)
 - Fix mark changes
 - Renderlocation can now end with .cshtml  (automatically add .cshtml if the last 7 characters do not contain a point)

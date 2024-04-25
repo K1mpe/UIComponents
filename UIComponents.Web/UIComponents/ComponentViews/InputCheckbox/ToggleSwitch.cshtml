@@ -27,7 +27,7 @@
     }
 }
 
-<div class="custom-control custom-switch icheck-@Model.Color" title="@await Html.TranslateHtml(L, Model.Tooltip)">
+<div class="custom-control custom-switch @(string.IsNullOrEmpty(Model.Color?.ToLower())?"":$"icheck-{Model.Color}")" title="@await Html.TranslateHtml(L, Model.Tooltip)">
     <input type="checkbox" @(Model.Value?"checked":"") @Html.Raw(Model.GetHtmlAttributes())/>
     <label class="custom-control-label" for="@id"></label>
 </div>

@@ -18,11 +18,9 @@
 @using UIComponents.Models.Models.Tables.TableColumns
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
-
 @inject IUICLanguageService L
 @inject UICConfig config
 @model UICTableColumn
-
 @{
     await config.GenerateTableColumn(Model);
 
@@ -52,10 +50,10 @@
 
     Model.Css += UICTableColumn.VisibilityClass(Model.ColumnVisibility);
 }
-
 {
     name:@Html.JsEncode(Model.PropertyInfo?.Name,"'"),
     title: @await Html.TranslateJs(L, Model.Title, "'"),
+    tooltip: @await Html.TranslateJs(L, Model.Tooltip, "'"),
     css: @Html.JsEncode(Model.Css, "'"),
     type: @Html.JsEncode(Model.Type, "'"),
     @if(Model.HorizontalAlignment != null)
@@ -64,9 +62,7 @@
             align: @Html.JsEncode((Model.HorizontalAlignment ?? UICHorizontalAlignment.Left).ToString().ToLower(), "'"),
         </text>
     }
-
     nullable: @Json.Serialize(Model.Nullable),
-
 @if(Model.SelectListItems != null && Model.SelectListItems.Any())
 {
     <text>
@@ -78,8 +74,7 @@
         </text>
         }
         ],
-    </text>
-    
+    </text>    
 }
 @if (Model.CellRenderer.HasValue())
 {
@@ -89,12 +84,11 @@
         },
     </text>
 }
-
 @if (Model.ItemTemplate.HasValue())
 {
     <text>
         itemTemplate: function(value, item){
-        @await Model.ItemTemplate.InvokeAsync(Component)
+            @await Model.ItemTemplate.InvokeAsync(Component)
         },
     </text>
 }
@@ -102,7 +96,7 @@
 {
     <text>
         editTemplate: function(value, item){
-        @await Model.EditTemplate.InvokeAsync(Component)
+            @await Model.EditTemplate.InvokeAsync(Component)
         },
     </text>
 }
@@ -110,7 +104,7 @@
 {
     <text>
         filterTemplate: function(){
-        @await Model.FilterTemplate.InvokeAsync(Component)
+            @await Model.FilterTemplate.InvokeAsync(Component)
         },
     </text>
 }
@@ -118,24 +112,27 @@
 {
     <text>
         headerTemplate: function(){
-        return `@await Model.HeaderTemplate.InvokeAsync(Component)`
+            return `@await Model.HeaderTemplate.InvokeAsync(Component)`
         },
     </text>
 }
-
-
-
-@foreach(var option in Model.Options)
+else if(Model.HeaderTemplate != null)
 {
-    if(option.Value is IUIComponent component && component.HasValue())
-    {
-        <text>
-            @option.Key: @await component.InvokeAsync(Component),
-        </text>
-    }
     <text>
-        @option.Key: @Json.Serialize(option.Value),
+        headerTemplate: uic.jsgrid.defaultHeaderTemplate(
+            @await Html.TranslateJs(L, Model.Title, "`"),
+            @Html.JsEncode(UICTableColumn.VisibilityClass(Model.TextVisibility), "'"),
+            @if(Model.Icon.HasValue())
+            {
+                <text>$(`@await Model.Icon.InvokeAsync(Component)`),</text>
+            } else
+            {
+                <text>null,</text>
+            }
+            @Html.JsEncode(UICTableColumn.VisibilityClass(Model.IconVisibility), "'"),
+            @await Html.TranslateJs(L, Model.Tooltip, "'")
+        ),
     </text>
-}
-
+ }
+    @await Model.Options.ConvertToJavascript(L, Html, Json, Component)
 },

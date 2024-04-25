@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using System.Linq.Expressions;
 using System.Reflection;
+using UIComponents.Abstractions.Interfaces.Tables;
 using UIComponents.Models.Helpers;
 using static UIComponents.Models.Models.Actions.UICActionGetPost;
 
@@ -28,7 +29,12 @@ namespace UIComponents.Models.Models.Tables
         public string Width { get; set; } = "100%";
         public string Height { get; set; } = "auto";
 
-        public List<UICTableColumn> Columns { get; set; } = new();
+        /// <summary>
+        /// Enable the table columns to be resized
+        /// </summary>
+        public bool Resizable { get; set; } = true;
+
+        public List<IUICTableColumn> Columns { get; set; } = new();
 
         public bool Filtering { get; set; } = true;
         public bool Selecting { get; set; } = true;
@@ -106,7 +112,7 @@ namespace UIComponents.Models.Models.Tables
 
         #region Events
         public IUICAction OnInit { get; set; } = new UICCustom();
-        public IUICAction OnDataLoaded { get; set; } = new UICCustom();
+        public IUICAction OnDataLoading { get; set; } = new UICCustom();
 
 
         /// <summary>
@@ -115,8 +121,28 @@ namespace UIComponents.Models.Models.Tables
         public IUICAction OnRowClick { get; set; } = new UICCustom();
         public IUICAction OnRowDubbleClick { get; set; } = new UICCustom();
 
+        /// <summary>
+        /// Called when a item is inserted.
+        /// </summary>
+        /// <remarks>
+        /// Available args => 'item'
+        /// </remarks>
         public IUICAction OnInsertItem { get; set; } = new UICCustom();
+
+        /// <summary>
+        /// Called when a item is deleted.
+        /// </summary>
+        /// <remarks>
+        /// Available args => 'item'
+        /// </remarks>
         public IUICAction OnUpdateItem { get; set; } = new UICCustom();
+
+        /// <summary>
+        /// Called when a item is deleted.
+        /// </summary>
+        /// <remarks>
+        /// Available args => 'item'
+        /// </remarks>
         public IUICAction OnDeleteItem { get; set; } = new UICCustom();
 
         public IUICAction OnInsertButtonClick { get; set; } = new UICCustom();
@@ -142,7 +168,7 @@ namespace UIComponents.Models.Models.Tables
         /// </summary>
         public UICTable AddColumn(PropertyInfo propInfo, Action<UICTableColumn> config = null)
         {
-            UICTableColumn column = Columns.Where(x=> x.PropertyInfo!= null && x.PropertyInfo.Name == propInfo.Name).FirstOrDefault();
+            UICTableColumn column = Columns.Where(x=> x is UICTableColumn).OfType<UICTableColumn>().Where(x=> x.PropertyInfo!= null && x.PropertyInfo.Name == propInfo.Name).FirstOrDefault();
             if (column == null)
             {
                 column = new UICTableColumn(propInfo);
@@ -156,7 +182,7 @@ namespace UIComponents.Models.Models.Tables
 
         public UICTable AddColumn(out UICTableColumn column, PropertyInfo propInfo)
         {
-            column = Columns.Where(x => x.PropertyInfo != null && x.PropertyInfo.Name == propInfo.Name).FirstOrDefault();
+            column = Columns.Where(x => x is UICTableColumn).OfType<UICTableColumn>().Where(x => x.PropertyInfo != null && x.PropertyInfo.Name == propInfo.Name).FirstOrDefault();
             if (column == null)
             {
                 column = new UICTableColumn(propInfo);
@@ -165,27 +191,34 @@ namespace UIComponents.Models.Models.Tables
 
             return this;
         }
-        public UICTable AddColumn(UICTableColumn column, Action<UICTableColumn> config = null)
+        public UICTable AddColumn<T>(T column, Action<T> config = null) where T: class, IUICTableColumn
         {
             Columns.Add(column);
             if (config != null)
                 config(column);
             return this;
         }
-        public UICTable AddColumn(out UICTableColumn addedColumn, UICTableColumn column)
+        public UICTable AddColumn<T>(out T addedColumn, T column) where T : class, IUICTableColumn
         {
             Columns.Add(column);
             addedColumn = column;
             return this;
         }
 
+        public UICTable RemoveColumn(PropertyInfo propInfo)
+        {
+            return AddColumn(propInfo, config => config.Render = false);
+        }
+
         /// <summary>
-        /// Add a signalREvent.
+        /// Add a signalREvent. If no action is set, this will automatically be set to reloading the table
         /// </summary>
         /// <param name="signalR"></param>
         /// <returns></returns>
         public UICTable AddSignalR(UICSignalR signalR)
         {
+            if (!signalR.Action.HasValue())
+                signalR.Action = TriggerReload();
             SignalRRefreshTriggers.Add(signalR);
             return this;
         }
@@ -199,7 +232,7 @@ namespace UIComponents.Models.Models.Tables
 
 
         #region ClientMethods
-        public IUICAction Reload()
+        public IUICAction TriggerReload()
         {
             return new UICActionRefresh(this);
         }
@@ -211,19 +244,36 @@ namespace UIComponents.Models.Models.Tables
         #region Ctor
         public UICTable() : base()
         {
-
+            OnInsertItem = new UICActionPost(typeof(T).Name, "Insert") { GetVariableData = new UICCustom("item") };
+            OnUpdateItem = new UICActionPost(typeof(T).Name, "Update") { GetVariableData = new UICCustom("item") };
+            OnDeleteItem = new UICActionGet(typeof(T).Name, "Delete") { GetVariableData = new UICCustom("item") };
         }
         public UICTable(string id) : this()
         {
             if(!string.IsNullOrWhiteSpace(id))
                 this.SetId(id);
         }
-        public UICTable(List<T> data) : base(data.OfType<object>().ToList())
+        public UICTable(List<T> data) : this()
         {
-            
+            Data = data;
+        }
+        public UICTable(UICActionGetPost loadDataFunc) : this()
+        {
+            OnDataLoading = loadDataFunc;
         }
         #endregion
 
+
+        #region Properties
+        /// <summary>
+        /// The static data provided
+        /// </summary>
+        public new IEnumerable<T> Data
+        {
+            get => base.Data.OfType<T>().ToList();
+            set => base.Data = value.OfType<object>().ToList();
+        }
+        #endregion
 
 
         #region Methods
@@ -254,11 +304,76 @@ namespace UIComponents.Models.Models.Tables
         public UICTableColumn GetColumn(Expression<Func<T, object>> expression, bool allowNew=true)
         {
             var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(expression);
-            var col= Columns.Where(x=>x.PropertyInfo.Name ==propertyInfo.Name).FirstOrDefault();
+            var col= Columns.Where(x => x is UICTableColumn).OfType<UICTableColumn>().Where(x=>x.PropertyInfo != null && x.PropertyInfo.Name ==propertyInfo.Name).FirstOrDefault();
             if (col == null && allowNew)
                 col = new();
             return col;
         }
+
+        /// <summary>
+        /// Add multiple columns, columns should be split by ","
+        /// </summary>
+        /// <param name="columnNames"></param>
+        /// <returns></returns>
+        public UICTable<T> AddColumns(string columnNames, bool caseSensitive = true)
+        {
+            if (string.IsNullOrWhiteSpace(columnNames))
+                return this;
+
+            var columns = columnNames.Split(",").Select(x => x.Trim());
+            foreach(var column in columns)
+            {
+                var propInfo = typeof(T).GetProperty(column);
+                if (propInfo == null && !caseSensitive)
+                    propInfo = typeof(T).GetProperties().Where(x => x.Name.ToUpper() == column.ToUpper()).FirstOrDefault();
+
+                if (propInfo == null) 
+                    continue;
+                AddColumn(propInfo);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Add multiple columns by expression
+        /// </summary>
+        /// <param name="propExpressions"></param>
+        /// <returns></returns>
+        public UICTable<T> AddColumns(params Expression<Func<T, object>>[] propExpressions)
+        {
+            foreach (var expression in propExpressions)
+            {
+                AddColumn(expression);
+            }
+            return this;
+        }
+
+
+        
+        /// <summary>
+        /// Set the render property for multiple columns to false. Columns must be split by ","
+        /// </summary>
+        /// <param name="columnNames"></param>
+        /// <returns></returns>
+        public UICTable<T> RemoveColumns(string columnNames, bool caseSensitive = false)
+        {
+            if (string.IsNullOrWhiteSpace(columnNames))
+                return this;
+
+            var columns = columnNames.Split(",").Select(x => x.Trim());
+            foreach (var column in columns)
+            {
+                var propInfo = typeof(T).GetProperty(column);
+                if (propInfo == null && !caseSensitive)
+                    propInfo = typeof(T).GetProperties().Where(x => x.Name.ToUpper() == column.ToUpper()).FirstOrDefault();
+
+                if (propInfo == null)
+                    continue;
+                RemoveColumn(propInfo);
+            }
+            return this;
+        }
+
 
         /// <summary>
         /// Add all the remaining columns in the same order as they are defined in the Model
@@ -274,16 +389,13 @@ namespace UIComponents.Models.Models.Tables
                 if(!includeIsDeleted && propertyInfo.Name.ToUpper() == "ISDELETED")
                     continue;
 
-                if (Columns.Where(x=>x.PropertyInfo != null && x.PropertyInfo.Name ==propertyInfo.Name).Any())
+                if (Columns.Where(x => x is UICTableColumn).OfType<UICTableColumn>().Where(x=>x.PropertyInfo != null && x.PropertyInfo.Name ==propertyInfo.Name).Any())
                     continue;
                 AddColumn(propertyInfo);
             }
             return this;
         }
-        public UICTable<T> AddColumns(params Expression<Func<T, object>>[] propExpressions)
-        {
-            throw new NotImplementedException();
-        }
+       
         #endregion
     }
 

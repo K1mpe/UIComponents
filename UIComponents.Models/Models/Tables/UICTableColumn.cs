@@ -4,10 +4,10 @@ using UIComponents.Abstractions.Interfaces.Tables;
 
 namespace UIComponents.Models.Models.Tables
 {
-    public class UICTableColumn : UIComponent
+    public class UICTableColumn : IUIComponent, IUICTableColumn
     {
         #region Fields
-        public override string RenderLocation => UIComponent.DefaultIdentifier(nameof(UICTableColumn));
+        public virtual string RenderLocation => UIComponent.DefaultIdentifier(nameof(UICTableColumn));
         #endregion
 
         #region Ctor
@@ -20,6 +20,7 @@ namespace UIComponents.Models.Models.Tables
         #region Properties
         public PropertyInfo PropertyInfo{ get; set; }
         public Translatable Title { get; set; }
+        public Translatable Tooltip { get; set; }
         public string Type { get; set; }
 
         //Additional options
@@ -34,6 +35,8 @@ namespace UIComponents.Models.Models.Tables
         public string Css { get; set; }
 
         public bool Editing { get; set; } = true;
+
+        public bool Render { get; set; } = true;
 
         public bool CheckViewPermission { get; set; } = true;
         public bool CheckEditPermission { get; set; } = true;
@@ -63,35 +66,36 @@ namespace UIComponents.Models.Models.Tables
         /// </summary>
         /// <remarks>
         /// Available args: value, item</remarks>
-        public IUICAction CellRenderer { get; set; } = new UICCustom();
+        public virtual IUICAction CellRenderer { get; set; } = new UICCustom();
 
         /// <summary>
         /// is a function to create cell content. It should return markup as string, DomNode or jQueryElement
         /// </summary>
         /// <remarks>
         /// Available args: value, item</remarks>
-        public IUICAction ItemTemplate { get; set; } = new UICCustom();
+        public virtual IUICAction ItemTemplate { get; set; } = new UICCustom();
 
         /// <summary>
         /// is a function to create cell content of editing row. 
         /// </summary>
         /// <remarks>
         /// Available args: value, item</remarks>
-        public IUICAction EditTemplate { get; set; } = new UICCustom();
+        public virtual IUICAction EditTemplate { get; set; } = new UICCustom();
 
         /// <summary>
         /// is a function to create filter row cell content. 
         /// </summary>
-        public IUICAction FilterTemplate { get; set; } = new UICCustom();
+        public virtual IUICAction FilterTemplate { get; set; } = new UICCustom();
 
         /// <summary>
         /// is a function to create column header content.
         /// </summary>
-        public IUIComponent HeaderTemplate { get; set; } = new UICCustom();
+        public virtual IUIComponent HeaderTemplate { get; set; } = new UICCustom();
 
         public UICTableColumnVisibility ColumnVisibility { get; set; } = UICTableColumnVisibility.VisibleOnAll;
         public UICTableColumnVisibility TextVisibility { get; set; } = UICTableColumnVisibility.VisibleOnAll;
         public UICTableColumnVisibility IconVisibility { get; set; } = UICTableColumnVisibility.VisibleOnAll;
+
         #endregion
 
         #region Methods
