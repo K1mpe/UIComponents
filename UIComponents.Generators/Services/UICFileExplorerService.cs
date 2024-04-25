@@ -1,10 +1,9 @@
-﻿using CDCPortal.Web.Services;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Runtime.CompilerServices;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Models.FileExplorer;
+using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Services;
 
@@ -242,7 +241,7 @@ public class UICFileExplorerService : IFileExplorerService
     private void AddDefaultGenerators()
     {
         AddGenerator("ImageThumbnails", 1000, (fileInfo, filterModel, absolutePath) =>{
-            if (!filterModel.UseThumbnails && false)
+            if (!filterModel.UseThumbnails)
                 return;
 
             if (!string.IsNullOrEmpty(fileInfo.Thumbnail))
@@ -260,6 +259,27 @@ public class UICFileExplorerService : IFileExplorerService
 
 
             fileInfo.Thumbnail = $"<img src=\"data:image/png;base64,{CreateThumbnailFromImage.Create(absolutePath, 200, 200)}\">";
+        });
+        AddGenerator("PdfThumbnail", 1000, (fileInfo, filterModel, absolutePath) =>
+        {
+            if (!filterModel.UseThumbnails)
+                return;
+            if (!string.IsNullOrEmpty(fileInfo.Thumbnail))
+                return;
+
+            List<string> extensions = new() { "pdf" };
+            if (!extensions.Contains(fileInfo.Extension.ToLower()))
+                return;
+
+            using (var ms = new MemoryStream())
+            {
+                CreateThumbnailFromPdf.CreateThumbnail(ms, absolutePath);
+                ms.Position = 0;
+                var array = ms.ToArray();
+                string base64 = Convert.ToBase64String(array);
+                if(!string.IsNullOrWhiteSpace(base64))
+                    fileInfo.Thumbnail = $"<img src=\"data:image/png;base64,{base64}\">";
+            }
         });
 
         AddGenerator("ImageIcons", 1000, (fileInfo, filterModel, absolutePath) => 

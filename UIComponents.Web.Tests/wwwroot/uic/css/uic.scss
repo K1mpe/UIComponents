@@ -115,7 +115,11 @@
             }
         }
     }
-
+    .btn-toolbar{
+        > *:has(.explorer-path){
+            flex-grow: 1;
+        }
+    }
     .file-explorer-main {
         &[data-renderer='large'] {
             .explorer-thumbnail {

@@ -21,6 +21,11 @@ namespace UIComponents.Models.Models.Tables
         public PropertyInfo PropertyInfo{ get; set; }
         public Translatable Title { get; set; }
         public string Type { get; set; }
+
+        //Additional options
+        public Dictionary<string, object> Options { get; } = new();
+
+
         public string Sorter { get; set; }
         public UICIcon Icon { get; set; }
 
@@ -37,13 +42,52 @@ namespace UIComponents.Models.Models.Tables
         /// When this property is true, this column will not be effected by generators anymore.
         /// </summary>
         public bool IgnoreGenerators { get; set; }
+
+        /// <summary>
+        /// Selectlistitems only used for <see cref="UICPropertyType.SelectList"/>
+        /// </summary>
         public List<SelectListItem> SelectListItems { get; set; }
+
+        /// <summary>
+        /// Value may be null, checkbox is not nullable, Threestate checkbox is.
+        /// </summary>
+        public bool Nullable { get; set; }
 
         public UICHorizontalAlignment? HorizontalAlignment { get; set; }
         public UICVerticalAlignment? VerticalAlignment { get; set; }
 
         public string DefaultFilter { get; set; }
+
+        /// <summary>
+        /// A custom cell renderer for this column
+        /// </summary>
+        /// <remarks>
+        /// Available args: value, item</remarks>
         public IUICAction CellRenderer { get; set; } = new UICCustom();
+
+        /// <summary>
+        /// is a function to create cell content. It should return markup as string, DomNode or jQueryElement
+        /// </summary>
+        /// <remarks>
+        /// Available args: value, item</remarks>
+        public IUICAction ItemTemplate { get; set; } = new UICCustom();
+
+        /// <summary>
+        /// is a function to create cell content of editing row. 
+        /// </summary>
+        /// <remarks>
+        /// Available args: value, item</remarks>
+        public IUICAction EditTemplate { get; set; } = new UICCustom();
+
+        /// <summary>
+        /// is a function to create filter row cell content. 
+        /// </summary>
+        public IUICAction FilterTemplate { get; set; } = new UICCustom();
+
+        /// <summary>
+        /// is a function to create column header content.
+        /// </summary>
+        public IUIComponent HeaderTemplate { get; set; } = new UICCustom();
 
         public UICTableColumnVisibility ColumnVisibility { get; set; } = UICTableColumnVisibility.VisibleOnAll;
         public UICTableColumnVisibility TextVisibility { get; set; } = UICTableColumnVisibility.VisibleOnAll;

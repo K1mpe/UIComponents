@@ -52,6 +52,7 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Index()
         {
+            return Redirect("/table");
             var translatable = new Translatable("blub", "test {0}", new Translatable("foo", "foo {1}", "abc"));
             var serialised = translatable.Serialize();
             var x = (Translatable)serialised;
@@ -274,10 +275,7 @@ namespace UIComponents.Web.Tests.Controllers
             {
                 RootDirectory = "C:\\Jonas",
             };
-            fileBrowser.Left.Add(new UICGroup() { RenderWithoutContent = true }
-                .AddClass("explorer-tree"));
-            fileBrowser.Right.Add(new UICGroup() { RenderWithoutContent = true }
-                .AddClass("explorer-preview"));
+            UICFileExplorer.Addons.AddAllAddons(fileBrowser);
             return ViewOrPartial(fileBrowser);
         }
     }

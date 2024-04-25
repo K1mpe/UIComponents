@@ -408,3 +408,11 @@ uic.disableUsedListItems = function (...selects) {
 
    
 }
+
+uic.loadScript = function (source) {
+    let scriptEl = document.createElement("script");
+    scriptEl.setAttribute("src", source);
+    if (document.body == null)
+        document.body = document.createElement("body");
+    document.body.append(scriptEl);
+};

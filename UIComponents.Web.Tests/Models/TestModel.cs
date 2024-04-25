@@ -47,8 +47,8 @@ namespace UIComponents.Web.Tests.Models
         public List<TestModel2> ObjectList { get; set; }
 
 
-
-        public DateTime DateTime { get; set; } = DateTime.Now;
+        [UICPropertyType(UICPropertyType.DateTime)]
+        public DateTime? DateTime { get; set; }
         //public TimeOnly TimeOnly { get; set; }
     }
 

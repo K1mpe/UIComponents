@@ -58,8 +58,14 @@
     title: @await Html.TranslateJs(L, Model.Title, "'"),
     css: @Html.JsEncode(Model.Css, "'"),
     type: @Html.JsEncode(Model.Type, "'"),
-    align: @Html.JsEncode((Model.HorizontalAlignment??UICHorizontalAlignment.Left).ToString().ToLower(), "'"),
+    @if(Model.HorizontalAlignment != null)
+    {
+        <text>
+            align: @Html.JsEncode((Model.HorizontalAlignment ?? UICHorizontalAlignment.Left).ToString().ToLower(), "'"),
+        </text>
+    }
 
+    nullable: @Json.Serialize(Model.Nullable),
 
 @if(Model.SelectListItems != null && Model.SelectListItems.Any())
 {
@@ -75,6 +81,61 @@
     </text>
     
 }
-
-
+@if (Model.CellRenderer.HasValue())
+{
+    <text>
+        cellRenderer: function(value, item){
+            @await Model.CellRenderer.InvokeAsync(Component)
+        },
+    </text>
 }
+
+@if (Model.ItemTemplate.HasValue())
+{
+    <text>
+        itemTemplate: function(value, item){
+        @await Model.ItemTemplate.InvokeAsync(Component)
+        },
+    </text>
+}
+@if (Model.EditTemplate.HasValue())
+{
+    <text>
+        editTemplate: function(value, item){
+        @await Model.EditTemplate.InvokeAsync(Component)
+        },
+    </text>
+}
+@if (Model.FilterTemplate.HasValue())
+{
+    <text>
+        filterTemplate: function(){
+        @await Model.FilterTemplate.InvokeAsync(Component)
+        },
+    </text>
+}
+@if (Model.HeaderTemplate.HasValue())
+{
+    <text>
+        headerTemplate: function(){
+        return `@await Model.HeaderTemplate.InvokeAsync(Component)`
+        },
+    </text>
+}
+
+
+
+@foreach(var option in Model.Options)
+{
+    if(option.Value is IUIComponent component && component.HasValue())
+    {
+        <text>
+            @option.Key: @await component.InvokeAsync(Component),
+        </text>
+    }
+    <text>
+        @option.Key: @Json.Serialize(option.Value),
+    </text>
+}
+
+},

@@ -79,4 +79,75 @@ public class UICFileExplorer :UIComponent
     public static class Renderers{
         public static string Details => "details";
     }
+    public static class Addons
+    {
+        public static UICFileExplorer AddAllAddons(UICFileExplorer fileExplorer)
+        {
+            fileExplorer.Left.Add(JsTree());
+            fileExplorer.Right.Add(Preview());
+            fileExplorer.TopContainer.Add(Toolbar(fileExplorer));
+            return fileExplorer;
+        }
+        public static UICGroup JsTree() => new UICGroup() { RenderWithoutContent = true }.AddClass("explorer-tree");
+        public static UICGroup Preview() => new UICGroup() { RenderWithoutContent = true }.AddClass("explorer-preview");
+        public static UICButtonToolbar Toolbar(UICFileExplorer fileExplorer)
+        {
+            var toolbar = new UICButtonToolbar() { Distance = ButtonDistance.None };
+            toolbar.AddLeft(new UICInputText().AddClass("explorer-path"));
+            toolbar.AddLeft(ToggleJsTreeButton(fileExplorer));
+            toolbar.AddLeft(TogglePreviewButton(fileExplorer));
+
+            return toolbar;
+        }
+        public static UICToggleButton ToggleJsTreeButton(UICFileExplorer fileExplorer)
+        {
+            var click = new UICCustom($"uic.fileExplorer.showhide.jstree($('#{fileExplorer.GetId()}'));");
+            var toggle = new UICToggleButton()
+            {
+                ButtonTrue = new UICButton()
+                {
+                    PrependButtonIcon = new UICIcon("fas fa-folder-tree"),
+                    Tooltip = new("Button.FileExplorer.HideTree.Tooltip", "Click to hide the tree structure"),
+                    OnClick = click
+                },
+                ButtonFalse = new UICButton()
+                {
+                    PrependButtonIcon = new UICIcon("far fa-folder-tree"),
+                    Tooltip = new("Button.FileExplorer.ShowTree.Tooltip", "Click to show the tree structure"),
+                    OnClick= click
+                },
+                Value = true
+            };
+            fileExplorer.AddScript(new UICCustom()
+                .AddLine($"$('#{fileExplorer.GetId()}').on('uic-showhide-jstree', (ev, visible)=>{{")
+                .AddLine($"     uic.setValue('#{toggle.GetId()}', visible);")
+                .AddLine($"}});"));
+            return toggle;
+        }
+        public static UICToggleButton TogglePreviewButton(UICFileExplorer fileExplorer)
+        {
+            var click = new UICCustom($"uic.fileExplorer.showhide.preview($('#{fileExplorer.GetId()}'));");
+            var toggle = new UICToggleButton()
+            {
+                ButtonTrue = new UICButton()
+                {
+                    PrependButtonIcon = new UICIcon("fas fa-image"),
+                    Tooltip = new("Button.FileExplorer.HidePreview.Tooltip", "Click to hide the file preview"),
+                    OnClick = click
+                },
+                ButtonFalse = new UICButton()
+                {
+                    PrependButtonIcon = new UICIcon("far fa-image"),
+                    Tooltip = new("Button.FileExplorer.ShowPreview.Tooltip", "Click to show the file preview"),
+                    OnClick = click
+                },
+                Value = true
+            };
+            fileExplorer.AddScript(new UICCustom()
+                .AddLine($"$('#{fileExplorer.GetId()}').on('uic-showhide-preview', (ev, visible)=>{{")
+                .AddLine($"     uic.setValue('#{toggle.GetId()}', visible);")
+                .AddLine($"}});"));
+            return toggle;
+        }
+    }
 }

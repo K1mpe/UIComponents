@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.Text;
 using Color = System.Drawing.Color;
 
-namespace CDCPortal.Web.Services
+namespace UIComponents.Generators.Helpers
 {
     public static class CreateThumbnailFromImage
     {

@@ -62,7 +62,27 @@
                     $(this).attr('title', $(this).text());
                 });
             }, 500);
-            </text>);
+            </text>
+    );
+
+
+    if (Model.AddControlColumn)
+    {
+        if(Model.EnableInsert || Model.EnableUpdate || Model.EnableDelete)
+        {
+            var controlColumn = new UICTableColumn()
+            {
+                IgnoreGenerators = true,
+                Type="control"
+            };
+            controlColumn.Options["inserting"] = Model.EnableInsert && Model.OnInsertItem.HasValue();
+            controlColumn.Options["editButton"] = Model.EnableUpdate && Model.OnUpdateItem.HasValue();
+            controlColumn.Options["deleteButton"] = Model.EnableDelete && Model.OnDeleteItem.HasValue();
+            Model.Columns.Add(controlColumn);
+
+        }
+    }
+
 
     Model.AddScript(@<text>
             $('#@id').on('uic-help', ()=>{
@@ -101,6 +121,15 @@
                     $('#@id').trigger('uic-dataLoaded', args);
                 },
 
+                @if(Model.OnRowClick.HasValue())
+                {
+                    <text>
+                    rowClick: async function(args){
+                        @await Model.OnRowClick.InvokeAsync(Component)
+                    }
+                    </text>
+                }
+
                 fields: [
             @foreach(var column in Model.Columns)
             {
@@ -114,6 +143,7 @@
                         $('#@id').trigger('uic-beforeLoad');
                         @if(Model.Data != null && Model.Data.Any()){
                             <text>
+                            console.log('loadData', args);
                                 let result = uic.jsgrid.filterClientSide(args, @Json.Serialize(Model.Data));
                                 result = uic.jsgrid.pageClientSide(result, @Model.PageSize);
                             </text>
@@ -159,12 +189,13 @@
                     <text>
                     rowRenderer: (item, index)=>{
                         @await Model.RowRenderer.InvokeAsync(Component)
-                    }
+                    },
                     </text>
                 }
 
                 @await Model.AdditionalConfig.InvokeAsync(Component)
             });
+
             </text>);
 }
 

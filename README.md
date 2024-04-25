@@ -81,11 +81,12 @@ builder.Services.AddUIComponentWeb(config =>
 ```
 
 ## Javascript
-In _scripts.cshtml or the layout page, add the script.
-Make sure that all overrides of this javascript code come after the importing of the script
+In _scripts.cshtml or the layout page, add the partial containing all scripts.
+This partial is automatically generated in /views/shared/_UicScripts.cshtml
 ```Javascript
-<script src="~/uic/js/uic.js" asp-append-version="true"></script>
+<partial name="_UicScripts" />
 ```
+:warning: Make sure that all overrides of this javascript code come after the importing of the script
 
 ## scss
 ```css

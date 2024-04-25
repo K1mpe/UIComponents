@@ -26,7 +26,7 @@ namespace UIComponents.Models.Models.Tables
 
         #region Properties
         public string Width { get; set; } = "100%";
-        public string Height { get; set; } = string.Empty;
+        public string Height { get; set; } = "auto";
 
         public List<UICTableColumn> Columns { get; set; } = new();
 
@@ -34,7 +34,10 @@ namespace UIComponents.Models.Models.Tables
         public bool Selecting { get; set; } = true;
         public bool Sorting { get; set; } = true;
 
-
+        /// <summary>
+        /// If <see cref="EnableInsert"/>, <see cref="EnableUpdate"/> or <see cref="EnableDelete"/> are true, show the control column
+        /// </summary>
+        public bool AddControlColumn { get; set; } = true;
         public bool EnableInsert { get; set; }
         public bool EnableUpdate { get; set; }
         public bool EnableDelete { get; set; }
@@ -105,6 +108,10 @@ namespace UIComponents.Models.Models.Tables
         public IUICAction OnInit { get; set; } = new UICCustom();
         public IUICAction OnDataLoaded { get; set; } = new UICCustom();
 
+
+        /// <summary>
+        /// Available arguments => 'args'
+        /// </summary>
         public IUICAction OnRowClick { get; set; } = new UICCustom();
         public IUICAction OnRowDubbleClick { get; set; } = new UICCustom();
 
@@ -116,6 +123,13 @@ namespace UIComponents.Models.Models.Tables
 
 
         public IUICAction AdditionalConfig { get; set; } = new UICCustom();
+
+        /// <summary>
+        /// Create a custom renderer for the entire row
+        /// </summary>
+        /// <remarks>
+        /// Available args=> item, index
+        /// </remarks>
         public IUICAction RowRenderer { get; set; } = new UICCustom();
         #endregion
 
@@ -230,13 +244,36 @@ namespace UIComponents.Models.Models.Tables
         }
 
         /// <summary>
+        /// Get the column that matches this expression. The column needs to exist at this point!
+        /// </summary>
+        /// <remarks>
+        /// If no col is found, a new temporary column can be returned to ensure the uic-custom taghelper does not crash</remarks>
+        /// <param name="expression"></param>
+        /// <param name="allowNew"></param>
+        /// <returns></returns>
+        public UICTableColumn GetColumn(Expression<Func<T, object>> expression, bool allowNew=true)
+        {
+            var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(expression);
+            var col= Columns.Where(x=>x.PropertyInfo.Name ==propertyInfo.Name).FirstOrDefault();
+            if (col == null && allowNew)
+                col = new();
+            return col;
+        }
+
+        /// <summary>
         /// Add all the remaining columns in the same order as they are defined in the Model
         /// </summary>
-        public UICTable<T> AddAllUndefinedColumns(bool includeId, bool includeIsDeleted)
+        public UICTable<T> AddAllUndefinedColumns(bool includeId =false, bool includeIsDeleted = false)
         {
             var properties = typeof(T).GetProperties();
             foreach(var propertyInfo in properties)
             {
+                if (!includeId && propertyInfo.Name.ToUpper() == "ID")
+                    continue;
+
+                if(!includeIsDeleted && propertyInfo.Name.ToUpper() == "ISDELETED")
+                    continue;
+
                 if (Columns.Where(x=>x.PropertyInfo != null && x.PropertyInfo.Name ==propertyInfo.Name).Any())
                     continue;
                 AddColumn(propertyInfo);

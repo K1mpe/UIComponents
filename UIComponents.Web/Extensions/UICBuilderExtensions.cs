@@ -2,12 +2,15 @@
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Registrations;
 using UIComponents.Web.Components;
 using UIComponents.Web.ModelBinders;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace UIComponents.Web.Extensions;
 
@@ -52,31 +55,90 @@ public static class UICBuilderExtensions
         if (options.ReplaceScripts)
         {
             string targetRoote = $"{dir}\\wwwroot\\uic\\js";
-            string sourceRoute = $"{currentAssemblyName}.UIComponents.Root.";
+            string sourceRoute = $"{currentAssemblyName}.UIComponents.Root.js";
             if (!Directory.Exists(targetRoote))
             {
                 Directory.CreateDirectory(targetRoote);
             }
 
-            var scripts = manifestNames.Where(x => x.EndsWith(".js")).OrderBy(x => x);
+            var scripts = manifestNames.Where(x => x.StartsWith(sourceRoute)).OrderBy(x => x);
 
 
-            var jsDestination = $"{targetRoote}\\uic.js";
-            if (File.Exists(jsDestination))
-                File.Delete(jsDestination);
-
-            using (var jsFile = File.Create(jsDestination))
+            foreach (var script in scripts)
             {
+                string scriptDir = FixFilePath(script.Replace(sourceRoute, targetRoote));
+                var fileInfo = new FileInfo(scriptDir);
+                Directory.CreateDirectory(fileInfo.DirectoryName);
+                if (File.Exists(scriptDir))
+                    File.Delete(scriptDir);
 
-                foreach (var script in scripts)
+                if (script.EndsWith(".js"))
                 {
-                    using (var resourceStream = currentAssembly.GetManifestResourceStream(script))
+                    using (var scriptFile = File.Create(scriptDir))
                     {
-                        resourceStream!.CopyTo(jsFile);
+                        using (var resourceStream = currentAssembly.GetManifestResourceStream(script))
+                        {
+                            resourceStream!.CopyTo(scriptFile);
+
+                        }
+                    }
+                } else if (script.EndsWith(".cshtml"))
+                {
+                    scriptDir = scriptDir.Substring(0, scriptDir.Length - 6) + "js";
+                    using (var scriptFile = File.Create(scriptDir))
+                    {
+                        using (var resourceStream = currentAssembly.GetManifestResourceStream(script))
+                        {
+                            using (var streamReader = new StreamReader(resourceStream))
+                            {
+                                using (var streamWriter = new StreamWriter(scriptFile))
+                                {
+                                    string text = streamReader.ReadToEnd();
+                                    text = text.Replace("<script>", string.Empty).Replace("</script>", string.Empty);
+                                    text = Regex.Replace(text, @"@\bnameof\b\(([^)]*)\)", "$1"); //This regex will remove all @nameof( ) variables and keep the content
+                                    streamWriter.WriteLine(text);
+                                }
+                            }
+                        }
                     }
                 }
             }
 
+
+            #region ScriptCollectionFile
+            string collection = $"{dir}\\Views\\Shared\\_UicScripts.cshtml";
+            string collectionContent = string.Empty;
+            AddScript("uic.js");
+
+            foreach(var script in scripts)
+            {
+                    var scriptName = script.Replace(sourceRoute + ".", string.Empty);
+
+                    if (scriptName.EndsWith(".cshtml")) //replace the cshtml with js
+                        scriptName = scriptName.Substring(0, scriptName.Length - 6) + "js";
+
+                    AddScript(scriptName);
+            }
+            if (File.Exists(collection))
+                File.Delete(collection);
+            using (var collectionFile = File.Create(collection))
+            {
+                using(var sr = new StreamWriter(collectionFile))
+                {
+                    sr.WriteLine(collectionContent);
+                }
+            }
+
+            void AddScript(string name)
+            {
+                string addingScript = $"<script src=\"~/uic/js/{name}?v={currentVersion}\"></script>";
+                if (collectionContent.Contains(addingScript))
+                    return;
+                collectionContent += addingScript;
+                collectionContent += Environment.NewLine;
+            }
+
+            #endregion
         }
         if (options.ReplaceCss)
         {

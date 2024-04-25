@@ -96,10 +96,19 @@ public class InternalHelper
         return copyTo;
     }
 
-    public static PropertyInfo GetPropertyInfoFromExpression<T, TProp>(Expression<Func<T, TProp>> expression) where T : class
+    public static PropertyInfo GetPropertyInfoFromExpression(Expression expression)
     {
-        MemberExpression memberExpression = (MemberExpression)expression.Body;
-        PropertyInfo propertyInfo = (PropertyInfo)memberExpression.Member;
-        return propertyInfo;
+        if(expression is UnaryExpression unaryExpression)
+            return GetPropertyInfoFromExpression(unaryExpression.Operand);
+
+        if(expression is LambdaExpression lambdaExpression)
+            return GetPropertyInfoFromExpression(lambdaExpression.Body);
+
+        if(expression is MemberExpression memberExpression)
+        {
+            PropertyInfo propertyInfo = (PropertyInfo)memberExpression.Member;
+            return propertyInfo;
+        }
+        throw new Exception($"{expression.NodeType} is not yet supported");
     }
 }

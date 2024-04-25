@@ -80,8 +80,12 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
                 case UICPropertyType.Timespan:
                     break;
                 case UICPropertyType.Boolean:
+                    args.Type = "toggle";
+                    args.Nullable = false;
                     break;
                 case UICPropertyType.ThreeStateBoolean:
+                    args.Type = "toggle";
+                    args.Nullable = true;
                     break;
                 case UICPropertyType.HexColor:
                     break;

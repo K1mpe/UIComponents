@@ -15,7 +15,7 @@ public class UICCustomTaghelper : TagHelper
         output.TagName = "";
         output.TagMode = TagMode.StartTagAndEndTag;
         var content = await output.GetChildContentAsync();
-        var contentString = content.GetContent();
+        var contentString = content.GetContent().Trim();
         output.Content.Clear();
         if (UIC == null || !UIC.GetType().IsAssignableTo(typeof(UICCustom)))
         {
