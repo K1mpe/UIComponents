@@ -162,7 +162,7 @@
             let currentColumnContent = $(dragColumns[i]).html();
             $(dragColumns[i]).html($("<div style='position:relative;height:100%;width:100%'></div>")
                 .append(currentColumnContent)
-                .append($("<div class='jsgrid-header-resizable' style='position:absolute;height:100%;color:transparent;width:5px;right:2px;top:0;cursor:w-resize;z-index:10;'></div>"))
+                .append($("<div class='jsgrid-header-resizable' style='position:absolute;height:100%;color:transparent;width:5px;right:0px;top:0;cursor:w-resize;z-index:10;'></div>"))
             );
             $(dragColumns[i]).find('.jsgrid-header-resizable').on('mousedown', this.startColumnDrag);
             $(dragColumns[i]).find('.jsgrid-header-resizable').on('mouseup', (ev) => {

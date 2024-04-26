@@ -23,11 +23,17 @@ namespace UIComponents.Models.Models.Tables
         public Translatable Tooltip { get; set; }
         public string Type { get; set; }
 
+        /// <summary>
+        /// This is the default filter that is set on load. May be overwritten by <see cref="UICTable.SaveFiltersInLocalStorage"/>
+        /// </summary>
+        public object DefaultFilter { get; set; }
         //Additional options
         public Dictionary<string, object> Options { get; } = new();
 
-
-        public string Sorter { get; set; }
+        /// <summary>
+        /// When changing the filter, the data will automatically refresh without needing to click the submit filter button
+        /// </summary>
+        public bool AutoSearch { get; set; } = true;
         public UICIcon Icon { get; set; }
 
         public string Width { get; set; }
@@ -37,6 +43,28 @@ namespace UIComponents.Models.Models.Tables
         public bool Editing { get; set; } = true;
 
         public bool Render { get; set; } = true;
+
+
+        /// <summary>
+        /// Give a format if supported
+        /// </summary>
+        public string Format { get; set; }
+
+        /// <summary>
+        /// Step can be used as indicator for numbers, datetime or timeonly
+        /// </summary>
+        public string Step { get; set; }
+
+        /// <summary>
+        /// The minimum value this field can have
+        /// </summary>
+        /// 
+        public object? MinValue { get; set; }
+
+        /// <summary>
+        /// The maximum value this field can have
+        /// </summary>
+        public object? MaxValue { get; set; }
 
         public bool CheckViewPermission { get; set; } = true;
         public bool CheckEditPermission { get; set; } = true;
@@ -59,7 +87,6 @@ namespace UIComponents.Models.Models.Tables
         public UICHorizontalAlignment? HorizontalAlignment { get; set; }
         public UICVerticalAlignment? VerticalAlignment { get; set; }
 
-        public string DefaultFilter { get; set; }
 
         /// <summary>
         /// A custom cell renderer for this column

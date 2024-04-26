@@ -59,7 +59,7 @@ public class UICGeneratorForm : UICGeneratorProperty
                 getPost.AddFixedData(nameof(dbEntity.Id), dbEntity.Id);
             if (args.Options.PostObjectAsDefault)
                 getPost.AddDefaultData(args.ClassObject);
-            if(getPost.GetVariableData == null)
+            if(!getPost.GetVariableData.HasValue())
                 getPost.GetVariableData = form.TriggerGetValue();
         }
 

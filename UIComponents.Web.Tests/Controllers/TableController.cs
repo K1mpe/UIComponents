@@ -7,7 +7,6 @@ namespace UIComponents.Web.Tests.Controllers;
 public class TableController : Controller
 {
     private readonly IUIComponentGenerator generator;
-
     public TableController(IUIComponentGenerator generator)
     {
         this.generator = generator;

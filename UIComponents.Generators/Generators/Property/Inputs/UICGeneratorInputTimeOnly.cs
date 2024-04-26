@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Helpers;
 
@@ -37,7 +38,7 @@ public class UICGeneratorInputTimeOnly : UICGeneratorProperty
         {
             input.Value = args.PropertyValue == null ? null : TimeOnly.Parse(args.PropertyValue.ToString());
         }
-
+        
 
 
         input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
@@ -56,6 +57,14 @@ public class UICGeneratorInputTimeOnly : UICGeneratorProperty
                 ParseDateTime(max, c => input.ValidationMaxTime = c);
                 break;
         }
+
+
+        var precisionAttr = args.PropertyInfo.GetInheritAttribute<UICPrecisionTimeAttribute>();
+        if (precisionAttr != null)
+        {
+            input.Precision = precisionAttr.Precision;
+        }
+
 
         return GeneratorHelper.Success<IUIComponent>(input, true);
 

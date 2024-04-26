@@ -56,6 +56,7 @@
     tooltip: @await Html.TranslateJs(L, Model.Tooltip, "'"),
     css: @Html.JsEncode(Model.Css, "'"),
     type: @Html.JsEncode(Model.Type, "'"),
+    autosearch: @Json.Serialize(Model.AutoSearch),
     @if(Model.HorizontalAlignment != null)
     {
         <text>
@@ -63,6 +64,30 @@
         </text>
     }
     nullable: @Json.Serialize(Model.Nullable),
+    @if(!string.IsNullOrEmpty(Model.Step))
+{
+    <text>
+    step: @Html.JsEncode(Model.Step, "'"),
+    </text>
+}
+@if(Model.MinValue != null)
+{
+    <text>
+        min: @Json.Serialize(Model.MinValue),
+    </text>
+}
+@if(Model.MaxValue != null)
+{
+    <text>
+        max: @Json.Serialize(Model.MaxValue),
+    </text>
+}
+@if(!string.IsNullOrEmpty(Model.Format))
+{
+    <text>
+    format: @Html.JsEncode(Model.Format, "'"),
+    </text>
+}
 @if(Model.SelectListItems != null && Model.SelectListItems.Any())
 {
     <text>

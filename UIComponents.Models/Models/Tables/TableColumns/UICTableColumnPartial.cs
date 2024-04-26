@@ -16,7 +16,7 @@ namespace UIComponents.Models.Models.Tables.TableColumns
         public UICTableColumnPartial(UICActionGetPost getPost) : this()
         {
             GetPost = getPost;
-            if (getPost.GetVariableData == null)
+            if (!getPost.GetVariableData.HasValue())
                 getPost.GetVariableData = new UICCustom("item");
         }
         #endregion

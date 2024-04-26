@@ -57,11 +57,8 @@ namespace UIComponents.Models.Models.Tables
 
 
         #region Data
-        public List<object> Data { get; set; }
+        public List<object> Data { get; set; } = new();
 
-        public string DataSource { get; set; }
-        public ActionTypeEnum GetOrPost { get; set; } = ActionTypeEnum.Post;
-        public object PostData { get; set; }
 
         public UICActionGetPost InsertItem { get; set; }
 
@@ -90,6 +87,11 @@ namespace UIComponents.Models.Models.Tables
         public bool Minimal { get; set; } = true;
 
         /// <summary>
+        /// If true, replace the load indicator with uic.partial.showLoadingOverlay && uic.partial.hideLoadingOverlay
+        /// </summary>
+        public bool ReplaceLoadingIndicator { get; set; } = true;
+
+        /// <summary>
         /// Save the last filters in the localstorage from that browser. This requires the Id to be set.
         /// </summary>
         public bool SaveFiltersInLocalStorage { get; set; } = true;
@@ -108,18 +110,53 @@ namespace UIComponents.Models.Models.Tables
         /// </summary>
         public bool SaveOnBlur { get; set; }
 
+        /// <summary>
+        /// While in edit mode, enter will trigger a submit of the current row
+        /// </summary>
+        public bool SaveOnEnter { get; set; }
+
         public List<UICSignalR> SignalRRefreshTriggers { get; set; } = new();   
 
         #region Events
         public IUICAction OnInit { get; set; } = new UICCustom();
-        public IUICAction OnDataLoading { get; set; } = new UICCustom();
 
+        /// <summary>
+        /// This function is called when data has finished loading.
+        /// </summary>
+        /// <remarks>
+        /// Available args:
+        /// <br>args.grid</br>
+        /// <br>args.data</br>
+        /// </remarks>
+        public IUICAction OnDataLoaded { get; set; } = new UICCustom();
+        public IUICAction OnDataEditing { get; set; } = new UICCustom();
+
+        /// <summary>
+        /// This function is called when trying to delete a item.
+        /// <br>If you want to cancel deleting, set args.cancel = true</br>
+        /// </summary>
+        /// <remarks>
+        /// Available args:
+        /// <br> args.grid</br>
+        /// <br> args.row</br>
+        /// <br> args.item</br>
+        /// <br> args.itemIndex</br>
+        /// </remarks>
+        public IUICAction OnItemDeleting { get; set; } = new UICCustom();
 
         /// <summary>
         /// Available arguments => 'args'
         /// </summary>
         public IUICAction OnRowClick { get; set; } = new UICCustom();
-        public IUICAction OnRowDubbleClick { get; set; } = new UICCustom();
+
+        /// <summary>
+        /// The function that is used to load the data.
+        /// </summary>
+        /// <remarks>
+        /// Available args:
+        /// args => filter arguments
+        /// </remarks>
+        public IUICAction LoadData { get; set; } = new UICCustom();
 
         /// <summary>
         /// Called when a item is inserted.
@@ -145,9 +182,14 @@ namespace UIComponents.Models.Models.Tables
         /// </remarks>
         public IUICAction OnDeleteItem { get; set; } = new UICCustom();
 
+        /// <summary>
+        /// This function overwrites the default functionality for the insertbutton. This may be used to open a model for inserting instead.
+        /// </summary>
         public IUICAction OnInsertButtonClick { get; set; } = new UICCustom();
 
-
+        /// <summary>
+        /// This runs at the end of the jsGrid configuration, and may overwrite all previous functionality
+        /// </summary>
         public IUICAction AdditionalConfig { get; set; } = new UICCustom();
 
         /// <summary>
@@ -223,10 +265,6 @@ namespace UIComponents.Models.Models.Tables
             return this;
         }
 
-        public string GetCondition()
-        {
-            throw new NotImplementedException();
-        }
         #endregion
 
 
@@ -246,7 +284,7 @@ namespace UIComponents.Models.Models.Tables
         {
             OnInsertItem = new UICActionPost(typeof(T).Name, "Insert") { GetVariableData = new UICCustom("item") };
             OnUpdateItem = new UICActionPost(typeof(T).Name, "Update") { GetVariableData = new UICCustom("item") };
-            OnDeleteItem = new UICActionGet(typeof(T).Name, "Delete") { GetVariableData = new UICCustom("item") };
+            OnDeleteItem = new UICActionPost(typeof(T).Name, "Delete") { GetVariableData = new UICCustom("item") };
         }
         public UICTable(string id) : this()
         {
@@ -259,7 +297,7 @@ namespace UIComponents.Models.Models.Tables
         }
         public UICTable(UICActionGetPost loadDataFunc) : this()
         {
-            OnDataLoading = loadDataFunc;
+            LoadData = loadDataFunc;
         }
         #endregion
 

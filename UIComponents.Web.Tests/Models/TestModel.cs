@@ -48,7 +48,16 @@ namespace UIComponents.Web.Tests.Models
 
 
         [UICPropertyType(UICPropertyType.DateTime)]
+        [UICPrecisionDate(UICDatetimeStep.Second)]
         public DateTime? DateTime { get; set; }
+
+        [UICPropertyType(UICPropertyType.DateOnly)]
+        public DateTime Date { get; set; }
+
+        [UICPropertyType(UICPropertyType.TimeOnly)]
+        [UICPrecisionTime(UICTimeonlyEnum.Second)]
+        public DateTime? TimeOnly { get; set; }
+
         //public TimeOnly TimeOnly { get; set; }
     }
 

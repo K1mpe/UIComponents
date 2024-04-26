@@ -1,4 +1,13 @@
-﻿# 2024-04-15 (1.1.30)
+﻿# 2024-04-26 (1.2.00)
+- Css Fix Readonly form textarea
+- Add IUIComponentViewModel and UIComponentViewModel
+- Fixes JsTree refresh
+- UICFactory implemented
+- Adding UICRedirectJson object
+- Minor Fix UICActionRefresh
+- Adding 2 permissions to IUICPermissionService
+- Scriptloading changed
+- UICTable component (JsGrid)﻿# 2024-04-15 (1.1.30)
 - UICInputList support for readonly
 ﻿# 2024-04-12 (1.1.29)
 - Introducing IUICInitializeAsync
@@ -19,15 +28,7 @@
 # 2024-04-02 (1.1.25)
 - Bugfix permission
 - InputTimeOnly
-﻿# 2024-04-18 (1.1.31)
-- Css Fix Readonly form textarea
-- Add IUIComponentViewModel and UIComponentViewModel
-- Fixes JsTree refresh
-- UICFactory implemented
-- Adding UICRedirectJson object
-- Minor Fix UICActionRefresh
-- Adding 2 permissions to IUICPermissionService
-- Scriptloading changed﻿
+﻿
 # 2024-03-28 (1.1.27)
 - Fix mark changes
 - Renderlocation can now end with .cshtml  (automatically add .cshtml if the last 7 characters do not contain a point)

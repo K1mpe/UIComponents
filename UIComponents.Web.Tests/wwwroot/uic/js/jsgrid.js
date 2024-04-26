@@ -22,7 +22,7 @@
                             });
                         }
                     });
-                }, 10);
+                }, 1);
 
             } catch (ex) {
                 console.error('Failed to save userPreference', ex);
@@ -38,7 +38,7 @@
                     $(`#${id}`).jsGrid('sort', sorter);
             } catch { }
             $(`#${id}`).jsGrid('loadData');
-        }, 20);
+        }, 5);
     },
 
 
@@ -129,39 +129,19 @@
         return filtered;
 
     },
-    pageClientSide: function (data, rowCount) {
+
+    //This function only pages if this has not been done serverside
+    pageClientSide: function (data, pageIndex, pageSize) {
         if (data["data"] != undefined)
             return data;
 
+        let start = (pageIndex - 1) * pageSize;
         return {
             itemsCount: data.length,
-            data: data.slice(0, rowCount)
+            data: data.slice(start, pageSize)
         };
     },
-    loadData: async function (args, id, saveFiltersInUserPreference, dataSource, whereCondition, additionalData) {
-        if (saveFiltersInUserPreference) {
-            try {
-                await localStorage.setItem(`Grid.${id}.Filters`, JSON.stringify(args));
-            }
-            catch { }
-        }
-
-        var filter = $(`#${id}`).triggerHandler('Grid.GetFilters');
-        if (filter == undefined)
-            filter = args;
-        else {
-            try {
-                filter.pageIndex = args.pageIndex;
-                filter.pageSize = args.pageSize;
-                filter.sortField = args.sortField;
-                filter.sortOrder = args.sortOrder;
-            }
-            catch { }
-        }
-
-        var response = await uic.getpost.post(dataSource, { filter: filter, gridcondition: whereCondition, data: additionalData }, { CancelPreviousRequests: true });
-        return response;
-    },
+    
 
     //Create top and bottom pager if none exists
     pager_generate: function (id, pagerSelector) {
@@ -204,7 +184,7 @@
         },
 
         itemTemplate: function (value) {
-            if (value == null)
+            if (value == null || value =="")
                 return null;
             var mValue = moment(value);
             //always show the full date
@@ -236,8 +216,136 @@
         },
 
         _createTextBox: function () {
-            return $("<input>").attr("type", "date")
+            let input = $("<input>").attr("type", "date")
                 .prop("readonly", !!this.readOnly);
+            if (this.step != undefined)
+                input.attr('step', this.step);
+            if (this.min != undefined)
+                input.attr('min', this.min);
+            if (this.max != undefined)
+                input.attr('max', this.max);
+            return input;
+        },
+
+        filterTemplate: function () {
+            let _this = this;
+            // [ from(nullable) ][->][ to(nullable) ]
+
+            let group = $("<div>", { "class": "input-group" });
+            let input1 = $("<input>", { "class": "form-control" });
+            // input from date
+            group.append(input1);
+
+            if ($.isFunction($.fn.daterangepicker)) {
+                input1.daterangepicker({
+                    format: "DD/MM/YYYY",
+                    "singleDatePicker": true,
+                    "autoApply": true,
+                    "linkedCalendars": false,
+                    "showCustomRangeLabel": false,
+                    "timePicker": true,
+                    "timePicker24Hour": true,
+                    autoUpdateInput: false,
+                }).on("apply.daterangepicker", function (e, picker) {
+                    _this.filter_start = picker.startDate;
+
+                    $(this).val(picker.startDate.format("DD/MM/YYYY"));
+
+                    _this._grid.loadData();
+                });
+            }
+
+            // divider
+            group.append($("<div>", { "class": "input-group-prepend input-group-append" }).append($("<span>", { "class": "input-group-text fas fa-arrow-right" })));
+
+            // input to date
+            let input2 = $("<input>", { "class": "form-control" });
+            group.append(input2);
+
+            if ($.isFunction($.fn.daterangepicker)) {
+                input2.daterangepicker({
+                    format: "DD/MM/YYYY",
+                    "singleDatePicker": true,
+                    "autoApply": true,
+                    "linkedCalendars": false,
+                    "showCustomRangeLabel": false,
+                    "timePicker": false,
+                    autoUpdateInput: false,
+                }).on("apply.daterangepicker", function (e, picker) {
+                    _this.filter_end = picker.startDate;
+
+                    $(this).val(picker.startDate.format("DD/MM/YYYY"));
+
+                    _this._grid.loadData();
+                });
+            }
+
+            return group;
+        },
+
+        filterValue: function () {
+            return {
+                Start: this.filter_start ? this.filter_start.local().toISOString(true) : null,
+                End: this.filter_end ? this.filter_end.local().toISOString(true) : null
+            }
+        }
+    };
+
+    r.datetime = {
+        css: "date-field",            // redefine general property 'css'
+        align: "center",              // redefine general property 'align'
+
+        format: "L LT",
+
+        filter_start: null,
+        filter_end: null,
+
+        sorter: function (date1, date2) {
+            return new Date(date1) - new Date(date2);
+        },
+
+        itemTemplate: function (value) {
+            if (value == null || value == "")
+                return null;
+            var mValue = moment(value);
+            //always show the full date
+            return mValue.format(this.format);
+        },
+
+        insertTemplate: function (value) {
+            if (!this.inserting)
+                return "";
+
+            return this.insertControl = this._createTextBox();
+        },
+
+        editTemplate: function (value) {
+            if (!this.editing)
+                return this.itemTemplate.apply(this, arguments);
+
+            var $result = this.editControl = this._createTextBox();
+            $result.val(value);
+            return $result;
+        },
+
+        insertValue: function () {
+            return this.insertControl.val();
+        },
+
+        editValue: function () {
+            return this.editControl.val();
+        },
+
+        _createTextBox: function () {
+            let input = $("<input>").attr("type", "datetime-local")
+                .prop("readonly", !!this.readOnly);
+            if (this.step != undefined)
+                input.attr('step', this.step);
+            if (this.min != undefined)
+                input.attr('min', this.min);
+            if (this.max != undefined)
+                input.attr('max', this.max);
+            return input;
         },
 
         filterTemplate: function () {
@@ -304,10 +412,6 @@
             }
         }
     };
-
-    r.datetime = $.extend({}, r.dateonly, {
-        format: 'L LT'
-    });
 
     r.decimal = $.extend({}, jsGrid.fields.number.prototype, {
         insertValue: function () {
@@ -430,6 +534,8 @@
                 if (_this._isRowOpened(_this._grid, item)) {
                     // close this item 
                     _this._closeRow(_this._grid, item);
+
+                    cell.trigger('uic-closePartial');
                 }
                 else {
                     if (!_this.multiple) {
@@ -437,6 +543,7 @@
                         _this._closeRows(_this._grid);
                     }
 
+                    cell.trigger('uic-openPartial');
                     // open this item
                     _this._openRow(_this._grid, item);
                 }
@@ -635,8 +742,7 @@
                 valueField = this.valueField,
                 textField = this.textField,
                 selectedIndex = this.selectedIndex;
-            $result.append($("<option>")
-                .attr("value", null));
+            
             $.each(this.items, function (index, item) {
                 var value = item.Value;
                 var text = item.Text;
@@ -654,7 +760,128 @@
             return $result;
         },
     };
-   
+
+    r.timeonly = {
+        css: "date-field",            // redefine general property 'css'
+        align: "center",              // redefine general property 'align'
+
+        format: "LTS",
+
+        filter_start: null,
+        filter_end: null,
+
+        sorter: function (date1, date2) {
+            return new Date(date1) - new Date(date2);
+        },
+
+        itemTemplate: function (value) {
+            if (value == null || value == "")
+                return null;
+            var mValue = moment(value);
+            //always show the full date
+            return mValue.format(this.format);
+        },
+
+        insertTemplate: function (value) {
+            if (!this.inserting)
+                return "";
+
+            return this.insertControl = this._createTextBox();
+        },
+
+        editTemplate: function (value) {
+            if (!this.editing)
+                return this.itemTemplate.apply(this, arguments);
+
+            var $result = this.editControl = this._createTextBox();
+            $result.val(value);
+            return $result;
+        },
+
+        insertValue: function () {
+            return this.insertControl.val();
+        },
+
+        editValue: function () {
+            return this.editControl.val();
+        },
+
+        _createTextBox: function () {
+            let input = $("<input>").attr("type", "time")
+                .prop("readonly", !!this.readOnly);
+            if (this.step != undefined)
+                input.attr('step', this.step);
+            if (this.min != undefined)
+                input.attr('min', this.min);
+            if (this.max != undefined)
+                input.attr('max', this.max);
+            return input;
+        },
+
+        filterTemplate: function () {
+            let _this = this;
+            // [ from(nullable) ][->][ to(nullable) ]
+
+            let group = $("<div>", { "class": "input-group" });
+            let input1 = $("<input>", { "class": "form-control" });
+            // input from date
+            group.append(input1);
+
+            if ($.isFunction($.fn.daterangepicker)) {
+                input1.daterangepicker({
+                    format: "DD/MM/YYYY",
+                    "singleDatePicker": true,
+                    "autoApply": true,
+                    "linkedCalendars": false,
+                    "showCustomRangeLabel": false,
+                    "timePicker": true,
+                    "timePicker24Hour": true,
+                    autoUpdateInput: false,
+                }).on("apply.daterangepicker", function (e, picker) {
+                    _this.filter_start = picker.startDate;
+
+                    $(this).val(picker.startDate.format("DD/MM/YYYY"));
+
+                    _this._grid.loadData();
+                });
+            }
+
+            // divider
+            group.append($("<div>", { "class": "input-group-prepend input-group-append" }).append($("<span>", { "class": "input-group-text fas fa-arrow-right" })));
+
+            // input to date
+            let input2 = $("<input>", { "class": "form-control" });
+            group.append(input2);
+
+            if ($.isFunction($.fn.daterangepicker)) {
+                input2.daterangepicker({
+                    format: "DD/MM/YYYY",
+                    "singleDatePicker": true,
+                    "autoApply": true,
+                    "linkedCalendars": false,
+                    "showCustomRangeLabel": false,
+                    "timePicker": true,
+                    "timePicker24Hour": true,
+                    autoUpdateInput: false,
+                }).on("apply.daterangepicker", function (e, picker) {
+                    _this.filter_end = picker.startDate;
+
+                    $(this).val(picker.startDate.format("DD/MM/YYYY"));
+
+                    _this._grid.loadData();
+                });
+            }
+
+            return group;
+        },
+
+        filterValue: function () {
+            return {
+                Start: this.filter_start ? this.filter_start.local().toISOString(true) : null,
+                End: this.filter_end ? this.filter_end.local().toISOString(true) : null
+            }
+        }
+    };
     r.timespan = {
         css: "timespan-field",            // redefine general property 'css'
         align: "center",              // redefine general property 'align'
@@ -740,9 +967,15 @@
             let checkbox = this._renderCheckbox(value, true, this.nullable);
             return checkbox;
         },
+        insertValue: function () {
+            return uic.getValue(this._grid._insertRow.find(`input[name="${this.name}"]`));
+        },
         editTemplate: function (value, item) {
             let checkbox = this._renderCheckbox(value, true, this.nullable);
             return checkbox;
+        },
+        editValue: function () {
+            return uic.getValue(this._grid._container.find(`.jsgrid-edit-row input[name="${this.name}"]`));
         },
         filterTemplate: function () {
             let checkbox = this._renderCheckbox(null, true, true);
@@ -766,6 +999,7 @@
                 checkbox.attr('id', id);
                 group.find('label').attr('for', id);
 
+                uic.setValue(checkbox, value);
                 if (nullable) {
                     uic.form.setThreestateToggles(checkbox);
                 }
@@ -793,6 +1027,7 @@ $(document).ready(() => {
     SetRenderer("hexcolor");
     SetRenderer("toggle");
     SetRenderer("selectlist");
+    SetRenderer("timeonly");
     SetRenderer("timespan");
     SetRenderer("rowcontent");
 });

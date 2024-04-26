@@ -50,7 +50,7 @@ public class UICActionGetPost : UIComponent, ISubmitAction
     /// Before sending the request, this action is called client side to get additional properties.
     /// <br>These properties have higher priority then <see cref="DefaultData"/> but lower than <see cref="FixedData"/></br>
     /// </summary>
-    public IUICAction? GetVariableData { get; set; } = null;
+    public IUICAction? GetVariableData { get; set; } = new UICCustom();
 
     /// <summary>
     /// This will be included on post, and takes highest priority. This will overwrite all properties from <see cref="DefaultData"/> and <see cref="GetVariableData"/>

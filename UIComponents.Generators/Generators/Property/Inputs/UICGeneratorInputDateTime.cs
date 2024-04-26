@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
@@ -47,6 +48,11 @@ public class UICGeneratorInputDateTime : UICGeneratorProperty
                 input.ValidationMinimumDate = (await _validationService.ValidatePropertyMinValue<DateOnly>(args.PropertyInfo, args.ClassObject))?.ToDateTime(new())??null;
                 input.ValidationMaximumDate = (await _validationService.ValidatePropertyMaxValue<DateOnly>(args.PropertyInfo, args.ClassObject))?.ToDateTime(new()) ?? null;
                 break;
+        }
+        var precisionAttr = args.PropertyInfo.GetInheritAttribute<UICPrecisionDateAttribute>();
+        if (precisionAttr != null)
+        {
+            input.Precision = precisionAttr.Precision;
         }
 
         return GeneratorHelper.Success<IUIComponent>(input, true);
