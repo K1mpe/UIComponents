@@ -39,7 +39,7 @@
 }
 else
 {
-    <form id="@id">
+    <form @Html.Raw(Model.GetHtmlAttributes())>
     
     @foreach(var element in Model.Children)
     {

@@ -213,6 +213,11 @@ public class UICCard : UIComponent, IUICCardLike
         return AddPartial(new(controller, action, data));
     }
 
+    public UICCard AddPartial(string url, object data = null)
+    {
+        return AddPartial(new(new UICActionGet(url, data)));
+    }
+
     /// <summary>
     /// Add a partial to the card and also add a refresh button to the header
     /// </summary>

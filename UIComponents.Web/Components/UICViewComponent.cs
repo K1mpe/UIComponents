@@ -63,7 +63,7 @@ public class UICViewComponent : ViewComponent
         }
         ViewData["UIC"] += $" => {element.RenderLocation}";
 
-        if (element is IUIComponentViewModel viewModelComponent)
+        if (element is IUICViewModel viewModelComponent)
             return View(renderLocation, viewModelComponent.ViewModel);
 
         return View(renderLocation, element);

@@ -104,7 +104,7 @@ namespace UIComponents.Web.Tests.Controllers
                 string renderLocation = fm.RenderLocation;
                 if (!renderLocation.Contains("\\"))
                     renderLocation = "/UIComponents/ComponentViews/FileExplorer/ExplorerViews/" + renderLocation;
-                return ViewComponent(typeof(UICViewComponent), new UIComponentViewModel(renderLocation, result));
+                return ViewComponent(typeof(UICViewComponent), new UICViewModel(renderLocation, result));
             }
             catch (OperationCanceledException)
             {
@@ -170,7 +170,7 @@ namespace UIComponents.Web.Tests.Controllers
                 var result = await _fileExplorerService.GetFilePreviewAsync(pathModel, HttpContext.RequestAborted);
                 if (result == null)
                     return Json(false);
-                return ViewOrPartial(new UIComponentViewModel("/UIComponents/ComponentViews/FileExplorer/FilePreview",result));
+                return ViewOrPartial(new UICViewModel("/UIComponents/ComponentViews/FileExplorer/FilePreview",result));
             }
             catch (OperationCanceledException)
             {

@@ -18,7 +18,7 @@ public class TestComponentFactory
         await Task.Delay(0);
         var vm = await CreateViewModelAsync(arg);
 
-        return new UIComponentViewModel("/Views/Home/TestViewModelFromFactory", vm);
+        return new UICViewModel("/Views/Home/TestViewModelFromFactory", vm);
     }
     public Task<TestViewModelFromFactory> CreateViewModelAsync(int arg)
     {

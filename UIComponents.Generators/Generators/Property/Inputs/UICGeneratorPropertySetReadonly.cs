@@ -36,8 +36,8 @@ public class UICGeneratorPropertySetReadonly : UICGeneratorProperty
                 input.Readonly = !await permissionService.CanEditProperty(args.ClassObject, args.PropertyName);
                 if(!input.Readonly && UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inherit))
                 {
-                    var inheritInstance = Activator.CreateInstance(inherit.DeclaringType);
-                    foreach(var property in args.PropertyInfo.DeclaringType.GetProperties())
+                    var inheritInstance = Activator.CreateInstance(inherit.ReflectedType);
+                    foreach(var property in args.PropertyInfo.ReflectedType.GetProperties())
                     {
                         if (UICInheritAttribute.TryGetInheritPropertyInfo(property, out var x) && x.DeclaringType == inherit.DeclaringType)
                             x.SetValue(inheritInstance, property.GetValue(args.ClassObject));

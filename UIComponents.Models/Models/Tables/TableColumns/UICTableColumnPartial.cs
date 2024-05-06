@@ -43,6 +43,8 @@ namespace UIComponents.Models.Models.Tables.TableColumns
 
         public bool Render { get; set; } = true;
 
+        public UICTableColumnVisibility ColumnVisibility { get; set; } = UICTableColumnVisibility.VisibleOnAll;
+
         #endregion
     }
 }

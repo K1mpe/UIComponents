@@ -36,7 +36,7 @@ public class UICGeneratorPropertyViewPermission : UICGeneratorProperty
             {
                 try
                 {
-                    var instance = Activator.CreateInstance(inheritInfo.DeclaringType);
+                    var instance = Activator.CreateInstance(inheritInfo.ReflectedType);
                     if (!await permissionService!.CanViewObject(instance))
                         return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
 

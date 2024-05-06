@@ -57,6 +57,12 @@
     css: @Html.JsEncode(Model.Css, "'"),
     type: @Html.JsEncode(Model.Type, "'"),
     autosearch: @Json.Serialize(Model.AutoSearch),
+@if (!string.IsNullOrEmpty(Model.Width))
+{
+    <text>
+        width: @Html.JsEncode(Model.Width, "'"),
+    </text>
+}
     @if(Model.HorizontalAlignment != null)
     {
         <text>

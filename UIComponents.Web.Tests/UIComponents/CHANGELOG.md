@@ -1,4 +1,10 @@
-﻿# 2024-04-26 (1.2.00)
+﻿# 2024-05-06 (1.2.03)
+- UICActionMarkChanges does not require UIComponent, can also be a provided selector.
+- Fix uic.translations
+- Fix column visibility in UICTable
+- Fix partial in UICTable﻿# 2024-05-02 (1.2.02)
+- Fixes UICTable
+- Support for tooltip & infospan in UICTable﻿# 2024-04-26 (1.2.00)
 - Css Fix Readonly form textarea
 - Add IUIComponentViewModel and UIComponentViewModel
 - Fixes JsTree refresh

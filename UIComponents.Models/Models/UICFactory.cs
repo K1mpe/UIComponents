@@ -25,7 +25,7 @@ public class UICFactory<TFactory> : UICFactory where TFactory : class
         Function = async (factory) =>
         {
             var vm = await func(factory);
-            return new UIComponentViewModel(viewPath, vm);
+            return new UICViewModel(viewPath, vm);
         };
     }
 

@@ -163,35 +163,37 @@
 
 /*#region Form*/
 form {
-    &.readonly-form > :not(.ignore-readonly) {
-        .hidden-readonly {
-            display: none;
-        }
-
-        .btn-save {
-            display: none;
-        }
-
-        .btn-readonly {
-            display: none;
-        }
-
-        .form-control, .select2-selection {
-            background: none !important;
-            border: none;
-
-            &:not(textarea) {
-                max-width: max-content;
+    &.readonly-form {
+        > :not(.ignore-readonly) {
+            .hidden-readonly {
+                display: none;
             }
-        }
 
-        .select2-selection__arrow {
-            display: none;
-        }
+            .btn-save {
+                display: none;
+            }
 
-        .input-group-text {
-            background: none;
-            border: none;
+            .btn-readonly {
+                display: none;
+            }
+
+            .form-control, .select2-selection {
+                background: none !important;
+                border: none;
+
+                &:not(textarea) {
+                    max-width: max-content;
+                }
+            }
+
+            .select2-selection__arrow {
+                display: none;
+            }
+
+            .input-group-text {
+                background: none;
+                border: none;
+            }
         }
 
         &.hide-empty .input-no-value {

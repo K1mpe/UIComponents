@@ -1,9 +1,9 @@
 ﻿namespace UIComponents.Abstractions.Models;
 
 
-public class UIComponentViewModel : IUIComponentViewModel
+public class UICViewModel : IUICViewModel, IUICAction
 {
-    public UIComponentViewModel(string renderlocation,object viewModel)
+    public UICViewModel(string renderlocation,object viewModel)
     {
         RenderLocation = renderlocation;
         ViewModel = viewModel;

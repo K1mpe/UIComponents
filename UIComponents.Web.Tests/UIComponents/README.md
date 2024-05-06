@@ -58,7 +58,7 @@
 - [ClientSide responseHandling](#clientside-responsehandling)
 - [Services](#services)
     - [Available services](#available-services)
-        - [IUIComponentService](#iuicomponentservice)
+        - [IUIComponentGenerator](#IUIComponentGenerator)
         - [IUICValidationService](#iuicvalidationservice)
         - [IUICStoredComponents](#iuicstoredcomponents)
         - [IUICQuestionService](#iuicquestionservice)
@@ -84,7 +84,7 @@ builder.Services.AddUIComponentWeb(config =>
 In _scripts.cshtml or the layout page, add the partial containing all scripts.
 This partial is automatically generated in /views/shared/_UicScripts.cshtml
 ```Javascript
-<partial name="_UicScripts" />
+<partial name="_Scripts.UIC" />
 ```
 :warning: Make sure that all overrides of this javascript code come after the importing of the script
 
@@ -122,7 +122,7 @@ These usings can also be added to GlobalUsings
 ```
 
 # Creating components
-Create items manually or use the [IUIComponentService](#iuicomponentservice) to generate components.
+Create items manually or use the [IUIComponentGenerator](#IUIComponentGenerator) to generate components.
 
 ## Rendering components from view
 ```c#
@@ -1308,12 +1308,12 @@ uic.getpost.defaultHandlers.push( (response) => {
 ## Available services
 ready-to-use, pre-made, impleme,ntet, ... services
 
-### IUIComponentService
+### IUIComponentGenerator
 This service can auto generate components based on the existing generators.
 
-You can inject the **IUIComponentService** directly in a view, controller or service.
+You can inject the **IUIComponentGenerator** directly in a view, controller or service.
 ```c#
-private readonly IUIComponentService _uic;
+private readonly IUIComponentGenerator _uic;
 
 TestModel testModel = new TestModel();
 
@@ -1368,7 +1368,7 @@ Validation Min value => one returns 0, other returns 10 => 10 will be set
 Validation Max value => one returns 20, other returns 50 => 20 will be set
 
 #### Usage
-This service is automatically used by the **IUIComponentService** to set properties as required, assign minimum and maximum values.
+This service is automatically used by the **IUIComponentGenerator** to set properties as required, assign minimum and maximum values.
 This service can also be used inside a **AbstractValidator< T >**. This will check all the availalble validationrules and handle the messages.
 
 

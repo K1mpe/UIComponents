@@ -31,5 +31,6 @@
         @await Model.Validation.InvokeAsync(Component)
         return true;
     },
-    multiple: @Json.Serialize(Model.Multiple)
+    multiple: @Json.Serialize(Model.Multiple),
+    css: @Html.JsEncode(UICTableColumn.VisibilityClass(Model.ColumnVisibility), "'"),
 },

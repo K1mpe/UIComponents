@@ -269,7 +269,7 @@ namespace UIComponents.Web.Tests.Controllers
         public IActionResult Files()
         {
             var x = new TestModel();
-            new UICCard().Add(new UIComponentViewModel("/Views/Shared/MyViewLocation", x));
+            new UICCard().Add(new UICViewModel("/Views/Shared/MyViewLocation", x));
 
             var fileBrowser = new UICFileExplorer()
             {

@@ -372,6 +372,11 @@ public static class UICExtensions
         return element.AddAttribute("class", @class);
     }
 
+    public static T AddCss<T>(this T element, string name, string value) where T : IUICHasAttributes
+    {
+        return element.AddAttribute("style", $"{name}: {value};");
+    }
+
     public static T AddStyle<T>(this T element, string style) where T : IUICHasAttributes
     {
         return element.AddAttribute("style", style);

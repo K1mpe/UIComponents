@@ -64,7 +64,7 @@ public class UICInheritAttribute : Attribute
             }
         }
         
-        var classAttr = propertyInfo.DeclaringType.GetCustomAttribute<UICInheritAttribute>();
+        var classAttr = propertyInfo.ReflectedType.GetCustomAttribute<UICInheritAttribute>();
         if(classAttr != null)
         {
             foreach(var type in classAttr.Types)

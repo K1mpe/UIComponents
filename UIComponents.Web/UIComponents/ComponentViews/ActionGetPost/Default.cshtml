@@ -19,7 +19,7 @@
 
 
 
-@if(Model.GetVariableData != null)
+@if (Model.GetVariableData.HasValue())
 {
     <text>
         let variableContent = @await Model.GetVariableData.InvokeAsync(Component);

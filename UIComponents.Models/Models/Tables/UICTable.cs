@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using UIComponents.Abstractions.Interfaces.Tables;
@@ -146,6 +147,9 @@ namespace UIComponents.Models.Models.Tables
 
         /// <summary>
         /// Available arguments => 'args'
+        /// <br>args.event</br>
+        /// <br>args.item</br>
+        /// <br>args.itemIndex</br>
         /// </summary>
         public IUICAction OnRowClick { get; set; } = new UICCustom();
 
@@ -205,6 +209,7 @@ namespace UIComponents.Models.Models.Tables
 
         #region Methods
 
+        #region AddColumn
         /// <summary>
         /// Add a column for this propertyname. If one already exists, use the existing one for the config
         /// </summary>
@@ -247,10 +252,92 @@ namespace UIComponents.Models.Models.Tables
             return this;
         }
 
+        #endregion
+
+        #region InsertColumn
+
+        public UICTable InsertColumn(int index, PropertyInfo propInfo, Action<UICTableColumn> config = null)
+        {
+            
+            var existingCol = Columns.Where(x => x is UICTableColumn tableColumn && tableColumn.PropertyInfo != null && tableColumn.PropertyInfo.Name == propInfo.Name).FirstOrDefault() as UICTableColumn;
+            if(existingCol == null)
+            {
+                existingCol = new UICTableColumn(propInfo);
+            }
+            else
+            {
+                Columns.Remove(existingCol);
+            }
+            if(Columns.Count > index)
+                Columns.Insert(index, existingCol);
+            else
+                Columns.Add(existingCol);
+            config?.Invoke(existingCol);
+            return this;
+        }
+
+        public UICTable InsertColumn(int index, out UICTableColumn addedColumn, PropertyInfo propInfo)
+        {
+            var existingCol = Columns.Where(x => x is UICTableColumn tableColumn && tableColumn.PropertyInfo != null && tableColumn.PropertyInfo.Name == propInfo.Name).FirstOrDefault() as UICTableColumn;
+            if (existingCol == null)
+            {
+                existingCol = new UICTableColumn(propInfo);
+            }
+            else
+            {
+                Columns.Remove(existingCol);
+            }
+            addedColumn = existingCol;
+            if (Columns.Count > index)
+                Columns.Insert(index, existingCol);
+            else 
+                Columns.Add(existingCol);
+
+            return this;
+        }
+
+        public UICTable InsertColumn<T>(int index, T column, Action<T> config = null) where T : class, IUICTableColumn
+        {
+            var existingCol = Columns.Where(x => x == column).FirstOrDefault();
+            if (existingCol != null)
+            {
+                Columns.Remove(existingCol);
+            }
+
+            if (Columns.Count > index)
+                Columns.Insert(index, column);
+            else
+                Columns.Add(column);
+
+            config(column);
+            return this;
+        }
+
+        public UICTable InsertColumn<T>(int index, out T addedColumn, T column) where T : class, IUICTableColumn
+        {
+            var existingCol = Columns.Where(x => x == column).FirstOrDefault();
+            if (existingCol != null)
+            {
+                Columns.Remove(existingCol);
+            }
+            addedColumn = column;
+            if (Columns.Count > index)
+                Columns.Insert(index, column);
+            else
+                Columns.Add(column);
+
+            return this;
+        }
+        #endregion
+
+            #region RemoveColumn
+
         public UICTable RemoveColumn(PropertyInfo propInfo)
         {
             return AddColumn(propInfo, config => config.Render = false);
         }
+
+        #endregion
 
         /// <summary>
         /// Add a signalREvent. If no action is set, this will automatically be set to reloading the table
@@ -315,6 +402,8 @@ namespace UIComponents.Models.Models.Tables
 
 
         #region Methods
+
+        #region Add Column
         ///<inheritdoc cref="UICTable.AddColumn(PropertyInfo, Action{UICTableColumn})"/>
         public UICTable<T> AddColumn(Expression<Func<T, object>> propExpression, Action<UICTableColumn> action = null)
         {
@@ -386,8 +475,60 @@ namespace UIComponents.Models.Models.Tables
             return this;
         }
 
+        /// <summary>
+        /// <inheritdoc cref=" AddColumns(Expression{Func{T, object}}[])"/>
+        /// <br>This also contains a action that will be applied to all provided expressions</br>
+        /// </summary>
+        public UICTable<T> ConfigureColumns(Action<UICTableColumn> action, params Expression<Func<T, object>>[] propExpressions)
+        {
+            foreach (var propExpression in propExpressions)
+                AddColumn(propExpression, action);
+            return this;
+        }
 
-        
+
+        /// <summary>
+        /// Add all the remaining columns in the same order as they are defined in the Model
+        /// </summary>
+        public UICTable<T> AddAllUndefinedColumns(bool includeId = false, bool includeIsDeleted = false)
+        {
+            var properties = typeof(T).GetProperties();
+            foreach (var propertyInfo in properties)
+            {
+                if (!includeId && propertyInfo.Name.ToUpper() == "ID")
+                    continue;
+
+                if (!includeIsDeleted && propertyInfo.Name.ToUpper() == "ISDELETED")
+                    continue;
+
+                if (Columns.Where(x => x is UICTableColumn).OfType<UICTableColumn>().Where(x => x.PropertyInfo != null && x.PropertyInfo.Name == propertyInfo.Name).Any())
+                    continue;
+                AddColumn(propertyInfo);
+            }
+            return this;
+        }
+        #endregion
+
+        #region Insert Column
+
+        public UICTable<T> InsertColumn(int index, Expression<Func<T, object>> propExpression, Action<UICTableColumn> action = null)
+        {
+            var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(propExpression);
+            InsertColumn(index, propertyInfo, action);
+            return this;
+        }
+        public UICTable<T> InsertColumn(int index, out UICTableColumn column, Expression<Func<T, object>> propExpression)
+        {
+            var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(propExpression);
+            InsertColumn(index, out column, propertyInfo);
+            return this;
+        }
+
+
+        #endregion
+
+        #region RemoveColumn
+
         /// <summary>
         /// Set the render property for multiple columns to false. Columns must be split by ","
         /// </summary>
@@ -411,29 +552,18 @@ namespace UIComponents.Models.Models.Tables
             }
             return this;
         }
+        #endregion
 
 
         /// <summary>
-        /// Add all the remaining columns in the same order as they are defined in the Model
+        /// Set the default ordering of the table
         /// </summary>
-        public UICTable<T> AddAllUndefinedColumns(bool includeId =false, bool includeIsDeleted = false)
+        public UICTable<T> OrderBy(Expression<Func<T, object>> expression, SortOrder sortOrder = SortOrder.Asc)
         {
-            var properties = typeof(T).GetProperties();
-            foreach(var propertyInfo in properties)
-            {
-                if (!includeId && propertyInfo.Name.ToUpper() == "ID")
-                    continue;
-
-                if(!includeIsDeleted && propertyInfo.Name.ToUpper() == "ISDELETED")
-                    continue;
-
-                if (Columns.Where(x => x is UICTableColumn).OfType<UICTableColumn>().Where(x=>x.PropertyInfo != null && x.PropertyInfo.Name ==propertyInfo.Name).Any())
-                    continue;
-                AddColumn(propertyInfo);
-            }
+            var propInfo = InternalHelper.GetPropertyInfoFromExpression(expression);
+            Sorter = new(propInfo.Name, sortOrder);
             return this;
-        }
-       
+        }       
         #endregion
     }
 

@@ -7,15 +7,13 @@
 
         if (!element.is(':visible'))
             return true;
-
         if (element.closest('[hidden]').length)
-            return true;
-        if (element.closest('.d-none').length)
             return true;
         if (element.closest('.collapsed-card').length)
             return true;
         if (element.closest('.tab-pane:not(.active)').length)
             return true;
+
         return false;
     },
 

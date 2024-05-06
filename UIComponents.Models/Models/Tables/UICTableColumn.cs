@@ -21,6 +21,7 @@ namespace UIComponents.Models.Models.Tables
         public PropertyInfo PropertyInfo{ get; set; }
         public Translatable Title { get; set; }
         public Translatable Tooltip { get; set; }
+        public SortOrder? SortOrder { get; set; }
         public string Type { get; set; }
 
         /// <summary>
@@ -126,6 +127,11 @@ namespace UIComponents.Models.Models.Tables
         #endregion
 
         #region Methods
+        public UICTableColumn OrderBy(SortOrder order)
+        {
+            SortOrder = order;
+            return this;
+        }
         public static string VisibilityClass(UICTableColumnVisibility visibility)
         {
             switch (visibility)
@@ -143,13 +149,13 @@ namespace UIComponents.Models.Models.Tables
                 case UICTableColumnVisibility.HideSmallerThenXl:
                     return "d-none d-xl-table-cell";
                 case UICTableColumnVisibility.VisibleSmallerThenSm:
-                    return "d-block d-sm-none";
+                    return "d-table-cell d-sm-none";
                 case UICTableColumnVisibility.VisibleSmallerThenMd:
-                    return "d-none d-sm-block d-md-none";
+                    return "d-sm-table-cell d-md-none";
                 case UICTableColumnVisibility.VisibleSmallerThenLg:
-                    return "d-none d-sm-block d-md-block d-lg-none";
+                    return "d-sm-table-cell d-md-table-cell d-lg-none";
                 case UICTableColumnVisibility.VisibleSmallerThenXl:
-                    return "d-none d-sm-block d-md-block d-lg-block d-xl-none";
+                    return "d-sm-table-cell d-md-table-cell d-lg-table-cell d-xl-none";
                 default:
                     throw new NotImplementedException();
             }

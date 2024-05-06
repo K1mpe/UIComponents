@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Reflection.Emit;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Helpers;
 using UIComponents.Models.Models.Tables;
@@ -38,7 +39,7 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
         try
         {
             var propertyArgs = new UICPropertyArgs(
-                Activator.CreateInstance(args.PropertyInfo.DeclaringType),
+                Activator.CreateInstance(args.PropertyInfo.ReflectedType),
                 args.PropertyInfo,
                 propType,
                 new(),
@@ -46,10 +47,42 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
                 _config
             );
              input = await _config.GetGeneratedResultAsync<IUIComponent, UICInput>(UICGeneratorPropertyCallType.PropertyInput, null, propertyArgs);
+
+
+            if(args.Tooltip == null)
+            {
+
+                var tooltipArgs = new UICPropertyArgs(
+                    Activator.CreateInstance(args.PropertyInfo.ReflectedType),
+                    args.PropertyInfo,
+                    propType,
+                    new(),
+                    new(UICGeneratorPropertyCallType.PropertyTooltip, args, null),
+                    _config
+                );
+
+                args.Tooltip = await _config.GetToolTipAsync(tooltipArgs, args);
+            }
+            if(args.Tooltip == null)
+            {
+                var tooltipArgs2 = new UICPropertyArgs(
+                    Activator.CreateInstance(args.PropertyInfo.ReflectedType),
+                    args.PropertyInfo,
+                    propType,
+                    new(),
+                    new(UICGeneratorPropertyCallType.PropertyTooltip, args, null),
+                    _config
+                );
+
+                var span = await _config.GetPropertyGroupSpanAsync(tooltipArgs2, args);
+                if(span != null)
+                    args.Tooltip = span.Text;
+            }
+
         } catch(Exception ex)
         {
             _logger.LogError(ex, "Failed to get input for property {0}=>{1} \r\n{2}",
-                args.PropertyInfo.DeclaringType?.Name,
+                args.PropertyInfo.ReflectedType?.Name,
                 args.PropertyInfo.Name,
                 ex.Message
                 );
@@ -59,7 +92,9 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
         if(args.Title == null)
             args.Title = UIComponents.Defaults.TranslationDefaults.TranslateProperty(inheritPropInfo, propType);
 
-        if(string.IsNullOrEmpty(args.Type))
+
+
+        if (string.IsNullOrEmpty(args.Type))
         {
             args.Type = propType.ToString().ToLower();
             

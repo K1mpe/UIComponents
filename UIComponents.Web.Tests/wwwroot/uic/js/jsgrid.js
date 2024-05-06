@@ -1,34 +1,37 @@
 ﻿uic.jsgrid = uic.jsgrid || {
-    onInit: async function (id, loadUserPreference, args, sorter) {
-        var loadedFilter = {};
+    onInit: async function (id, loadUserPreference, args, sorter, defaultFilter) {
+        var loadedFilter = defaultFilter;
         if (loadUserPreference) {
             try {
                 //Download users last filters and set them in the filter row
                 var filterJson = localStorage.getItem(`Grid.${id}.Filters`) || '{}';
                 loadedFilter = $.parseJSON(filterJson);
-                setTimeout(() => {
-                    //console.log('grid-filters', loadedFilter, filterJson);
-                    $(args.grid.fields).each(function (index, item) {
-                        {
-                            var fieldName = item.name || '';
-                            $.each(loadedFilter, function (key, element) {
-                                {
-                                    if (key == fieldName && element != '' && item.filterControl != undefined) {
-                                        {
-                                            item.filterControl.val(element);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }, 1);
+
 
             } catch (ex) {
                 console.error('Failed to save userPreference', ex);
             }
 
         }
+        setTimeout(() => {
+            //console.log('grid-filters', loadedFilter, filterJson);
+            $(args.grid.fields).each(function (index, item) {
+                {
+                    try {
+                        var fieldName = item.name || '';
+                        $.each(loadedFilter, function (key, element) {
+                            {
+                                if (key == fieldName && element != '' && item.filterControl != undefined) {
+                                    {
+                                        item.filterControl.val(element);
+                                    }
+                                }
+                            }
+                        });
+                    } catch { }
+                }
+            });
+        }, 1);
 
         //This timeout of 0 ms is to enable the jsGrid to render before sorting.
         setTimeout(() => {
@@ -86,9 +89,9 @@
             for (var j = 0; j < filterNames.length; j++) {
                 let filterName = filterNames[j];
                 let filterValue = filter[filterName];
-                if (filterValue === null || filterValue === undefined || filterValue ==="")
+                if (filterValue === null || filterValue === undefined || filterValue === "")
                     continue;
-                if(item[filterName] === undefined)
+                if (item[filterName] === undefined)
                     continue;
 
                 //console.log(typeof item[filterName]);
@@ -125,7 +128,25 @@
                 filtered.push(item);
         }
 
-
+        if (!!filter.sortField) {
+            if (filter.sortOrder == "asc") {
+                filtered = filtered.sort((a, b) => {
+                    if (a[filter.sortField] > b[filter.sortField])
+                        return 1;
+                    else if (b[filter.sortField] > a[filter.sortField])
+                        return -1;
+                    else return 0;
+                });
+            } else {
+                filtered = filtered.sort((a, b) => {
+                    if (a[filter.sortField] > b[filter.sortField])
+                        return -1;
+                    else if (b[filter.sortField] > a[filter.sortField])
+                        return 1;
+                    else return 0;
+                });
+            }
+        }
         return filtered;
 
     },
@@ -141,7 +162,7 @@
             data: data.slice(start, pageSize)
         };
     },
-    
+
 
     //Create top and bottom pager if none exists
     pager_generate: function (id, pagerSelector) {
@@ -184,7 +205,7 @@
         },
 
         itemTemplate: function (value) {
-            if (value == null || value =="")
+            if (value == null || value == "")
                 return null;
             var mValue = moment(value);
             //always show the full date
@@ -504,7 +525,7 @@
         multiple: false,
         before_cell_render: true,
         identifier: "Id",
-        width:"25px",
+        width: "25px",
 
         // Triggered when any changes happen
         rowContentChanged: $.noop,
@@ -523,7 +544,7 @@
             let _this = this;
 
             // Clicking the cell does not trigger the sidebar
-            var cell = $("<td onclick=\"event.stopPropagation();\">");
+            var cell = $("<td onclick=\"event.stopPropagation();\" class=\"rowcontent\">");
 
             cell.append(this.itemTemplate(value, item));
 
@@ -548,7 +569,7 @@
                     _this._openRow(_this._grid, item);
                 }
 
-                
+
             });
 
             return cell;
@@ -623,7 +644,6 @@
             let content = _this._appendEmptyRow(row, item);
 
             content.trigger('uic-reload');
-            //await _this._loadContentRow(content, item);
 
             grid[GRID_ROW_CONTENT_ARRAY].push({
                 item: item,
@@ -633,10 +653,18 @@
         },
 
         _appendEmptyRow: function (itemRow, item) {
-            let contentRow = $("<tr>", { "class": "jsgrid-row" })
-                .append($("<td>", { "class": "jsgrid-cell jsgrid-partial-content", "colspan": this._grid.fields.length }));
 
-            contentRow.on('uic-reload', async(ev) => {
+            let colspan = 0;
+            this._grid._header.find('.jsgrid-header-row th').each((index, field) => {
+                if (!uic.form.isHidden(field))
+                    colspan += 1;
+            });
+
+            this._checkResizeColspan(this._grid._container);
+            let contentRow = $("<tr>", { "class": "jsgrid-row" })
+                .append($("<td>", { "class": "jsgrid-cell jsgrid-partial-content", "colspan": colspan }));
+
+            contentRow.on('uic-reload', async (ev) => {
                 ev.stopPropagation();
                 uic.partial.showLoadingOverlay(contentRow);
                 let content = await this.loadContent(null, item);
@@ -654,18 +682,38 @@
             return contentRow;
         },
 
-        //_loadContentRow: async function (contentRow, item) {
-        //    let cell = contentRow.find("td:first");
-        //    let data = {};
-        //    data[this.identifier] = item[this.identifier];
-        //    uic.partial.showLoadingOverlay(cell);
+        _checkResizeColspan: function (container) {
+            if (container.hasClass('jsgrid-resizeablePartial'))
+                return;
 
-        //    // Add a loading icon to that row
-        //    let content = await this.loadContent(null, item);
-        //    uic.partial.hideLoadingOverlay(cell);
-        //    if (content != false)
-        //        cell.html(content);
-        //}
+            if (!uic.jsgrid._hasResizeWatcher) {
+                $(window).resize(() => {
+                    $('.jsgrid-resizeablePartial').each((index, grid) => {
+                        let container = $(grid);
+                        if (!container.find('.jsgrid-partial-content').length)
+                            return;
+
+                        let partialIndex = container.find('.jsgrid-partial-content').closest('tr').index();
+                        let partialSourceRow = $(container.find('.jsgrid-grid-body tr')[partialIndex - 1]);
+                        if (!partialSourceRow.find('.rowcontent:visible').length) {
+                            container.find('.jsgrid-partial-content').closest('tr').remove();
+                            return;
+                        }
+                        let colspan = 0;
+                        container.find('.jsgrid-header-row th').each((index, field) => {
+                            if (!uic.form.isHidden(field))
+                                colspan += 1;
+                        });
+
+                        container.find('.jsgrid-partial-content').attr('colspan', colspan);
+                    })
+                });
+                uic.jsgrid._hasResizeWatcher = true;
+            }
+
+            container.addClass("jsgrid-resizeablePartial");
+        }
+
     }
 
     r.selectlist = {
@@ -679,7 +727,7 @@
             let text = value;
             if (text == "0")
                 text = "";
-            let textVal = ""+value; // make sure the value is seen as text
+            let textVal = "" + value; // make sure the value is seen as text
             let item = items.filter(x => x.Value === textVal);
             return item[0]?.Text || text;
         },
@@ -742,7 +790,7 @@
                 valueField = this.valueField,
                 textField = this.textField,
                 selectedIndex = this.selectedIndex;
-            
+
             $.each(this.items, function (index, item) {
                 var value = item.Value;
                 var text = item.Text;
@@ -936,12 +984,12 @@
 
         cellRenderer: function (value, item) {
             let content = this.itemTemplate(value, item);
-            let cell = $('<td>').attr('title', this.tooltip||value);
+            let cell = $('<td>').attr('title', this.tooltip || value);
             cell.append(content);
 
             return cell;
         }
-        
+
 
     }
 
@@ -963,7 +1011,7 @@
             return this._renderCheckbox(value, true, this.nullable);
         },
         insertTemplate: function () {
-            let value = this.nullable?null:false;
+            let value = this.nullable ? null : false;
             let checkbox = this._renderCheckbox(value, true, this.nullable);
             return checkbox;
         },
@@ -1009,9 +1057,9 @@
     });
 }
 $(document).ready(() => {
-    let SetRenderer = (name)=> {
+    let SetRenderer = (name) => {
         let target = uic.jsgrid.fieldRenderers[name];
-        if (typeof target ==='function')
+        if (typeof target === 'function')
             target = target();
 
         let fieldFunc = function (config) {

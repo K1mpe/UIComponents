@@ -185,8 +185,12 @@
                             @await Model.OnInit.InvokeAsync(Component)
                         </text>
                     } else{
+                        var defaultFilterObject= new Dictionary<string, object>();
+                        foreach(var column in Model.Columns.Where(x=>x is UICTableColumn tableColumn && tableColumn.PropertyInfo != null && tableColumn.DefaultFilter != null).OfType<UICTableColumn>()){
+                            defaultFilterObject[column.PropertyInfo.Name] = column.DefaultFilter;
+                        }
                         <text>
-                        let result = await uic.jsgrid.onInit('@id', @Json.Serialize(Model.SaveFiltersInLocalStorage), args, @Html.Raw(Model.Sorter?.ToString()??"null"));
+                        let result = await uic.jsgrid.onInit('@id', @Json.Serialize(Model.SaveFiltersInLocalStorage), args, @Html.Raw(Model.Sorter?.ToString()??"null"), @Json.Serialize(defaultFilterObject));
                         </text>
                     }
                     $('#@id').trigger('uic-initialized');
@@ -203,7 +207,7 @@
                     <text>
                     onItemDeleting: async function(args){
                         @await Model.OnItemDeleting.InvokeAsync(Component)
-                    }
+                    },
                     </text>
                 }
                 @if(Model.OnRowClick.HasValue())
@@ -211,7 +215,7 @@
                     <text>
                     rowClick: async function(args){
                         @await Model.OnRowClick.InvokeAsync(Component)
-                    }
+                    },
                     </text>
                 }
 
@@ -374,9 +378,5 @@
 
     </div>
 </div>
-
+@await Model.SignalRRefreshTriggers.InvokeAsync(Component)
 @await Model.RenderStylesAndScripts(Component)
-
-<script>
-    
-</script>

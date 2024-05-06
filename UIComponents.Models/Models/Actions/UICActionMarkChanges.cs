@@ -18,19 +18,24 @@ public class UICActionMarkChanges : IUICAction
 
     }
 
-    public UICActionMarkChanges(IUIComponent component, string valueName = "referenceObject")
+    /// <summary>
+    /// Calls the uic.markChanges($(selector), valueName) function clientside
+    /// </summary>
+    /// <param name="selector">Function that leads to a id or class. can also be a <see cref="UIComponent"/></param>
+    /// <param name="valueName"></param>
+    public UICActionMarkChanges(Func<string> selector, string valueName = "referenceObject")
     {
-        Component = component;
+        Selector = selector;
         ValueName = valueName;
     }
     #endregion
 
     #region Properties
+
     /// <summary>
-    /// The component to set the value too
+    /// The selector
     /// </summary>
-    [UICIgnoreGetChildrenFunction]
-    public IUIComponent Component { get; set; }
+    public Func<string> Selector { get; set; }
 
     /// <summary>
     /// This is the name of the variable used to set the value

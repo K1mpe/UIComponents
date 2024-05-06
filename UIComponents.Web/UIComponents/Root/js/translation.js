@@ -1,6 +1,6 @@
 ﻿uic.translation = uic.translation || {
     translate: async function (translatable) {
-        //If the input has to resourceKey, inputting strings will just return the string
+        //If the input has no resourceKey, inputting strings will just return the string
         if (translatable.ResourceKey == undefined)
             return translatable;
 
@@ -11,19 +11,19 @@
         //Check if the translation is already requested, call the fetchTranslationText on first request
         let cachedValue = uic.translation._defaultValues[translatable.ResourceKey];
         if (cachedValue == undefined) {
-            cachedValue = await uic.translation.translateKey(translatable.ResourceKey);
+            cachedValue = await uic.translation.fetchTranslationText(translatable);
             uic.translation._defaultValues[translatable.ResourceKey] = cachedValue;
         }
 
         //Format the arguments in the text
         return (cachedValue||translatable.DefaultValue).format(translatable.Arguments);
     },
-    //Get the translated defaultvalue for this key
-    translateKey: async function (key) {
-        return await uic.translation.translate({ ResourceKey: key });
-    },
+
+
     //The function that requests the service to give the translation
     fetchTranslationText: async function (translatable) {
+        //This default implementation just takes the default value or last part of the key, and formats it with the arguments.
+        //For real implementation this function should call a controller function.
         let defaultValue = translatable.DefaultValue || translatable.ResourceKey.split('.').slice(-1)[0];
         return defaultValue.format(translatable.Arguments);
     },

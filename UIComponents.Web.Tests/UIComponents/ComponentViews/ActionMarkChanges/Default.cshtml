@@ -17,18 +17,4 @@
 
 @model UICActionMarkChanges
 
-@{
-    string componentId = null;
-    if (Model.Component is UIComponent uiComponent)
-    {
-        componentId = uiComponent.GetAttribute("id");
-    }
-
-
-    if (string.IsNullOrWhiteSpace(componentId))
-    {
-        throw new Exception($"{Model.Component.RenderLocation} does not have a Id, assigned, and cannot be used to set the value");
-    }
-
-}
-uic.markChanges($('#@componentId'), @Model.ValueName);
+uic.markChanges($('@Model.Selector()'), @Model.ValueName);
