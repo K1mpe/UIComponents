@@ -52,7 +52,6 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return Redirect("/table");
             var translatable = new Translatable("blub", "test {0}", new Translatable("foo", "foo {1}", "abc"));
             var serialised = translatable.Serialize();
             var x = (Translatable)serialised;

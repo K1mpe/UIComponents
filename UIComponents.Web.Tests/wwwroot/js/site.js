@@ -4,7 +4,7 @@
 // Write your JavaScript code.
 
 function makeToast(type, message, title) {
-    alert(title);
+    alert(title +"\r\n"+message);
 }
 
 // #region Setup

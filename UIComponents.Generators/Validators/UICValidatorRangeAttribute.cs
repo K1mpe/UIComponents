@@ -114,9 +114,9 @@ public class UICValidatorRangeAttributeShort : UICValidatorRangeAttribute<short>
     {
     }
 }
-public class UICValidatorRangeAttributeDate : UICValidatorRangeAttribute<DateOnly>
+public class UICValidatorRangeAttributeDateOnly : UICValidatorRangeAttribute<DateOnly>
 {
-    public UICValidatorRangeAttributeDate(ILogger<UICValidatorRangeAttributeDate> logger,
+    public UICValidatorRangeAttributeDateOnly(ILogger<UICValidatorRangeAttributeDateOnly> logger,
         IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<DateOnly>> minValidator,
         IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<DateOnly>> maxValidator)
         : base(logger, minValidator, maxValidator)

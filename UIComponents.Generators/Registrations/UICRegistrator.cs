@@ -165,7 +165,7 @@ public static class UICConfigure
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDouble>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDecimal>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeShort>(serviceCollection);
-        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDate>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDateOnly>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDateTime>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeTimeOnly>(serviceCollection);
 

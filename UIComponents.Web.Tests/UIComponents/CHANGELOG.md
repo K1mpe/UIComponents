@@ -1,3 +1,8 @@
+﻿# 2024-05-14 (1.2.04)
+- Fix navigatieknop in card buttons
+- JsGrid pointer cursor on row click
+- Fix exception _Scripts.UIC.cshtml
+- Verwijderen reference SixLabors
 ﻿# 2024-05-06 (1.2.03)
 - UICActionMarkChanges does not require UIComponent, can also be a provided selector.
 - Fix uic.translations

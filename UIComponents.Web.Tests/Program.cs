@@ -10,6 +10,7 @@ using UIComponents.Web.Tests.Services;
 using UIComponents.Web.Tests;
 using UIComponents.Web.Tests.Validators;
 using UIComponents.Web.Tests.Factory;
+using UIComponents.Abstractions.Interfaces.ValidationRules;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -25,6 +25,10 @@
     Model.AddAttribute("class", "card card-tabs");
     Model.AddBodyAttribute("class", "col col-tab-content");
 
+    string tabsClasses = string.Empty;
+    if (Model.Header != null && Model.Header.Color != null)
+        tabsClasses +=$"card-{Model.Header.Color.ToLower()}";
+
     Model.AssignCollectionForChildren();
 
     @if (Model.RememberTabState)
@@ -52,7 +56,8 @@ else
     <div @Html.Raw(Model.GetHtmlAttributes())>
         <div class="row">
             <div class="col col-tab-headers">
-                <div class="nav nav-tabs flex-column h-100" role="tablist">
+                <div class="nav nav-tabs flex-column h-100 @tabsClasses" role="tablist">
+                    @await Model.BeforeTabs.InvokeAsync(Component)
                     @for (int i = 0; i < Model.Tabs.Count; i++)
                     {
                         var tab = Model.Tabs[i];
@@ -64,6 +69,7 @@ else
                             @await tab.Header.InvokeAsync(Component)
                         }
                     }
+                    @await Model.AfterTabs.InvokeAsync(Component)
                 </div>               
             </div>
             <div @Html.Raw(Model.BodyAttributes.GetHtmlAttributes())>

@@ -578,9 +578,6 @@ i.uic-value-changed {
             }
         }
     }
-
-    .jsgrid-row {
-    }
 }
 
 .uic.jsgrid {
@@ -591,11 +588,16 @@ i.uic-value-changed {
         }
     }
 
-    .jsgrid-header-row .jsgrid-header-cell{
+    .jsgrid-header-row .jsgrid-header-cell {
         overflow: hidden;
     }
-    .jsgrid-filter-row .jsgrid-cell{
-        overflow:hidden;
+
+    .jsgrid-filter-row .jsgrid-cell {
+        overflow: hidden;
+    }
+
+    .jsgrid-partial-content{
+        padding:0;
     }
 }
 /*#endregion jsGrid*/

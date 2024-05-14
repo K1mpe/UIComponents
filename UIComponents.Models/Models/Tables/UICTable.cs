@@ -61,7 +61,6 @@ namespace UIComponents.Models.Models.Tables
         public List<object> Data { get; set; } = new();
 
 
-        public UICActionGetPost InsertItem { get; set; }
 
         /// <summary>
         /// If provided, there will be a expand button that gets a partial.
@@ -330,7 +329,7 @@ namespace UIComponents.Models.Models.Tables
         }
         #endregion
 
-            #region RemoveColumn
+        #region RemoveColumn
 
         public UICTable RemoveColumn(PropertyInfo propInfo)
         {
@@ -528,6 +527,14 @@ namespace UIComponents.Models.Models.Tables
         #endregion
 
         #region RemoveColumn
+
+        public UICTable<T> RemoveColumn(Expression<Func<T, object>> propExpression)
+        {
+            var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(propExpression);
+            RemoveColumn(propertyInfo);
+            return this;
+        }
+
 
         /// <summary>
         /// Set the render property for multiple columns to false. Columns must be split by ","

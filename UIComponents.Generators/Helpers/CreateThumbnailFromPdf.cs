@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PDFiumSharp;
 
 namespace UIComponents.Generators.Helpers
 {
@@ -18,17 +17,17 @@ namespace UIComponents.Generators.Helpers
             {
                 return;
             }
-            using var pdfDocument = new PdfDocument(pdfPath);
-            var firstPage = pdfDocument.Pages[0];
+            //using var pdfDocument = new PdfDocument(pdfPath);
+            //var firstPage = pdfDocument.Pages[0];
 
-            using var pageBitmap = new PDFiumBitmap(width, height, true);
+            //using var pageBitmap = new PDFiumBitmap(width, height, true);
 
-            firstPage.Render(pageBitmap);
+            //firstPage.Render(pageBitmap);
 
-            var image = Image.FromStream(pageBitmap.AsBmpStream());
+            //var image = Image.FromStream(pageBitmap.AsBmpStream());
 
 
-            image.Save(saveToStream, ImageFormat.Png);
+            //image.Save(saveToStream, ImageFormat.Png);
             
         }
     }

@@ -25,6 +25,9 @@
     Model.AddAttribute("class", "card card-tabs");
     Model.AddBodyAttribute("class", "card-body");
 
+    if (Model.Header != null && Model.Header.Color != null)
+        Model.AddClass($"card-{Model.Header.Color.ToLower()}");
+
     Model.AssignCollectionForChildren();
 
     if (Model.RememberTabState)
@@ -37,7 +40,9 @@
             </text>
     );
     }
-    
+    var cardHeaderTabsAddedClass = string.Empty;
+    if (Model.CenterTabs)
+        cardHeaderTabsAddedClass += "nav-justified";
 }
 
 @if(Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent && Model.Tabs.First() is IUIComponent firstTab)
@@ -53,7 +58,8 @@ else
     </text>);
     <div @Html.Raw(Model.GetHtmlAttributes())>
         <div class="card-header">
-            <div class="card-header-tabs nav nav-justified nav-tabs" role="tablist" aria-orientation="horizontal">
+            <div class="card-header-tabs nav nav-tabs @cardHeaderTabsAddedClass" role="tablist" aria-orientation="horizontal">
+                @await Model.BeforeTabs.InvokeAsync(Component)
                 @for (int i = 0; i < Model.Tabs.Count; i++)
                 {
                     var tab = Model.Tabs[i];
@@ -65,6 +71,7 @@ else
                         @await tab.Header.InvokeAsync(Component)
                     }
                 }
+                @await Model.AfterTabs.InvokeAsync(Component)
             </div>
 
         </div>

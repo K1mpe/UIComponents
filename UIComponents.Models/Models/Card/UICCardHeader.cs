@@ -98,6 +98,9 @@ public class UICCardHeader : UIComponent, IHeader
                 .AddAttribute("class", "nav-link")
                 .AddAttribute("role", "tab")
                 .AddAttribute("data-toggle", "tab");
+            if (tabs.ColorTabs && header.Color != null)
+                header.AddClass($"bg-{header.Color.ToLower()}");
+
         }
         else if(sender is UICModal modal)
         {

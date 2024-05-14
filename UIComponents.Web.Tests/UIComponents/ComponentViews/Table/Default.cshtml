@@ -65,6 +65,8 @@
             </text>
     );
 
+    if (Model.OnRowClick.HasValue())
+        Model.AddClass("has-row-click");
 
     if (Model.AddControlColumn)
     {

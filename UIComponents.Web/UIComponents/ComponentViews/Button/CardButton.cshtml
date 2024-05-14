@@ -49,42 +49,31 @@
 }
 
 
-@if (Model.OnClick != null && Model.OnClick is UICActionNavigate navigate)
-{
-    <a href="@navigate.Href" @Html.Raw(Model.GetHtmlAttributes())>
-        @await Model.PrependButtonIcon.InvokeAsync(Component)
-        @await Model.AppendButtonIcon.InvokeAsync(Component)
-    </a>
-}
-else
-{
-    <button type="@type" @Html.Raw(Model.GetHtmlAttributes())>
-        @await Model.PrependButtonIcon.InvokeAsync(Component)
-        @await Model.AppendButtonIcon.InvokeAsync(Component)
+<button type="@type" @Html.Raw(Model.GetHtmlAttributes())>
+    @await Model.PrependButtonIcon.InvokeAsync(Component)
+    @await Model.AppendButtonIcon.InvokeAsync(Component)
 
-        @if (Model.OnClick != null)
-        {
-            Model.AddScript(@<text>
+    @if (Model.OnClick != null)
+    {
+        Model.AddScript(@<text>
             
-                @if (type == "submit")
-                {
-                    <text>
-                        @await Model.OnClick.InvokeAsync(Component)
-                    </text>
-                }
-                else
-                {
-                    <text>
-                            $('#@id').click(async function (args) {
-                        @await Model.OnClick.InvokeAsync(Component)
-                                            });
-                    </text>
-                }
+            @if (type == "submit")
+            {
+                <text>
+                    @await Model.OnClick.InvokeAsync(Component)
+                </text>
+            }
+            else
+            {
+                <text>
+                        $('#@id').click(async function (args) {
+                    @await Model.OnClick.InvokeAsync(Component)
+                                        });
+                </text>
+            }
 
-                            </text>);
+                        </text>);
 
-        }
-    </button>
-    
-}
+    }
+</button>
 @await Model.RenderStylesAndScripts(Component)

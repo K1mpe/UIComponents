@@ -97,6 +97,7 @@
     factoryComponent = new UICFactory<TestComponentFactory>("/Views/Home/TestViewModelFromFactory", async f => await f.CreateViewModelAsync(2));
     tabs.Add(new UICCard("factoryComponent").Add(factoryComponent));
 
+
 }
 
 @await tabs.InvokeAsync(Component)

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
@@ -106,38 +107,46 @@ public static class UICBuilderExtensions
 
 
             #region ScriptCollectionFile
-            string collection = $"{dir}\\Views\\Shared\\_Scripts.UIC.cshtml";
-            string collectionContent = string.Empty;
-            AddScript("uic.js");
-
-            foreach(var script in scripts)
+            try
             {
+                string collection = $"{dir}\\Views\\Shared\\_Scripts.UIC.cshtml";
+                string collectionContent = string.Empty;
+                AddScript("uic.js");
+
+                foreach (var script in scripts)
+                {
                     var scriptName = script.Replace(sourceRoute + ".", string.Empty);
 
                     if (scriptName.EndsWith(".cshtml")) //replace the cshtml with js
                         scriptName = scriptName.Substring(0, scriptName.Length - 6) + "js";
 
                     AddScript(scriptName);
-            }
-            if (File.Exists(collection))
-                File.Delete(collection);
-            using (var collectionFile = File.Create(collection))
-            {
-                using(var sr = new StreamWriter(collectionFile))
+                }
+                if (File.Exists(collection))
+                    File.Delete(collection);
+                using (var collectionFile = File.Create(collection))
                 {
-                    sr.WriteLine(collectionContent);
+                    using (var sr = new StreamWriter(collectionFile))
+                    {
+                        sr.WriteLine(collectionContent);
+                    }
+                }
+
+                void AddScript(string name)
+                {
+                    string addingScript = $"<script src=\"~/uic/js/{name}?v={currentVersion}\"></script>";
+                    if (collectionContent.Contains(addingScript))
+                        return;
+                    collectionContent += addingScript;
+                    collectionContent += Environment.NewLine;
                 }
             }
-
-            void AddScript(string name)
+            catch(Exception ex)
             {
-                string addingScript = $"<script src=\"~/uic/js/{name}?v={currentVersion}\"></script>";
-                if (collectionContent.Contains(addingScript))
-                    return;
-                collectionContent += addingScript;
-                collectionContent += Environment.NewLine;
+                Console.WriteLine("Failed to write Scripts file. Error can be ignored if _scripts.UIC.cshtml is already in ");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
-
             #endregion
         }
         if (options.ReplaceCss)
