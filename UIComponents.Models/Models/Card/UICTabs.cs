@@ -1,5 +1,6 @@
 ﻿using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
+using UIComponents.Models.Models.Card;
 
 namespace UIComponents.Models.Models.Card
 {
@@ -49,7 +50,12 @@ namespace UIComponents.Models.Models.Card
         /// </remarks>
         public bool OnlyRenderSingleContent { get; set; } = Defaults.Models.Card.UICTabs.OnlyRenderSingleContent;
 
-        public UICCardWithTabsRenderer Renderer { get; set; } = UICCardWithTabsRenderer.HorizontalTab;
+        public UICCardWithTabsRenderer Renderer { get; set; } = UIComponents.Defaults.Models.Card.UICTabs.Renderer;
+        public UICCardWithTabsRenderer TabOrientation{ 
+            get => Renderer; 
+            set => Renderer = value; 
+        }
+        public UICCardWithTabsStyle TabStyle { get; set; } = UIComponents.Defaults.Models.Card.UICTabs.TabStyle;
 
         public string Id
         {
@@ -98,7 +104,7 @@ namespace UIComponents.Models.Models.Card
         /// <summary>
         /// Only required if you use this tab as subtab
         /// </summary>
-        public IHeader Header { get; set; } = new UICCardHeader(new Translatable("Tab.NoHeader"));
+        public IHeader Header { get; set; } = new UICCardHeader(new Translatable("Tab.NoHeader")) { Color = Defaults.Models.Card.UICTabs.HeaderColor };
 
         IUICHasAttributes IUICTab.Content => this;
 
@@ -107,17 +113,19 @@ namespace UIComponents.Models.Models.Card
     }
     public enum UICCardWithTabsRenderer
     {
-        HorizontalTab,
-        VerticalTab,
-        HorizontalPill,
-        VerticalPill,
+        Horizontal,
+        Vertical,
+    }
+    public enum UICCardWithTabsStyle
+    {
+        Tabs,
+        Pills
     }
 }
 namespace UIComponents.Defaults.Models.Card
 {
     public static class UICTabs
     {
-
         public static bool ColorTabs { get; set; }
 
         public static bool RememberTabState { get; set; } = true;
@@ -125,6 +133,10 @@ namespace UIComponents.Defaults.Models.Card
         public static bool CenterTabs { get; set; }
 
         public static bool OnlyRenderSingleContent { get; set; }
+
+        public static IColor HeaderColor { get; set; }
+        public static UICCardWithTabsRenderer Renderer { get; set; }
+        public static UICCardWithTabsStyle TabStyle { get; set; }
     }
 }
 

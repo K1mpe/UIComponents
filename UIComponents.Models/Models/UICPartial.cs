@@ -45,10 +45,10 @@ public class UICPartial : UIComponent, IUICHasChildren<IUIComponent>
     /// if false, the reload will not be exexcuted if the content is hidden (example: partial in a closed card)
     /// </summary>
     /// <remarks>
-    /// If no content is loaded & a parent card or tab opens, this will be triggered (only first-time).
+    /// If the parent card or tab opens and a refresh was triggered while closed, the refresh will then be triggered again.
     /// <br>Use <see cref="ReloadIfParentOpens"/> to refresh on each opening</br>
     /// </remarks>
-    public bool ReloadIfHidden { get; set; } = false;
+    public bool ReloadIfHidden { get; set; } = true;
 
     /// <summary>
     /// If the parent card opens, refresh the content

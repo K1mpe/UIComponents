@@ -27,25 +27,40 @@
 
     if (Model.Header != null && Model.Header.Color != null)
         Model.AddClass($"card-{Model.Header.Color.ToLower()}");
+    else
+        Model.AddClass("card-outline");
 
     Model.AssignCollectionForChildren();
 
     if (Model.RememberTabState)
     {
         Model.AddScript(
-        @<text>
-            $('#@id').on('uic-tab-change', (ev, tab)=>{
-                localStorage.setItem('tabs-lastState-@id', $(tab).attr('href'));
-            })
-            </text>
+    @<text>
+        $('#@id').on('uic-tab-change', (ev, tab)=>{
+        localStorage.setItem('tabs-lastState-@id', $(tab).attr('href'));
+        })
+    </text>
     );
     }
     var cardHeaderTabsAddedClass = string.Empty;
     if (Model.CenterTabs)
         cardHeaderTabsAddedClass += "nav-justified";
+
+    string navClass = string.Empty;
+    switch(Model.TabStyle)
+    {
+        case UICCardWithTabsStyle.Tabs:
+            navClass = "nav-tabs";
+            break;
+        case UICCardWithTabsStyle.Pills:
+            navClass = "nav-pills";
+            break;
+        default:
+            throw new NotImplementedException();
+    }
 }
 
-@if(Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent && Model.Tabs.First() is IUIComponent firstTab)
+@if (Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent && Model.Tabs.First() is IUIComponent firstTab)
 {
     @await firstTab.InvokeAsync(Component)
 }
@@ -53,12 +68,12 @@ else
 {
     Model.AddScript(
         @<text>
-            uic.tabs.openFirstTab($('#@id'));
+    uic.tabs.openFirstTab($('#@id'));
 
-    </text>);
+</text>);
     <div @Html.Raw(Model.GetHtmlAttributes())>
         <div class="card-header">
-            <div class="card-header-tabs nav nav-tabs @cardHeaderTabsAddedClass" role="tablist" aria-orientation="horizontal">
+            <div class="card-header-tabs nav @navClass @cardHeaderTabsAddedClass" role="tablist" aria-orientation="horizontal">
                 @await Model.BeforeTabs.InvokeAsync(Component)
                 @for (int i = 0; i < Model.Tabs.Count; i++)
                 {

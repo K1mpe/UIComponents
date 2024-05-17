@@ -86,7 +86,7 @@ public class UICCardHeader : UIComponent, IHeader
         {
             header.Renderer = CardHeaderRenderer.CardHeader;
             header.AddAttribute("class", "card-header");
-            if (card.DefaultClosed)
+            if (card.DisableClosing)
                 header.CollapseCardOnClick = false;
             else 
                 header.Buttons.Add(new UICButtonCollapseCard(card));

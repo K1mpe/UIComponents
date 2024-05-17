@@ -14,7 +14,7 @@ public static class OptionDefaults
 
     public static bool DisableSaveButtonOnValidationErrors = true;
 
-
+    public static IUICAction OnSuccessfullSubmit = new UICCustom();
 
     public static ButtonPosition ButtonPosition = ButtonPosition.Right;
     public static ButtonDistance ButtonDistance = ButtonDistance.Medium;

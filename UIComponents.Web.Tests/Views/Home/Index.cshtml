@@ -49,7 +49,7 @@
         .Add(out var formTabs, new UICTabs("FormTabs")
                 {
                     Header = new UICCardHeader("Forms"),
-                    Renderer = UICCardWithTabsRenderer.VerticalTab
+                    Renderer = UICCardWithTabsRenderer.Vertical
                 }
         .Add(new UICCard(new Translatable("Card.Create"))
             .Add(await UIC.CreateComponentAsync(testModel, new()

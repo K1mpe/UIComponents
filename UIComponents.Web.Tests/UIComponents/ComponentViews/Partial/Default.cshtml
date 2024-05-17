@@ -21,99 +21,100 @@
 
     Model.AssignCollectionForChildren();
 
-    if(Model.GetHtml != null)
+    if (Model.GetHtml != null)
     {
         Model.AddAttribute("class", "partial-source");
 
         if (Model.GetHtml.ClientSideOptions == null)
             Model.GetHtml.ClientSideOptions = new UICCustom(
-                @<text>
-                {
-                    handlers: uic.partial.handlers,
-                    loadType: "html",
-                    cancelPreviousRequests: true
-                }
-                </text>);
+    @<text>
+        {
+        handlers: uic.partial.handlers,
+        loadType: "html",
+        cancelPreviousRequests: true
+        }
+    </text>);
 
         Model.AddScript(
     @<text>
         $('#@id').on('uic-help', ()=>{
-            console.log("partial $('#@id').trigger('uic-reload') => reload the content of this card");
-            console.log("partial $('#@id').triggerHandler('uic-source') => returns the controller and action of this request");
-            console.log("partial $('#@id').on('uic-before-reload', () => {...}) => triggered before the reload starts");
-            console.log("partial $('#@id').on('uic-reloaded', () => {...}) => triggered after the reload has finished");
-            
+        console.log("partial $('#@id').trigger('uic-reload') => reload the content of this card");
+        console.log("partial $('#@id').triggerHandler('uic-source') => returns the controller and action of this request");
+        console.log("partial $('#@id').on('uic-before-reload', () => {...}) => triggered before the reload starts");
+        console.log("partial $('#@id').on('uic-reloaded', () => {...}) => triggered after the reload has finished");
+
         });
+        let reloadPartial = @Json.Serialize(!Model.SkipInitialLoad);
+
         $('#@id').on('uic-reload', async(ev) =>{
-            ev.stopPropagation();
-            @if (!Model.ReloadIfHidden)
-            {
-            <text>
-                if(uic.form.isHidden($('#@id')))
-                    return;
-            </text>
+        ev.stopPropagation();
+        @if (!Model.ReloadIfHidden)
+    {
+        <text>
+            if(uic.form.isHidden($('#@id'))){
+            reloadPartial = true;
+            return;
             }
 
-            uic.partial._reloadPartial($('#@id'), @Json.Serialize(Model.ShowLoadingOverlay), async() =>{
-                
-                @await Model.GetHtml.InvokeAsync(Component);
-                return @Html.Raw(Model.GetHtml.ResultName);
-            });
+        </text>
+    }
+
+        uic.partial._reloadPartial($('#@id'), @Json.Serialize(Model.ShowLoadingOverlay), async() =>{
+
+        @await Model.GetHtml.InvokeAsync(Component);
+        return @Html.Raw(Model.GetHtml.ResultName);
+        });
+        reloadPartial = false;
         });
 
         $('#@id').on('uic-source', ()=>{
-            let source = '@Json.Serialize($"/{Model.GetHtml.Controller}/{Model.GetHtml.Action}")';
-            console.log('partial source', $('#@id'), source, @Json.Serialize(Model.GetHtml.FixedData));
-            return source;
+        let source = '@Json.Serialize($"/{Model.GetHtml.Controller}/{Model.GetHtml.Action}")';
+        console.log('partial source', $('#@id'), source, @Json.Serialize(Model.GetHtml.FixedData));
+        return source;
         });
-        
+
         @if(Model.BeforeFetch != null)
-        {
+    {
         <text>
             $('#@id').on('uic-reload', async () =>{
-                @await Model.BeforeFetch.InvokeAsync(Component);
+            @await Model.BeforeFetch.InvokeAsync(Component);
             })
-        </text> 
-        }
+        </text>
+    }
 
         @if (Model.AfterFetch != null)
-        {
+    {
         <text>
             $('#@id').on('uic-reloaded', async () =>{
             @await Model.AfterFetch.InvokeAsync(Component);
             })
         </text>
-        }
-        @if (Model.ReloadIfParentOpens)
-        {
-            <text>
-                $('#@id').parents('.card, .tab-pane').on('uic-opened', ()=> $('#@id').trigger('uic-reload'));
-            </text>
-        } else if (!Model.ReloadIfHidden)
-        {
-            //If not auto reloading on open and partial does not have content yet, reload anyway
-           <text>
-                $('#@id').parents('.card, .tab-pane').on('uic-opened', ()=> {
-                    if(!$('#@id').children().lenght){
-                        $('#@id').trigger('uic-reload');
-                    }
-                })
-           </text>
-        }
+    }
+        @if(Model.ReloadIfParentOpens || !Model.ReloadIfHidden){
+        <text>
+            $('#@id').parents('.card, .tab-pane').on('uic-opened', ()=> {
+            if(@Json.Serialize(Model.ReloadIfParentOpens) || reloadPartial)
+                $('#@id').trigger('uic-reload');
+
+            });
+        </text>
+    }
+
+
 
         @if(!Model.SkipInitialLoad)
-        {
+    {
         <text>
-        $('#@id').triggerHandler('uic-reload');
+            $('#@id').triggerHandler('uic-reload');
         </text>
-        }
-                </text>);
+    }
+    </text>);
 
     }
 }
 
 <div @Html.Raw(Model.GetHtmlAttributes())>
-    @foreach(var child in Model.Children)
+    @foreach (var child in Model.Children)
     {
         @await child.InvokeAsync(Component)
     }

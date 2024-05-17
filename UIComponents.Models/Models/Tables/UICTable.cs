@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using UIComponents.Abstractions.Interfaces.Tables;
 using UIComponents.Models.Helpers;
+using UIComponents.Models.Models.Tables;
 using static UIComponents.Models.Models.Actions.UICActionGetPost;
 
 namespace UIComponents.Models.Models.Tables
@@ -27,45 +28,43 @@ namespace UIComponents.Models.Models.Tables
         #endregion
 
         #region Properties
-        public string Width { get; set; } = "100%";
-        public string Height { get; set; } = "auto";
+        public string Width { get; set; } = Defaults.Models.Table.UICTable.Width;
+        public string Height { get; set; } = Defaults.Models.Table.UICTable.Height;
 
         /// <summary>
         /// Enable the table columns to be resized
         /// </summary>
-        public bool Resizable { get; set; } = true;
+        public bool Resizable { get; set; } = Defaults.Models.Table.UICTable.Resizable;
 
         public List<IUICTableColumn> Columns { get; set; } = new();
 
-        public bool Filtering { get; set; } = true;
-        public bool Selecting { get; set; } = true;
-        public bool Sorting { get; set; } = true;
+        public bool Filtering { get; set; } = Defaults.Models.Table.UICTable.Filtering;
+        public bool Selecting { get; set; } = Defaults.Models.Table.UICTable.Selecting;
+        public bool Sorting { get; set; } = Defaults.Models.Table.UICTable.Sorting;
 
         /// <summary>
         /// If <see cref="EnableInsert"/>, <see cref="EnableUpdate"/> or <see cref="EnableDelete"/> are true, show the control column
         /// </summary>
-        public bool AddControlColumn { get; set; } = true;
-        public bool EnableInsert { get; set; }
-        public bool EnableUpdate { get; set; }
-        public bool EnableDelete { get; set; }
+        public bool AddControlColumn { get; set; } = Defaults.Models.Table.UICTable.AddControlColumn;
+        public bool EnableInsert { get; set; } = Defaults.Models.Table.UICTable.EnableInsert;
+        public bool EnableUpdate { get; set; } = Defaults.Models.Table.UICTable.EnableUpdate;
+        public bool EnableDelete { get; set; } = Defaults.Models.Table.UICTable.EnableDelete;
 
         /// <summary>
         /// The input fields will have their value as tooltip.
         /// </br>
         /// This is usefull for content that will likely be clipped.
         /// </summary>
-        public bool EnableTooltip { get; set; }
+        public bool EnableTooltip { get; set; } = Defaults.Models.Table.UICTable.EnableTooltip;
 
 
         #region Data
+        /// <summary>
+        /// Static data that will be used when no <see cref="LoadData"/> is provided
+        /// </summary>
         public List<object> Data { get; set; } = new();
 
 
-
-        /// <summary>
-        /// If provided, there will be a expand button that gets a partial.
-        /// </summary>
-        public UICActionGetPost Partial { get; set; }
 
         /// <summary>
         /// Default sorting on this property
@@ -76,49 +75,49 @@ namespace UIComponents.Models.Models.Tables
         /// <summary>
         /// The max size for each page
         /// </summary>
-        public int PageSize { get; set; } = int.MaxValue;
+        public int PageSize { get; set; } = Defaults.Models.Table.UICTable.PageSize;
 
-        public string PagingSelector { get; set; }
+        public string PagingSelector { get; set; } = Defaults.Models.Table.UICTable.PagingSelector;
 
         /// <summary>
         /// This will add the jsgrid-minimal class.
         /// <br>You can write Css properties to make the grid more compact</br>
         /// </summary>
-        public bool Minimal { get; set; } = true;
+        public bool Minimal { get; set; } = Defaults.Models.Table.UICTable.Minimal;
 
         /// <summary>
         /// If true, replace the load indicator with uic.partial.showLoadingOverlay && uic.partial.hideLoadingOverlay
         /// </summary>
-        public bool ReplaceLoadingIndicator { get; set; } = true;
+        public bool ReplaceLoadingIndicator { get; set; } = Defaults.Models.Table.UICTable.ReplaceLoadingIndicator;
 
         /// <summary>
         /// Save the last filters in the localstorage from that browser. This requires the Id to be set.
         /// </summary>
-        public bool SaveFiltersInLocalStorage { get; set; } = true;
+        public bool SaveFiltersInLocalStorage { get; set; } = Defaults.Models.Table.UICTable.SaveFiltersInLocalStorage;
 
 
         /// <summary>
         /// Always show all select filters. Even if no items are available with this filter.
         /// <br>This feature only works if all remaining items are visible on a single page</br>
         /// </summary>
-        public bool ShowAllSelectFilters { get; set; }
+        public bool ShowAllSelectFilters { get; set; } = Defaults.Models.Table.UICTable.ShowAllSelectFilters;
 
 
 
         /// <summary>
         /// While in edit mode, if you lose focus from the edit row, this will trigger a save instead of cancel
         /// </summary>
-        public bool SaveOnBlur { get; set; }
+        public bool SaveOnBlur { get; set; } = Defaults.Models.Table.UICTable.SaveOnBlur;
 
         /// <summary>
         /// While in edit mode, enter will trigger a submit of the current row
         /// </summary>
-        public bool SaveOnEnter { get; set; }
+        public bool SaveOnEnter { get; set; } = Defaults.Models.Table.UICTable.SaveOnEnter;
 
-        public List<UICSignalR> SignalRRefreshTriggers { get; set; } = new();   
+        public List<UICSignalR> SignalRRefreshTriggers { get; set; } = new();
 
         #region Events
-        public IUICAction OnInit { get; set; } = new UICCustom();
+        public IUICAction OnInit { get; set; } = Defaults.Models.Table.UICTable.OnInit;
 
         /// <summary>
         /// This function is called when data has finished loading.
@@ -128,8 +127,8 @@ namespace UIComponents.Models.Models.Tables
         /// <br>args.grid</br>
         /// <br>args.data</br>
         /// </remarks>
-        public IUICAction OnDataLoaded { get; set; } = new UICCustom();
-        public IUICAction OnDataEditing { get; set; } = new UICCustom();
+        public IUICAction OnDataLoaded { get; set; } = Defaults.Models.Table.UICTable.OnDataLoaded;
+        public IUICAction OnDataEditing { get; set; } = Defaults.Models.Table.UICTable.OnDataEditing;
 
         /// <summary>
         /// This function is called when trying to delete a item.
@@ -142,7 +141,12 @@ namespace UIComponents.Models.Models.Tables
         /// <br> args.item</br>
         /// <br> args.itemIndex</br>
         /// </remarks>
-        public IUICAction OnItemDeleting { get; set; } = new UICCustom();
+        public IUICAction OnItemDeleting { get; set; } = Defaults.Models.Table.UICTable.OnItemDeleting;
+
+        /// <summary>
+        /// When no <see cref="OnRowClick"/> function is provided and editing is true, edit the row that is clicked
+        /// </summary>
+        public bool EditOnRowClick { get; set; } = Defaults.Models.Table.UICTable.EditOnRowClick;
 
         /// <summary>
         /// Available arguments => 'args'
@@ -150,7 +154,7 @@ namespace UIComponents.Models.Models.Tables
         /// <br>args.item</br>
         /// <br>args.itemIndex</br>
         /// </summary>
-        public IUICAction OnRowClick { get; set; } = new UICCustom();
+        public IUICAction OnRowClick { get; set; } = Defaults.Models.Table.UICTable.OnRowClick;
 
         /// <summary>
         /// The function that is used to load the data.
@@ -159,7 +163,7 @@ namespace UIComponents.Models.Models.Tables
         /// Available args:
         /// args => filter arguments
         /// </remarks>
-        public IUICAction LoadData { get; set; } = new UICCustom();
+        public IUICAction LoadData { get; set; } = Defaults.Models.Table.UICTable.LoadData;
 
         /// <summary>
         /// Called when a item is inserted.
@@ -167,7 +171,7 @@ namespace UIComponents.Models.Models.Tables
         /// <remarks>
         /// Available args => 'item'
         /// </remarks>
-        public IUICAction OnInsertItem { get; set; } = new UICCustom();
+        public IUICAction OnInsertItem { get; set; } = Defaults.Models.Table.UICTable.OnInsertItem;
 
         /// <summary>
         /// Called when a item is deleted.
@@ -175,7 +179,7 @@ namespace UIComponents.Models.Models.Tables
         /// <remarks>
         /// Available args => 'item'
         /// </remarks>
-        public IUICAction OnUpdateItem { get; set; } = new UICCustom();
+        public IUICAction OnUpdateItem { get; set; } = Defaults.Models.Table.UICTable.OnUpdateItem;
 
         /// <summary>
         /// Called when a item is deleted.
@@ -183,17 +187,17 @@ namespace UIComponents.Models.Models.Tables
         /// <remarks>
         /// Available args => 'item'
         /// </remarks>
-        public IUICAction OnDeleteItem { get; set; } = new UICCustom();
+        public IUICAction OnDeleteItem { get; set; } = Defaults.Models.Table.UICTable.OnDeleteItem;
 
         /// <summary>
         /// This function overwrites the default functionality for the insertbutton. This may be used to open a model for inserting instead.
         /// </summary>
-        public IUICAction OnInsertButtonClick { get; set; } = new UICCustom();
+        public IUICAction OnInsertButtonClick { get; set; } = Defaults.Models.Table.UICTable.OnInsertButtonClick;
 
         /// <summary>
         /// This runs at the end of the jsGrid configuration, and may overwrite all previous functionality
         /// </summary>
-        public IUICAction AdditionalConfig { get; set; } = new UICCustom();
+        public IUICAction AdditionalConfig { get; set; } = Defaults.Models.Table.UICTable.AdditionalConfig;
 
         /// <summary>
         /// Create a custom renderer for the entire row
@@ -201,7 +205,7 @@ namespace UIComponents.Models.Models.Tables
         /// <remarks>
         /// Available args=> item, index
         /// </remarks>
-        public IUICAction RowRenderer { get; set; } = new UICCustom();
+        public IUICAction RowRenderer { get; set; } = Defaults.Models.Table.UICTable.RowRenderer;
         #endregion
 
         #endregion
@@ -494,6 +498,10 @@ namespace UIComponents.Models.Models.Tables
             var properties = typeof(T).GetProperties();
             foreach (var propertyInfo in properties)
             {
+                var ignoreAttr = propertyInfo.GetCustomAttribute<UICIgnoreAttribute>();
+                if (ignoreAttr != null)
+                    continue;
+
                 if (!includeId && propertyInfo.Name.ToUpper() == "ID")
                     continue;
 
@@ -594,5 +602,44 @@ namespace UIComponents.Models.Models.Tables
     {
         Asc = 0,
         Desc = 1,
+    }
+}
+namespace UIComponents.Defaults.Models.Table
+{
+    public static class UICTable
+    {
+        public static string Width { get; set; } = "";
+        public static string Height { get; set; } = "auto";
+        public static bool Resizable { get; set; } = true;
+        public static bool Filtering { get; set; } = true;
+        public static bool Selecting { get; set; } = true;
+        public static bool Sorting { get; set; } = true;        
+        public static bool AddControlColumn { get; set; } = true;
+        public static bool EnableInsert { get; set; }
+        public static bool EnableUpdate { get; set; }
+        public static bool EnableDelete { get; set; }
+        public static bool EnableTooltip { get; set; }
+        public static int PageSize { get; set; } = int.MaxValue;
+        public static string PagingSelector { get; set; }
+        public static bool Minimal { get; set; } = true;
+        public static bool ReplaceLoadingIndicator { get; set; } = true;
+        public static bool SaveFiltersInLocalStorage { get; set; } = true;
+        public static bool ShowAllSelectFilters { get; set; }
+        public static bool SaveOnBlur { get; set; }
+        public static bool SaveOnEnter { get; set; }
+        public static List<UICSignalR> SignalRRefreshTriggers { get; set; } = new();
+        public static IUICAction OnInit { get; set; } = new UICCustom();
+        public static IUICAction OnDataLoaded { get; set; } = new UICCustom();
+        public static IUICAction OnDataEditing { get; set; } = new UICCustom();
+        public static IUICAction OnItemDeleting { get; set; } = new UICCustom();
+        public static bool EditOnRowClick { get; set; } = true;
+        public static IUICAction OnRowClick { get; set; } = new UICCustom();
+        public static IUICAction LoadData { get; set; } = new UICCustom();
+        public static IUICAction OnInsertItem { get; set; } = new UICCustom();
+        public static IUICAction OnUpdateItem { get; set; } = new UICCustom();
+        public static IUICAction OnDeleteItem { get; set; } = new UICCustom();
+        public static IUICAction OnInsertButtonClick { get; set; } = new UICCustom();
+        public static IUICAction AdditionalConfig { get; set; } = new UICCustom();
+        public static IUICAction RowRenderer { get; set; } = new UICCustom();
     }
 }

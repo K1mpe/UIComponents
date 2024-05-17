@@ -41,6 +41,19 @@
             })
         </text>);
     }
+
+    string navClass = string.Empty;
+    switch (Model.TabStyle)
+    {
+        case UICCardWithTabsStyle.Tabs:
+            navClass = "nav-tabs";
+            break;
+        case UICCardWithTabsStyle.Pills:
+            navClass = "nav-pills";
+            break;
+        default:
+            throw new NotImplementedException();
+    }
 }
 
 @if (Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent && Model.Tabs.First() is IUIComponent firstTab)
@@ -56,7 +69,7 @@ else
     <div @Html.Raw(Model.GetHtmlAttributes())>
         <div class="row">
             <div class="col col-tab-headers">
-                <div class="nav nav-tabs flex-column h-100 @tabsClasses" role="tablist">
+                <div class="nav @navClass flex-column h-100 @tabsClasses" role="tablist">
                     @await Model.BeforeTabs.InvokeAsync(Component)
                     @for (int i = 0; i < Model.Tabs.Count; i++)
                     {

@@ -82,6 +82,12 @@ public class UICOptions
     public ISubmitAction PostForm { get; set; }
 
     /// <summary>
+    /// The action that should occure when posting the form successfully. may not work with a custom <see cref="PostForm"/>
+    /// </summary>
+    /// <remarks>
+    /// result is available as argument, can be changed if <see cref="UICActionGetPost.ResultName"/> is changed</remarks>
+    public IUICAction OnSuccessfullSubmit { get; set; } = OptionDefaults.OnSuccessfullSubmit;
+    /// <summary>
     /// Post all properties as <see cref="UICActionGetPost.DefaultData"/>. This means that properties that are not visualised, will still post their current value.
     /// </summary>
     public bool PostObjectAsDefault { get; set; } = OptionDefaults.PostObjectAsDefault;

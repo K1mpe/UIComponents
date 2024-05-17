@@ -1,3 +1,4 @@
+# UICComponents Documentation
 # Table of contents
 - [Implementation](#implementation)
 - [Creating Components](#creating-components)

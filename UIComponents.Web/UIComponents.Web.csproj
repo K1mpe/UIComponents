@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.2.04</Version>
+	<Version>1.2.06</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -36,6 +36,8 @@
     <None Remove="UIComponents\ChangeLog\2024-05-02.md" />
     <None Remove="UIComponents\ChangeLog\2024-05-06.md" />
     <None Remove="UIComponents\ChangeLog\2024-05-14.md" />
+    <None Remove="UIComponents\ChangeLog\2024-05-16.md" />
+    <None Remove="UIComponents\ChangeLog\2024-05-17.md" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\7z.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\bak.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\db.png" />
@@ -57,11 +59,6 @@
     <None Remove="UIComponents\Root\img\file-explorer\unknown-file.png" />
     <None Remove="UIComponents\Root\js\jsGrid.js" />
     <None Remove="UIComponents\Root\js\jsgridResize.js" />
-    <None Remove="usings" />
-  </ItemGroup>
-	
-  <ItemGroup>
-    <Content Include="usings" />
   </ItemGroup>
 	
   <ItemGroup>

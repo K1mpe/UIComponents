@@ -416,3 +416,9 @@ uic.loadScript = function (source) {
         document.body = document.createElement("body");
     document.body.append(scriptEl);
 };
+
+uic.getResultOrInvoke = async function (result, ...args) {
+    if (typeof result == 'function')
+        return await result.apply(this, args);
+    return result;
+}

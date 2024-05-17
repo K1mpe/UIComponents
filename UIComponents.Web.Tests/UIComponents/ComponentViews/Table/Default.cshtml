@@ -212,7 +212,8 @@
                     },
                     </text>
                 }
-                @if(Model.OnRowClick.HasValue())
+               
+                @if(Model.OnRowClick.HasValue() || !Model.EditOnRowClick)
                 {
                     <text>
                     rowClick: async function(args){

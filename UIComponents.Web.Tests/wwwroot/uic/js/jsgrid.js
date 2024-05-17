@@ -442,6 +442,8 @@
         },
 
         editValue: function () {
+            if (!this.editing)
+                return this.itemTemplate.apply(this, arguments);
             return this.editControl.val()
                 ? parseFloat(this.editControl.val())
                 : null;
@@ -500,6 +502,8 @@
             return element;
         },
         editTemplate: function (value, item) {
+            if (!this.editing)
+                return this.itemTemplate.apply(this, arguments);
             let _this = this;
 
             var element = $("<input>", { "class": this.class, "type": "color", "value": value }).on('input', function () {
@@ -1019,6 +1023,13 @@
             return uic.getValue(this._grid._insertRow.find(`input[name="${this.name}"]`));
         },
         editTemplate: function (value, item) {
+            if (!this.editing) {
+                let result = this.itemTemplate.apply(this, arguments);
+                result.find('input').attr('disabled', true).attr('readonly', true)
+                return result;
+            }
+
+
             let checkbox = this._renderCheckbox(value, true, this.nullable);
             return checkbox;
         },
@@ -1027,6 +1038,11 @@
         },
         filterTemplate: function () {
             let checkbox = this._renderCheckbox(null, true, true);
+            if (this.autosearch)
+                checkbox.on('click', () => {
+                    setTimeout(() => this._grid.search(), 50);
+                });
+
             return checkbox;
         },
         filterValue: function () {

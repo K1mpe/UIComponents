@@ -10,7 +10,7 @@ namespace UIComponents.Models.Models;
 /// <remarks>
 /// To make this work for custom <see cref="IUIComponent"/>, implement the <see cref="IUISingleRowSupport"/> interface 
 /// </remarks>
-public class UICSingleRow : UIComponent, IUICHasChildren<IUIComponent>
+public class UICSingleRow : UIComponent, IUICHasChildren<IUIComponent>, IUICHasAttributesAndChildren
 {
     #region Ctor
     public UICSingleRow()

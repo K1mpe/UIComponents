@@ -45,7 +45,7 @@
         //If value is null, add classes to make the input hidden in readonly
         addedClass += " input-no-value";
     }
-    addedClass += $" {Model.GetAttribute("class")} col-form-label";
+    addedClass += $" {Model.GetAttribute("class")}";
     Model.Label?.AddAttribute("class", addedClass);
 
 

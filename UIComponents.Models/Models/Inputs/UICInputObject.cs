@@ -1,7 +1,7 @@
 ﻿
 namespace UIComponents.Models.Models.Inputs;
 
-public class UICInputObject : UICInput<object>, IUICHasChildren<IUIComponent>
+public class UICInputObject : UICInput<object>, IUICHasChildren<IUIComponent>, IUICHasAttributesAndChildren
 {
 
     public override bool HasClientSideValidation => false;

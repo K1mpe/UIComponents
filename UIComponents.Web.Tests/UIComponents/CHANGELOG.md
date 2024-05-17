@@ -1,3 +1,11 @@
+﻿# 2024-05-17 (1.2.06)
+- Property without get parameter are always readonly
+- Tabs in tabs improvement. Support for diffrent tabstyles
+﻿# 2024-05-16 (1.2.05)
+- CSS fixes tabs in tabs
+- Defaults for UICTable
+- Partial will reload on card or tab open if reload trigger was ignored when closed.
+- UICOptions now has OnSuccessfullSubmit function
 ﻿# 2024-05-14 (1.2.04)
 - Fix navigatieknop in card buttons
 - JsGrid pointer cursor on row click

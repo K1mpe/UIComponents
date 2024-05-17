@@ -61,6 +61,9 @@ public class UICGeneratorForm : UICGeneratorProperty
                 getPost.AddDefaultData(args.ClassObject);
             if(!getPost.GetVariableData.HasValue())
                 getPost.GetVariableData = form.TriggerGetValue();
+            
+            if(!getPost.OnSuccess.HasValue())
+                getPost.OnSuccess = args.Options.OnSuccessfullSubmit;
         }
 
         var newCC = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, form, args.CallCollection);

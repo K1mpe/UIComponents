@@ -3,7 +3,7 @@
 /// <summary>
 /// A form that can be posted. This is required to use the <see cref="UICActionSubmit"/>
 /// </summary>
-public class UICForm : UIComponent, IUICHasChildren<IUIComponent>
+public class UICForm : UIComponent, IUICHasChildren<IUIComponent>, IUICHasAttributesAndChildren
 {
 
     #region Ctor
