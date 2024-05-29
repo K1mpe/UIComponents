@@ -1,13 +1,13 @@
 ﻿uic.changeWatcher = uic.changeWatcher || {
     example: function () {
-        console.log('the changeWatcher uses the uic.getValue() method to check for changes. This means the selector can by any type of jquery selector, (input, select, div, form, ...)')
+        console.log('the changeWatcher uses the uic.getValue() method to check for changes. This means the selector can be any type of jquery selector, (input, select, div, form, ...)')
         console.log('You need to create the watcher before any changes occur');
         console.log('let watcher = uic.changeWatcher.create($($0)); => Watcher that only watches one element');
         console.log('if(watcher.isChanged()){');
         console.log('...');
         console.log('}');
         console.log('');
-        console.log('When SignalR updatesthe page, you can redefine the initial values of the watcher:');
+        console.log('When SignalR updates the page, you can redefine the initial values of the watcher:');
         console.log('uic.changeWatcher.setInitialValues($($0))');
     },
 

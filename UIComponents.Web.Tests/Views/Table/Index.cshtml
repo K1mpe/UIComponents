@@ -35,8 +35,11 @@
         config.TextVisibility = UICTableColumnVisibility.HideSmallerThenLg;
     });
     table.AddAllUndefinedColumns().RemoveColumns("SubModel, RecurringDate, IntList,objectlist");
+    table.AddControlColumn(out var controlColumn);
 }
-
+<uic-custom uic="controlColumn.BeforeButtons">
+    return '<i class="fas fa-user"></i>';
+</uic-custom>
 <uic-custom uic="table.GetColumn(x=>x.Decimal).ItemTemplate">
     return '€'+value;
 </uic-custom>

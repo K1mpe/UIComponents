@@ -637,6 +637,12 @@ body .modal-dialog.auto { /* Width */
 }
 /*#endregion Modal*/
 
+/*#region Partial*/
+.uic.partial-source{
+    width: 100%;
+    height: 100%;
+}
+/*#endregion Partial*/
 /*#region Tabs*/
 .uic.card-tabs {
     .card-header-tabs.nav-pills {

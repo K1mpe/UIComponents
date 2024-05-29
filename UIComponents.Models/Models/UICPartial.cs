@@ -71,9 +71,6 @@ public class UICPartial : UIComponent, IUICHasChildren<IUIComponent>
 
 
     #region Triggers
-    public IUICAction TriggerReload()
-    {
-        throw new NotImplementedException();
-    }
+    public IUICAction TriggerReload() => new UICActionRefreshPartial(this);
     #endregion
 }

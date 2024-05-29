@@ -69,6 +69,7 @@ else
     Model.AddScript(
         @<text>
     uic.tabs.openFirstTab($('#@id'));
+    window.addEventListener("hashchange", ()=> uic.tabs.openFirstTab($('#@id')));
 
 </text>);
     <div @Html.Raw(Model.GetHtmlAttributes())>

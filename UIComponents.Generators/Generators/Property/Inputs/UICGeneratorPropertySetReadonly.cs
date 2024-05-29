@@ -39,7 +39,10 @@ public class UICGeneratorPropertySetReadonly : UICGeneratorProperty
                     var inheritInstance = Activator.CreateInstance(inherit.ReflectedType);
                     foreach(var property in args.PropertyInfo.ReflectedType.GetProperties())
                     {
-                        if (UICInheritAttribute.TryGetInheritPropertyInfo(property, out var x) && x.DeclaringType == inherit.DeclaringType)
+                        if (!property.CanRead)
+                            continue;
+
+                        if (UICInheritAttribute.TryGetInheritPropertyInfo(property, out var x) && x.DeclaringType == inherit.DeclaringType && x.CanWrite)
                             x.SetValue(inheritInstance, property.GetValue(args.ClassObject));
                     }
 

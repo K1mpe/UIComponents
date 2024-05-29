@@ -38,7 +38,8 @@ namespace UIComponents.Models.Models.Tables
         public UICIcon Icon { get; set; }
 
         public string Width { get; set; }
-        public string MaxWidth { get; set; }
+        
+
         public string Css { get; set; }
 
         public bool Editing { get; set; } = true;

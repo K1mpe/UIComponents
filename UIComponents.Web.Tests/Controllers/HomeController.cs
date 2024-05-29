@@ -267,9 +267,6 @@ namespace UIComponents.Web.Tests.Controllers
         [HttpGet]
         public IActionResult Files()
         {
-            var x = new TestModel();
-            new UICCard().Add(new UICViewModel("/Views/Shared/MyViewLocation", x));
-
             var fileBrowser = new UICFileExplorer()
             {
                 RootDirectory = "C:\\Jonas",

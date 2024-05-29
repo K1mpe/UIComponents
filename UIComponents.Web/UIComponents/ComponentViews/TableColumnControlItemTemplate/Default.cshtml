@@ -1,0 +1,29 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Tables;
+@using UIComponents.Models.Models.Tables.TableColumns;
+@using static UIComponents.Models.Models.Tables.TableColumns.UICTableColumnControl;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICTableColumnControlItemTemplate
+
+var $result = jsGrid.fields.@(Model.ControlColumn.Type).prototype.itemTemplate.apply(this, arguments);
+let prependfunc = function(item){@await Model.BeforeButtons.InvokeAsync(Component)};
+let appendfunc = function(item){@await Model.AfterButtons.InvokeAsync(Component)};
+let $prepend = prependfunc(item);
+let $append = appendfunc(item);
+return $().add($prepend).add($result).add($append);

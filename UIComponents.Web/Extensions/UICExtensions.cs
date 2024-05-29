@@ -195,7 +195,7 @@ public static class UICExtensions
         {
             styleTag.InnerHtml.AppendHtml(await style.InvokeAsync(component));
         }
-        var styleString = styleTag.InnerHtml.RenderHtmlContent().Replace("<style>", "").Replace("</style", "");
+        var styleString = styleTag.InnerHtml.RenderHtmlContent().Replace("<style>", "").Replace("</style>", "");
         styleTag.InnerHtml.Clear();
         styleTag.InnerHtml.AppendHtml(styleString);
 

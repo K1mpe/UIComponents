@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace UIComponents.Abstractions.Interfaces
 {
-    public interface IUICInitializeAsync
+    /// <summary>
+    /// Use this interface on <see cref="IUIComponent"/> that can initialize before rendering
+    /// </summary>
+    public interface IUICInitializeAsync : IUIComponent
     {
         /// <summary>
         /// This task is triggered just before the component gets rendered

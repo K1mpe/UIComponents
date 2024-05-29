@@ -6,6 +6,7 @@ using System.Reflection;
 using UIComponents.Abstractions.Interfaces.Tables;
 using UIComponents.Models.Helpers;
 using UIComponents.Models.Models.Tables;
+using UIComponents.Models.Models.Tables.TableColumns;
 using static UIComponents.Models.Models.Actions.UICActionGetPost;
 
 namespace UIComponents.Models.Models.Tables
@@ -43,9 +44,9 @@ namespace UIComponents.Models.Models.Tables
         public bool Sorting { get; set; } = Defaults.Models.Table.UICTable.Sorting;
 
         /// <summary>
-        /// If <see cref="EnableInsert"/>, <see cref="EnableUpdate"/> or <see cref="EnableDelete"/> are true, show the control column
+        /// If <see cref="EnableInsert"/>, <see cref="EnableUpdate"/> or <see cref="EnableDelete"/> are true, add the <see cref="AddControlColumn(Action{UICTableColumnControl})"/> at the end of the columns
         /// </summary>
-        public bool AddControlColumn { get; set; } = Defaults.Models.Table.UICTable.AddControlColumn;
+        public bool AutoAddControlColumn { get; set; } = Defaults.Models.Table.UICTable.AutoAddControlColumn;
         public bool EnableInsert { get; set; } = Defaults.Models.Table.UICTable.EnableInsert;
         public bool EnableUpdate { get; set; } = Defaults.Models.Table.UICTable.EnableUpdate;
         public bool EnableDelete { get; set; } = Defaults.Models.Table.UICTable.EnableDelete;
@@ -64,7 +65,12 @@ namespace UIComponents.Models.Models.Tables
         /// </summary>
         public List<object> Data { get; set; } = new();
 
-
+        /// <summary>
+        /// When triggering 'uic-reload', this is the delay before the reload is exicuted.
+        /// <br>This is usefull if multiple signalR triggers can influence the table at the same time, only one trigger will be run</br>
+        /// <br>This uses the same function as <see cref="UICActionDelayedAction"/></br>
+        /// </summary>
+        public int ReloadDelay { get; set; } = Defaults.Models.Table.UICTable.ReloadDelay;
 
         /// <summary>
         /// Default sorting on this property
@@ -252,6 +258,23 @@ namespace UIComponents.Models.Models.Tables
         {
             Columns.Add(column);
             addedColumn = column;
+            return this;
+        }
+
+        public UICTable AddControlColumn(out UICTableColumnControl controlColumn)
+        {
+            controlColumn = Columns.Where(x => x is UICTableColumnControl).OfType<UICTableColumnControl>().FirstOrDefault();
+            if(controlColumn == null)
+            {
+                controlColumn = new UICTableColumnControl();
+                Columns.Add(controlColumn);
+            }
+            return this;
+        }
+        public UICTable AddControlColumn(Action<UICTableColumnControl> config = null)
+        {
+            AddControlColumn(out var column);
+            config?.Invoke(column);
             return this;
         }
 
@@ -614,7 +637,7 @@ namespace UIComponents.Defaults.Models.Table
         public static bool Filtering { get; set; } = true;
         public static bool Selecting { get; set; } = true;
         public static bool Sorting { get; set; } = true;        
-        public static bool AddControlColumn { get; set; } = true;
+        public static bool AutoAddControlColumn { get; set; } = true;
         public static bool EnableInsert { get; set; }
         public static bool EnableUpdate { get; set; }
         public static bool EnableDelete { get; set; }
@@ -628,6 +651,7 @@ namespace UIComponents.Defaults.Models.Table
         public static bool SaveOnBlur { get; set; }
         public static bool SaveOnEnter { get; set; }
         public static List<UICSignalR> SignalRRefreshTriggers { get; set; } = new();
+        public static int ReloadDelay { get; set; } = 250;
         public static IUICAction OnInit { get; set; } = new UICCustom();
         public static IUICAction OnDataLoaded { get; set; } = new UICCustom();
         public static IUICAction OnDataEditing { get; set; } = new UICCustom();

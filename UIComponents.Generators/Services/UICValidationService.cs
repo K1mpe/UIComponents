@@ -440,11 +440,16 @@ public class UICValidationService : IUICValidationService
     {
         using (var scope = _serviceProvider.CreateScope())
         {
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
             if (propertyInfo == null)
                 throw new ArgumentNullException(nameof(obj));
 
+            if (obj == null)
+                try
+                {
+                    obj = Activator.CreateInstance(propertyInfo.ReflectedType);
+                }
+                catch { }
+                
             var validators = _config.GetPropertyValidators(_logger, scope);
             bool readOnly = false;
             foreach (var validator in validators)

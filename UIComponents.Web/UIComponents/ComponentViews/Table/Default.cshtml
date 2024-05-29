@@ -14,6 +14,7 @@
 @using UIComponents.Models.Models.Icons;
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Tables;
+@using UIComponents.Models.Models.Tables.TableColumns
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
 
@@ -68,22 +69,21 @@
     if (Model.OnRowClick.HasValue())
         Model.AddClass("has-row-click");
 
-    if (Model.AddControlColumn)
+    //When the control column is already defined, or AddControlColumn is true with at least one of the change options enabled
+    if (Model.Columns.Any(x => x is UICTableColumnControl) || (Model.AutoAddControlColumn && (Model.EnableInsert || Model.EnableUpdate || Model.EnableDelete)))
     {
-        if(Model.EnableInsert || Model.EnableUpdate || Model.EnableDelete)
+        Model.AddControlColumn(x =>
         {
-            var controlColumn = new UICTableColumn()
-            {
-                IgnoreGenerators = true,
-                Type="control",
-                HeaderTemplate = null, // set to null to enable initial loading
-            };
-            controlColumn.Options["inserting"] = Model.EnableInsert && Model.OnInsertItem.HasValue();
-            controlColumn.Options["editButton"] = Model.EnableUpdate && Model.OnUpdateItem.HasValue();
-            controlColumn.Options["deleteButton"] = Model.EnableDelete && Model.OnDeleteItem.HasValue();
-            Model.Columns.Add(controlColumn);
+            if(x.Inserting == null)
+                x.Inserting = (Model.EnableInsert && Model.OnInsertItem.HasValue()) || Model.OnInsertButtonClick.HasValue();
+            
+            if(x.EditButton == null)
+                x.EditButton = Model.EnableUpdate && Model.OnUpdateItem.HasValue();
 
-        }
+            if(x.DeleteButton == null)
+                x.DeleteButton = Model.EnableDelete && Model.OnDeleteItem.HasValue();
+        });
+
     }
 
 
@@ -132,11 +132,26 @@
             };
             $('#@id').on('uic-reload', (ev)=>{
                 ev.stopPropagation();
-                if(checkCanReload()){
-                    $('#@id').trigger('uic-forceReload')
+                @if(Model.ReloadDelay > 0){
+                    <text>
+                    uic.delayedAction.run("jsGrid-Reload-@id", @Json.Serialize(Model.ReloadDelay), ()=>{
+                        if(checkCanReload()){
+                            $('#@id').trigger('uic-forceReload')
+                        } else{
+                            tryReload = true;
+                        }
+                    });
+                    </text>
                 } else{
-                    tryReload = true;
+                     <text>
+                    if(checkCanReload()){
+                        $('#@id').trigger('uic-forceReload')
+                    } else{
+                        tryReload = true;
+                    }
+                    </text>
                 }
+                
             });
             $('#@id').on('uic-forceReload', (ev)=>{
                 ev.stopPropagation();
@@ -271,6 +286,9 @@
                         
                     },
                     @if(Model.EnableInsert && Model.OnInsertItem.HasValue()){
+                        if(Model.OnInsertItem is UICActionGetPost getpost && !getpost.GetVariableData.HasValue()){
+                            getpost.GetVariableData = new UICCustom("item");
+                        }
                         <text>
                         insertItem: async function(item){
                             $('#@id').trigger('uic-beforeInsert', item);
@@ -279,7 +297,10 @@
                         },
                         </text>
                     }
-                    @if(Model.EnableInsert && Model.OnUpdateItem.HasValue()){
+                    @if(Model.EnableUpdate && Model.OnUpdateItem.HasValue()){
+                        if(Model.OnUpdateItem is UICActionGetPost getpost && !getpost.GetVariableData.HasValue()){
+                            getpost.GetVariableData = new UICCustom("item");
+                        }
                         <text>
                         updateItem: async function (item) {
                             $('#@id').trigger('uic-beforeUpdate');
@@ -288,7 +309,10 @@
                         },
                         </text>
                     }
-                    @if(Model.EnableInsert && Model.OnDeleteItem.HasValue()){
+                    @if(Model.EnableDelete && Model.OnDeleteItem.HasValue()){
+                        if(Model.OnDeleteItem is UICActionGetPost getpost && !getpost.GetVariableData.HasValue()){
+                            getpost.GetVariableData = new UICCustom("item");
+                        }
                         <text>
                          deleteItem: async function(item){
                             $('#@id').trigger('uic-beforeDelete');

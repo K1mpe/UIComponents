@@ -33,6 +33,8 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
             return GeneratorHelper.Success(args, true);
         }
 
+        
+
         var propType = await _config.GetPropertyTypeAsync(args.PropertyInfo, new())??UICPropertyType.String;
 
         UICInput input = null;
@@ -115,8 +117,6 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
                     break;
 
                 case UICPropertyType.Number:
-                    if (string.IsNullOrEmpty(args.MaxWidth))
-                        args.MaxWidth = "3rem";
                     if(input is UICInputNumber numberinput)
                     {
                         if (args.MinValue == null && numberinput.ValidationMinValue != null)
@@ -127,8 +127,6 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
                     }
                     break;
                 case UICPropertyType.Decimal:
-                    if (string.IsNullOrEmpty(args.MaxWidth))
-                        args.MaxWidth = "3rem";
                     if (args.Step == null)
                         args.Step = "any";
                     if (input is UICInputNumber decimalInput)

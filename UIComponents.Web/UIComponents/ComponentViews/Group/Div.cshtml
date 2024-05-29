@@ -12,9 +12,6 @@
 
 @model UICGroup
 
-@{
-    Model.AssignCollectionForChildren();
-}
 
 @if(Model.RenderWithoutContent || Model.Children.AnyHasValue())
 {
@@ -28,7 +25,8 @@
         }
         
     }
-    
+
+    Model.AssignCollectionForChildren();
 
     <div @Html.Raw(Model.GetHtmlAttributes())>
         @foreach (var element in Model.Components)

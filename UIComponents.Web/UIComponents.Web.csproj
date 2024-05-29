@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.2.06</Version>
+	<Version>1.2.08</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -38,6 +38,8 @@
     <None Remove="UIComponents\ChangeLog\2024-05-14.md" />
     <None Remove="UIComponents\ChangeLog\2024-05-16.md" />
     <None Remove="UIComponents\ChangeLog\2024-05-17.md" />
+    <None Remove="UIComponents\ChangeLog\2024-05-22.md" />
+    <None Remove="UIComponents\ChangeLog\2024-05-29.md" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\7z.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\bak.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\db.png" />

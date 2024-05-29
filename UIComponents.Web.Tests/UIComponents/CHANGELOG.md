@@ -1,4 +1,12 @@
-﻿# 2024-05-17 (1.2.06)
+﻿# 2024-05-29 (1.2.07) 
+- UICTableColumn checks for readonly validation
+- UICTable automatically adds 'item' as variable for getpost in Insert, update or delete
+- Adding a reload delay for UICTable
+- Tabs will change when Url hash changes
+- Bugfix: Implement TriggerReload on partial
+- Bugfix: UICGroup render script collection
+- UICTable control column﻿# 2024-05-22 (1.2.07)
+- Bugfix: UICGeneratorPropertySetReadonly where inherit property does not have set or get﻿# 2024-05-17 (1.2.06)
 - Property without get parameter are always readonly
 - Tabs in tabs improvement. Support for diffrent tabstyles
 ﻿# 2024-05-16 (1.2.05)
