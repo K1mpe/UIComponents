@@ -268,7 +268,7 @@
                             </text>
                         } else if(Model.LoadData is UICActionGetPost getpost){
                             if(!getpost.GetVariableData.HasValue())
-                                getpost.GetVariableData = new UICCustom("args");
+                                getpost.GetVariableData = new UICCustom("{filter: args}");
                             <text>
                                 @await Model.LoadData.InvokeAsync(Component)
                                 @Html.JsEncode(getpost.ResultName) =  uic.jsgrid.pageClientSide(@Html.JsEncode(getpost.ResultName), args.pageIndex, args.pageSize);
@@ -324,7 +324,7 @@
                 },
                 @if(Model.RowRenderer.HasValue()){
                     <text>
-                    rowRenderer: (item, index)=>{
+                    rowRenderer: function(item, index){
                         @await Model.RowRenderer.InvokeAsync(Component)
                     },
                     </text>

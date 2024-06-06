@@ -58,7 +58,15 @@ public class StoredComponents : IUICStoredComponents
                 return null;
 
             if (result.SingleUse)
-                _components.Remove(key);
+            {
+                Task.Run(async () =>
+                {
+                    await Task.Delay(5000);
+
+                    _components.Remove(key);
+                });
+            }
+                
             if(result.MaxLifeTime <  DateTime.Now)
             {
                 _components.Remove(key);

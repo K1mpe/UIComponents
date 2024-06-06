@@ -6,13 +6,14 @@ namespace UIComponents.Generators.Services;
 public class StoredEvents : IUICStoredEvents
 {
     private readonly Dictionary<string, StoredEventTrigger> _storedEvents = new Dictionary<string, StoredEventTrigger>();
-
+    private readonly IUICSignalRService _signalRService;
     private readonly ILogger _logger;
 
-    public StoredEvents(ILogger<StoredEvents> logger)
+    public StoredEvents(ILogger<StoredEvents> logger, IUICSignalRService signalRService)
     {
         _logger = logger;
-        _= ClearStorageRecurring();
+        _signalRService = signalRService;
+        _ = ClearStorageRecurring();
     }
 
     public Task IncommingSignalRTrigger(string key, Dictionary<string, string> data)
@@ -90,4 +91,5 @@ public class StoredEvents : IUICStoredEvents
         ClearStorage();
 
     }
+
 }

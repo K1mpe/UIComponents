@@ -65,6 +65,7 @@ builder.Services.AddSingleton<SignalRService>();
 builder.Services.AddSingleton<MainHub>();
 builder.Services.AddScoped<TestModelValidator>();
 builder.Services.AddScoped<TestComponentFactory>();
+builder.Services.AddSingleton<TestService>();
 
 builder.Services.AddWebOptimizer(pipeline =>
 {

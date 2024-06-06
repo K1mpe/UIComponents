@@ -75,6 +75,7 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorRequired>(serviceCollection);
         configOptions.AddDefaultFileExplorerServices(serviceCollection);
         AddDefaultValidationErrorHandlers(configOptions, serviceCollection);
+
         return configOptions;
 
 

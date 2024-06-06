@@ -7,25 +7,25 @@ namespace UIComponents.Web.Tests.Services;
 
 public class MainHub: Hub<IUICSignalRService>
 {
-    //public override Task OnConnectedAsync()
-    //{
-    //    return base.OnConnectedAsync();
-    //}
+    public override Task OnConnectedAsync()
+    {
+        return base.OnConnectedAsync();
+    }
 
-    //public override Task OnDisconnectedAsync(Exception exception)
-    //{
-    //    return base.OnDisconnectedAsync(exception);
-    //}
+    public override Task OnDisconnectedAsync(Exception exception)
+    {
+        return base.OnDisconnectedAsync(exception);
+    }
 
-    //public async Task JoinGroup(string name)
-    //{
-    //    await Groups.AddToGroupAsync(Context.ConnectionId, name);
-    //}
+    public async Task JoinGroup(string name)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, name);
+    }
 
-    //public async Task LeaveGroup(string name)
-    //{
-    //    await Groups.RemoveFromGroupAsync(Context.ConnectionId, name);
-    //}
+    public async Task LeaveGroup(string name)
+    {
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, name);
+    }
 }
 
 public class SignalRService : IUICSignalRService
@@ -42,6 +42,7 @@ public class SignalRService : IUICSignalRService
 
     public MainHub SignalRHub { get; set; }
 
+
     #endregion
 
     public async Task RemoveUIComponentWithId(string id)
@@ -52,5 +53,10 @@ public class SignalRService : IUICSignalRService
     public async Task SendUIComponentToUser(FetchComponent fetchComponent, string userId)
     {
         await SignalRHub.Clients.All.SendUIComponentToUser(fetchComponent, userId);
+    }
+
+    public Task EventHandler(string key, object sender, EventArgs args)
+    {
+        return SignalRHub.Clients.All.EventHandler(key, sender, args);
     }
 }

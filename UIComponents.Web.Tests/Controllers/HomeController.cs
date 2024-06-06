@@ -38,7 +38,8 @@ namespace UIComponents.Web.Tests.Controllers
         private readonly SignalRService _signalRService;
         private readonly IUICQuestionService _uicQuestionService;
         private readonly TestModelValidator _validator;
-        public HomeController(ILogger<HomeController> logger, IUIComponentGenerator uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator)
+        private readonly TestService _testService;
+        public HomeController(ILogger<HomeController> logger, IUIComponentGenerator uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator, TestService testService)
         {
             _logger = logger;
             _uic = uic;
@@ -46,6 +47,7 @@ namespace UIComponents.Web.Tests.Controllers
             _signalRService = signalRService;
             _uicQuestionService = uicQuestionService;
             _validator = validator;
+            _testService = testService;
         }
 
         public static int Counter { get; set; } = 0;
@@ -100,6 +102,7 @@ namespace UIComponents.Web.Tests.Controllers
         {
             try
             {
+                _testService.IncreaseNumberByOne();
                 var validation = _validator.Validate(post);
                 if (!validation.IsValid)
                 {

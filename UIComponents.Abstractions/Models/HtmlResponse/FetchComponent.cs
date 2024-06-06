@@ -15,5 +15,7 @@ public class FetchComponent : IHtmlResponse
 
     public string ComponentKey { get; set; }
 
+    public object? Arguments { get; set; }
+
     public string AppendTo { get; set; } = "body";
 }

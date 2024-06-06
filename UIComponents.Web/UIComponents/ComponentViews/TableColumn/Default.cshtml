@@ -48,7 +48,7 @@
     if (!canView)
         return;
 
-    Model.Css += UICTableColumn.VisibilityClass(Model.ColumnVisibility);
+    Model.Css += $" {UICTableColumn.VisibilityClass(Model.ColumnVisibility)}";
 }
 {
     name:@Html.JsEncode(Model.PropertyInfo?.Name,"'"),

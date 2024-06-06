@@ -27,7 +27,7 @@
         @await Model.GetPost.InvokeAsync(Component)
         return @Html.JsEncode(Model.GetPost.ResultName);
     },
-    checkBeforeCellRender: function(value, item){
+    checkBeforeCellRender: function(item, value){
         @await Model.Validation.InvokeAsync(Component)
         return true;
     },

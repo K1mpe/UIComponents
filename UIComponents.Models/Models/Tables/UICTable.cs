@@ -650,7 +650,7 @@ namespace UIComponents.Defaults.Models.Table
         public static bool ShowAllSelectFilters { get; set; }
         public static bool SaveOnBlur { get; set; }
         public static bool SaveOnEnter { get; set; }
-        public static List<UICSignalR> SignalRRefreshTriggers { get; set; } = new();
+        public static List<UIComponents.Models.Models.UICSignalR> SignalRRefreshTriggers { get; set; } = new();
         public static int ReloadDelay { get; set; } = 250;
         public static IUICAction OnInit { get; set; } = new UICCustom();
         public static IUICAction OnDataLoaded { get; set; } = new UICCustom();

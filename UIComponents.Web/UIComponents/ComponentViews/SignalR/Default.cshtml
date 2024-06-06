@@ -14,10 +14,10 @@
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
-@addTagHelper *, UIComponents.Web.Tests
 @model UICSignalR
 @{
     string id = Model.GetId();
+    Model.AddClass("uic-signalR");
     foreach (var child in Model.GetAllChildren().Select(x => x.Component))
     {
         if (child is UIComponent component)
@@ -50,27 +50,62 @@
     else
     {
         <text>
-            await connection.on('@Model.SubscriptionName', async function (@string.Join(", ", Model.SubscriptionArguments)){
+            let aVeryUniqueParameterNameThatNobodyWillAccidentallyUse =  async function (@string.Join(", ", Model.SubscriptionArguments)){
             //SignalR does not work anymore if the html element has been removed.
             if (!$('#@id').length)
             return;
             @if (Model.DisableOnHidden)
-        {
-            <text>
-                if (uic.form.isHidden($('#@id'))){
-                return;
+            {
+                <text>
+                    if (uic.form.isHidden($('#@id'))){
+                    return;
+                    }
+                </text>
+            }
+            let myVeryUniqueValidationProperty = true;
+            
+            if (true || uic.signalR.Debug) {
+            let color = window.getComputedStyle(document.body).getPropertyValue(`--${myVeryUniqueValidationProperty ? 'success' : 'danger'}`) || '#663399';
+            console.groupCollapsed('%cSignalR', `color: ${color}`, '@Html.JsEncode(Model.SubscriptionName)', '@Html.JsEncode(Model.Group)');
+            console.log('this', this);
+            @foreach(var argument in Model.SubscriptionArguments){
+                <text>
+                    console.log('@Html.JsEncode(argument):', @argument);
+                </text>
                 }
+            }
+            try{
+                if(myVeryUniqueValidationProperty){
+                    @await Model.Action.InvokeAsync(Component)
+                }
+            } finally{
+                if (true || uic.signalR.Debug) {
+                    console.groupEnd();
+                }
+            }
+            
+            
+            
+        };
+            @if(Model.SubscriptionArguments.Any()){
+            <text>
+                await connection.on('@Model.SubscriptionName', (@(string.Join(", ", Model.SubscriptionArguments)))=>{ aVeryUniqueParameterNameThatNobodyWillAccidentallyUse.call($('#@id')[0], @(string.Join(", ", Model.SubscriptionArguments)));});
+            </text>
+        } else{
+            <text>
+                await connection.on('@Model.SubscriptionName', () =>{aVeryUniqueParameterNameThatNobodyWillAccidentallyUse.call($('#@id')[0]);});
             </text>
         }
 
-            @await Model.Action.InvokeAsync(Component)
-
-            });
         </text>
     }
         }
         uicSignalRSubscription();
-
+        $('#@id').on('uic-find-signalR', ()=>{
+            if (!$('#@id').length)
+                return;
+            console.log('Found SignalR', $('#@id'), '@Html.JsEncode(Model.SubscriptionName)', '@Html.JsEncode(Model.Group)')
+        });
     </text>);
 }
 

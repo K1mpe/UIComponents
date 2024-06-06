@@ -132,6 +132,7 @@ public class UICQuestionService : IUICQuestionService
             {
                 _questionPersistance.Remove(question.Id);
             }
+            RemoveQuestion(question.Id);
         }
 
     }

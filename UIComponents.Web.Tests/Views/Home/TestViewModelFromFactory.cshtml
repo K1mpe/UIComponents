@@ -1,9 +1,24 @@
 ﻿@using UIComponents.Web.Tests.Factory
+@using UIComponents.Web.Tests.Services
+@inject TestService testService;
 @model TestViewModelFromFactory
+@{
+   
 
+    var increaseCountButton = new UICButton("IncreaseCount")
+    {
+        OnClick = new UICActionServerResponse(false, (data) =>
+        {
+            testService.IncreaseNumberByOne();
+        })
+    };
+}
 <h2>
     Using PermissionService: @Model.UsePermissionService
 </h2>
 <h2>
     Using LanguageService: @Model.UseLanguageService
 </h2>
+<span class="counter">0</span>
+
+@await increaseCountButton.InvokeAsync(Component)

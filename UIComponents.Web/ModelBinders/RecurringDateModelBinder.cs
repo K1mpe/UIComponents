@@ -27,6 +27,13 @@ public class RecurringDateModelBinder : IModelBinder
 
             var modelName = bindingContext.ModelName;
 
+            //change item.Recurring => item[Recurring]
+            var modelNameParts = modelName.Split(".");
+            modelName = modelNameParts[0];
+            for (int i = 1; i < modelNameParts.Length; i++)
+                modelName += $"[{modelNameParts[i]}]";
+
+
             var model = new RecurringDate();
             var form = bindingContext.HttpContext.Request.Form;
             if (form == null)

@@ -1,5 +1,5 @@
 ﻿uic.signalR = {
-    handleUIComponentFetch: async ()=>{
+    handleUIComponentFetch: async () => {
         await window.connection.on('SendUIComponentToUser', async (fetchComponent, userId) => {
             if (uic.signalR.currentUserId == undefined) {
                 console.error("uic.signalR.currentUserId is not defined!")
@@ -22,6 +22,14 @@
             $(`#${id}`).trigger('uic-remove');
         });
     },
+    findSignalR: (element) => {
+        let signalRElements = $(element).find('.uic-signalR');
+        signalRElements.each((index, item) => {
+            $(item).trigger('uic-find-signalR');
+        });
+    },
+    debug: false,
+
     currentUserId: undefined
 }
 $(document).ready(() => {

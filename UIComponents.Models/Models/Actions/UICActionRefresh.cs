@@ -21,14 +21,14 @@ public class UICActionRefresh : UICCustom
         string selector = "this";
 
         if (Target != null)
-            selector = Target.GetId();
+            selector = $"#{Target.GetId()}";
         else
         {
             string identifier = this.GetAttribute("identifier");
             selector = identifier??selector;
         }
 
-        Content = $"$({selector}).trigger('uic-reload');";
+        Content = $"$('{selector}').trigger('uic-reload');";
         return base.InitializeAsync();
     }
 }

@@ -48,6 +48,10 @@ public static class UICExtensions
             return null;
         return await result.InvokeAsync(component);
     }
+    public static Task<IHtmlContent> InvokeAsync(this IViewComponentHelper component, params IUIComponent[] UIC)
+    {
+        return UIC.InvokeAsync(component);
+    }
 
 
     public static string GetHtmlAttributes(this Dictionary<string, string> dictionary)

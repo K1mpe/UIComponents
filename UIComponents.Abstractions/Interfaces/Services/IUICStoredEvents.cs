@@ -17,5 +17,4 @@ public interface IUICStoredEvents
     /// <param name="data">Dictionary of data that is posted</param>
     public Task IncommingSignalRTrigger(string key, Dictionary<string, string> data);
 
-
 }

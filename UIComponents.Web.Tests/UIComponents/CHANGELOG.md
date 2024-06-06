@@ -1,4 +1,10 @@
-﻿# 2024-05-29 (1.2.07) 
+﻿# 2024-06-06 (1.2.10)
+- Fix filter compabiliteit UICTable met oude JsGrid taghelper van CdcPortal﻿# 2024-05-31 (1.2.09)
+- UICTable rowrenderer fix
+- UICActionRefresh fix
+- UICTableColumnPartial validation fix
+- Fix Recurring date modelbinder
+- bugfix UICSignalR this variable﻿# 2024-05-29 (1.2.08) 
 - UICTableColumn checks for readonly validation
 - UICTable automatically adds 'item' as variable for getpost in Insert, update or delete
 - Adding a reload delay for UICTable
