@@ -16,21 +16,23 @@ public class UICGeneratorEnumSelectListItems : UICGeneratorBase<UICPropertyArgs,
         if(args.CallCollection.CurrentCallType != UICGeneratorPropertyCallType.SelectListItems)
             return GeneratorHelper.Next<List<SelectListItem>>();
 
-        if (!args.PropertyType!.IsEnum)
+        bool isNullable = args.PropertyType.IsGenericType && args.PropertyType!.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+        var enumType = Nullable.GetUnderlyingType(args.PropertyType!) ?? args.PropertyType!;
+        if (!enumType.IsEnum)
             return GeneratorHelper.Next<List<SelectListItem>>();
 
-        var type = args.PropertyType!;
         List<SelectListItem> items = new();
-        var enumItems = args.PropertyType.GetEnumNames();
-        if (args.Options.SelectlistAddEmptyItem)
+        var enumItems = enumType.GetEnumNames();
+        if (isNullable || args.Options.SelectlistAddEmptyItem)
             items.Add(new());
         foreach(var item in enumItems)
         {
-            int value = (int)Enum.Parse(type, item);
+            int value = (int)Enum.Parse(enumType, item);
             string text = item;
             if (args.Configuration.TryGetLanguageService(out var languageService))
             {
-                var translateable = TranslationDefaults.TranslateEnums(type, item);
+                var translateable = TranslationDefaults.TranslateEnums(enumType, item);
                 text = await languageService!.Translate(translateable);
             }
             items.Add(new SelectListItem()

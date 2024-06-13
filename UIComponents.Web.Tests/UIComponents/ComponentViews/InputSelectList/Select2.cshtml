@@ -56,7 +56,8 @@
         uic.delayedAction.run('OpenDropdown-@id', 100, ()=>{$('#@id').triggerHandler('uic-open')});
         })
         $('#@id').on('uic-setValue', function (event, value) {
-        $(this).val(value).change();
+            event.stopPropagation();
+            $(this).val(value).change();
         });
 
         $('#@id').on('focus', ()=>{

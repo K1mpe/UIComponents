@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.2.10</Version>
+	<Version>1.2.13</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -32,6 +32,10 @@
   </ItemGroup>
 	
   <ItemGroup>
+    <EmbeddedResource Remove="UIComponents\ComponentViews\InputTime\SelectLists.cshtml" />
+  </ItemGroup>
+	
+  <ItemGroup>
     <None Remove="UIComponents\ChangeLog\2024-04-26.md" />
     <None Remove="UIComponents\ChangeLog\2024-05-02.md" />
     <None Remove="UIComponents\ChangeLog\2024-05-06.md" />
@@ -42,6 +46,7 @@
     <None Remove="UIComponents\ChangeLog\2024-05-29.md" />
     <None Remove="UIComponents\ChangeLog\2024-05-31.md" />
     <None Remove="UIComponents\ChangeLog\2024-06-06.md" />
+    <None Remove="UIComponents\ChangeLog\2024-06-10.md" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\7z.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\bak.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\db.png" />
@@ -70,8 +75,6 @@
     <EmbeddedResource Include="..\README.md" Link="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Include="UIComponents\ComponentViews\ActionDelayedAction\Default.cshtml" />
-    <None Include="UIComponents\ComponentViews\TableColumnButton\Default.cshtml" />
   </ItemGroup>
 	
 
@@ -172,5 +175,6 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>
   </ItemGroup>
+
 
 </Project>

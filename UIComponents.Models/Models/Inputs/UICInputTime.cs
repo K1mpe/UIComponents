@@ -4,6 +4,7 @@ public class UICInputTime : UICInput<TimeOnly?>
 {
     public override bool HasClientSideValidation => ValidationRequired ||ValidationMinTime.HasValue || ValidationMaxTime.HasValue;
 
+    public override string RenderLocation => UIComponent.DefaultIdentifier(nameof(UICInputTime), Renderer);
 
     #region Ctor
 
@@ -16,6 +17,10 @@ public class UICInputTime : UICInput<TimeOnly?>
     {
         
     }
+
+    #endregion
+
+    #region Properties
 
     /// <summary>
     /// If Step is 15 and <see cref="Precision"/> is minutes, you can only choose 0, 15, 30 or 45 minutes.
@@ -30,5 +35,13 @@ public class UICInputTime : UICInput<TimeOnly?>
     public bool ValidationRequired { get; set; }
     public TimeOnly? ValidationMinTime { get; set; }
     public TimeOnly? ValidationMaxTime { get; set; }
+
+    public InputTimeRenderer Renderer { get; set; } = InputTimeRenderer.SelectLists;
     #endregion
+
+    public enum InputTimeRenderer
+    {
+        Default,
+        SelectLists
+    }
 }

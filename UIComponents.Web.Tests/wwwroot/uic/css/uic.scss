@@ -428,8 +428,16 @@ i.uic-value-changed {
 }
 /*endregion*/
 
-/*#region Timespan*/
 
+/*#region TimeOnly*/
+.uic.uic-input-time-selectlists{
+    > .input-group:last-child {
+        border-top-right-radius: initial;
+        border-bottom-right-radius: initial;
+    }
+}
+/*#endregion TimeOnly*/
+/*#region Timespan*/
 .uic-timespan-input {
     min-width: 50px;
 }

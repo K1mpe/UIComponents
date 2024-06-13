@@ -186,7 +186,7 @@
                 height: @Html.JsEncode(Model.Height, "'"),
                 width: @Html.JsEncode(Model.Width,"'"),
 
-
+                selecting: @Json.Serialize(Model.Selecting), 
                 filtering : @Json.Serialize(Model.Filtering),
                 inserting: @Json.Serialize(Model.EnableInsert && Model.OnInsertItem.HasValue()),
                 editing: @Json.Serialize(Model.EnableUpdate && Model.OnUpdateItem.HasValue()),

@@ -3,7 +3,12 @@
 @inject TestService testService;
 @model TestViewModelFromFactory
 @{
-   
+    var input = new UICInputTime("blub");
+    input.ValidationMinTime = new TimeOnly(2, 15);
+    input.ValidationMaxTime = new TimeOnly(16, 45);
+    input.Step = 10;
+    input.Value = new TimeOnly(12, 30);
+
 
     var increaseCountButton = new UICButton("IncreaseCount")
     {
@@ -22,3 +27,4 @@
 <span class="counter">0</span>
 
 @await increaseCountButton.InvokeAsync(Component)
+@await input.InvokeAsync(Component)

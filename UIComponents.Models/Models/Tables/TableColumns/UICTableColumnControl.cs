@@ -3,6 +3,7 @@ namespace UIComponents.Models.Models.Tables.TableColumns
 {
     public class UICTableColumnControl : UICTableColumn, IUICInitializeAsync
     {
+
         public UICTableColumnControl()
         {
             Type = UIComponents.Defaults.Models.Table.TableColumns.UICTableColumnControl.Type;
@@ -100,8 +101,70 @@ namespace UIComponents.Models.Models.Tables.TableColumns
         /// </remarks>
         public IUICAction AfterButtons { get; set; } = new UICCustom();
 
+        /// <summary>
+        /// A function (NOT ASYNC!) that returns true or false to show the editbutton.
+        /// </summary>
+        /// <remarks>
+        /// Available args => item
+        /// </remarks>
+        public IUICAction EditButtonCondition { get; set; } = new UICCustom();
+        //{
+        //    get
+        //    {
+        //        if (!Options.TryGetValue("editButtonCondition", out var condition))
+        //        {
+        //            condition = Options["editButtonCondition"] = new UICCustom();
+        //        }
+        //        return condition as IUICAction;
+        //    }
+        //    set
+        //    {
+        //        Options["editButtonCondition"] = value;
+        //    }
+        //}
+
+        /// <summary>
+        /// A function (NOT ASYNC!) that returns true or false to show the deleteButton.
+        /// </summary>
+        /// <remarks>
+        /// Available args => item
+        /// </remarks>
+        public IUICAction DeleteButtonCondition = new UICCustom();
+        //{
+        //    get
+        //    {
+        //        if (!Options.TryGetValue("deleteButtonCondition", out var condition))
+        //        {
+        //            condition = Options["deleteButtonCondition"] = new UICCustom();
+        //        }
+        //        return condition as IUICAction;
+        //    }
+        //    set
+        //    {
+        //        Options["deleteButtonCondition"] = value;
+        //    }
+        //}
+
         public Task InitializeAsync()
         {
+            if(EditButtonCondition.HasValue() && !Options.ContainsKey("_createEditButton"))
+            {
+                Options["_createEditButton"] = new UICCustom("uic.jsgrid.controlOverride.conditionalEditButton");
+                Options["editButtonCondition"] = new UICGroup() { Renderer = UICGroupRenderer.ContentOnly }
+                    .Add(new UICCustom("function(item){"))
+                    .Add(EditButtonCondition)
+                    .Add(new UICCustom("}"));
+            }
+
+            if(DeleteButtonCondition.HasValue() && !Options.ContainsKey("_createDeleteButton"))
+            {
+                Options["_createDeleteButton"] = new UICCustom("uic.jsgrid.controlOverride.conditionalDeleteButton");
+                Options["deleteButtonCondition"] = new UICGroup() { Renderer = UICGroupRenderer.ContentOnly }
+                    .Add(new UICCustom("function(item){"))
+                    .Add(DeleteButtonCondition)
+                    .Add(new UICCustom("}"));
+            }
+
             if (ItemTemplate.HasValue())
                 return Task.CompletedTask;
 

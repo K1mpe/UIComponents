@@ -186,6 +186,25 @@
         return el;
     },
 
+    controlOverride: {
+        conditionalEditButton: function (item) {
+            if (this.editButtonCondition != null && !this.editButtonCondition(item))
+                return;
+            return this._createGridButton(this.editButtonClass, this.editButtonTooltip, function(b, c){
+                b.editItem(item),
+                c.stopPropagation()
+            });
+        },
+        conditionalDeleteButton: function (item) {
+            if (this.deleteButtonCondition != null && !this.deleteButtonCondition(item))
+                return;
+            return this._createGridButton(this.deleteButtonClass, this.deleteButtonTooltip, function (b, c) {
+                b.editItem(item),
+                c.stopPropagation()
+            });
+        },
+    },
+
     fieldRenderers: {}, //This has the prototypes for fieldRenderers that are used by UIC generators. These are configured in the next block to enable $.extend()
 };
 {

@@ -57,6 +57,6 @@ public class SignalRService : IUICSignalRService
 
     public Task EventHandler(string key, object sender, EventArgs args)
     {
-        return SignalRHub.Clients.All.EventHandler(key, sender, args);
+        return SignalRHub.Clients.Group(key).EventHandler(key, sender, args);
     }
 }

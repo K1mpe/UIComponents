@@ -62,6 +62,7 @@
 
 
         $('#@id').on('uic-setValue', (ev, ...values) => {
+            ev.stopPropagation();
             let inputList = $('#@id');
             let instances = $('#@id .input-instances .input-instance');
             for(let i=0; i< values.length; i++){
@@ -212,10 +213,12 @@
                     throw new NotImplementedException();
             }
             
-            if(value != undefined)
-                $('#@id').trigger('uic-setValue-index', [value, currentChildCount]);
-
-        triggerChange();
+            //Let the document ready run before setting the value
+            setTimeout(()=>{
+                if(value != undefined)
+                    $('#@id').trigger('uic-setValue-index', [value, currentChildCount]);
+                triggerChange();
+            },1);       
         });
 
 

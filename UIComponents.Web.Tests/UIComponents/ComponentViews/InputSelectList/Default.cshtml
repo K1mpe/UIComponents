@@ -40,6 +40,7 @@ Model.AddScript(
         console.log("$('#@id').on('uic-open', ()=>{...}) Triggered when opening the selectlist");
     });
     $('#@id').on('uic-setValue', function (event, value) {
+        event.stopPropagation();
         $(this).val(value).change();
     });
 

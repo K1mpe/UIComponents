@@ -25,6 +25,8 @@ public class UICGeneratorInputList : UICGeneratorProperty
         if (args.PropertyValue == null)
             return GeneratorHelper.Next<IUIComponent>();
 
+        if(args.UICPropertyType == Abstractions.Attributes.UICPropertyType.SelectList)
+            return GeneratorHelper.Next<IUIComponent>();
 
 
         if (args.PropertyValue is IEnumerable enumerable)

@@ -23,6 +23,8 @@ var uic = uic || {};
 
 uic.getValue = function (element) {
     element = $(element);
+    if (!element.length)
+        return null;
     //If you create a function on a element like this
     //  $().on('uic-getValue', function () {
     //      return "value";
