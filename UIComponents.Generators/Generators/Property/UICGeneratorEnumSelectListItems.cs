@@ -1,4 +1,5 @@
-﻿using UIComponents.Generators.Helpers;
+﻿using System.Collections;
+using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators.Property;
 
@@ -19,13 +20,14 @@ public class UICGeneratorEnumSelectListItems : UICGeneratorBase<UICPropertyArgs,
         bool isNullable = args.PropertyType.IsGenericType && args.PropertyType!.GetGenericTypeDefinition() == typeof(Nullable<>);
 
         var enumType = Nullable.GetUnderlyingType(args.PropertyType!) ?? args.PropertyType!;
+        if (enumType.IsArray)
+            enumType = enumType.GetElementType();
         if (!enumType.IsEnum)
             return GeneratorHelper.Next<List<SelectListItem>>();
 
         List<SelectListItem> items = new();
         var enumItems = enumType.GetEnumNames();
-        if (isNullable || args.Options.SelectlistAddEmptyItem)
-            items.Add(new());
+
         foreach(var item in enumItems)
         {
             int value = (int)Enum.Parse(enumType, item);

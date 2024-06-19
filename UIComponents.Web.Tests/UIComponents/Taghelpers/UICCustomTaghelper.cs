@@ -12,6 +12,9 @@ public class UICCustomTaghelper : TagHelper
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+        if (UIC == null)
+            return;
+
         output.TagName = "";
         output.TagMode = TagMode.StartTagAndEndTag;
         var content = await output.GetChildContentAsync();

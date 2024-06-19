@@ -25,7 +25,7 @@ namespace UIComponents.Generators.Validators
         public async Task<bool> IsReadonly(PropertyInfo propertyInfo, object obj)
         {
             await Task.Delay(0);
-            if (!propertyInfo.CanRead)
+            if (!propertyInfo.CanWrite)
             {
                 _logger.LogDebug("{0} is readonly because it cannot be set", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
                 return true;

@@ -94,7 +94,12 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
 
 
             if(propertyInfo.PropertyType.IsAssignableTo(typeof(IEnumerable)) && propertyInfo.PropertyType != typeof(string))
-                type = propertyInfo.PropertyType.GetGenericArguments()[0];
+            {
+                if(propertyInfo.PropertyType.IsArray)
+                    type = propertyInfo.PropertyType.GetElementType();
+                else
+                    type = propertyInfo.PropertyType.GetGenericArguments()[0];
+            }
 
 
             switch (type.Name.ToLower())

@@ -45,7 +45,7 @@ public class UICInputGroup : UIComponent, IUISingleRowSupport
     public List<UIComponent> AppendInput { get; set; } = new();
 
     /// <summary>
-    /// This is the text underneath the input.
+    /// This is the text underneath the input
     /// </summary>
     public UICSpan Span { get; set; }
 

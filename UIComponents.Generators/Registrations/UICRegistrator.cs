@@ -102,6 +102,7 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorInputDateTime>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputTimeOnly>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputSelectList>(serviceCollection);
+        configOptions.AddAndRegisterGenerator<UICGeneratorInputMultiSelectList>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputBool>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputThreeStateBool>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputTimespan>(serviceCollection);

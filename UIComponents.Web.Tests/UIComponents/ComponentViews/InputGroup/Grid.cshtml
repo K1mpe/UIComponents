@@ -17,7 +17,7 @@
 @model UICInputGroup
 
 @{
-    if(Model.Label.HasValue())
+    if (Model.Label.HasValue())
         Model.Label?.AddAttribute("for", Model.Input.GetId());
 
     if (Model.Span.HasValue())
@@ -29,13 +29,13 @@
     if (Model.Input.TryGetPropertyValue<object>(nameof(UICInput<string>.Value), out var value))
     {
         //If value is null, add classes to make the input hidden in readonly
-        if (string.IsNullOrEmpty(value?.ToString()??null))
+        if (string.IsNullOrEmpty(value?.ToString() ?? null))
         {
             addedClass += " input-no-value";
         }
         else if (Model.Input is UICInputSelectList selectlist)
         {
-            if (selectlist.Value == "0") 
+            if (selectlist.Value == "0")
                 addedClass += " input-no-value";
 
         }
@@ -52,78 +52,79 @@
 
     if (Model.Hidden)
     {
-        if(Model.Label.HasValue())
+        if (Model.Label.HasValue())
             Model.Label.Hidden = true;
 
     }
+
+    Model.AddCss("display", "contents");
 }
 
 
+<div @Html.Raw(Model.GetHtmlAttributes())>
+    @await Model.Label.InvokeAsync(Component)
+    <div class="@addedClass" @Html.Raw(Model.Hidden ? "hidden" : "")>
+        @if (Model.PrependInput.Any() || Model.AppendInput.Any())
+        {
+            <div class="input-group">
 
-@await Model.Label.InvokeAsync(Component)
-<div class="@addedClass"  @Html.Raw(Model.Hidden?"hidden":"")>
-    @if(Model.PrependInput.Any() || Model.AppendInput.Any())
-    { 
-        <div class="input-group">
-
-            @foreach (var prepend in Model.PrependInput)
-            {
-                string prependClass = "input-group-text";
-                var attr = prepend.GetType().GetCustomAttribute<PrependAppendInputGroupClass>();
-                if (attr != null)
-                    prependClass = attr.PrependClass;
-
-                if (prepend is UICIcon icon)
+                @foreach (var prepend in Model.PrependInput)
                 {
-                    <span class="@prependClass">
+                    string prependClass = "input-group-text";
+                    var attr = prepend.GetType().GetCustomAttribute<PrependAppendInputGroupClass>();
+                    if (attr != null)
+                        prependClass = attr.PrependClass;
+
+                    if (prepend is UICIcon icon)
+                    {
+                        <span class="@prependClass">
+                            @await prepend.InvokeAsync(Component)
+                        </span>
+                    }
+                    else
+                    {
+                        prepend.AddAttribute("class", prependClass);
                         @await prepend.InvokeAsync(Component)
-                    </span>
+                    }
                 }
-                else
+
+                @await Model.Input.InvokeAsync(Component)
+
+                @foreach (var append in Model.AppendInput)
                 {
-                    prepend.AddAttribute("class", prependClass);
-                    @await prepend.InvokeAsync(Component)
-                }
-            }
+                    string appendClass = "input-group-text";
+                    var attr = append.GetType().GetCustomAttribute<PrependAppendInputGroupClass>();
+                    if (attr != null)
+                        appendClass = attr.AppendClass;
 
-            @await Model.Input.InvokeAsync(Component)
-
-            @foreach (var append in Model.AppendInput)
-            {
-                string appendClass = "input-group-text";
-                var attr = append.GetType().GetCustomAttribute<PrependAppendInputGroupClass>();
-                if (attr != null)
-                    appendClass = attr.AppendClass;
-
-                if (append is UICIcon icon)
-                {
-                    <span class="@appendClass">
+                    if (append is UICIcon icon)
+                    {
+                        <span class="@appendClass">
+                            @await append.InvokeAsync(Component)
+                        </span>
+                    }
+                    else
+                    {
+                        append.AddAttribute("class", appendClass);
                         @await append.InvokeAsync(Component)
-                    </span>
+                    }
                 }
-                else
-                {
-                    append.AddAttribute("class", appendClass);
-                    @await append.InvokeAsync(Component)
-                }
-            }
-        </div>
-        <span class="d-block field-validation-valid text-danger" data-valmsg-for="@Model.Input.PropertyName"></span>
-        
-        @await Model.Span.InvokeAsync(Component)
+            </div>
+            <span class="d-block field-validation-valid text-danger" data-valmsg-for="@Model.Input.PropertyName"></span>
 
-    }
-    else
-    {
-        @await Model.Input.InvokeAsync(Component)
-        <span class="d-block field-validation-valid text-danger" data-valmsg-for="@Model.Input.PropertyName"></span>
+            @await Model.Span.InvokeAsync(Component)
 
-        @await Model.Span.InvokeAsync(Component)
-    }
+        }
+        else
+        {
+            @await Model.Input.InvokeAsync(Component)
+            <span class="d-block field-validation-valid text-danger" data-valmsg-for="@Model.Input.PropertyName"></span>
 
-
-    
+            @await Model.Span.InvokeAsync(Component)
+        }
+    </div>
 </div>
+
 
 
 

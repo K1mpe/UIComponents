@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections;
 using UIComponents.Abstractions.Extensions;
@@ -8,11 +9,11 @@ using UIComponents.Models.Extensions;
 
 namespace UIComponents.Generators.Generators.Property.Inputs;
 
-public class UICGeneratorInputSelectList : UICGeneratorProperty
+public class UICGeneratorInputMultiSelectList : UICGeneratorProperty
 {
 
     private readonly IUICValidationService _validationService;
-    public UICGeneratorInputSelectList(ILogger<UICGeneratorInputSelectList> logger, IUICValidationService validationService) : base(logger)
+    public UICGeneratorInputMultiSelectList(ILogger<UICGeneratorInputSelectList> logger, IUICValidationService validationService) : base(logger)
     {
         UICPropertyType = Abstractions.Attributes.UICPropertyType.SelectList;
         HasExistingResult = false;
@@ -23,23 +24,32 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
     public override double Priority { get; set; } = 1000;
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
-        if (args.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+        if (!args.PropertyType.IsAssignableTo(typeof(IEnumerable)))
             return GeneratorHelper.Next();
 
         bool showButtonAdd = args.Options.SelectListShowAddButtonIfAllowed;
-        var input = new UICInputSelectList(args.PropertyName, new())
+        var input = new UICInputMultiSelect(args.PropertyName, new())
         {
             Parent = args.CallCollection.Caller
         };
-        input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
-        if(args.PropertyType.IsEnum && args.PropertyValue != null)
-            input.Value = ((int)args.PropertyValue).ToString();
+        if (args.PropertyValue is IEnumerable enumerable)
+        {
+            List<string> toString = new();
+            foreach(var value in enumerable)
+            {
+                toString.Add(value?.ToString()??null);
+            }
+            input.Value = toString.ToArray();
+        }
+        //input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
+        //if(args.PropertyType.IsEnum && args.PropertyValue != null)
+        //    input.Value = ((int)args.PropertyValue).ToString();
 
-        input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
+        //input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
         input.SelectListItems = (await args.Configuration.GetSelectListItems(args, input))?.ToUIC()?? new();
 
-        if((args.Options.SelectlistAddEmptyItem ||!input.ValidationRequired) && input.SelectListItems.Where(x => string.IsNullOrEmpty(x.Value?.ToString()??null)).Any())
-            input.SelectListItems.Insert(0, new());
+        //if(!input.ValidationRequired && input.SelectListItems.Where(x => string.IsNullOrEmpty(x.Value?.ToString()??null)).Any())
+        //    input.SelectListItems.Insert(0, new());
 
 
         if(input.Placeholder == null)
@@ -71,8 +81,6 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
             
         }
         
-
-        input.SearchableIfMinimimResults = args.Options.SelectlistSearableForItems;
 
         return GeneratorHelper.Success<IUIComponent>(input, true);
         

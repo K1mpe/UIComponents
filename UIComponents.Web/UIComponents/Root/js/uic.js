@@ -54,9 +54,9 @@ uic.getValue = function (element) {
 
     if ($(element).hasClass('three-state-checkbox')) {
         var threeStateVal = $(element).data('value');
-        if (threeStateVal == "true")
+        if (threeStateVal == "true" || threeStateVal == true)
             return true;
-        if (threeStateVal == "false")
+        if (threeStateVal == "false" || threeStateVal == false)
             return false;
         return null;
     }
@@ -130,6 +130,7 @@ uic.setValue = function (element, value) {
             $(element).val(value);
         }
         $(element).change();
+        $(element).trigger('uic-valueSet');
     }
 }
 

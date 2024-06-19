@@ -269,6 +269,9 @@ public static class UICExtensions
             action(firstInput);
         return firstInput;
     }
+
+    public static UICInput FindInputByPropertyName(this IUIComponent element, string propertyName, Action<UICInput> action = null) => FindInputByPropertyName<UICInput>(element, propertyName, action); 
+
     public static bool TryFindInputByPropertyName<T>(this IUIComponent element, string propertyName, Action<T> action) where T : UICInput
     {
         try
@@ -298,6 +301,9 @@ public static class UICExtensions
             return false;
         }
     }
+
+    public static bool TryFindInputByPropertyName(this IUIComponent element, string propertyName, Action<UICInput> action) => TryFindInputByPropertyName<UICInput>(element, propertyName, action);
+    public static bool TryFindInputByPropertyName(this IUIComponent element, string propertyName, out UICInput result) => TryFindInputByPropertyName<UICInput>(element, propertyName, out result);
     /// <summary>
     /// Gets the Id from a element. Create a random id if none exists yet.
     /// </summary>

@@ -5,7 +5,7 @@
         if (!element.length)
             return true;
 
-        if (!element.is(':visible'))
+        if (!element.is(':visible') && element.css('display') != 'contents') //contents is always marked as not visible
             return true;
         if (element.closest('[hidden]').length)
             return true;
@@ -144,6 +144,7 @@
         })
     },
     setThreestateToggles: function ($element) {
+        $element.addClass('configured');
         $element.off('click');
         $element.each((index, item) => {
             uic.form.setThreeState($(item));
@@ -292,9 +293,9 @@
 };
 $(document).ready(() => {
     uic.form.setPopoverOnClickTooltipIcon();
-    uic.form.setThreestateToggles($('.three-state-checkbox'));
+    uic.form.setThreestateToggles($('.three-state-checkbox:not(.configured)'));
 });
 $(document).ajaxComplete(() => {
     uic.form.setPopoverOnClickTooltipIcon();
-    uic.form.setThreestateToggles($('.three-state-checkbox'));
+    uic.form.setThreestateToggles($('.three-state-checkbox:not(.configured)'));
 });

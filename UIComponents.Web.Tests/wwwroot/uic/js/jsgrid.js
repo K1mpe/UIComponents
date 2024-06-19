@@ -19,11 +19,14 @@
                 {
                     try {
                         var fieldName = item.name || '';
-                        $.each(loadedFilter, function (key, element) {
+                        $.each(loadedFilter, function (key, value) {
                             {
-                                if (key == fieldName && element != '' && item.filterControl != undefined) {
-                                    {
-                                        item.filterControl.val(element);
+                                if (key == fieldName && value != '') {
+                                    if (item.filterControl != undefined) {
+                                        item.filterControl.val(value);
+                                    } else {
+                                        let filterElement = item._grid._filterRow.find('td')[index];
+                                        uic.setValue(filterElement, value)
                                     }
                                 }
                             }
@@ -31,17 +34,17 @@
                     } catch { }
                 }
             });
-        }, 1);
 
-        //This timeout of 0 ms is to enable the jsGrid to render before sorting.
-        setTimeout(() => {
-            //Load grid data
             try { //Try to sort data
                 if (sorter != null)
                     $(`#${id}`).jsGrid('sort', sorter);
             } catch { }
-            $(`#${id}`).jsGrid('loadData');
-        }, 5);
+            setTimeout(() => {
+                $(`#${id}`).trigger('uic-reload');
+            }, 1);
+            
+        }, 1);
+
     },
 
 
@@ -1058,12 +1061,15 @@
         filterTemplate: function () {
             let checkbox = this._renderCheckbox(null, true, true);
             if (this.autosearch)
-                checkbox.on('click', () => {
-                    setTimeout(() => this._grid.search(), 50);
-                });
+                checkbox.on('change', () => { this._grid.search(); });
+
+                //checkbox.on('change', () => {
+                //    setTimeout(() => this._grid.search(), 50);
+                //});
 
             return checkbox;
         },
+
         filterValue: function () {
             return uic.getValue(this._grid._filterRow.find(`input[name="${this.name}"]`));
         },
