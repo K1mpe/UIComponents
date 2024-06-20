@@ -80,7 +80,7 @@ public class UICUpload : UIComponent
     /// </remarks>
     public string AcceptedFiles { get; set; }
 
-    public Translatable Text { get; set; } = new Translatable("Upload.Text", "Drop files here or click to upload");
+    public Translatable Text { get; set; } = TranslatableSaver.Save("Upload.Text", "Drop files here or click to upload");
 
     public bool DisplayFileCountMessage { get; set; } = true;
     #endregion

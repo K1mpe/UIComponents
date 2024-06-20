@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
+using UIComponents.Abstractions.Varia;
 using UIComponents.Generators.Helpers;
 using UIComponents.Models.Extensions;
 
@@ -46,14 +47,14 @@ public class UICGeneratorInputMultiSelectList : UICGeneratorProperty
         //    input.Value = ((int)args.PropertyValue).ToString();
 
         //input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
-        input.SelectListItems = (await args.Configuration.GetSelectListItems(args, input))?.ToUIC()?? new();
+        input.SelectListItems = (await args.Configuration.GetSelectListItems(args, input))?? new();
 
         //if(!input.ValidationRequired && input.SelectListItems.Where(x => string.IsNullOrEmpty(x.Value?.ToString()??null)).Any())
         //    input.SelectListItems.Insert(0, new());
 
 
         if(input.Placeholder == null)
-            input.Placeholder = new Translatable("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));
+            input.Placeholder = TranslatableSaver.Save("Select.PlaceHolder", "Select a {0}", TranslationDefaults.TranslateType(args.PropertyType));
         
         if (args.PropertyType.IsEnum || args.CallCollection.Caller is not UICInputGroup)
             showButtonAdd = false;
@@ -70,7 +71,7 @@ public class UICGeneratorInputMultiSelectList : UICGeneratorProperty
                     inputGroup.AppendInput.Add(new UICButton()
                     {
                         AppendButtonIcon = IconDefaults.Add,
-                        Tooltip = new("Button.CreateOfType.Tooltip", "Create a new {0}", TranslationDefaults.TranslateType(propertyType)),
+                        Tooltip = TranslatableSaver.Save("Button.CreateOfType.Tooltip", "Create a new {0}", TranslationDefaults.TranslateType(propertyType)),
                         OnClick = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Get, propertyType.Name, "create")
                         {
                             OnSuccess = new UICActionOpenResultAsModal()

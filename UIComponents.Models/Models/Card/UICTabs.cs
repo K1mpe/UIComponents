@@ -104,7 +104,7 @@ namespace UIComponents.Models.Models.Card
         /// <summary>
         /// Only required if you use this tab as subtab
         /// </summary>
-        public IHeader Header { get; set; } = new UICCardHeader(new Translatable("Tab.NoHeader")) { Color = Defaults.Models.Card.UICTabs.HeaderColor };
+        public IHeader Header { get; set; } = new UICCardHeader(TranslatableSaver.Save("Tab.NoHeader")) { Color = Defaults.Models.Card.UICTabs.HeaderColor };
 
         IUICHasAttributes IUICTab.Content => this;
 

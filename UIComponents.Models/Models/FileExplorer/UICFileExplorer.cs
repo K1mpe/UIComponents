@@ -107,13 +107,13 @@ public class UICFileExplorer :UIComponent
                 ButtonTrue = new UICButton()
                 {
                     PrependButtonIcon = new UICIcon("fas fa-folder-tree"),
-                    Tooltip = new("Button.FileExplorer.HideTree.Tooltip", "Click to hide the tree structure"),
+                    Tooltip = TranslatableSaver.Save("Button.FileExplorer.HideTree.Tooltip", "Click to hide the tree structure"),
                     OnClick = click
                 },
                 ButtonFalse = new UICButton()
                 {
                     PrependButtonIcon = new UICIcon("far fa-folder-tree"),
-                    Tooltip = new("Button.FileExplorer.ShowTree.Tooltip", "Click to show the tree structure"),
+                    Tooltip = TranslatableSaver.Save("Button.FileExplorer.ShowTree.Tooltip", "Click to show the tree structure"),
                     OnClick= click
                 },
                 Value = true
@@ -132,13 +132,13 @@ public class UICFileExplorer :UIComponent
                 ButtonTrue = new UICButton()
                 {
                     PrependButtonIcon = new UICIcon("fas fa-image"),
-                    Tooltip = new("Button.FileExplorer.HidePreview.Tooltip", "Click to hide the file preview"),
+                    Tooltip = TranslatableSaver.Save("Button.FileExplorer.HidePreview.Tooltip", "Click to hide the file preview"),
                     OnClick = click
                 },
                 ButtonFalse = new UICButton()
                 {
                     PrependButtonIcon = new UICIcon("far fa-image"),
-                    Tooltip = new("Button.FileExplorer.ShowPreview.Tooltip", "Click to show the file preview"),
+                    Tooltip = TranslatableSaver.Save("Button.FileExplorer.ShowPreview.Tooltip", "Click to show the file preview"),
                     OnClick = click
                 },
                 Value = true

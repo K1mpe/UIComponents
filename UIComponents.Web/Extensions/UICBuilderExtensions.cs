@@ -43,14 +43,15 @@ public static class UICBuilderExtensions
 
 
         var versionFile = $"{dir}\\UIComponents\\Version.md";
-        if (options.OnlyReplaceNewerVersion)
+        bool newerVersionAvailable = true;
+        if (File.Exists(versionFile))
         {
-            if (File.Exists(versionFile))
-            {
-                var content = File.ReadAllText(versionFile);
-                if (content.StartsWith(currentVersion))
-                    return services;
-            }
+            var content = File.ReadAllText(versionFile);
+            newerVersionAvailable = !content.StartsWith(currentVersion);
+        }
+        if (options.OnlyReplaceNewerVersion && !newerVersionAvailable)
+        {
+            return services;
         }
 
         if (options.ReplaceScripts)
@@ -324,6 +325,31 @@ public static class UICBuilderExtensions
                 }
             }
         }
+        if (options.AddTranslationFile)
+        {
+            string targetRoote = $"{dir}\\UIComponents\\";
+            string sourceRoute = $"{currentAssemblyName}";
+            if (!Directory.Exists(targetRoote))
+            {
+                Directory.CreateDirectory(targetRoote);
+            }
+
+            var translations = manifestNames.Where(x => x.EndsWith("Translations.xml")).OrderBy(x => x).FirstOrDefault();
+            if (!string.IsNullOrEmpty(translations))
+            {
+                var dest = $"{targetRoote}\\Translations.xml";
+                if (File.Exists(dest))
+                    File.Delete(dest);
+
+                using (var readMeFile = File.Create(dest))
+                {
+                    using (var resourceStream = currentAssembly.GetManifestResourceStream(translations))
+                    {
+                        resourceStream!.CopyTo(readMeFile);
+                    }
+                }
+            }
+        }
 
         #region CreateVersionFile
         var targetFile = $"{dir}\\UIComponents\\Version.md";
@@ -345,6 +371,8 @@ public static class UICBuilderExtensions
             versionFileWriter.Write(bytes, 0, bytes.Length);
         }
         #endregion
+
+        options.TriggerOnVersionChanged();
         return services;
     }
 

@@ -228,12 +228,12 @@ public class UICConfig
         return result;
     }
 
-    public Task<List<SelectListItem>?> GetSelectListItems(UICPropertyArgs args, IUIComponent caller)
+    public Task<List<UICSelectListItem>?> GetSelectListItems(UICPropertyArgs args, IUIComponent caller)
     {
-        return GetGeneratedResultAsync<List<SelectListItem>>(UICGeneratorPropertyCallType.SelectListItems, caller, args);
+        return GetGeneratedResultAsync<List<UICSelectListItem>>(UICGeneratorPropertyCallType.SelectListItems, caller, args);
     }
 
-    public async Task<List<SelectListItem>> GetSelectListItems(PropertyInfo propertyInfo, bool addEmptyItem)
+    public async Task<List<UICSelectListItem>> GetSelectListItems(PropertyInfo propertyInfo, bool addEmptyItem)
     {
         var args = new UICPropertyArgs(null, propertyInfo, UICPropertyType.SelectList, new(), new(UICGeneratorPropertyCallType.SelectListItems, null, null), this);
         args.Options.SelectlistAddEmptyItem= addEmptyItem;

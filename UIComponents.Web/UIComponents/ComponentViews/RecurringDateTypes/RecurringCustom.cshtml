@@ -6,6 +6,7 @@
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Abstractions.Models.RecurringDates
 @using UIComponents.Abstractions.Models.RecurringDates.Selectors
+@using UIComponents.Abstractions.Varia
 @using UIComponents.Defaults;
 @using UIComponents.Generators.Interfaces
 @using UIComponents.Models;
@@ -33,7 +34,7 @@
 <div id="@id" class="recurring-date-formatter" data-type="@nameof(RecurringCustomDate)">
     <div class="row">
         <div class="col recurring-custom-days">
-            <span class="recurring-custom-title">@await L.Translate(new("RecurringDate.Format.Days"))</span>
+            <span class="recurring-custom-title">@await L.Translate(TranslatableSaver.Save("RecurringDate.Format.Days"))</span>
             <table>
                 <tbody>
                     @Html.Raw("<tr>")
@@ -56,74 +57,74 @@
             </table>
         </div>
         <div class="col recurring-custom-months">
-            <span class="recurring-custom-title">@await L.Translate(new("RecurringDate.Format.Months"))</span>
+            <span class="recurring-custom-title">@await L.Translate(TranslatableSaver.Save("RecurringDate.Format.Months"))</span>
             <table>
                 <tbody>
                     <tr>
                         <td class="month-selector" data-month="1">
-                            @await L.Translate(new("Month.January"))
+                            @await L.Translate(TranslatableSaver.Save("Month.January"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="2">
-                            @await L.Translate(new("Month.February"))
+                            @await L.Translate(TranslatableSaver.Save("Month.February"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="3">
-                            @await L.Translate(new("Month.March"))
+                            @await L.Translate(TranslatableSaver.Save("Month.March"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="4">
-                            @await L.Translate(new("Month.April"))
+                            @await L.Translate(TranslatableSaver.Save("Month.April"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="5">
-                            @await L.Translate(new("Month.May"))
+                            @await L.Translate(TranslatableSaver.Save("Month.May"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="6">
-                            @await L.Translate(new("Month.June"))
+                            @await L.Translate(TranslatableSaver.Save("Month.June"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="7">
-                            @await L.Translate(new("Month.July"))
+                            @await L.Translate(TranslatableSaver.Save("Month.July"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="8">
-                            @await L.Translate(new("Month.August"))
+                            @await L.Translate(TranslatableSaver.Save("Month.August"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="9">
-                            @await L.Translate(new("Month.September"))
+                            @await L.Translate(TranslatableSaver.Save("Month.September"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="10">
-                            @await L.Translate(new("Month.October"))
+                            @await L.Translate(TranslatableSaver.Save("Month.October"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="11">
-                            @await L.Translate(new("Month.November"))
+                            @await L.Translate(TranslatableSaver.Save("Month.November"))
                         </td>
                     </tr>
                     <tr>
                         <td class="month-selector" data-month="12">
-                            @await L.Translate(new("Month.December"))
+                            @await L.Translate(TranslatableSaver.Save("Month.December"))
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="col recurring-custom-years">
-            <span class="recurring-custom-title ">@await L.Translate(new("RecurringDate.Format.Years"))</span>
+            <span class="recurring-custom-title ">@await L.Translate(TranslatableSaver.Save("RecurringDate.Format.Years"))</span>
             <table>
                 <tbody>
 
@@ -247,7 +248,7 @@
                 formattedString = "";
                 if(days.length){
                     if (!(months.length == 1 && years.length == 1)) {
-                        formattedString += @await Html.TranslateJs(L, new("RecurringDate.Format.Every"), "'");
+                        formattedString += @await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Every"), "'");
                         formattedString += " ";
                     }
                     if (days.length <= 5) {
@@ -255,7 +256,7 @@
                             if (i > 0){
                                 if (i == days.length - 1) {
                                     formattedString += " ";
-                                    formattedString += @(await Html.TranslateJs(L, new("Common.And"), "'")).toLowerCase();
+                                    formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("Common.And"), "'")).toLowerCase();
                                     formattedString += " ";
                                 } else {
                                     formattedString += ", ";
@@ -263,27 +264,27 @@
                             }
                             
                             formattedString += days[i];
-                            formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.th"), "'")).toLowerCase();
+                            formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.th"), "'")).toLowerCase();
                         }
                         formattedString += " ";
                     } else {
                         if (days.length >= 20) {
-                            formattedString = @await Html.TranslateJs(L, new("RecurringDate.Format.Many"), "'");
+                            formattedString = @await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Many"), "'");
                         } else {
-                            formattedString = @await Html.TranslateJs(L, new("RecurringDate.Format.Multiple"), "'");
+                        formattedString = @await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Multiple"), "'");
                         }
                         formattedString += " ";
-                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Days"), "'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Days"), "'")).toLowerCase();
                         formattedString += " ";
                     }
                 } else{
-                    formattedString += @await Html.TranslateJs(L, new("RecurringDate.Format.Every"), "'");
+                    formattedString += @await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Every"), "'");
                     formattedString += " ";
-                    formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Day", "Day"), "'")).toLowerCase();
+                    formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Day", "Day"), "'")).toLowerCase();
                     formattedString += " ";
                 }
                 if (months.length) {
-                    formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Of"), "'")).toLowerCase();
+                    formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Of"), "'")).toLowerCase();
                     formattedString += " ";
 
                     if(months.length <=3){
@@ -292,7 +293,7 @@
                             if (i > 0) {
                                 if (i == months.length - 1) {
                                     formattedString += " ";
-                                    formattedString += @(await Html.TranslateJs(L, new("Common.And"), "'")).toLowerCase();
+                                    formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("Common.And"), "'")).toLowerCase();
                                     formattedString += " ";
                                 } else {
                                     formattedString += ", ";
@@ -304,24 +305,24 @@
                         formattedString += " ";
                     }else{
                         if (months.length >= 6) {
-                            formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Many"), "'")).toLowerCase();
+                            formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Many"), "'")).toLowerCase();
                         } else {
-                            formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Multiple"), "'")).toLowerCase();
+                            formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Multiple"), "'")).toLowerCase();
                         }
                         formattedString += " ";
-                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Months"), "'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Months"), "'")).toLowerCase();
                         formattedString += " ";
                     }
                 }
                 if (years.length) {
-                    formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.In"), "'")).toLowerCase();
+                    formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.In"), "'")).toLowerCase();
                     formattedString += " ";
                     if (years.length <= 3) {
                         for (let i = 0; i < years.length; i++) {
                             if (i > 0) {
                                 if (i == years.length - 1) {
                                     formattedString += " ";
-                                    formattedString += @(await Html.TranslateJs(L, new("Common.And"), "'")).toLowerCase();
+                                    formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("Common.And"), "'")).toLowerCase();
                                     formattedString += " ";
                                 } else {
                                     formattedString += ", ";
@@ -332,12 +333,12 @@
                         formattedString += " ";
                     } else {
                         if (years.length >= 6) {
-                            formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Many"), "'")).toLowerCase();
+                            formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Many"), "'")).toLowerCase();
                         } else {
-                            formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Multiple"), "'")).toLowerCase();
+                            formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Multiple"), "'")).toLowerCase();
                         }
                         formattedString += " ";
-                        formattedString += @(await Html.TranslateJs(L, new("RecurringDate.Format.Years"), "'")).toLowerCase();
+                        formattedString += @(await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Format.Years"), "'")).toLowerCase();
                     }
                 }
 

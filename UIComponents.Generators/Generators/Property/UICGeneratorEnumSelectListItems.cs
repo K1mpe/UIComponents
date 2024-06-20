@@ -6,16 +6,16 @@ namespace UIComponents.Generators.Generators.Property;
 /// <summary>
 /// Generate selectlistitems for enums
 /// </summary>
-public class UICGeneratorEnumSelectListItems : UICGeneratorBase<UICPropertyArgs, List<SelectListItem>>
+public class UICGeneratorEnumSelectListItems : UICGeneratorBase<UICPropertyArgs, List<UICSelectListItem>>
 {
 
 
     public override double Priority { get; set; } = 1000;
 
-    public override async Task<IUICGeneratorResponse<List<SelectListItem>>> GetResponseAsync(UICPropertyArgs args, List<SelectListItem>? existingResult)
+    public override async Task<IUICGeneratorResponse<List<UICSelectListItem>>> GetResponseAsync(UICPropertyArgs args, List<UICSelectListItem>? existingResult)
     {
         if(args.CallCollection.CurrentCallType != UICGeneratorPropertyCallType.SelectListItems)
-            return GeneratorHelper.Next<List<SelectListItem>>();
+            return GeneratorHelper.Next<List<UICSelectListItem>>();
 
         bool isNullable = args.PropertyType.IsGenericType && args.PropertyType!.GetGenericTypeDefinition() == typeof(Nullable<>);
 
@@ -23,9 +23,9 @@ public class UICGeneratorEnumSelectListItems : UICGeneratorBase<UICPropertyArgs,
         if (enumType.IsArray)
             enumType = enumType.GetElementType();
         if (!enumType.IsEnum)
-            return GeneratorHelper.Next<List<SelectListItem>>();
+            return GeneratorHelper.Next<List<UICSelectListItem>>();
 
-        List<SelectListItem> items = new();
+        List<UICSelectListItem> items = new();
         var enumItems = enumType.GetEnumNames();
 
         foreach(var item in enumItems)
@@ -43,6 +43,6 @@ public class UICGeneratorEnumSelectListItems : UICGeneratorBase<UICPropertyArgs,
                 Text = text
             });
         }
-        return GeneratorHelper.Success<List<SelectListItem>>(items, true);
+        return GeneratorHelper.Success<List<UICSelectListItem>>(items, true);
     }
 }

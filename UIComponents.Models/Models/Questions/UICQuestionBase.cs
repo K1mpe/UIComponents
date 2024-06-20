@@ -12,7 +12,7 @@ public abstract class UICQuestionBase : IUIQuestionComponent, IUIComponent
     #region Ctor
     public UICQuestionBase()
     {
-        ButtonSubmit = new UICButton(new("Button.Send"))
+        ButtonSubmit = new UICButton(TranslatableSaver.Save("Button.Send"))
         {
             Color = ColorDefaults.ButtonSubmit
         };

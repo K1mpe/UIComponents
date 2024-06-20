@@ -12,8 +12,8 @@ public class UICQuestionYesNo : UICQuestionBase, IUIQuestionComponent<bool>
     }
     public UICQuestionYesNo(Translatable title, Translatable message) : base(title, message)
     {
-        ButtonSubmit.ButtonText = new("Button.Yes");
-        ButtonNo = new UICButton(new("Button.No"))
+        ButtonSubmit.ButtonText = TranslatableSaver.Save("Button.Yes");
+        ButtonNo = new UICButton(TranslatableSaver.Save("Button.No"))
         {
             Color = new UICColor("secondary")
         };

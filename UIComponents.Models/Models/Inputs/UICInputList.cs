@@ -33,17 +33,17 @@ public class UICInputList : UICInput<object[]>
     public UICButton MoveUpButton { get; set; } = new UICButton()
     {
         PrependButtonIcon = new UICIcon("fas fa-arrow-up"),
-        Tooltip = new("UICInputList.MoveUp", "Move this item up")
+        Tooltip = TranslatableSaver.Save("UICInputList.MoveUp", "Move this item up")
     }.AddClass("hidden-readonly");
     public UICButton MoveDownButton { get; set; } = new UICButton()
     {
         PrependButtonIcon = new UICIcon("fas fa-arrow-down"),
-        Tooltip = new("UICInputList.MoveDown", "Move this item down")
+        Tooltip = TranslatableSaver.Save("UICInputList.MoveDown", "Move this item down")
     }.AddClass("hidden-readonly");
 
     public UICButton AddButton { get; set; } = new UICButton()
     {
-        ButtonText = new("Button.Add"),
+        ButtonText = TranslatableSaver.Save("Button.Add"),
         PrependButtonIcon = new UICIcon(IconDefaults.Add.Icon)
     }.AddClass("hidden-readonly");
 

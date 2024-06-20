@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net;
 using System.Text.Encodings.Web;
 using UIComponents.Abstractions.Interfaces.Services;
+using UIComponents.Abstractions.Varia;
 using static System.Net.Mime.MediaTypeNames;
+using static UIComponents.Abstractions.Varia.TranslatableSaver;
 
 namespace UIComponents.Web.Extensions;
 
@@ -60,4 +62,5 @@ public static class TranslateExtensions
 
         return content;
     }
+
 }

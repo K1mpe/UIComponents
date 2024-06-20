@@ -4,6 +4,7 @@
 @using UIComponents.Abstractions.Interfaces.Services;
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Varia
 @using UIComponents.Defaults;
 @using UIComponents.Models;
 @using UIComponents.Models.Models;
@@ -60,23 +61,23 @@
 <div @Html.Raw(Model.GetHtmlAttributes())>
     @if (Model.ShowDays)
     {
-        <input type="number" @htmlAttr class="form-control uic-timespan-input timespan-days" min="0" value="@(Model.Value?.Days ?? null)" title="@await Html.TranslateHtml(L, new Translatable("Timespan.Days"), null)" />
+        <input type="number" @htmlAttr class="form-control uic-timespan-input timespan-days" min="0" value="@(Model.Value?.Days ?? null)" title="@await Html.TranslateHtml(L, TranslatableSaver.Save("Timespan.Days"), null)" />
     }
     @if (Model.ShowHours)
     {
-        <input type="number" @htmlAttr class="form-control uic-timespan-input timespan-hours" min="0" max="23" value="@(Model.Value?.Hours ?? null)" title="@await Html.TranslateHtml(L, new Translatable("Timespan.Hours"), null)" />
+        <input type="number" @htmlAttr class="form-control uic-timespan-input timespan-hours" min="0" max="23" value="@(Model.Value?.Hours ?? null)" title="@await Html.TranslateHtml(L, TranslatableSaver.Save("Timespan.Hours"), null)" />
     }
     @if (Model.ShowMinutes)
     {
-        <input type="number" @htmlAttr class="form-control uic-timespan-input timespan-minutes" min="0" max="59" value="@(Model.Value?.Minutes ?? null)" title="@await Html.TranslateHtml(L, new Translatable("Timespan.Minutes"), null)" />
+        <input type="number" @htmlAttr class="form-control uic-timespan-input timespan-minutes" min="0" max="59" value="@(Model.Value?.Minutes ?? null)" title="@await Html.TranslateHtml(L, TranslatableSaver.Save("Timespan.Minutes"), null)" />
     }
     @if (Model.ShowSeconds)
     {
-        <input type="number" @htmlAttr class="form-control uic-timespan-input timespan-seconds" min="0" max="59" value="@(Model.Value?.Seconds ?? null)" title="@await Html.TranslateHtml(L, new Translatable("Timespan.Seconds"), null)" />
+        <input type="number" @htmlAttr class="form-control uic-timespan-input timespan-seconds" min="0" max="59" value="@(Model.Value?.Seconds ?? null)" title="@await Html.TranslateHtml(L, TranslatableSaver.Save("Timespan.Seconds"), null)" />
     }
     @if (Model.ShowMilliseconds)
     {
-        <input type="number" @htmlAttr class="form-control uic-timespan-input timespan-miliseconds" min="0" max="999" value="@(Model.Value?.Milliseconds ?? null)" title="@await Html.TranslateHtml(L, new Translatable("Timespan.Miliseconds"), null)" />
+        <input type="number" @htmlAttr class="form-control uic-timespan-input timespan-miliseconds" min="0" max="999" value="@(Model.Value?.Milliseconds ?? null)" title="@await Html.TranslateHtml(L, TranslatableSaver.Save("Timespan.Miliseconds"), null)" />
     }
 </div>
 

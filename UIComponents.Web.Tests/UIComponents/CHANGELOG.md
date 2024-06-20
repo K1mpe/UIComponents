@@ -1,4 +1,6 @@
-﻿# 2024-06-13 (1.2.13)
+﻿# 2024-06-20 (1.2.15)
+- Helpers for SelectListitems
+- TranslatableSaver﻿# 2024-06-13 (1.2.13)
 - JsGrid Control can filter edit or delete button
 - Fix selectlist items for nullable enum﻿# 2024-06-10 (1.2.11)
 - Select list renderer voor UICInputTime﻿# 2024-06-06 (1.2.10)

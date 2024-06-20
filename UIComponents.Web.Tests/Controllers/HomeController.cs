@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Reflection;
 using UIComponents.Abstractions;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Models;
 using UIComponents.Abstractions.Models.RecurringDates;
+using UIComponents.Abstractions.Varia;
 using UIComponents.Defaults;
 using UIComponents.Defaults.Models.Graphs;
 using UIComponents.Generators.Interfaces;
@@ -54,9 +56,7 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var translatable = new Translatable("blub", "test {0}", new Translatable("foo", "foo {1}", "abc"));
-            var serialised = translatable.Serialize();
-            var x = (Translatable)serialised;
+            var translations = await TranslatableSaver.LoadFromUICAsync();
             return View();
             var testModel = new TestModel();
             var component = await _uic.CreateComponentAsync(testModel, new()

@@ -92,7 +92,7 @@ public class DateRangeSelector
     {
         return new DateRangeSelector()
         {
-            Title = new Translatable("DateRangeSelector.Today"),
+            Title = TranslatableSaver.Save("DateRangeSelector.Today"),
             Start = DateTime.Today,
             End = DateTime.Today.AddDays(1).AddMilliseconds(-1),
         };
@@ -102,7 +102,7 @@ public class DateRangeSelector
     {
         return new DateRangeSelector()
         {
-            Title = new Translatable("DateRangeSelector.Last7Days"),
+            Title = TranslatableSaver.Save("DateRangeSelector.Last7Days"),
             Start = DateTime.Today.AddDays(-7),
             End = DateTime.Now,
         };
@@ -113,7 +113,7 @@ public class DateRangeSelector
         var now = DateTime.Now;
         return new DateRangeSelector()
         {
-            Title = new Translatable("DateRangeSelector.Last7Days"),
+            Title = TranslatableSaver.Save("DateRangeSelector.Last7Days"),
             Start = new DateTime(now.Year, now.Month, 1),
             End = now,
         };

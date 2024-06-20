@@ -42,6 +42,7 @@ builder.Services.AddUIComponentWeb(config =>
     config.CheckPropertyValidatorReadonly = false;
     config.AddChangeLog = true;
     config.AddReadMe = true;
+    config.AddTranslationFile = true;
     config.AddFileExplorerImgs = true;
     config.AddDefaultGenerators(builder.Services);
     config.AddDefaultValidators(builder.Services);
@@ -84,6 +85,8 @@ builder.Services.AddWebOptimizer(pipeline =>
     pipeline.CompileScssFiles(options);
 });
 var app = builder.Build();
+
+app.CreateTranslatableFile();
 app.UseWebOptimizer();
 
 // Configure the HTTP request pipeline.

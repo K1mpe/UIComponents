@@ -1,11 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Linq;
 using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.Services;
+using UIComponents.Abstractions.Varia;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Models.UICGeneratorResponses;
+using UIComponents.Models.Extensions;
 using UIComponents.Models.Helpers;
 using UIComponents.Models.Models.Texts;
 
@@ -273,29 +276,176 @@ public static class GeneratorHelper
         };
     }
 
+
+    #region SelectListItems
+
+    #region GlobalConfigure
     /// <summary>
     /// Used for generating selectlist items for foreign keys or enums.
     /// </summary>
     /// <param name="name">Name that is used in debug</param>
     /// <param name="priority">Lowest priority comes first</param>
     /// <param name="func">Generator method</param>
-    public static UICCustomGenerator<UICPropertyArgs, List<SelectListItem>> SelectListItems(string name, double priority, Func<UICPropertyArgs, List<SelectListItem>?, Task<IUICGeneratorResponse<List<SelectListItem>>>> func)
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems(string name, double priority, Func<UICPropertyArgs, List<UICSelectListItem>?, Task<IUICGeneratorResponse<List<UICSelectListItem>>>> func)
     {
-        return new UICCustomGenerator<UICPropertyArgs, List<SelectListItem>>()
+        return new UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>>()
         {
             Name = name,
             Priority = priority,
             GetResult = async (args, existing) =>
             {
                 if (args.CallCollection.CurrentCallType != UICGeneratorPropertyCallType.SelectListItems)
-                    return Next<List<SelectListItem>>();
+                    return Next<List<UICSelectListItem>>();
                 return await func(args, existing);
             }
         };
     }
 
 
+    #endregion
 
+    #region Property name specific
+
+    /// <summary>
+    /// Get selectlistItems for a specific property. This has priority 0 and should come before default generators.
+    /// <br>The default selectlistgenerators should be configured to first check if there are already selectlistitems. and not do anything if the list is already populated.</br>
+    /// </summary>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems(string propertyName, Func<Task<List<UICSelectListItem>>> getSelectListItems, Translatable placeholderText = null)
+    {
+        return SelectListItems("CustomSelectListItems", 0, async (args, items) =>
+        {
+            if (args.PropertyName != propertyName)
+                return Next<List<UICSelectListItem>>();
+
+            if (args.CallCollection.Caller is UICInput input)
+            {
+                if (placeholderText != null)
+                    input.Placeholder = placeholderText;
+
+                else
+                {
+                    var translatedProperty = UIComponents.Defaults.TranslationDefaults.TranslateProperty(args.PropertyInfo, args.UICPropertyType);
+                    if (input is UICInputMultiSelect multiSelect)
+                    {
+                        multiSelect.Placeholder = TranslatableSaver.Save("SelectList.SelectOneOrMore", "Select one or more {0}", translatedProperty);
+                    }
+                    else
+                    {
+                        input.Placeholder = TranslatableSaver.Save("SelectList.Placeholder", "Select a {0}", translatedProperty);
+                    }
+                }
+            }
+
+
+            var selectListItems = await getSelectListItems();
+            return Success(selectListItems, true);
+        });
+    }
+
+    /// <inheritdoc cref="SelectListItems(string, Func{Task{List{UICSelectListItem}}}, Translatable)"/>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems(string propertyName, Func<Task<List<SelectListItem>>> getSelectListItems, Translatable placeholderText)
+    {
+        return SelectListItems(propertyName, async () => (await getSelectListItems()).ToUIC(), placeholderText);
+    }
+
+    /// <inheritdoc cref="SelectListItems(string, Func{Task{List{UICSelectListItem}}}, Translatable)"/>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems(string propertyName, Func<List<UICSelectListItem>> getSelectListItems, Translatable placeholderText)
+    {
+        return SelectListItems(propertyName, () => Task.FromResult(getSelectListItems()), placeholderText);
+    }
+
+    /// <inheritdoc cref="SelectListItems(string, Func{Task{List{UICSelectListItem}}}, Translatable)"/>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems(string propertyName, Func<List<SelectListItem>> getSelectListItems, Translatable placeholderText)
+    {
+        return SelectListItems(propertyName, () => Task.FromResult(getSelectListItems()), placeholderText);
+    }
+
+    /// <inheritdoc cref="SelectListItems(string, Func{Task{List{UICSelectListItem}}}, Translatable)"/>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems(string propertyName, List<UICSelectListItem> getSelectListItems, Translatable placeholderText)
+    {
+        return SelectListItems(propertyName, () => getSelectListItems, placeholderText);
+    }
+
+    /// <inheritdoc cref="SelectListItems(string, Func{Task{List{UICSelectListItem}}}, Translatable)"/>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems(string propertyName, List<SelectListItem> getSelectListItems, Translatable placeholderText)
+    {
+        return SelectListItems(propertyName, () => getSelectListItems, placeholderText);
+    }
+
+    #endregion
+
+    #region Property Expression specific
+
+    /// <summary>
+    /// Get selectlistItems for a specific property. This has priority 0 and should come before default generators.
+    /// <br>The default selectlistgenerators should be configured to first check if there are already selectlistitems. and not do anything if the list is already populated.</br>
+    /// </summary>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems<T>(Expression<Func<T, object>> propertyExpression, Func<Task<List<UICSelectListItem>>> getSelectListItems, Translatable placeholderText = null)
+    {
+        var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(propertyExpression);
+        return SelectListItems("CustomSelectListItems", 0, async (args, items) =>
+        {
+            
+            if (args.PropertyName != propertyInfo.Name || args.PropertyInfo!.DeclaringType?.FullName != propertyInfo.DeclaringType?.FullName)
+                return Next<List<UICSelectListItem>>();
+
+            if (args.CallCollection.Caller is UICInput input)
+            {
+                if(placeholderText != null)
+                    input.Placeholder = placeholderText;
+
+                else
+                {
+                    var translatedProperty = UIComponents.Defaults.TranslationDefaults.TranslateProperty(args.PropertyInfo, args.UICPropertyType);
+                    if (input is UICInputMultiSelect multiSelect)
+                    {
+                        multiSelect.Placeholder = TranslatableSaver.Save("SelectList.SelectOneOrMore", "Select one or more {0}", translatedProperty);
+                    }
+                    else
+                    {
+                        input.Placeholder = TranslatableSaver.Save("SelectList.SelectOne", "Select a {0}", translatedProperty);
+                    }
+                }
+                
+            }
+
+            var selectListItems = await getSelectListItems();
+            return Success(selectListItems, true);
+        });
+    }
+
+    ///<inheritdoc cref=" SelectListItems{T}(Expression{Func{T, object}}, Func{Task{List{UICSelectListItem}}}, Translatable)"/>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems<T>(Expression<Func<T, object>> propertyExpression, Func<Task<List<SelectListItem>>> getSelectListItems, Translatable placeholderText)
+    {
+        return SelectListItems(propertyExpression, async () => (await getSelectListItems()).ToUIC(), placeholderText);
+    }
+
+    ///<inheritdoc cref=" SelectListItems{T}(Expression{Func{T, object}}, Func{Task{List{UICSelectListItem}}}, Translatable)"/>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems<T>(Expression<Func<T, object>> propertyExpression, Func<List<UICSelectListItem>> getSelectListItems, Translatable placeholderText)
+    {
+        return SelectListItems(propertyExpression, () => Task.FromResult(getSelectListItems()), placeholderText);
+    }
+
+    ///<inheritdoc cref=" SelectListItems{T}(Expression{Func{T, object}}, Func{Task{List{UICSelectListItem}}}, Translatable)"/>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems<T>(Expression<Func<T, object>> propertyExpression, Func<List<SelectListItem>> getSelectListItems, Translatable placeholderText)
+    {
+        return SelectListItems(propertyExpression, () => Task.FromResult(getSelectListItems()), placeholderText);
+    }
+
+    ///<inheritdoc cref=" SelectListItems{T}(Expression{Func{T, object}}, Func{Task{List{UICSelectListItem}}}, Translatable)"/>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems<T>(Expression<Func<T, object>> propertyExpression, List<UICSelectListItem> getSelectListItems, Translatable placeholderText)
+    {
+        return SelectListItems(propertyExpression, () => getSelectListItems, placeholderText);
+    }
+
+    ///<inheritdoc cref=" SelectListItems{T}(Expression{Func{T, object}}, Func{Task{List{UICSelectListItem}}}, Translatable)"/>
+    public static UICCustomGenerator<UICPropertyArgs, List<UICSelectListItem>> SelectListItems<T>(Expression<Func<T, object>> propertyExpression, List<SelectListItem> getSelectListItems, Translatable placeholderText)
+    {
+        return SelectListItems(propertyExpression, () => getSelectListItems, placeholderText);
+    }
+    #endregion
+
+    #endregion
 
     /// <summary>
     /// A generator response that is used when the current generator could not give a result and the next generator should be called.

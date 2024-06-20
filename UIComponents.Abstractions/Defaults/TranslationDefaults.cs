@@ -1,31 +1,32 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 using UIComponents.Abstractions;
+using UIComponents.Abstractions.Varia;
 
 namespace UIComponents.Defaults;
 
 public static class TranslationDefaults
 {
 
-    public static Translatable ButtonEdit = new Translatable("Button.Edit");
-    public static Translatable ButtonReadonly = new Translatable("Button.Readonly");
+    public static Translatable ButtonEdit = TranslatableSaver.Save("Button.Edit");
+    public static Translatable ButtonReadonly = TranslatableSaver.Save("Button.Readonly");
 
-    public static Translatable ButtonCreate = new Translatable("Button.Create");
-    public static Func<Type, Translatable> ButtonCreateTooltip = (type) => new Translatable("Button.Create.Tooltip", "Create a new {0}", TranslateType(type));
+    public static Translatable ButtonCreate = TranslatableSaver.Save("Button.Create");
+    public static Func<Type, Translatable> ButtonCreateTooltip = (type) => TranslatableSaver.Save("Button.Create.Tooltip", "Create a new {0}", TranslateType(type));
 
-    public static Translatable ButtonSave = new Translatable("Button.Save");
+    public static Translatable ButtonSave = TranslatableSaver.Save("Button.Save");
 
-    public static Translatable ButtonCancel = new Translatable("Button.Cancel");
+    public static Translatable ButtonCancel = TranslatableSaver.Save("Button.Cancel");
 
-    public static Translatable ButtonDelete = new Translatable("Button.Delete");
+    public static Translatable ButtonDelete = TranslatableSaver.Save("Button.Delete");
 
-    public static Translatable ButtonRefresh = new Translatable("Button.Refresh");
+    public static Translatable ButtonRefresh = TranslatableSaver.Save("Button.Refresh");
 
-    public static Translatable ButtonCardExpand = new Translatable("Button.Expand");
-    public static Translatable ButtonCardCollapse = new Translatable("Button.Collapse");
+    public static Translatable ButtonCardExpand = TranslatableSaver.Save("Button.Expand");
+    public static Translatable ButtonCardCollapse = TranslatableSaver.Save("Button.Collapse");
 
 
-    public static Func<object, Translatable> ButtonDeleteToolTip = (obj) => new Translatable("Button.Delete.Tooltip", "Delete this {0}", TranslateObject(obj));
+    public static Func<object, Translatable> ButtonDeleteToolTip = (obj) => TranslatableSaver.Save("Button.Delete.Tooltip", "Delete this {0}", TranslateObject(obj));
 
 
     /// <summary>
@@ -63,6 +64,34 @@ public static class TranslationDefaults
         return new Translatable(key, defaultValue, args.ToArray());
     };
 
+    /// <summary>
+    /// A function simular to <see cref="TranslateType"/>, but this one is used for multiple types
+    /// </summary>
+    public static Func<Type, Translatable> TranslateTypeMultiple = (type) =>
+    {
+        string key = type.Name+"+";
+        List<Translatable> args = new();
+        string defaultValue = type.Name+"s";
+
+        if (type.IsGenericType)
+        {
+
+            defaultValue = key.Split("`")[0];
+            key = defaultValue + ".Generic";
+            defaultValue += "<";
+            var genTypes = type.GetGenericArguments();
+            for (var i = 0; i < genTypes.Length; i++)
+            {
+                defaultValue += $"{{{i}}}";
+                args.Add(TranslateType(genTypes[i]));
+            }
+
+            defaultValue += ">";
+        }
+
+        return new Translatable(key, defaultValue, args.ToArray());
+    };
+
 
 
     /// <summary>
@@ -76,7 +105,7 @@ public static class TranslationDefaults
 
         var translatedType = TranslateType(obj.GetType());
         if (obj is IDbEntity dbEntity)
-            return new Translatable("DbEntity", "{0} {1}", translatedType, dbEntity.Id);
+            return TranslatableSaver.Save("DbEntity", "{0} {1}", translatedType, dbEntity.Id);
 
         return translatedType;
     };
@@ -94,24 +123,26 @@ public static class TranslationDefaults
     };
 
 
+
+
     /// <summary>
     /// Function takes a already translated propertyName and creates a validation message
     /// </summary>
-    public static Func<Translatable, Translatable> ValidationIsRequired = (translatedPropertyName) => new Translatable("Validation.Required", "{0} is required", translatedPropertyName);
+    public static Func<Translatable, Translatable> ValidationIsRequired = (translatedPropertyName) => TranslatableSaver.Save("Validation.Required", "{0} is required", translatedPropertyName);
 
-    public static Func<Translatable, int, Translatable> ValidateMinLength = (translatedPropertyName, minLenght) => new Translatable("Validation.MinLength", "The value of {0} must be longer than {1}", translatedPropertyName, minLenght);
-    public static Func<Translatable, int, Translatable> ValidateMaxLength = (translatedPropertyName, maxLength) => new Translatable("Validation.MaxLength", "The value of {0} must be shorter than {1}", translatedPropertyName, maxLength);
-    public static Func<Translatable, object, Translatable> ValidateMinValue = (translatedPropertyName, minValue) => new Translatable("Validation.MinValue", "The value of {0} must be higher than or equal to {1}", translatedPropertyName, minValue);
-    public static Func<Translatable, object, Translatable> ValidateMaxValue = (translatedPropertyName, maxValue) => new Translatable("Validation.MaxValue", "The value of {0} must be lower or equal to {1}", translatedPropertyName, maxValue);
-    public static Func<Translatable, Translatable> ValidateColor = (translatedPropertyName) => new Translatable("Validation.Color.Invalid", "{0} has a invalid color", translatedPropertyName);
+    public static Func<Translatable, int, Translatable> ValidateMinLength = (translatedPropertyName, minLenght) => TranslatableSaver.Save("Validation.MinLength", "The length of {0} must be longer than {1}", translatedPropertyName, minLenght);
+    public static Func<Translatable, int, Translatable> ValidateMaxLength = (translatedPropertyName, maxLength) => TranslatableSaver.Save("Validation.MaxLength", "The length of {0} must be shorter than {1}", translatedPropertyName, maxLength);
+    public static Func<Translatable, object, Translatable> ValidateMinValue = (translatedPropertyName, minValue) => TranslatableSaver.Save("Validation.MinValue", "The value of {0} must be higher than or equal to {1}", translatedPropertyName, minValue);
+    public static Func<Translatable, object, Translatable> ValidateMaxValue = (translatedPropertyName, maxValue) => TranslatableSaver.Save("Validation.MaxValue", "The value of {0} must be lower or equal to {1}", translatedPropertyName, maxValue);
+    public static Func<Translatable, Translatable> ValidateColor = (translatedPropertyName) => TranslatableSaver.Save("Validation.Color.Invalid", "{0} has a invalid color", translatedPropertyName);
 
     public static Func<int, Translatable> FileUploadMaxFiles = (fileCount) =>
     {
         if (fileCount == 1)
-            return new Translatable("Fileupload.OneFile", "Upload only one file");
-        else return new Translatable("FileUpload.MaxCountFiles", "Upload up to {0} files", fileCount);
+            return TranslatableSaver.Save("Fileupload.OneFile", "Upload only one file");
+        else return TranslatableSaver.Save("FileUpload.MaxCountFiles", "Upload up to {0} files", fileCount);
     };
-    public static Translatable SelectListNoItems = new Translatable("SelectList.NoItemsAvailable", "No items available");
+    public static Translatable SelectListNoItems = TranslatableSaver.Save("SelectList.NoItemsAvailable", "No items available");
 
 
     /// <summary>
