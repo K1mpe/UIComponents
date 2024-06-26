@@ -37,6 +37,25 @@
     if (Model.AllowDynamicOptions)
         Model.SearchableIfMinimimResults = 0;
 
+    if (Model.Color != null)
+    {
+
+        Model.AddStyle(
+            @<text>
+                #@id + span .select2-selection__choice{
+                background-color: var(--@Model.Color.ToLower()) !important;
+                border-color: var(--@Model.Color.ToLower()) !important;
+                }
+                #@id + span.select2-container--focus .select2-selection--single {
+                border-color: var(--@Model.Color.ToLower()) !important;
+                }
+
+                #select2-@(id)-results .select2-results__option--highlighted{
+                background-color: var(--@Model.Color.ToLower()) !important;
+                }
+            </text>
+                );
+    }
     Model.AddScript(
     @<text>
         $('#@id').on('uic-help', ()=>{
@@ -44,7 +63,7 @@
         });
 
         $('#@id').select2({
-        theme: 'bootstrap4',
+        //theme: 'bootstrap4',
         minimumResultsForSearch: @Json.Serialize(Model.SearchableIfMinimimResults),
         matcher: uic.form.select2.searchMethod,
         templateResult: uic.form.select2.resultRenderer,

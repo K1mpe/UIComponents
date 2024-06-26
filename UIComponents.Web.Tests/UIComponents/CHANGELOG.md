@@ -4,7 +4,9 @@
 - JsGrid Control can filter edit or delete button
 - Fix selectlist items for nullable enum﻿# 2024-06-10 (1.2.11)
 - Select list renderer voor UICInputTime﻿# 2024-06-06 (1.2.10)
-- Fix filter compabiliteit UICTable met oude JsGrid taghelper van CdcPortal﻿# 2024-05-31 (1.2.09)
+- Fix filter compabiliteit UICTable met oude JsGrid taghelper van CdcPortal﻿# 2024-06-20 (1.2.16)
+- Cannot find children in UICInputList anymore
+- Performance fix for select2 selector﻿# 2024-05-31 (1.2.09)
 - UICTable rowrenderer fix
 - UICActionRefresh fix
 - UICTableColumnPartial validation fix

@@ -20,6 +20,7 @@
 @model UICInputList
 @{
     string id = Model.GetId();
+    Model.AssignCollectionForChildren();
     string indexRef = id.Length > 7 ? id.Substring(3, 7) : "l"+Guid.NewGuid().ToString("n").Substring(0, 3);
     Model.SingleInstanceInput.AddAttribute("data-list-item", indexRef);
 
@@ -296,3 +297,4 @@
     }
     
 </div>
+@await Model.RenderStylesAndScripts(Component)

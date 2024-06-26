@@ -20,6 +20,7 @@ public class UICInputList : UICInput<object[]>
     #endregion
 
     #region Properties
+    [UICIgnoreGetChildrenFunction]
     public UICInput SingleInstanceInput { get; set; } 
     public Type ItemType { get; set; }
 

@@ -28,7 +28,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
             return GeneratorHelper.Next();
 
         bool showButtonAdd = args.Options.SelectListShowAddButtonIfAllowed;
-        var input = new UICInputSelectList(args.PropertyName, new())
+        var input = new UICInputSelectList(args.PropertyName)
         {
             Parent = args.CallCollection.Caller
         };

@@ -1,92 +1,111 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using UIComponents.Abstractions.Interfaces.Inputs;
 
-namespace UIComponents.Models.Models.Inputs;
-
-public class UICInputMultiSelect : UICInput<string[]>, IUICInputSelectList
+namespace UIComponents.Models.Models.Inputs
 {
-    #region Fields
-    public override bool HasClientSideValidation => false;
-    #endregion
-
-    #region Ctor
-    public UICInputMultiSelect(string propertyName, List<SelectListItem> selectListItems) : base(propertyName)
+    public class UICInputMultiSelect : UICInput<string[]>, IUICInputSelectList
     {
-        SelectListItems = selectListItems.ToUIC();
+        #region Fields
+        public override bool HasClientSideValidation => false;
+        #endregion
+
+        #region Ctor
+        public UICInputMultiSelect(string propertyName, List<SelectListItem> selectListItems) : base(propertyName)
+        {
+            SelectListItems = selectListItems.ToUIC();
+        }
+        public UICInputMultiSelect() : base(null)
+        {
+
+        }
+        #endregion
+
+        #region Properties
+        public IColor? Color { get; set; } = Defaults.Models.Inputs.UICInputMultiSelect.Color;
+
+        public List<UICSelectListItem> SelectListItems { get; set; } = new();
+
+        /// <summary>
+        /// When selecting a item by typing, clear the input after the item is added
+        /// </summary>
+        public bool ClearInputAfterSelecting { get; set; } = Defaults.Models.Inputs.UICInputMultiSelect.ClearInputAfterSelecting;
+
+        /// <summary>
+        /// When selecting a option, close the selectlist
+        /// </summary>
+        public bool CloseOnSelect { get; set; } = Defaults.Models.Inputs.UICInputMultiSelect.CloseOnSelect;
+
+
+        /// <summary>
+        /// If true, the user can create new options by typing
+        /// </summary>
+        public bool AllowDynamicOptions { get; set; } = Defaults.Models.Inputs.UICInputMultiSelect.AllowDynamicOptions;
+
+        public Translatable NoItemsText { get; set; } = TranslationDefaults.SelectListNoItems;
+
+        #endregion
+
+        #region Methods
+
+        public UICInputMultiSelect AddSource(UICActionGetPost source)
+        {
+            var selectSource = new UICInputSelectListSource(this, source);
+            AddSource(selectSource);
+            return this;
+        }
+        public UICInputMultiSelect AddSource(out UICInputSelectListSource outSource, UICActionGetPost source)
+        {
+            var selectSource = new UICInputSelectListSource(this, source);
+            return AddSource(out outSource, selectSource);
+        }
+        public UICInputMultiSelect AddSource(UICActionGetPost source, Action<UICInputSelectListSource> action)
+        {
+            var selectSource = new UICInputSelectListSource(this, source);
+            return AddSource(selectSource, action);
+        }
+        public UICInputMultiSelect AddSource(UICInputSelectListSource source)
+        {
+            source.InputSelectList = this;
+            ScriptCollection.AddToScripts(source);
+            return this;
+        }
+        public UICInputMultiSelect AddSource(out UICInputSelectListSource outSource, UICInputSelectListSource source)
+        {
+            outSource = source;
+            return AddSource(source);
+        }
+        public UICInputMultiSelect AddSource(UICInputSelectListSource source, Action<UICInputSelectListSource> action)
+        {
+            AddSource(source);
+            action(source);
+            return this;
+        }
+
+        #endregion
+
+        #region From Interface
+
+        object IUICInputSelectList.Value => Value;
+
+        #endregion
+
     }
-    public UICInputMultiSelect() : base(null)
+}
+
+namespace UIComponents.Defaults.Models.Inputs
+{
+    public class UICInputMultiSelect
     {
+        public static IColor? Color { get; set; }
 
+        public static List<UICSelectListItem> SelectListItems { get; set; } = new();
+
+        public static bool ClearInputAfterSelecting { get; set; } = true;
+
+        public static bool CloseOnSelect { get; set; }
+
+        public static bool AllowDynamicOptions { get; set; }
+
+        public static Translatable NoItemsText { get; set; } = TranslationDefaults.SelectListNoItems;
     }
-    #endregion
-
-    #region Properties
-    public IColor? Color { get; set; }
-
-    public List<UICSelectListItem> SelectListItems { get; set; } = new();
-
-    /// <summary>
-    /// When selecting a item by typing, clear the input after the item is added
-    /// </summary>
-    public bool ClearInputAfterSelecting { get; set; } = true;
-
-    /// <summary>
-    /// When selecting a option, close the selectlist
-    /// </summary>
-    public bool CloseOnSelect { get; set; }
-
-
-    /// <summary>
-    /// If true, the user can create new options by typing
-    /// </summary>
-    public bool AllowDynamicOptions { get; set; }
-
-    public Translatable NoItemsText { get; set; } = TranslationDefaults.SelectListNoItems;
-
-    #endregion
-
-    #region Methods
-
-    public UICInputMultiSelect AddSource(UICActionGetPost source)
-    {
-        var selectSource = new UICInputSelectListSource(this, source);
-        AddSource(selectSource);
-        return this;
-    }
-    public UICInputMultiSelect AddSource(out UICInputSelectListSource outSource, UICActionGetPost source)
-    {
-        var selectSource = new UICInputSelectListSource(this, source);
-        return AddSource(out outSource, selectSource);
-    }
-    public UICInputMultiSelect AddSource(UICActionGetPost source, Action<UICInputSelectListSource> action)
-    {
-        var selectSource = new UICInputSelectListSource(this, source);
-        return AddSource(selectSource, action);
-    }
-    public UICInputMultiSelect AddSource(UICInputSelectListSource source)
-    {
-        source.InputSelectList = this;
-        ScriptCollection.AddToScripts(source);
-        return this;
-    }
-    public UICInputMultiSelect AddSource(out UICInputSelectListSource outSource, UICInputSelectListSource source)
-    {
-        outSource = source;
-        return AddSource(source);
-    }
-    public UICInputMultiSelect AddSource(UICInputSelectListSource source, Action<UICInputSelectListSource> action)
-    {
-        AddSource(source);
-        action(source);
-        return this;
-    }
-
-    #endregion
-
-    #region From Interface
-
-    object IUICInputSelectList.Value => Value;
-
-    #endregion
-
 }

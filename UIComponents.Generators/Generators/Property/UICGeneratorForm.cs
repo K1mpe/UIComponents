@@ -26,8 +26,6 @@ public class UICGeneratorForm : UICGeneratorProperty
         if (args.Options.NoForm)
             return GeneratorHelper.Next<IUIComponent>();
 
-        if (args.Options.FormReadonly)
-            return GeneratorHelper.Next<IUIComponent>();
 
         if(args.CallCollection.Components.Any(x=>x.GetType().IsAssignableTo(typeof(UICForm))))
             return GeneratorHelper.Next<IUIComponent>();
@@ -38,6 +36,7 @@ public class UICGeneratorForm : UICGeneratorProperty
 
         var form = new UICForm()
         {
+            Readonly = args.Options.FormReadonly,
             Parent = args.CallCollection.Caller
         };
         if (args.Options.PostForm == null)

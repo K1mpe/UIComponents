@@ -180,14 +180,14 @@
                 return null;
             }
 
-            
+
             //Sort on each part seperated by ' '
             let parts = params.term.toLowerCase().split(" ");
 
             //If there are children, this is a group
             if (data.children != undefined) {
                 let childResults = [];
-                
+
                 for (let i = 0; i < data.children.length; i++) {
                     let match = true;
                     let child = $.extend({}, data.children[i], true);
@@ -212,23 +212,23 @@
                         match = false;
                     }
                     if (match) {
-                        if(data.text.length)
+                        if (data.text.length)
                             child.text += `( ${data.text} )`;
 
                         childResults.push(child);
                     }
-                        
+
                 }
                 if (childResults.length)
                     return { children: childResults };
                 else
                     return null;
-;
+                ;
             } else {
                 let match = true;
                 for (let i = 0; i < parts.length; i++) {
                     let part = parts[i];
-                    if (data.text.toLowerCase().includes(part)) 
+                    if (data.text.toLowerCase().includes(part))
                         continue;
 
                     let searchAttr = $(data.element).attr('data-select-search');
@@ -245,7 +245,7 @@
                     return null;
                 }
             }
-            
+
 
             //// `params.term` should be the term that is used for searching
             //// `data.text` is the text that is displayed for the data object
@@ -261,31 +261,84 @@
             //// Return `null` if the term should not be displayed
             //return null;
         },
+
+        //This is a collection of all the selectlists that do not contain at least one option with these properties.
+        //This is used for larger list to prevent unnessesary searching in $query
+        selectIdsWithout: {
+            prepend: [],
+            append: [],
+            class: [],
+            styles: [],
+        },
+
         resultRenderer: function (state) {
             if (state.element == undefined)
                 return;
 
 
+
             let selectId = $(state.element).closest('select').attr('id');
-            let prepend;
-            let append;
-            if (state.children == undefined) {
-                prepend = $(`.select-elements[for-select="${selectId}"] .prepend-item[for-value="${state.id}"]`).html();
-                append = $(`.select-elements[for-select="${selectId}"] .append-item[for-value="${state.id}"]`).html();
 
 
-            } else {
-                prepend = $(`.select-elements[for-select="${selectId}"] .prepend-group[for-label="${state.text}"]`).html();
-                append = $(`.select-elements[for-select="${selectId}"] .append-group[for-label="${state.text}"]`).html();
+            let result, prepend, append;
+
+            let without = uic.form.select2.selectIdsWithout;
+
+            //A performance check to ensure that we don't search for the prepend if not nessesary.
+            if (!without.prepend.includes(selectId)) {
+                var prependContainer = $(`.select-elements[for-select="${selectId}"]`);
+
+                if (prependContainer.length) {
+                    if (state.children == undefined) {
+                        prepend = prependContainer.find(`.prepend-item[for-value="${state.id}"]`).html();
+                    }
+                    else {
+                        prepend = prependContainer.find(`.prepend-group[for-label="${state.text}"]`).html();
+                    }
+                } else {
+                    //If the selectList does not have a prependContainer, add this to the list
+                    without.prepend.push(selectId);
+                }
             }
 
-            let result = $('<span>').append(prepend).append(state.text).append(append);
+            //A performance check to ensure that we don't search for the append if not nessesary.
+            if (!without.append.includes(selectId)) {
+                var appendContainer = $(`.select-elements[for-select="${selectId}"]`);
 
-            let existingClass = $(state.element).attr('class');
-            let existingStyle = $(state.element).attr('style');
+                if (appendContainer.length) {
+                    if (state.children == undefined) {
+                        append = appendContainer.find(`.append-item[for-value="${state.id}"]`).html();
+                    }
+                    else {
+                        append = appendContainer.find(`.append-group[for-label="${state.text}"]`).html();
+                    }
+                } else {
+                    //If the selectList does not have a appendContainer, add this to the list
+                    without.append.push(selectId);
+                }
+            }
+            result = $('<span>').append(prepend).append(state.text).append(append);
+
+
+            if (!without.class.includes(selectId)) {
+                if (!$(`#${selectId} option[class]:not([class='uic'])`).length)
+                    without.class.push(selectId);
+
+                let existingClass = $(state.element).attr('class');
+                result.attr('class', existingClass);
+            }
+            if (!without.styles.includes(selectId)) {
+                if (!$(`#${selectId} option[style]`).length)
+                    without.styles.push(selectId);
+
+                let existingStyle = $(state.element).attr('style');
+                result.attr('style', existingStyle);
+            }
+
+
             let existingData = $(state.element).data();
+            result.data(existingData);
 
-            result.attr('class', existingClass).attr('style', existingStyle).data(existingData);
 
             return result;
         }
