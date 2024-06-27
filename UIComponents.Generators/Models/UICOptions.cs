@@ -17,6 +17,12 @@ public class UICOptions
     /// </summary>
     public Dictionary<string, object> OptionsDictionary { get; set; } = new();
 
+
+    public UICOptions AddGenerator(IUICGenerator generator)
+    {
+        Generators.Add(generator);
+        return this;
+    }
     #endregion
 
     /// <summary>

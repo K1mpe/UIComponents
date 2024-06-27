@@ -1034,7 +1034,9 @@
                 return -1;
         },
         itemTemplate: function (value, item) {
-            return this._renderCheckbox(value, true, this.nullable);
+            let toggle = this._renderCheckbox(value, true, this.nullable);
+            toggle.on('click', (ev) => { ev.preventDefault(); }) //disable the togglebutton in normal row (not insert, filter or edit)
+            return toggle;
         },
         insertTemplate: function () {
             let value = this.nullable ? null : false;

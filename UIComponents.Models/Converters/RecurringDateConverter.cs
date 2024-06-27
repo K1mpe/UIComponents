@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using UIComponents.Abstractions.Models.RecurringDates;
 
-namespace UIComponents.Generators.Converters;
+namespace UIComponents.Models.Converters;
 
 public class RecurringDateConverter : JsonConverter<RecurringDate>
 {

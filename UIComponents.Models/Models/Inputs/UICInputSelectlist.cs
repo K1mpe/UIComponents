@@ -124,7 +124,7 @@ namespace UIComponents.Defaults.Models.Inputs
 {
     public static class UICInputSelectList
     {
-        public static IColor? Color { get; set; } = new UICColor("red");
+        public static IColor? Color { get; set; }
         public static int SearchableIfMinimimResults { get; set; } = -1;
         public static bool ValidationRequired { get; set; }
         public static Translatable NoItemsText { get; set; } = TranslationDefaults.SelectListNoItems;

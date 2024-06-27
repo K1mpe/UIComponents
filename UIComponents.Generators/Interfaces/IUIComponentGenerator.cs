@@ -40,6 +40,7 @@ public interface IUIComponentGenerator
     Task<IUIComponent?> CreateElementFromProperty(PropertyInfo propertyInfo, object classObject, UICOptions? options = null);
 
 
+
     /// <summary>
     /// Takes a existing <see cref="UICTableColumn"/> and generate the missing properties
     /// </summary>

@@ -387,7 +387,7 @@ Usage examples for html:
     card.Add(out var customContent, new UICCustom())
 }
 <uic-custom uic="customContent">
-    <h1>This is my custom card contet</h1>
+    <h1>This is my custom card content</h1>
 </uic-custom>
 
 @await card.InvokeAsync(Component)
@@ -435,7 +435,7 @@ Any Component that needs a Translatable, you can also provide with a string. The
 var button1 = new UICButton(new("Button.Translate", "Translate this button"))
 var button2 = new UICButton("Do not translate this button");
 ```
-> :warning: If the string starts with "[TRANSLATABLE]" this will be seen as a serialized translatable
+> :warning: If the string starts with "\[TRANSLATABLE]" this will be seen as a serialized translatable
 
 
 #### Serialize translatable

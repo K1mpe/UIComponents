@@ -156,6 +156,9 @@ public static class GeneratorHelper
         return generator;
     }
 
+    /// <summary>
+    /// A generator that can be used to overwrite a specific button request
+    /// </summary>
     public static UICCustomGenerator<UICPropertyArgs, IUIComponent> ButtonGenerator(ButtonType buttonType, string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> func)
     {
         return new UICCustomGenerator<UICPropertyArgs, IUIComponent>()
@@ -194,10 +197,22 @@ public static class GeneratorHelper
         };
     }
 
+    /// <summary>
+    /// <inheritdoc cref="ObjectGenerator(Type, string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    /// </summary>
     public static UICCustomGenerator<UICPropertyArgs, IUIComponent> ObjectGenerator<T>(string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> func)
     {
         return ObjectGenerator(typeof(T), name, priority, func);
     }
+
+    /// <summary>
+    /// This generator is only used when <see cref="UICPropertyArgs.ClassObject"/> matches the given type. This can be used to overwrite a specific object.
+    /// </summary>
+    /// <param name="objectType"></param>
+    /// <param name="name"></param>
+    /// <param name="priority"></param>
+    /// <param name="func"></param>
+    /// <returns></returns>
     public static UICCustomGenerator<UICPropertyArgs, IUIComponent> ObjectGenerator(Type objectType, string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> func)
     {
         return new UICCustomGenerator<UICPropertyArgs, IUIComponent>()

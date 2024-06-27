@@ -26,6 +26,8 @@
     if (!hasId)
         Model.SaveFiltersInLocalStorage = false;
 
+    if (Model.Selecting)
+        Model.AddClass("has-selecting");
 
     string id = Model.GetId();
     Model.AssignCollectionForChildren();

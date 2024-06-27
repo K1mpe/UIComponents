@@ -6,7 +6,11 @@
 - Select list renderer voor UICInputTime﻿# 2024-06-06 (1.2.10)
 - Fix filter compabiliteit UICTable met oude JsGrid taghelper van CdcPortal﻿# 2024-06-20 (1.2.16)
 - Cannot find children in UICInputList anymore
-- Performance fix for select2 selector﻿# 2024-05-31 (1.2.09)
+- Performance fix for select2 selector
+- UICInputSelectList has color support
+- Toggle disabled in jsGrid outside edit row
+- UICInputGroup InputAs options
+- Css Fix jsGrid selecting togglebutton﻿# 2024-05-31 (1.2.09)
 - UICTable rowrenderer fix
 - UICActionRefresh fix
 - UICTableColumnPartial validation fix

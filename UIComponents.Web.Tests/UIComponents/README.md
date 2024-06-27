@@ -387,7 +387,7 @@ Usage examples for html:
     card.Add(out var customContent, new UICCustom())
 }
 <uic-custom uic="customContent">
-    <h1>This is my custom card contet</h1>
+    <h1>This is my custom card content</h1>
 </uic-custom>
 
 @await card.InvokeAsync(Component)

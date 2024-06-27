@@ -67,6 +67,57 @@ public class UICInputGroup : UIComponent, IUISingleRowSupport
         return "Input-Group " + Input?.ToString();
     }
 
+    /// <summary>
+    /// Return the Input as the assigned type. This will throw a <see cref="Exception"></see> if the type does not match
+    /// </summary>
+    public T InputAs<T>() where T: UICInput
+    {
+        try
+        {
+            return (T)Input;
+        }
+        catch
+        {
+            throw new Exception($"Cannot parse {Input.GetType().Name} to {typeof(T).Name}");
+        }
+    }
+
+    /// <summary>
+    /// If the Input is this type, apply this action
+    /// </summary>
+    public UICInputGroup InputAs<T>(Action<T> action) where T: UICInput
+    {
+        TryInputAs(action);
+        return this;
+    }
+
+    /// <summary>
+    /// Try to map the <see cref="Input"/> to this type
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public bool TryInputAs<T>(out T input) where T: UICInput
+    {
+        input = default;
+        if(Input is T convertedInput)
+        {
+            input = convertedInput;
+            return true;
+        }
+        return false;
+    }
+    public bool TryInputAs<T>(Action<T> action) where T : UICInput
+    {
+        if(TryInputAs<T>(out var input))
+        {
+            action(input);
+            return true;
+        }
+        return false;
+    }
+
+
     public void TransformToSingleRow()
     {
             Renderer = InputGroupRenderer.Grid;
