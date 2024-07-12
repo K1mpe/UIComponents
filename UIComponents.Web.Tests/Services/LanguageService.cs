@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UIComponents.Abstractions;
 using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.Services;
+using UIComponents.Abstractions.Varia;
 
 namespace UIComponents.Web.Tests.Services
 {

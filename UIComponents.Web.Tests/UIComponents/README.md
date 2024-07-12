@@ -435,7 +435,7 @@ Any Component that needs a Translatable, you can also provide with a string. The
 var button1 = new UICButton(new("Button.Translate", "Translate this button"))
 var button2 = new UICButton("Do not translate this button");
 ```
-> :warning: If the string starts with "[TRANSLATABLE]" this will be seen as a serialized translatable
+> :warning: If the string starts with "\[TRANSLATABLE]" this will be seen as a serialized translatable
 
 
 #### Serialize translatable

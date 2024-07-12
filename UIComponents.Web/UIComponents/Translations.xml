@@ -887,7 +887,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Generators\Helpers\GeneratorHelper.cs</File>
-          <LineNumber>334</LineNumber>
+          <LineNumber>349</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -907,7 +907,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Generators\Helpers\GeneratorHelper.cs</File>
-          <LineNumber>406</LineNumber>
+          <LineNumber>421</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -927,11 +927,11 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Generators\Helpers\GeneratorHelper.cs</File>
-          <LineNumber>330</LineNumber>
+          <LineNumber>345</LineNumber>
         </FileAndNumber>
         <FileAndNumber>
           <File>UIComponents.Generators\Helpers\GeneratorHelper.cs</File>
-          <LineNumber>402</LineNumber>
+          <LineNumber>417</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>

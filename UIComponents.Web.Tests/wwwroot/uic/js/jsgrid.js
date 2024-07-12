@@ -193,9 +193,9 @@
         conditionalEditButton: function (item) {
             if (this.editButtonCondition != null && !this.editButtonCondition(item))
                 return;
-            return this._createGridButton(this.editButtonClass, this.editButtonTooltip, function(b, c){
+            return this._createGridButton(this.editButtonClass, this.editButtonTooltip, function (b, c) {
                 b.editItem(item),
-                c.stopPropagation()
+                    c.stopPropagation()
             });
         },
         conditionalDeleteButton: function (item) {
@@ -203,7 +203,7 @@
                 return;
             return this._createGridButton(this.deleteButtonClass, this.deleteButtonTooltip, function (b, c) {
                 b.editItem(item),
-                c.stopPropagation()
+                    c.stopPropagation()
             });
         },
     },
@@ -289,13 +289,8 @@
                     "timePicker": true,
                     "timePicker24Hour": true,
                     autoUpdateInput: false,
-                }).on("apply.daterangepicker", function (e, picker) {
-                    _this.filter_start = picker.startDate;
-
-                    $(this).val(picker.startDate.format("DD/MM/YYYY"));
-
-                    _this._grid.loadData();
-                });
+                }).on("apply.daterangepicker", (e, picker) => _this.applyFilterStart(picker, _this))
+                    .on("change", (e, picker) => _this.applyFilterStart(picker, _this));
             }
 
             // divider
@@ -314,18 +309,28 @@
                     "showCustomRangeLabel": false,
                     "timePicker": false,
                     autoUpdateInput: false,
-                }).on("apply.daterangepicker", function (e, picker) {
-                    _this.filter_end = picker.startDate;
-
-                    $(this).val(picker.startDate.format("DD/MM/YYYY"));
-
-                    _this._grid.loadData();
-                });
+                }).on("apply.daterangepicker", (e, picker) => _this.applyFilterEnd(picker, _this))
+                    .on("change", (e, picker) => _this.applyFilterEnd(picker, _this));
             }
 
             return group;
         },
+        applyFilterStart: function (picker, _this) {
+            _this.filter_start = picker?.startDate || null;
 
+            if (picker != null)
+                $(picker.element).val(picker.startDate.format("DD/MM/YYYY"));
+
+            _this._grid.loadData();
+        },
+        applyFilterEnd: function (picker, _this) {
+            _this.filter_end = picker?.endDate || null;
+
+            if (picker != null)
+                $(picker.element).val(picker.endDate.format("DD/MM/YYYY"));
+
+            _this._grid.loadData();
+        },
         filterValue: function () {
             return {
                 Start: this.filter_start ? this.filter_start.local().toISOString(true) : null,
@@ -410,13 +415,8 @@
                     "timePicker": true,
                     "timePicker24Hour": true,
                     autoUpdateInput: false,
-                }).on("apply.daterangepicker", function (e, picker) {
-                    _this.filter_start = picker.startDate;
-
-                    $(this).val(picker.startDate.format("DD/MM/YYYY"));
-
-                    _this._grid.loadData();
-                });
+                }).on("apply.daterangepicker", (e, picker) => _this.applyFilterStart(picker, _this))
+                    .on("change", (e, picker) => _this.applyFilterStart(picker, _this));
             }
 
             // divider
@@ -436,18 +436,28 @@
                     "timePicker": true,
                     "timePicker24Hour": true,
                     autoUpdateInput: false,
-                }).on("apply.daterangepicker", function (e, picker) {
-                    _this.filter_end = picker.startDate;
-
-                    $(this).val(picker.startDate.format("DD/MM/YYYY"));
-
-                    _this._grid.loadData();
-                });
+                }).on("apply.daterangepicker", (e, picker) => _this.applyFilterEnd(picker, _this))
+                    .on("change", (e, picker) => _this.applyFilterEnd(picker, _this));
             }
 
             return group;
         },
+        applyFilterStart: function (picker, _this) {
+            _this.filter_start = picker?.startDate || null;
 
+            if (picker != null)
+                $(picker.element).val(picker.startDate.format("DD/MM/YYYY"));
+
+            _this._grid.loadData();
+        },
+        applyFilterEnd: function (picker, _this) {
+            _this.filter_end = picker?.endDate || null;
+
+            if (picker != null)
+                $(picker.element).val(picker.endDate.format("DD/MM/YYYY"));
+
+            _this._grid.loadData();
+        },
         filterValue: function () {
             return {
                 Start: this.filter_start ? this.filter_start.local().toISOString(true) : null,
@@ -743,7 +753,7 @@
     }
 
     r.selectlist = {
-        align: "center",
+        //align: "center",
 
         nullIsEmptyString: true,
         nullable: true,
@@ -1065,9 +1075,9 @@
             if (this.autosearch)
                 checkbox.on('change', () => { this._grid.search(); });
 
-                //checkbox.on('change', () => {
-                //    setTimeout(() => this._grid.search(), 50);
-                //});
+            //checkbox.on('change', () => {
+            //    setTimeout(() => this._grid.search(), 50);
+            //});
 
             return checkbox;
         },
