@@ -1,9 +1,9 @@
 ﻿
 
 using System.Text.Json;
-using UIComponents.Abstractions.Models.RecurringDates.Selectors;
+using UIComponents.Abstractions.DataTypes.RecurringDates.Selectors;
 
-namespace UIComponents.Abstractions.Models.RecurringDates;
+namespace UIComponents.Abstractions.DataTypes.RecurringDates;
 
 public partial class RecurringDateItem
 {
@@ -15,7 +15,7 @@ public partial class RecurringDateItem
 
     public IRecurringDateSelector Pattern { get; set; }
 
-    
+
     #endregion
 
     #region Methods
@@ -53,7 +53,7 @@ public partial class RecurringDateItem
         var serialized = SerializeDict(dict);
         return serialized;
 
-        
+
     }
 
     public static string SerializeDict(Dictionary<string, string> dict)
@@ -68,7 +68,7 @@ public partial class RecurringDateItem
         output += "}";
         return output;
     }
-    public static Dictionary<string,string> DeserializeDict(string serialized)
+    public static Dictionary<string, string> DeserializeDict(string serialized)
     {
         var dict = new Dictionary<string, string>();
         if (serialized.StartsWith("{"))
@@ -77,7 +77,8 @@ public partial class RecurringDateItem
         var serializedParts = serialized.Split(",");
         for (int i = 0; i < serializedParts.Length; i++)
         {
-            try{
+            try
+            {
                 var part = serializedParts[i];
                 var key = part.Split(":")[0].Replace("\"", "").Trim();
                 var value = part.Split(":")[1].Replace("\"", "").Trim();
@@ -90,8 +91,8 @@ public partial class RecurringDateItem
                     {
                         i++;
                         var nextPart = serializedParts[i];
-                        openBrackets += (nextPart.Split("{").Length - 1);
-                        openBrackets -= (nextPart.Split("}").Length - 1);
+                        openBrackets += nextPart.Split("{").Length - 1;
+                        openBrackets -= nextPart.Split("}").Length - 1;
                         value += $",{nextPart}";
                         if (openBrackets <= 0)
                             break;
@@ -107,8 +108,8 @@ public partial class RecurringDateItem
                     {
                         i++;
                         var nextPart = serializedParts[i];
-                        openBrackets += (nextPart.Split("[").Length - 1);
-                        openBrackets -= (nextPart.Split("]").Length - 1);
+                        openBrackets += nextPart.Split("[").Length - 1;
+                        openBrackets -= nextPart.Split("]").Length - 1;
                         value += $",{nextPart}";
                         if (openBrackets <= 0)
                             break;
@@ -116,12 +117,12 @@ public partial class RecurringDateItem
                 }
                 dict[key] = value;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var stackTrace = ex.StackTrace;
                 throw;
             }
-            
+
 
         }
 
@@ -134,7 +135,7 @@ public partial class RecurringDateItem
         var result = new RecurringDateItem();
         result.Enabled = bool.Parse(dict[nameof(Enabled)]);
         result.StartDate = DateOnly.Parse(dict[nameof(StartDate)]);
-        if(DateOnly.TryParse(dict[nameof(EndDate)], out var endDate))
+        if (DateOnly.TryParse(dict[nameof(EndDate)], out var endDate))
             result.EndDate = endDate;
 
         var type = RecurringDate.GetType(dict["PatternType"]);
@@ -144,7 +145,7 @@ public partial class RecurringDateItem
         return result;
     }
 
-    
+
     #endregion
 
 }

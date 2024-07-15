@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Generators.Helpers;
-using UIComponents.Models.Helpers;
+using UIComponents.Abstractions.Helpers;
 
 namespace UIComponents.Web.Controllers;
 

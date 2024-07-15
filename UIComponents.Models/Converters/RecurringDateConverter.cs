@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using UIComponents.Abstractions.Models.RecurringDates;
+using UIComponents.Abstractions.DataTypes.RecurringDates;
 
 namespace UIComponents.Models.Converters;
 

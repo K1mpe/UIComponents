@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using UIComponents.Abstractions.Models.RecurringDates;
+using UIComponents.Abstractions.DataTypes.RecurringDates;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 

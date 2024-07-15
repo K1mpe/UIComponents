@@ -1,4 +1,6 @@
-﻿namespace UIComponents.Abstractions.Interfaces;
+﻿using UIComponents.Abstractions.DataTypes;
+
+namespace UIComponents.Abstractions.Interfaces;
 
 public interface IDateRangeInput : IValueRange<DateTime?>
 {
@@ -18,9 +20,4 @@ public interface IDateRangeInput : IValueRange<DateTime?>
                 return null;
             }
         }
-
-
-    DateTime? IValueRange<DateTime?>.From => From;
-    DateTime? IValueRange<DateTime?>.To => To;
-
 }

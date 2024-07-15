@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UIComponents.Abstractions.Attributes;
-using UIComponents.Abstractions.Models.RecurringDates;
+using UIComponents.Abstractions.DataTypes;
+using UIComponents.Abstractions.DataTypes.RecurringDates;
 using UIComponents.Web.Tests.Models;
 using UIComponents.Web.Tests.Validators;
 
@@ -58,7 +59,9 @@ namespace UIComponents.Web.Tests.Models
         [UICPrecisionTime(UICTimeonlyEnum.Second)]
         public DateTime? TimeOnly { get; set; }
 
-        //public TimeOnly TimeOnly { get; set; }
+
+        public UICReferenceValues<TestModel2> References { get; set; } = new UICReferenceValues<TestModel2>().AssignProperties(x=>x.TestModel2Bool);
+
     }
 
     public enum TestEnum
@@ -74,5 +77,6 @@ namespace UIComponents.Web.Tests.Models
         public string TestString { get; set; }
         public int Number { get; set; }
 
+        public bool TestModel2Bool { get; set; }
     }
 }

@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using UIComponents.Abstractions.Helpers;
 using UIComponents.Abstractions.Interfaces.Tables;
-using UIComponents.Models.Helpers;
-using UIComponents.Models.Models.Tables;
 using UIComponents.Models.Models.Tables.TableColumns;
 using static UIComponents.Models.Models.Actions.UICActionGetPost;
 

@@ -4,11 +4,12 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
 using UIComponents.Abstractions;
+using UIComponents.Abstractions.DataTypes;
+using UIComponents.Abstractions.DataTypes.RecurringDates;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Models;
-using UIComponents.Abstractions.Models.RecurringDates;
 using UIComponents.Abstractions.Varia;
 using UIComponents.Defaults;
 using UIComponents.Defaults.Models.Graphs;
@@ -56,8 +57,9 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var translations = await TranslatableSaver.LoadFromUICAsync();
-            return View();
+            
+
+            //return View();
             var testModel = new TestModel();
             var component = await _uic.CreateComponentAsync(testModel, new()
             {
@@ -70,6 +72,8 @@ namespace UIComponents.Web.Tests.Controllers
             (component as UIComponent).AddAttribute("min-width", "400px").AddAttribute("max-width", "1000px");
 
             component.FindInputGroupByPropertyName(nameof(TestModel.Decimal)).AppendInput.Add(new UICSpan(new Untranslated("km")));
+
+            var test2Model = new TestModel2();
 
             await Task.Delay(5000);
             return ViewOrPartial(component);

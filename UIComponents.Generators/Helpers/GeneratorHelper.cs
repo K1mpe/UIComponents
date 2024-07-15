@@ -9,7 +9,7 @@ using UIComponents.Abstractions.Varia;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Models.UICGeneratorResponses;
 using UIComponents.Models.Extensions;
-using UIComponents.Models.Helpers;
+using UIComponents.Abstractions.Helpers;
 using UIComponents.Models.Models.Texts;
 
 namespace UIComponents.Generators.Helpers;

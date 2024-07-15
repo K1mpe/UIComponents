@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Helpers;
 using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Helpers;
-using UIComponents.Models.Helpers;
 using UIComponents.Models.Models.Card;
 
 namespace UIComponents.Generators.Generators.Property;

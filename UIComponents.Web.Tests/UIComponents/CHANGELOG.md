@@ -1,4 +1,6 @@
-﻿# 2024-07-12 (1.2.16)
+﻿# 2024-07-15 (1.2.17)
+- Bugfix UICInputSelectList
+- Vertalingen aanpassen van NL-BE naar NL﻿# 2024-07-12 (1.2.16)
 - Cannot find children in UICInputList anymore
 - Performance fix for select2 selector
 - UICInputSelectList has color support

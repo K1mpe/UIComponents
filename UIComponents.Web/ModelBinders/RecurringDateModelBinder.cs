@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using UIComponents.Abstractions.Models.RecurringDates;
-using UIComponents.Abstractions.Models.RecurringDates.Selectors;
+using UIComponents.Abstractions.DataTypes.RecurringDates;
 
 namespace UIComponents.Web.ModelBinders;
 

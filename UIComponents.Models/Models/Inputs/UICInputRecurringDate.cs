@@ -1,5 +1,5 @@
-﻿using UIComponents.Abstractions.Models.RecurringDates;
-using UIComponents.Abstractions.Models.RecurringDates.Selectors;
+﻿using UIComponents.Abstractions.DataTypes.RecurringDates;
+using UIComponents.Abstractions.DataTypes.RecurringDates.Selectors;
 
 namespace UIComponents.Models.Models.Inputs;
 

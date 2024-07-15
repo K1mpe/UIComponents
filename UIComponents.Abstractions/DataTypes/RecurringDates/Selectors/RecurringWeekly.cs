@@ -1,8 +1,9 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using UIComponents.Abstractions.DataTypes.RecurringDates;
 
-namespace UIComponents.Abstractions.Models.RecurringDates.Selectors;
+namespace UIComponents.Abstractions.DataTypes.RecurringDates.Selectors;
 
 public class RecurringWeekly : IRecurringDateSelector
 {
@@ -70,13 +71,13 @@ public class RecurringWeekly : IRecurringDateSelector
         {
             var dayNr = date.DayNumber;
             var daysPast = dayNr - startDayNr;
-            var remainingWeeks = Math.Floor(daysPast/7f) % EveryXWeeks;
-            if (remainingWeeks >1)
+            var remainingWeeks = Math.Floor(daysPast / 7f) % EveryXWeeks;
+            if (remainingWeeks > 1)
             {
                 date = date.AddDays(7 * ((int)remainingWeeks - 1));
                 continue;
             }
-            if(remainingWeeks == 0)
+            if (remainingWeeks == 0)
             {
                 var dayOfWeek = date.DayOfWeek;
                 if (Monday && dayOfWeek == DayOfWeek.Monday)
@@ -94,7 +95,7 @@ public class RecurringWeekly : IRecurringDateSelector
                 if (Sunday && dayOfWeek == DayOfWeek.Sunday)
                     return date;
             }
-            
+
             date = date.AddDays(1);
         }
 
@@ -127,7 +128,7 @@ public class RecurringWeekly : IRecurringDateSelector
             return true;
 
         return false;
-        
+
     }
 
     public string Serialize()

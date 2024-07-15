@@ -1,4 +1,6 @@
-﻿namespace UIComponents.Abstractions.Extensions;
+﻿using UIComponents.Abstractions.DataTypes;
+
+namespace UIComponents.Abstractions.Extensions;
 
 public static class RangeExtensions
 {
@@ -6,7 +8,7 @@ public static class RangeExtensions
     /// <summary>
     /// Check if the given value falls withing this range
     /// </summary>
-    public static bool Contains<T>(this IValueRange<T> range, T value) where T : IComparable, IEquatable<T>
+    public static bool Contains<T>(this IValueRange<T> range, T value) where T : IComparable
     {
         return range.From.CompareTo(value) <= 0 && range.To.CompareTo(value) >= 0;
     }
@@ -44,4 +46,65 @@ public static class RangeExtensions
         return range.ContainsRange(comparingRange) || range.HasOverlap(comparingRange);
     }
 
+    /// <summary>
+    /// [From] -> [To]
+    /// </summary>
+    /// <param name="range"></param>
+    /// <returns></returns>
+    public static string AsString(this IValueRange range)
+    {
+        return $"{range.From.ToString()} -> {range.To.ToString()}";
+    }
+
+    /// <summary>
+    /// Take the smallest start and the largest end of these 2 ranges
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="otherRange"></param>
+    /// <param name="throwIfNoOverlap">throw a exception if these 2 ranges have no overlap</param>
+    /// <returns></returns>
+    public static ValueRange<T> ExpandWith<T>(this IValueRange<T> source, IValueRange<T> otherRange, bool throwIfNoOverlap) where T : IComparable
+    {
+        if (throwIfNoOverlap && !HasOverlap(source, otherRange))
+            throw new Exception($"The source range ({source.AsString()}) and other range ({otherRange.AsString()}) have no overlap");
+
+        var newRange = new ValueRange<T>();
+        if(source.From.CompareTo(otherRange.From)>0)
+            newRange.From = otherRange.From;
+        else 
+            newRange.From = source.From;
+
+        if (source.To.CompareTo(otherRange.To) < 0)
+            newRange.To = otherRange.To;
+        else
+            newRange.To = source.To;
+
+        return newRange;
+    }
+
+    /// <summary>
+    /// Take the overlapping range from the 2 sources. This will throw a exception if there is no overlap!
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="otherRange"></param>
+    /// <returns></returns>
+    public static ValueRange<T> TakeOverlap<T>(this IValueRange<T> source, IValueRange<T> otherRange) where T : IComparable
+    {
+        if (!HasOverlap(source, otherRange))
+            throw new Exception($"The source range ({source.AsString()}) and other range ({otherRange.AsString()}) have no overlap");
+
+        var newRange = new ValueRange<T>();
+        if (source.From.CompareTo(otherRange.From) < 0)
+            newRange.From = otherRange.From;
+        else
+            newRange.From = source.From;
+
+        if (source.To.CompareTo(otherRange.To) > 0)
+            newRange.To = otherRange.To;
+        else
+            newRange.To = source.To;
+
+        return newRange;
+    }
 }

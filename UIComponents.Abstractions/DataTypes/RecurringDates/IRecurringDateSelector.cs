@@ -1,4 +1,4 @@
-﻿namespace UIComponents.Abstractions.Models.RecurringDates;
+﻿namespace UIComponents.Abstractions.DataTypes.RecurringDates;
 
 public interface IRecurringDateSelector : IUIComponent
 {

@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static UIComponents.Abstractions.Models.RecurringDates.Selectors.RecurringMonthly;
+using UIComponents.Abstractions.DataTypes.RecurringDates;
+using static UIComponents.Abstractions.DataTypes.RecurringDates.Selectors.RecurringMonthly;
 
-namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
+namespace UIComponents.Abstractions.DataTypes.RecurringDates.Selectors
 {
     public class RecurringCustomDate : IRecurringDateSelector
     {
         #region Fields
-        public bool IsInvalid => !Days.Any() && !Months.Any()&& !Years.Any();
+        public bool IsInvalid => !Days.Any() && !Months.Any() && !Years.Any();
         public string RenderLocation => "/UIComponents/ComponentViews/RecurringDateTypes/RecurringCustom";
         #endregion
 
@@ -31,8 +32,8 @@ namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
             if (IsValidDate(dateItem, start))
                 return start;
             Years = Years.OrderBy(x => x).ToList();
-            Months = Months.OrderBy(x => x).Where(x=>x >0 && x <=12).ToList();
-            Days = Days.OrderBy(x => x).Where(x=> x >0 && x <= 31).ToList();
+            Months = Months.OrderBy(x => x).Where(x => x > 0 && x <= 12).ToList();
+            Days = Days.OrderBy(x => x).Where(x => x > 0 && x <= 31).ToList();
 
 
             int? year = start.Year;
@@ -44,9 +45,9 @@ namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
             if (year == null)
                 return null;
             int counter = 0;
-            while(DateTime.DaysInMonth(year.Value, month) < day && counter <1000)
+            while (DateTime.DaysInMonth(year.Value, month) < day && counter < 1000)
             {
-                day = GetDay(day+1);
+                day = GetDay(day + 1);
                 counter++;
             }
             if (counter == 1000)
@@ -56,9 +57,9 @@ namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
 
             int GetDay(int day)
             {
-                if(day > 31)
+                if (day > 31)
                 {
-                    month = GetMonth(month+1);
+                    month = GetMonth(month + 1);
                     return Days.Any() ? Days.First() : 1;
                 }
                 if (!Days.Any())
@@ -66,8 +67,8 @@ namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
                 if (Days.Contains(day))
                     return day;
 
-                if(Days.Where(x=> x > day).Any())
-                    return Days.Where(x=> x >day).First();
+                if (Days.Where(x => x > day).Any())
+                    return Days.Where(x => x > day).First();
                 else
                 {
                     month = GetMonth(month + 1);
@@ -79,7 +80,7 @@ namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
                 if (!Months.Any())
                     return month;
 
-                
+
                 if (Months.Any(x => x >= start.Month))
                     return Months.Where(x => x >= start.Month).First();
                 else
@@ -115,7 +116,7 @@ namespace UIComponents.Abstractions.Models.RecurringDates.Selectors
         {
             if (Days.Any() && !Days.Contains(date.Day))
                 return false;
-            if(Months.Any() && !Months.Contains(date.Month)) 
+            if (Months.Any() && !Months.Contains(date.Month))
                 return false;
             if (Years.Any() && !Years.Contains(date.Year))
                 return false;

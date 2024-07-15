@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace UIComponents.Models.Helpers;
+namespace UIComponents.Abstractions.Helpers;
 
 public class InternalHelper
 {

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-namespace UIComponents.Abstractions.Models.RecurringDates.Selectors;
+using UIComponents.Abstractions.DataTypes.RecurringDates;
+namespace UIComponents.Abstractions.DataTypes.RecurringDates.Selectors;
 
 public class RecurringMonthly : IRecurringDateSelector
 {
@@ -46,16 +47,16 @@ public class RecurringMonthly : IRecurringDateSelector
 
         var date = start;
         int i = 0; // i is failsafe in case of infinite loop, should always end loop before this
-        while (i <10000 && (dateItem.EndDate == null || date <= dateItem.EndDate))
+        while (i < 10000 && (dateItem.EndDate == null || date <= dateItem.EndDate))
         {
             int months = (date.Year - dateItem.StartDate.Year) * 12;
-            months += (date.Month - dateItem.StartDate.Month);
+            months += date.Month - dateItem.StartDate.Month;
 
             var modelo = months % EveryXMonths;
-            if(modelo > 0)
+            if (modelo > 0)
             {
                 //Start op day 1 of the month
-                int revertDays = -(date.Day-1);
+                int revertDays = -(date.Day - 1);
                 switch (Instance)
                 {
                     //Depending on the instance, move the date a certain amount of days forward
@@ -80,7 +81,7 @@ public class RecurringMonthly : IRecurringDateSelector
             switch (Instance)
             {
                 case MonthlyInstance.First:
-                    if(day > 7)
+                    if (day > 7)
                     {
                         var setDay = -(day - 1);
                         date = date.AddMonths(1).AddDays(setDay);
@@ -88,7 +89,7 @@ public class RecurringMonthly : IRecurringDateSelector
                     }
                     break;
                 case MonthlyInstance.Second:
-                    if (day <=7 || day > 14)
+                    if (day <= 7 || day > 14)
                     {
                         var setDay = -(day - 1);
                         setDay += 7;
@@ -125,14 +126,14 @@ public class RecurringMonthly : IRecurringDateSelector
                     if (date.Day <= daysInMonth - 7)
                     {
                         var setDay = -(day - 1);
-                        setDay += (daysInMonth-7);
+                        setDay += daysInMonth - 7;
                         date = date.AddDays(setDay);
                         continue;
                     }
                     break;
             }
 
-            if(RecurringStyle < 7)
+            if (RecurringStyle < 7)
             {
                 if (RecurringStyle == (int)date.DayOfWeek)
                     return date;
@@ -144,7 +145,7 @@ public class RecurringMonthly : IRecurringDateSelector
             }
             if (RecurringStyle == 10)
                 return date;
-            if(RecurringStyle == 11)
+            if (RecurringStyle == 11)
             {
                 if (date.DayOfWeek != DayOfWeek.Sunday && date.DayOfWeek != DayOfWeek.Saturday)
                     return date;
@@ -154,7 +155,7 @@ public class RecurringMonthly : IRecurringDateSelector
                     continue;
                 }
             }
-            if(RecurringStyle == 12)
+            if (RecurringStyle == 12)
             {
                 if (date.DayOfWeek == DayOfWeek.Sunday || date.DayOfWeek == DayOfWeek.Saturday)
                     return date;
@@ -170,7 +171,7 @@ public class RecurringMonthly : IRecurringDateSelector
 
     public bool IsValidDate(RecurringDateItem dateItem, DateOnly date)
     {
-        if(RecurringStyle < 7)
+        if (RecurringStyle < 7)
         {
             if (RecurringStyle != (int)date.DayOfWeek)
                 return false;
@@ -180,7 +181,7 @@ public class RecurringMonthly : IRecurringDateSelector
             if (RecurringStyle == 11 && (date.DayOfWeek == DayOfWeek.Sunday || date.DayOfWeek == DayOfWeek.Saturday))
                 return false;
 
-            if (RecurringStyle == 12 && (date.DayOfWeek != DayOfWeek.Sunday && date.DayOfWeek != DayOfWeek.Saturday))
+            if (RecurringStyle == 12 && date.DayOfWeek != DayOfWeek.Sunday && date.DayOfWeek != DayOfWeek.Saturday)
                 return false;
         }
 
@@ -214,13 +215,13 @@ public class RecurringMonthly : IRecurringDateSelector
 
 
         int months = (date.Year - dateItem.StartDate.Year) * 12;
-        months += (date.Month - dateItem.StartDate.Month);
+        months += date.Month - dateItem.StartDate.Month;
         return months % EveryXMonths == 0;
     }
 
     public string Serialize()
     {
-        string serialised= JsonSerializer.Serialize(this);
+        string serialised = JsonSerializer.Serialize(this);
         return serialised;
     }
 

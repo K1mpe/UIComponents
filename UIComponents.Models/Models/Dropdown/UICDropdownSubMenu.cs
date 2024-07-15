@@ -1,4 +1,5 @@
-﻿using UIComponents.Models.Helpers;
+﻿using UIComponents.Abstractions.DataTypes;
+using UIComponents.Abstractions.Helpers;
 
 namespace UIComponents.Models.Models.Dropdown;
 

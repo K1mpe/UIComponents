@@ -9,7 +9,7 @@
           <Translation>Add</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Toevoegen</Translation>
         </Translation>
       </Translations>
@@ -29,7 +29,7 @@
           <Translation>Cancel</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Annuleren</Translation>
         </Translation>
       </Translations>
@@ -45,7 +45,7 @@
       <Key>Button.Collapse</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Samenvouwen</Translation>
         </Translation>
       </Translations>
@@ -61,7 +61,7 @@
       <Key>Button.Create</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Aanmaken</Translation>
         </Translation>
       </Translations>
@@ -81,7 +81,7 @@
           <Translation>Create a new {0}</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Maak een nieuwe {0}</Translation>
         </Translation>
       </Translations>
@@ -101,7 +101,7 @@
           <Translation>Create a new {0}</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Maak een nieuwe {0}</Translation>
         </Translation>
       </Translations>
@@ -121,7 +121,7 @@
       <Key>Button.Delete</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Verwijderen</Translation>
         </Translation>
       </Translations>
@@ -141,7 +141,7 @@
           <Translation>Delete this {0}</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Verwijder deze {0}</Translation>
         </Translation>
       </Translations>
@@ -157,7 +157,7 @@
       <Key>Button.Edit</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Aanpassen</Translation>
         </Translation>
       </Translations>
@@ -173,7 +173,7 @@
       <Key>Button.Expand</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Vergroten</Translation>
         </Translation>
       </Translations>
@@ -193,7 +193,7 @@
           <Translation>Click to hide the file preview</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Klik hier om het voorbeeld te verbergen</Translation>
         </Translation>
       </Translations>
@@ -213,7 +213,7 @@
           <Translation>Click to hide the tree structure</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Klik hier om de boomstructuur te verbergen</Translation>
         </Translation>
       </Translations>
@@ -233,7 +233,7 @@
           <Translation>Click to show the file preview</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Klik hier om het voorbeeld te tonen</Translation>
         </Translation>
       </Translations>
@@ -253,7 +253,7 @@
           <Translation>Click to show the tree structure</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Klik hier om de boomstructuur weer te geven</Translation>
         </Translation>
       </Translations>
@@ -269,7 +269,7 @@
       <Key>Button.No</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Nee</Translation>
         </Translation>
       </Translations>
@@ -285,7 +285,7 @@
       <Key>Button.Readonly</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Alleen lezen</Translation>
         </Translation>
       </Translations>
@@ -301,7 +301,7 @@
       <Key>Button.Refresh</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Vernieuwen</Translation>
         </Translation>
       </Translations>
@@ -317,7 +317,7 @@
       <Key>Button.Save</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Opslaan</Translation>
         </Translation>
       </Translations>
@@ -333,7 +333,7 @@
       <Key>Button.Send</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Versturen</Translation>
         </Translation>
       </Translations>
@@ -349,7 +349,7 @@
       <Key>Button.Yes</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Ja</Translation>
         </Translation>
       </Translations>
@@ -384,7 +384,7 @@
       <Key>DateRangeSelector.Last7Days</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Laatste 7 dagen</Translation>
         </Translation>
       </Translations>
@@ -404,7 +404,7 @@
       <Key>DateRangeSelector.Today</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Vandaag</Translation>
         </Translation>
       </Translations>
@@ -436,7 +436,7 @@
       <Key>FileExplorer.FileName</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Bestandsnaam</Translation>
         </Translation>
       </Translations>
@@ -452,7 +452,7 @@
       <Key>FileExplorer.FileType</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>BestandsType</Translation>
         </Translation>
       </Translations>
@@ -468,7 +468,7 @@
       <Key>FileExplorer.Icon</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Icoon</Translation>
         </Translation>
       </Translations>
@@ -484,7 +484,7 @@
       <Key>FileExplorer.LastModified</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Laatst gewijzigd</Translation>
         </Translation>
       </Translations>
@@ -500,7 +500,7 @@
       <Key>FileExplorer.Size</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Grootte</Translation>
         </Translation>
       </Translations>
@@ -520,7 +520,7 @@
           <Translation>Upload up to {0} files</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Upload maximum {0} bestanden</Translation>
         </Translation>
       </Translations>
@@ -540,7 +540,7 @@
           <Translation>Upload only one file</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Upload 1 bestand</Translation>
         </Translation>
       </Translations>
@@ -554,7 +554,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.April</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>April</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -565,7 +570,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.August</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Augustus</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -576,7 +586,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.December</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>December</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -587,7 +602,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.February</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Februari</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -598,7 +618,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.January</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Januari</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -609,7 +634,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.July</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Juli</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -620,7 +650,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.June</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Juni</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -631,7 +666,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.March</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Maart</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -642,7 +682,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.May</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Mei</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -653,7 +698,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.November</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>November</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -664,7 +714,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.October</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Oktober</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -675,7 +730,12 @@
     </Translatable>
     <Translatable>
       <Key>Month.September</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>September</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -691,6 +751,10 @@
           <Code>EN</Code>
           <Translation>Day</Translation>
         </Translation>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Dag</Translation>
+        </Translation>
       </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
@@ -702,7 +766,12 @@
     </Translatable>
     <Translatable>
       <Key>RecurringDate.Format.Days</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Dagen</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -717,7 +786,12 @@
     </Translatable>
     <Translatable>
       <Key>RecurringDate.Format.Every</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Iedere</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -732,7 +806,12 @@
     </Translatable>
     <Translatable>
       <Key>RecurringDate.Format.In</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>In</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -743,7 +822,12 @@
     </Translatable>
     <Translatable>
       <Key>RecurringDate.Format.Many</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Veel</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -762,7 +846,12 @@
     </Translatable>
     <Translatable>
       <Key>RecurringDate.Format.Months</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Maanden</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -777,7 +866,12 @@
     </Translatable>
     <Translatable>
       <Key>RecurringDate.Format.Multiple</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Meerdere</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -796,7 +890,12 @@
     </Translatable>
     <Translatable>
       <Key>RecurringDate.Format.Of</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Van</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -807,7 +906,12 @@
     </Translatable>
     <Translatable>
       <Key>RecurringDate.Format.th</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>e</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -818,7 +922,12 @@
     </Translatable>
     <Translatable>
       <Key>RecurringDate.Format.Years</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Jaren</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -839,7 +948,7 @@
           <Translation>Select a {0}</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Selecteer een {0}</Translation>
         </Translation>
       </Translations>
@@ -863,7 +972,7 @@
           <Translation>No items available</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Geen items beschikbaar</Translation>
         </Translation>
       </Translations>
@@ -882,6 +991,10 @@
           <Code>EN</Code>
           <Translation>Select a {0}</Translation>
         </Translation>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Selecteer een {0}</Translation>
+        </Translation>
       </Translations>
       <ArgumentsCount>1</ArgumentsCount>
       <Files>
@@ -899,7 +1012,7 @@
           <Translation>Select a {0}</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Selecteer een {0}</Translation>
         </Translation>
       </Translations>
@@ -919,7 +1032,7 @@
           <Translation>Select one or more {0}</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Selecteer één of meerdere {0}</Translation>
         </Translation>
       </Translations>
@@ -943,7 +1056,7 @@
           <Translation>Close the sidebar</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Sluit de zijbalk</Translation>
         </Translation>
       </Translations>
@@ -963,7 +1076,7 @@
           <Translation>Open the sidebar</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Open de zijbalk</Translation>
         </Translation>
       </Translations>
@@ -983,7 +1096,7 @@
           <Translation>Pin this sidebar</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Zet de zijbalk vast</Translation>
         </Translation>
       </Translations>
@@ -999,7 +1112,7 @@
       <Key>Tab.NoHeader</Key>
       <Translations>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>Geen Header</Translation>
         </Translation>
       </Translations>
@@ -1013,7 +1126,12 @@
     </Translatable>
     <Translatable>
       <Key>Timespan.Days</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Dagen</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -1024,7 +1142,12 @@
     </Translatable>
     <Translatable>
       <Key>Timespan.Hours</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Uren</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -1035,7 +1158,12 @@
     </Translatable>
     <Translatable>
       <Key>Timespan.Miliseconds</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Miliseconden</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -1046,7 +1174,12 @@
     </Translatable>
     <Translatable>
       <Key>Timespan.Minutes</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Minuten</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -1057,7 +1190,12 @@
     </Translatable>
     <Translatable>
       <Key>Timespan.Seconds</Key>
-      <Translations />
+      <Translations>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Seconden</Translation>
+        </Translation>
+      </Translations>
       <ArgumentsCount>0</ArgumentsCount>
       <Files>
         <FileAndNumber>
@@ -1072,6 +1210,10 @@
         <Translation>
           <Code>EN</Code>
           <Translation>Move this item down</Translation>
+        </Translation>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Verzet dit item omlaag</Translation>
         </Translation>
       </Translations>
       <ArgumentsCount>0</ArgumentsCount>
@@ -1090,8 +1232,8 @@
           <Translation>Move this item up</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
-          <Translation>Verplaats dit item omhoog</Translation>
+          <Code>NL</Code>
+          <Translation>Verzet dit item omhoog</Translation>
         </Translation>
       </Translations>
       <ArgumentsCount>0</ArgumentsCount>
@@ -1108,6 +1250,10 @@
         <Translation>
           <Code>EN</Code>
           <Translation>Drop files here or click to upload</Translation>
+        </Translation>
+        <Translation>
+          <Code>NL</Code>
+          <Translation>Zet de bestanden hier en klik op upload</Translation>
         </Translation>
       </Translations>
       <ArgumentsCount>0</ArgumentsCount>
@@ -1126,7 +1272,7 @@
           <Translation>{0} has a invalid color</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>{0} is een ongeldig kleur</Translation>
         </Translation>
       </Translations>
@@ -1146,7 +1292,7 @@
           <Translation>The length of {0} must be shorter than {1}</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>De lengte van {0} moet korter zijn dan {1}</Translation>
         </Translation>
       </Translations>
@@ -1166,7 +1312,7 @@
           <Translation>The value of {0} must be lower or equal to {1}</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>De waarde van {0} moet </Translation>
         </Translation>
       </Translations>
@@ -1186,7 +1332,7 @@
           <Translation>The length of {0} must be longer than {1}</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>De lengte van {0} moet langer zijn dan {1}</Translation>
         </Translation>
       </Translations>
@@ -1206,7 +1352,7 @@
           <Translation>The value of {0} must be higher than or equal to {1}</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>De waarde van {0} moet hoger of gelijk zijn aan {1}</Translation>
         </Translation>
       </Translations>
@@ -1226,7 +1372,7 @@
           <Translation>{0} is required</Translation>
         </Translation>
         <Translation>
-          <Code>NL-BE</Code>
+          <Code>NL</Code>
           <Translation>{0} is verplicht</Translation>
         </Translation>
       </Translations>

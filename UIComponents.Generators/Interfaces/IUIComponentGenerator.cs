@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 using UIComponents.Generators.Models;
-using UIComponents.Models.Helpers;
+using UIComponents.Abstractions.Helpers;
 using UIComponents.Models.Models.Tables;
 
 namespace UIComponents.Generators.Interfaces;

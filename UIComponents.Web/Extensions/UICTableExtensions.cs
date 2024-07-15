@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using UIComponents.Generators.Interfaces;
-using UIComponents.Models.Helpers;
+using UIComponents.Abstractions.Helpers;
 using UIComponents.Models.Models.Tables;
 
 namespace UIComponents.Web.Extensions;

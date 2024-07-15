@@ -96,8 +96,8 @@
         "locale/fr.min.js",
         "locale/nl.js",
         "locale/nl.min.js",
-        "locale/nl-be.js",
-        "locale/nl-be.min.js"
+        "locale/NL.js",
+        "locale/NL.min.js"
       ]
     },
     {

@@ -122,23 +122,13 @@ public class DateRangeSelector
 
 public class DateRangeInput : IDateRangeInput
 {
-    public DateRangeInput(DateTime? start = null, DateTime? end = null)
+    public DateRangeInput(DateTime start, DateTime end )
     {
-        Start = start;
-        End = end;
+        From = start;
+        To = end;
     }
 
-    public DateTime? Start { get; set; }
-    public DateTime? End { get; set; }
+    public DateTime? From { get; set; }
 
-    public DateTime? From
-    {
-        get => Start;
-        set => Start = value;
-    }
-    public DateTime? To
-    {
-        get => End;
-        set => End = value;
-    }
+    public DateTime? To { get; set; }
 }

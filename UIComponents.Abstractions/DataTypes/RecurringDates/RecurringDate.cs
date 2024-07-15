@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using UIComponents.Abstractions.Models.RecurringDates.Selectors;
-namespace UIComponents.Abstractions.Models.RecurringDates;
+using UIComponents.Abstractions.DataTypes.RecurringDates.Selectors;
+
+namespace UIComponents.Abstractions.DataTypes.RecurringDates;
 
 
 public class RecurringDate
@@ -11,7 +12,7 @@ public class RecurringDate
     public List<RecurringDateItem> Excluded { get; set; } = new();
 
 
-    
+
     #region DateMethods
 
     /// <summary>
@@ -35,7 +36,7 @@ public class RecurringDate
     public DateOnly? GetNextDate(DateTime? startPoint = null)
     {
         var result = GetNextDates(1, startPoint);
-        if(result.Any())
+        if (result.Any())
             return result.First();
         return null;
     }
@@ -100,9 +101,9 @@ public class RecurringDate
             {
                 dates.Add(foundDate.Value);
             }
-            if(foundDate != null || firstExcludedDate != null)
+            if (foundDate != null || firstExcludedDate != null)
             {
-                if(foundDate.HasValue)
+                if (foundDate.HasValue)
                     startDate = foundDate.Value.AddDays(1);
                 if (firstExcludedDate.HasValue)
                     if (foundDate == null || firstExcludedDate < foundDate)
@@ -122,7 +123,7 @@ public class RecurringDate
         new(nameof(RecurringMonthly), typeof(RecurringMonthly)),
         new(nameof(RecurringCustomDate), typeof(RecurringCustomDate)),
     };
-    public static Type? GetType(string name)
+    public static Type GetType(string name)
     {
         return _knownTypes.Where(x => x.Name == name).Select(x => x.Type).FirstOrDefault();
     }
@@ -139,8 +140,8 @@ public class RecurringDate
         List<string> included = Included.Select(x => x.Serialize()).ToList();
         List<string> excluded = Excluded.Select(x => x.Serialize()).ToList();
 
-        dict[nameof(Included)]=$"[{String.Join(",",included)}]";
-        dict[nameof(Excluded)]= $"[{String.Join(",", excluded)}]";
+        dict[nameof(Included)] = $"[{string.Join(",", included)}]";
+        dict[nameof(Excluded)] = $"[{string.Join(",", excluded)}]";
 
         return RecurringDateItem.SerializeDict(dict);
     }
@@ -167,7 +168,7 @@ public class RecurringDate
                 result.Included.Add(RecurringDateItem.Deserialize(value));
             }
         }
-        
+
         if (dict[nameof(Excluded)] != "[]")
         {
             var excludedStrings = dict[nameof(Excluded)].Substring(1, dict[nameof(Excluded)].Length - 2).Split("},{");
@@ -181,7 +182,7 @@ public class RecurringDate
                 result.Excluded.Add(RecurringDateItem.Deserialize(value));
             }
         }
-        
+
         return result;
     }
     #endregion

@@ -1,21 +1,24 @@
-﻿namespace UIComponents.Abstractions.Models;
+﻿namespace UIComponents.Abstractions.DataTypes;
 
 
 public interface IValueRange
 {
-    public object From { get;}
-    public object To { get;}
+    public object From { get; }
+    public object To { get; }
 }
-public interface IValueRange<T> : IValueRange
+public interface IValueRange<T> : IValueRange 
 {
-    public T From { get;}
-    public T To { get;}
+    public T From { get; }
+    public T To { get; }
+
+    public T Start => From;
+    public T End => To;
 
     object IValueRange.From => From;
     object IValueRange.To => To;
 }
 
-public class ValueRange<T> : IValueRange<T> where T: IComparable, IEquatable<T>
+public class ValueRange<T> : IValueRange<T> where T : IComparable
 {
     #region Ctor
     public ValueRange()
@@ -53,15 +56,16 @@ public class ValueRange<T> : IValueRange<T> where T: IComparable, IEquatable<T>
     /// <summary>
     /// The highest value from the range, same as <see cref="To"/>
     /// </summary>
-    public T End { 
-        get {  return To; } 
+    public T End
+    {
+        get { return To; }
         set { To = value; }
     }
     #endregion
 
 
     #region Methods
-
+    public override string ToString() => this.AsString();
     #endregion
 
 }

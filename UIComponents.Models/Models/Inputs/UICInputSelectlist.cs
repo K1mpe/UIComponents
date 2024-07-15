@@ -13,7 +13,7 @@ namespace UIComponents.Models.Models.Inputs
             get
             {
                 var renderer = Renderer;
-                if (SearchableIfMinimimResults <= SelectListItems.Count)
+                if (SearchableIfMinimimResults <= SelectListItems?.Count)
                     renderer = SelectListRenderer.Select2;
                 return this.CreateDefaultIdentifier(renderer);
             }
@@ -31,7 +31,7 @@ namespace UIComponents.Models.Models.Inputs
         }
         public UICInputSelectList(string propertyName, List<UICSelectListItem> selectListItems = null) : base(propertyName)
         {
-            SelectListItems = selectListItems;
+            SelectListItems = selectListItems??new();
         }
         #endregion
 
