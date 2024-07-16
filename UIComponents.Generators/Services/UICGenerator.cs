@@ -1,5 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Reflection;
+using System.Reflection.Emit;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
@@ -47,6 +49,30 @@ public class UICGenerator : IUIComponentGenerator
     }
 
 
+
+    public async Task<Translatable> GetPropertyTranslatable(PropertyInfo propertyInfo, UICOptions? options = null)
+    {
+        options = GetOptions(options);
+
+        var displayNameAttr = propertyInfo.GetCustomAttribute<DisplayNameAttribute>();
+        bool hasInherit = UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inheritPropInfo);
+
+        if (hasInherit && displayNameAttr == null)
+        {
+            displayNameAttr = inheritPropInfo.GetCustomAttribute<DisplayNameAttribute>();
+        }
+
+        if (displayNameAttr != null)
+        {
+            return displayNameAttr.DisplayName;
+        }
+        else
+        {
+            var propertyType = await _configuration.GetPropertyTypeAsync(propertyInfo, options);
+            return TranslationDefaults.TranslateProperty(inheritPropInfo, propertyType);
+        }
+    }
+
     public Task<UICTableColumn> SupplementTableColumn(UICTableColumn tableColumn)
     {
         return _configuration.GenerateTableColumn(tableColumn);
@@ -78,6 +104,7 @@ public class UICGenerator : IUIComponentGenerator
             options = new();
         return options;
     }
+
 
     #endregion
 }

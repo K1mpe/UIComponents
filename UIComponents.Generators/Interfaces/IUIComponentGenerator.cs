@@ -39,6 +39,13 @@ public interface IUIComponentGenerator
     /// <returns></returns>
     Task<IUIComponent?> CreateElementFromProperty(PropertyInfo propertyInfo, object classObject, UICOptions? options = null);
 
+    /// <summary>
+    /// This method gets the translatable for a property.
+    /// <br>This used the DisplayNameAttribute or <see cref="UIComponents.Defaults.TranslationDefaults.TranslateProperty"/></br> with the correct <see cref="UICPropertyType"/>
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <returns></returns>
+    Task<Translatable> GetPropertyTranslatable(PropertyInfo propertyInfo, UICOptions? options = null);
 
 
     /// <summary>

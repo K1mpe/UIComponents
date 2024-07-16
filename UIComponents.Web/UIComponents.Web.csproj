@@ -48,6 +48,7 @@
     <None Remove="UIComponents\ChangeLog\2024-06-06.md" />
     <None Remove="UIComponents\ChangeLog\2024-06-10.md" />
     <None Remove="UIComponents\ChangeLog\2024-06-20.md" />
+    <None Remove="UIComponents\ChangeLog\2024-07-...md" />
     <None Remove="UIComponents\ChangeLog\2024-07-12.md" />
     <None Remove="UIComponents\ChangeLog\2024-07-15.md" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\7z.png" />
