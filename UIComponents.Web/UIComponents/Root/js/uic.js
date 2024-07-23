@@ -42,11 +42,11 @@ uic.getValue = function (element) {
     //    var parts = name.split(".");
     //    name = parts[parts.length - 1];
     //}
-        
+
     var arrayElements = uic.getProperties(element).filter(`[name="${name}"][data-array-index]`);
     if (arrayElements.length) {
         var array = [];
-        arrayElements.each(function (index, item){
+        arrayElements.each(function (index, item) {
             array[index] = uic.getValue(item);
         })
         return array;
@@ -86,15 +86,15 @@ uic.setValue = function (element, value) {
     //      ...;
     //  });
     // This will overwrite the default behaviour of this function.
-    if (!$(element).length)
+    if (!element.length)
         return;
 
-    if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["uic-setValue"] != undefined) {
-        $(element).trigger('uic-setValue', value);
+    if ($._data(element.get(0), 'events') != undefined && $._data(element.get(0), 'events')["uic-setValue"] != undefined) {
+        element.trigger('uic-setValue', value);
         return;
     }
     if (element.attr('name') == undefined) {
-        var properties = uic.getProperties(element);
+        let properties = uic.getProperties(element);
         if (properties.length == 1) {
             uic.setValue(properties, value);
             return;
@@ -102,35 +102,40 @@ uic.setValue = function (element, value) {
     }
 
     if (typeof value == "object" && value != null) {
-        var properties = uic.getProperties(element);
+        let properties = uic.getProperties(element);
         if (properties.length == 1) {
             uic.setValue(properties, value);
             return;
         }
-        var valueProps = Object.getOwnPropertyNames(value);
+        let valueProps = Object.getOwnPropertyNames(value);
         valueProps.forEach(function (item, index) {
             //console.log(index, item);
-            var property = properties.filter(`[name="${item}"]`);
+            let property = properties.filter(`[name="${item}"]`);
             uic.setValue(property, value[item]);
         });
 
     } else {
 
-        var type = $(element).attr('type');
-        var tag = $(element).prop('tagName');
-
-        if ($(element).hasClass('three-state-checkbox')) {
-            $(element).data('value', value);
+        let type = element.attr('type');
+        let tag = element.prop('tagName');
+        let isDisabled = element.attr('disabled') !== undefined;
+        if (isDisabled) {
+            element.attr('disabled', null);
+        }
+        if (element.hasClass('three-state-checkbox')) {
+            element.data('value', value);
             uic.form.setThreeState(element);
         }
         else if (type == "checkbox") {
-            $(element).prop('checked', value);
+            element.prop('checked', value);
 
         } else {
-            $(element).val(value);
+            element.val(value);
         }
-        $(element).change();
-        $(element).trigger('uic-valueSet');
+        if (isDisabled)
+            element.attr('disabled', true);
+        element.change();
+        element.trigger('uic-valueSet');
     }
 }
 
@@ -178,8 +183,8 @@ uic.markChanges = function (element, newValue) {
 }
 
 //Returns true or false if the element contains this event
-uic.elementContainsEvent = function($element, eventKey){
-    return ($._data($element.get(0), 'events') != undefined && $._data($element.get(0), 'events')[eventKey] != undefined)        
+uic.elementContainsEvent = function ($element, eventKey) {
+    return ($._data($element.get(0), 'events') != undefined && $._data($element.get(0), 'events')[eventKey] != undefined)
 }
 
 
@@ -270,7 +275,7 @@ uic.getProperties = function (element) {
 uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
 
     if (!$.isPlainObject(objectMissMatch) && objectMissMatch == comparison)
-            return false;
+        return false;
 
     if (!$.isPlainObject(objectMatch))
         return comparison == objectMatch;
@@ -393,7 +398,7 @@ uic.disableUsedListItems = function (...selects) {
                 values.forEach(function (val, j) {
                     $(selects[i]).find(`option[value=${val}]`).attr('disabled', true);
                 })
-                
+
             }
         })
     }
@@ -409,7 +414,7 @@ uic.disableUsedListItems = function (...selects) {
         });
     })
 
-   
+
 }
 
 uic.loadScript = function (source) {

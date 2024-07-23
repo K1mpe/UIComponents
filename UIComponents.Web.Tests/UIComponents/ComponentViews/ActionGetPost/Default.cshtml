@@ -59,21 +59,21 @@ let postOptions = {};
 }
 let @Model.ResultName = null;
 try{
-    @switch (Model.ActionType)
-    {
-        case UICActionGetPost.ActionTypeEnum.Get:
-            <text>
-            @Model.ResultName = await uic.getpost.get('@(string.IsNullOrEmpty(Model.Url) ? Url.Action(Model.Action, Model.Controller) : Model.Url)', data, postOptions);
-            </text>
-            break;
-        case UICActionGetPost.ActionTypeEnum.Post:
-            <text>
-                @Model.ResultName = await uic.getpost.post('@(string.IsNullOrEmpty(Model.Url) ? Url.Action(Model.Action, Model.Controller) : Model.Url)', data, postOptions);
-            </text>
-            break;
-        default:
-            throw new NotImplementedException();
-    }
+@switch (Model.ActionType)
+{
+    case UICActionGetPost.ActionTypeEnum.Get:
+        <text>
+            @Model.ResultName = await uic.getpost.get('@(string.IsNullOrEmpty(Model.Url) ? Url.Action(Model.Action, Model.Controller) : Html.Raw(Model.Url))', data, postOptions);
+        </text>
+        break;
+    case UICActionGetPost.ActionTypeEnum.Post:
+        <text>
+            @Model.ResultName = await uic.getpost.post('@(string.IsNullOrEmpty(Model.Url) ? Url.Action(Model.Action, Model.Controller) : Html.Raw(Model.Url))', data, postOptions);
+        </text>
+        break;
+    default:
+        throw new NotImplementedException();
+}
     if(@Model.ResultName != false){
         @await Model.OnSuccess.InvokeAsync(Component);
     }

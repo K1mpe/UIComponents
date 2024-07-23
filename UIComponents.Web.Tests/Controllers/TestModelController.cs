@@ -38,8 +38,16 @@ public class TestModelController : Controller
 
     public IActionResult LoadData(IFormCollection formCollection)
     {
-        Thread.Sleep(3000);
-        var items = Items.ToList();
+        //Thread.Sleep(3000);
+        List<TestModel> items = new();
+        for(int i=0; i < 1000; i++)
+        {
+            items.AddRange(Items);
+        }
+        for(int j= 0; j < items.Count; j++)
+        {
+            items[j].Number = j;
+        }
         return Json(items);
     }
 

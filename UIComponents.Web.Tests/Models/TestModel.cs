@@ -35,7 +35,7 @@ namespace UIComponents.Web.Tests.Models
         [ReadOnly(true)]
         public TimeSpan TimeSpan { get; set; }
 
-        public TestEnum Enum { get; set; }
+        public TestEnum? Enum { get; set; } = TestEnum.Two;
 
         public string Color { get; set; }
 

@@ -162,7 +162,7 @@
         let start = (pageIndex - 1) * pageSize;
         return {
             itemsCount: data.length,
-            data: data.slice(start, pageSize)
+            data: data.splice(start, pageSize)
         };
     },
 

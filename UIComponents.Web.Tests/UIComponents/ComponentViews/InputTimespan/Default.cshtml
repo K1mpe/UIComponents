@@ -36,7 +36,7 @@
     Model.AddScript(
     @<text>
     $('#@id').on('uic-getValue', function() {
-        //console.log('check Timespan', @Json.Serialize(new TimeSpan(1, 2, 3,4,567)));
+        console.log('check Timespan', @Json.Serialize(new TimeSpan(1, 2, 3,4,567)));
 
         var ticks = 0;
         ticks += ($('#@id .timespan-days').val() * 86400000) || 0;

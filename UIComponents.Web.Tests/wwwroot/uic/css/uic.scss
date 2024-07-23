@@ -615,6 +615,10 @@ i.uic-value-changed {
         .jsgrid-cell {
             padding: 0em 0.25em;
             overflow: hidden;
+
+            > .custom-switch {
+                margin: 1px;
+            }
         }
     }
 

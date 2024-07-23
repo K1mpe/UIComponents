@@ -57,6 +57,10 @@ namespace UIComponents.Models.Models.Tables
         /// </summary>
         public bool EnableTooltip { get; set; } = Defaults.Models.Table.UICTable.EnableTooltip;
 
+        /// <summary>
+        /// If true, pages will be disabled and the data of the next page is automatically loaded and added when reaching the end of the table.
+        /// </summary>
+        public bool InfinitePaging { get; set; } = Defaults.Models.Table.UICTable.InfinitePaging;
 
         #region Data
         /// <summary>
@@ -106,6 +110,14 @@ namespace UIComponents.Models.Models.Tables
         /// <br>This feature only works if all remaining items are visible on a single page</br>
         /// </summary>
         public bool ShowAllSelectFilters { get; set; } = Defaults.Models.Table.UICTable.ShowAllSelectFilters;
+
+        /// <summary>
+        /// When receiving data, run the clientside filter method
+        /// </summary>
+        /// <remarks>
+        /// Can be used for small datasets where you don't want to configure the serverside filtering
+        /// </remarks>
+        public bool FilterClientSize { get; set; } = Defaults.Models.Table.UICTable.FilterClientSize;
 
 
 
@@ -641,6 +653,8 @@ namespace UIComponents.Defaults.Models.Table
         public static bool EnableUpdate { get; set; }
         public static bool EnableDelete { get; set; }
         public static bool EnableTooltip { get; set; }
+        public static bool FilterClientSize { get; set; }
+        public static bool InfinitePaging { get; set; }
         public static int PageSize { get; set; } = int.MaxValue;
         public static string PagingSelector { get; set; }
         public static bool Minimal { get; set; } = true;

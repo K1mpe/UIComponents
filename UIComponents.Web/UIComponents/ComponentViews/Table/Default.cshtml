@@ -39,7 +39,7 @@
         Model.AddClass("jsgrid-minimal");
 
 
-    if (Model.PageSize != int.MaxValue && Model.PageSize > 0)
+    if (Model.PageSize != int.MaxValue && Model.PageSize > 0 && !Model.InfinitePaging)
         Model.AddScript(@<text>
             uic.jsgrid.pager_generate(@Html.JsEncode(id, "'"), @Html.JsEncode(Model.PagingSelector,"'"));
         </text>
@@ -98,6 +98,9 @@
                 console.log("JsGrid $('#@id').trigger('uic-addReloadCondition', ()=> {...}) => Add a new function that is checked on each reload. Returning false will disable the reload");
                 console.log("JsGrid $('#@id').trigger('uic-reloadConditionChanged') => One or more of the reload conditions have changed.");
 
+                console.log("JsGrid $('#@id').triggerHandler('uic-currentData') => Get the data that is currently displayed in the table");
+                console.log("JsGrid $('#@id').triggerHandler('uic-getLastFilters') => Get the last used filters for loading data");
+
                 console.log("JsGrid $('#@id').on('uic-getFilters', (args)=> {... return args}) => Called before loading data. Using this callback you can overwrite the filter data or sorting.");
                 console.log("JsGrid $('#@id').on('uic-beforeFetch', (args)=> {...}) => Triggered just before the LoadData function is called.");
                 console.log("JsGrid $('#@id').on('uic-afterFetch', (data, args)=> {...}) => Triggered after the LoadData function is called.");
@@ -120,6 +123,9 @@
             let canReload = true; //Can the JsGrid Reload
             let tryReload = false; //If Reload Denied, set this true
             let reloadConditions = []; // This is a list of reloadConditions. If all conditions return true, reload is enabled.
+            let lastFilters = null;
+            let currentData = [];
+
             let checkCanReload = function(){
                 if(!canReload)
                     return false;
@@ -182,6 +188,15 @@
             $('#@id').on('uic-disableReload', (ev)=>{
                 ev.stopPropagation();
                 canReload = false;
+            });
+
+            $('#@id').on('uic-getLastFilters', ev=>{
+                return lastFilters;
+            });
+
+            $('#@id').on('uic-currentData', ev=>{
+                ev.stopPropagation();
+                return currentData;
             });
 
             $('#@id').jsGrid({
@@ -251,7 +266,7 @@
                     loadData: async (args) => {
                         args = $('#@id').triggerHandler('uic-getFilters', args) || args; //The 'on.('uic-getFilters')' may change the filter arguments.
                         $('#@id').trigger('uic-beforeFetch');
-
+                        lastFilters = args;
                         @if(Model.SaveFiltersInLocalStorage)
                         {
                         <text>
@@ -260,32 +275,7 @@
                         }catch{}
                         </text>
                         }
-                            @if(Model.Data != null && Model.Data.Any()){
-                            <text>
-                                let result = uic.jsgrid.filterClientSide(args, @Json.Serialize(Model.Data));
-                                result = uic.jsgrid.pageClientSide(result, args.pageIndex, args.pageSize);
-                                
-                                $('#@id').trigger('uic-afterFetch', [result, args]);
-                                return result;
-                            </text>
-                        } else if(Model.LoadData is UICActionGetPost getpost){
-                            if(!getpost.GetVariableData.HasValue())
-                                getpost.GetVariableData = new UICCustom("{filter: args}");
-                            <text>
-                                @await Model.LoadData.InvokeAsync(Component)
-                                @Html.JsEncode(getpost.ResultName) =  uic.jsgrid.pageClientSide(@Html.JsEncode(getpost.ResultName), args.pageIndex, args.pageSize);
-
-                                $('#@id').trigger('uic-afterFetch', [@Html.JsEncode(getpost.ResultName), args]);
-                                return @Html.JsEncode(getpost.ResultName);
-                            </text>
-                        } else{
-                            <text>
-                            @await Model.LoadData.InvokeAsync(Component);
-                            </text>
-                        }
-                        
-                        
-                        
+                        return await getPagedData(args);
                     },
                     @if(Model.EnableInsert && Model.OnInsertItem.HasValue()){
                         if(Model.OnInsertItem is UICActionGetPost getpost && !getpost.GetVariableData.HasValue()){
@@ -398,6 +388,94 @@
             $('#@id').on('uic-closePartial', (ev)=>{
                 $('#@id').trigger('uic-reloadConditionChanged');
             });
+
+            let getPagedData = async function(args){
+                @if(Model.Data != null && Model.Data.Any()){
+                    <text>
+                        let result = uic.jsgrid.filterClientSide(args, @Json.Serialize(Model.Data));
+                        result = uic.jsgrid.pageClientSide(result, args.pageIndex, args.pageSize);
+                                
+                        $('#@id').trigger('uic-afterFetch', [result, args]);
+                        currentData = result.data;
+                        return result;
+                    </text>
+                } else if(Model.LoadData is UICActionGetPost getpost){
+                    if(!getpost.GetVariableData.HasValue())
+                        getpost.GetVariableData = new UICCustom("{filter: args}");
+                    <text>
+                        @await Model.LoadData.InvokeAsync(Component)
+
+                        @if(Model.FilterClientSize){
+                            <text>
+                            let filterData = @(Html.JsEncode(getpost.ResultName))["data"] || @(Html.JsEncode(getpost.ResultName));
+                            filterData = uic.jsgrid.filterClientSide(args, filterData);
+                            if( @(Html.JsEncode(getpost.ResultName))["data"] == undefined){
+                                @(Html.JsEncode(getpost.ResultName)) = filterData;
+                            } else {
+                                @(Html.JsEncode(getpost.ResultName))["data"] = filterData;
+                            }
+                            </text>
+                        }
+
+                        @Html.JsEncode(getpost.ResultName) =  uic.jsgrid.pageClientSide(@Html.JsEncode(getpost.ResultName), args.pageIndex, args.pageSize);
+                        currentData = @(Html.JsEncode(getpost.ResultName)).data;
+                        $('#@id').trigger('uic-afterFetch', [@Html.JsEncode(getpost.ResultName), args]);
+                        return @Html.JsEncode(getpost.ResultName);
+                    </text>
+                } else{
+                    <text>
+                    @await Model.LoadData.InvokeAsync(Component);
+                    </text>
+                }
+            }
+
+            @if(Model.InfinitePaging)
+            {
+                <text>
+                let pageIndex = 1;
+                let nextPageDisabled = true;
+                let triggerHeight = null;
+                let loadNextPage = async function(){
+                    if(nextPageDisabled)
+                        return;
+                    nextPageDisabled = true;
+                    let filters = $('#@id').triggerHandler('uic-getLastFilters');
+
+                    pageIndex += 1;
+                    filters.pageIndex = pageIndex;
+                    let existingData = $('#@id').triggerHandler('uic-currentData');
+                    let result = await getPagedData(filters);
+                    existingData.push(...result.data);
+                    currentData = existingData;
+                    $('#@id').jsGrid('option', 'data', existingData);
+                    triggerHeight = null;
+                    if(filters.pageSize <= result.data.length)
+                        nextPageDisabled = false;
+                }
+                $('#@id').on('uic-dataLoaded', ev=> {
+                    nextPageDisabled = false;
+                    triggerHeight = null;
+
+                    pageIndex = 1;
+                });
+
+            $('#@id').on('uic-initialized', ()=>{
+                $('#@id .jsgrid-pager-container').remove();
+            });
+
+                window.onscroll = ()=>{
+                    if(triggerHeight == null){
+                        let gridPositions = $('#@id')[0].getBoundingClientRect();
+
+                        let gridBottom = gridPositions.bottom - gridPositions.top;
+                        triggerHeight = gridBottom - Math.min(gridPositions.height/4, 1000);
+                    }
+                    if(window.scrollY+ window.innerHeight >= triggerHeight)
+                        loadNextPage();
+
+                }
+                </text>
+            }
 
             </text>);
 }

@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Extensions.Logging;
 using System.Collections;
+using UIComponents.Abstractions.Helpers;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Abstractions.Varia;
@@ -33,7 +34,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
             Parent = args.CallCollection.Caller
         };
         input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
-        if(args.PropertyType.IsEnum && args.PropertyValue != null)
+        if(args.PropertyType.GetNullableType().IsEnum && args.PropertyValue != null)
             input.Value = ((int)args.PropertyValue).ToString();
 
         input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);

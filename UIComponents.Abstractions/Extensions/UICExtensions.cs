@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using UIComponents.Abstractions.Models;
 
 namespace UIComponents.Abstractions.Extensions;
@@ -376,6 +377,39 @@ public static class UICExtensions
     public static T AddClass<T>(this T element, string @class) where T : IUICHasAttributes
     {
         return element.AddAttribute("class", @class);
+    }
+
+    /// <summary>
+    /// Remove a class if it already exists.
+    /// <br>use a '*' to mark if a class starts or ends with something. </br>
+    /// <br>Example: 'btn-*' removes all classes that start with 'btn-'. </br>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="element"></param>
+    /// <param name="class"></param>
+    /// <returns></returns>
+    public static T RemoveClass<T>(this T element, string @class) where T : IUICHasAttributes
+    {
+        if (element.Attributes.TryGetValue("class", out var classes))
+        {
+            var classList = classes.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            if (@class.Contains("*"))
+            {
+                string pattern = "^" + Regex.Escape(@class).Replace(@"\*", ".*") + "$";
+                classList = classList.Where(c => !Regex.IsMatch(c, pattern)).ToList();
+            }
+            else
+            {
+                if (!classList.Contains(@class))
+                    return element;
+
+                classList.Remove(@class);
+            }
+
+            element.Attributes["class"] = string.Join(" ", classList);
+        }
+        return element;
     }
 
     public static T AddCss<T>(this T element, string name, string value) where T : IUICHasAttributes

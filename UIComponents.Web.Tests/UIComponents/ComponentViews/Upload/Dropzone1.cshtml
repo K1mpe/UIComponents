@@ -66,7 +66,7 @@
 <script>
     Dropzone.autoDiscover = false;
     $(document).ready(function(){
-        //console.log('upload script');
+        console.log('upload script');
         var myDropzone = new Dropzone("#@id .dropzone", {
             url: @Json.Serialize(Model.PostUrl), // Set the url for your upload script location
             paramName: "files", // The name that will be used to transfer the file

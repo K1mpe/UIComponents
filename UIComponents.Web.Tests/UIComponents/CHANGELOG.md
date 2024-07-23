@@ -1,4 +1,12 @@
-﻿# 2024-07-15 (1.2.17)
+﻿# 2024-07-23(1.2.20)
+- Adding UICTaghelper Component
+- UICTable .triggerHandler('uic-currentData')
+- UICTable .triggerHandler('uic-getLastFilters')
+- UICTable Infinite loading﻿# 2024-07-19 (1.2.19)
+- Fix readonly InputList
+- Fix dropdown buttons 
+- GetPost uses Raw Url
+- Fix parsing nullable enum﻿# 2024-07-15 (1.2.17)
 - Bugfix UICInputSelectList
 - Vertalingen aanpassen van NL-BE naar NL﻿# 2024-07-12 (1.2.16)
 - Cannot find children in UICInputList anymore

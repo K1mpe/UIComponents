@@ -28,6 +28,7 @@
     {
         if(component is UICButton || component is UICInput)
         {
+            
             <span onclick="event.stopPropagation()">
                 @await component.InvokeAsync(Component)
             </span>
@@ -79,6 +80,9 @@ else if (Model.OnClick is UICActionNavigate navigate)
 }
 else
 {
+   
+    Model.RemoveClass("btn")
+        .RemoveClass("btn-*");
     string itemId = Model.GetId();
     Model.AddAttribute("href", "#");
     Model.AddScript(

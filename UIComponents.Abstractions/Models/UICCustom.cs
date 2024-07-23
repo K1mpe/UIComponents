@@ -8,9 +8,9 @@ namespace UIComponents.Abstractions.Models;
 public class UICCustom : UIComponent, IUICAction, IDropdownItem
 {
     #region Fields
-    private bool _render = true;
+    protected bool _render = true;
 
-    private string _renderLocation;
+    protected string _renderLocation;
     #endregion
 
     #region Ctor

@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace UIComponents.Abstractions.Helpers;
 
-public class InternalHelper
+public static class InternalHelper
 {
     /// <summary>
     /// Copies all properties from a source to a new object. Could be used as a clone function
@@ -110,4 +110,13 @@ public class InternalHelper
         }
         throw new Exception($"{expression.NodeType} is not yet supported");
     }
+
+    /// <summary>
+    /// If this type is nullable, return the Not-nullable type. If the type is not nullable, return itself
+    /// <br>int => int</br>
+    /// <br>int? => int</br>
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static Type GetNullableType(this Type type) => Nullable.GetUnderlyingType(type) ?? type;
 }
