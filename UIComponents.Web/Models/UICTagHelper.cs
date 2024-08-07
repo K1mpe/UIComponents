@@ -20,7 +20,7 @@ public class UICTagHelper : UICCustom
     }
     public UICTagHelper(ITagHelper taghelper)
     {
-        
+        Taghelper = taghelper;
     }
     #endregion
 
@@ -33,7 +33,7 @@ public class UICTagHelper : UICCustom
         {
             if (Taghelper == null)
                 return false;
-            return base._render;
+            return _render;
         }
         set
         {
@@ -78,6 +78,11 @@ public class UICTagHelper : UICCustom
             output.WriteTo(writer, HtmlEncoder.Default);
             return writer.ToString();
         }
+    }
+
+    public override string ToString()
+    {
+        return $"Taghelper {Taghelper?.GetType().Name ?? "NULL"}";
     }
     #endregion
 

@@ -143,6 +143,7 @@ public class UICSidePanel : UIComponent
             case UICSidePanelPosition.Bottom:
                 break;
         }
+        base.InitializeAsync();
     }
     #endregion
 

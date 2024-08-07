@@ -1,4 +1,8 @@
-﻿# 2024-07-23(1.2.20)
+﻿# 2024-08-07 (1.2.21)
+- Fix UICTagHelper constructor
+- Adding UICCached
+- Bugfix UICButton => UICDropdownItem
+- UICHtmlStorage﻿# 2024-07-23(1.2.20)
 - Adding UICTaghelper Component
 - UICTable .triggerHandler('uic-currentData')
 - UICTable .triggerHandler('uic-getLastFilters')

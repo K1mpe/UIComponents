@@ -4,7 +4,16 @@
     <!-- Sidebar -->
     <div class="sidebar">
 
-
+        @{
+            var storedComponent = new UICHtmlStorage()
+            {
+                Id = "NavLeft",
+                GetValue = new UICActionGet("/Home/GetNavLeft"),
+                ValidateTimestamp = new UICActionGet("/Home/GetNavLeftTime")
+            };
+            //storedComponent.ValidateTimestamp = new UICCustom("return true");
+        }
+        @await Component.InvokeAsync(storedComponent, storedComponent.LoadHere(true))
         <!-- Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -19,7 +28,7 @@
                 </li>
             </ul>
         </nav>
-
+        @await Component.InvokeAsync(storedComponent.LoadHere(false))
     </div>
 
    

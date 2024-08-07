@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.2.20</Version>
+	<Version>1.2.21</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -71,6 +71,7 @@
     <None Remove="UIComponents\Root\img\file-explorer\extensions\zw1.png" />
     <None Remove="UIComponents\Root\img\file-explorer\photo.png" />
     <None Remove="UIComponents\Root\img\file-explorer\unknown-file.png" />
+    <None Remove="UIComponents\Root\js\htmlStorage.js" />
     <None Remove="UIComponents\Root\js\jsGrid.js" />
     <None Remove="UIComponents\Root\js\jsgridResize.js" />
     <None Remove="UIComponents\Translations.xml" />
@@ -84,6 +85,12 @@
     <EmbeddedResource Include="UIComponents\Translations.xml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+	
+  <ItemGroup>
+    <None Include="UIComponents\ComponentViews\Cached\Default.cshtml" />
+    <None Include="UIComponents\ComponentViews\HtmlStorage\Default.cshtml" />
+    <None Include="UIComponents\ComponentViews\InputSelectListHtmlStorage\Default.cshtml" />
   </ItemGroup>
 	
 

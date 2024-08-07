@@ -469,6 +469,7 @@
 
                         let gridBottom = gridPositions.bottom - gridPositions.top;
                         triggerHeight = gridBottom - Math.min(gridPositions.height/4, 1000);
+                        //reloading happens when you reach 3/4 of the table, or a max of 1000 pixels from the end of the table.
                     }
                     if(window.scrollY+ window.innerHeight >= triggerHeight)
                         loadNextPage();

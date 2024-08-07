@@ -1,0 +1,92 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Tables;
+@using UIComponents.Models.Models.Tables.TableColumns;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@inject IUICLanguageService L
+@model UICInputSelectListHtmlStorage
+
+@{
+
+    var id = Model.InputSelectList.GetId();
+
+    if (Model.HtmlStorage.HasValue())
+    {
+        <text>
+
+            $('#@id').on('uic-help', function(){
+            console.log("$('#@id').trigger('uic-reload')    Reload all selectlistitems");
+            console.log("$('#@id').on('uic-before-load', ()=>{...})  Triggered before the selectlist starts loading");
+            console.log("$('#@id').on('uic-loaded', ()=>{...})  Triggered after the selectlistitems are finished loading");
+            });
+
+            $('#@id').on('uic-reload', async function(ev){
+                ev.stopPropagation();
+                @await Model.HtmlStorage.TriggerExpired().InvokeAsync(Component)
+            });
+            
+            @if (!Model.SkipInitialLoad)
+            {
+                <text>
+                    $('#@id').trigger('uic-reload');
+                </text>
+            }
+
+            @(Html.JsEncode(Model.SkipInitialLoad? "uic.htmlStorage.onValueChanged": "uic.htmlStorage.onInitOrValueChanged"))(@Html.JsEncode(Model.HtmlStorage.Id, "'"), async ()=>{
+                let element = $('#@id');
+                element.triggerHandler('uic-before-load');
+
+                let selectListItems = await uic.htmlStorage.getValueAsync(@Html.JsEncode(Model.HtmlStorage.Id, "'"));
+                selectListItems = JSON.parse(selectListItems);
+                let currentValue = uic.getValue(element) || @Html.JsEncode(Model.InputSelectList.Value?.ToString() ?? string.Empty, "'");
+                @if (Model.MapToSelectListItems != null)
+                {
+                    <text>
+                        selectListItems = await Model.MapToSelectListItems.InvokeAsync(Component);
+                    </text>
+                }
+
+                element.children().remove();
+                element.append(uic.form.selectlistItems.convertJsonToSelectOptions(selectListItems, @((int)Model.Sorting), @await Html.TranslateJs(L, Model.InputSelectList.NoItemsText)));
+
+                uic.setValue(element, currentValue);
+
+                element.triggerHandler('uic-loaded');
+            })
+
+            uic.htmlStorage.addToCollection(@Html.JsEncode(Model.HtmlStorage.Id, "'"),
+                async ()=>{
+                    @await Model.HtmlStorage.GetValue.InvokeAsync(Component)
+                    @if(Model.HtmlStorage.GetValue is UICActionGetPost getVal)
+                    {
+                        <text>
+                        return @Html.JsEncode(getVal.ResultName);
+                        </text>
+                    }
+                }, 
+                async ()=>{
+                    @await Model.HtmlStorage.ValidateTimestamp.InvokeAsync(Component)
+                    @if (Model.HtmlStorage.GetValue is UICActionGetPost getTimestamp)
+                    {
+                        <text>
+                            return @Html.JsEncode(getTimestamp.ResultName);
+                        </text>
+                    }
+            });
+        </text>
+    }
+}

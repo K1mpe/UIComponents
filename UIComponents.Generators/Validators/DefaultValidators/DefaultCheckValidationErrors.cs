@@ -142,7 +142,7 @@ public class DefaultCheckValidationErrorsReadonly : IUICDefaultCheckValidationEr
         }
 
         HasChecked = true;
-        _logger.LogError($"There is no valid implementation registrated for {nameof(IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleReadonly>)}. Please create implementation or disable this in the config options => options.{nameof(UicConfigOptions.CheckPropertyValidatorReadonly)} = false");
+        _logger.LogError($"There is no valid implementation registrated for {nameof(IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleReadonly>)}<{nameof(IUICPropertyValidationRuleReadonly)}>. Please create implementation or disable this in the config options => options.{nameof(UicConfigOptions.CheckPropertyValidatorReadonly)} = false");
         return Task.FromResult(ValidationRuleResult.IsValid());
     }
 }

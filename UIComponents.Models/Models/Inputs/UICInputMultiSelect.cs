@@ -46,7 +46,29 @@ namespace UIComponents.Models.Models.Inputs
         #endregion
 
         #region Methods
+        public UICInputMultiSelect AddSource(UICHtmlStorage storage)
+        {
+            var source = new UICInputSelectListHtmlStorage(this, storage);
+            return AddSource(source);
+        }
+        public UICInputMultiSelect AddSource(UICHtmlStorage storage, Action<UICInputSelectListHtmlStorage> action)
+        {
+            var source = new UICInputSelectListHtmlStorage(this, storage);
+            action(source);
+            return AddSource(source);
+        }
+        public UICInputMultiSelect AddSource(out UICInputSelectListHtmlStorage outStorage, UICHtmlStorage storage)
+        {
+            outStorage = new UICInputSelectListHtmlStorage(this, storage);
+            return AddSource(outStorage);
+        }
 
+        public UICInputMultiSelect AddSource(UICInputSelectListHtmlStorage storedSource)
+        {
+            storedSource.InputSelectList = this;
+            ScriptCollection.AddToScripts(storedSource);
+            return this;
+        }
         public UICInputMultiSelect AddSource(UICActionGetPost source)
         {
             var selectSource = new UICInputSelectListSource(this, source);

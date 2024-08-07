@@ -167,6 +167,120 @@
             setTimeout(() => uic.form.setThreeState(target), 1);
         });
     },
+
+    selectlistItems: {
+
+        //Method is not yet completed!
+        convertJsonToSelectOptions: function (selectListItems, sorting, noItemText) {
+
+            let results = [];
+
+            if (selectListItems == undefined || selectListItems.length == 0 || selectListItems == false) {
+                results.push($('<option>', { text: noItemText }));
+            } else {
+                switch (sorting) {
+                    case 0:
+                        break;
+                    case 1: //text assending
+                        selectListItems = selectListItems.sort((a, b) =>{
+                            let textA = a.Text?.toUpperCase() || '';
+                            let textB = b.Text?.toUpperCase() || '';
+                            if(textA > textB)
+                                return 1;
+                            else if(textB > textA)
+                                return -1;
+                            return 0;
+                        });
+                        break;
+                    case 2:  //text desending
+                        selectListItems = selectListItems.sort((a, b) =>{
+                            let textA = a.Text?.toUpperCase() || '';
+                            let textB = b.Text?.toUpperCase() || '';
+                            if(textA > textB)
+                                return -1;
+                            else if(textB > textA)
+                                return 1;
+                            return 0;
+                        });
+                        break;
+                    case 3: //value assending
+                        selectListItems = selectListItems.sort((a, b) =>{
+                            let valueA = a.Value?.toUpperCase() || '';
+                            let valueB = b.Value?.toUpperCase() || '';
+                            if(valueA > valueB)
+                                return 1;
+                            else if(valueB > valueA)
+                                return -1;
+                            return 0;
+                        });
+                        break;
+                    case 4: //value descending
+                        selectListItems = selectListItems.sort((a, b) =>{
+                            let valueA = a.Value?.toUpperCase() || '';
+                            let valueB = b.Value?.toUpperCase() || '';
+                            if(valueA > valueB)
+                                return -1;
+                            else if(valueB > valueA)
+                                return 1;
+                            return 0;
+                        });
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+                selectListItems.forEach((item) => {
+                    if (item.Render === false)
+                        return;
+
+                    let option = $('<option>', { value: item.Value, text: item.Text });
+                    if (item.Attributes != undefined) {
+
+                        let attributes = Object.getOwnPropertyNames(item.Attributes);
+                        for (let i = 0; attributes.length > i; i++) {
+                            let attribute = attributes[i];
+                            let value = item.Attributes[attribute];
+                            option.attr(attribute, value);
+                        }
+                    }
+                    if (item.Disabled)
+                        option.attr('disabled', true);
+                    if (item.Hidden)
+                        option.attr('hidden', true);
+                    if (item.Tooltip != undefined && item.Tooltip.length)
+                        option.attr('title', item.Tooltip)
+
+
+                    if (item.Group != undefined && item.Group != null) {
+                        let group = item.Group;
+                        let groupEl = results.find(x => x.attr('label') == group.Name);
+                        if (groupEl!= undefined && groupEl.length) {
+                            groupEl.append(option);
+                        } else {
+                            groupEl = $('<optgroup>', { label: group.Name });
+                            groupEl.append(option);
+                            let attributes = Object.getOwnPropertyNames(group.Attributes);
+                            for (let i = 0; attributes.length > i; i++) {
+                                let attribute = attributes[i];
+                                let value = group.Attributes[attribute];
+                                option.attr(attribute, value);
+                            }
+                            if (group.Disabled)
+                                groupEl.attr('disabled', true);
+                            if (group.Hidden)
+                                groupEl.attr('hidden', true);
+                            if (group.Tooltip != undefined && group.Tooltip.length)
+                                groupEl.attr('title', group.tooltip)
+                            results.push(groupEl);
+                        }
+                    } else {
+                        results.push(option);
+                    }
+
+                });
+            }
+            return results;
+        }
+    },
     select2: {
         //https://select2.org/searching
         searchMethod: function (params, data) {

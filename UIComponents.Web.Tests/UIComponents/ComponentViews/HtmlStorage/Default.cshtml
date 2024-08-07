@@ -1,0 +1,41 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Tables;
+@using UIComponents.Models.Models.Tables.TableColumns;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@model UICHtmlStorage
+<script>
+    uic.htmlStorage.addToCollection(@Html.JsEncode(Model.Id, "'"), 
+        async ()=>{
+            @await Model.GetValue.InvokeAsync(Component)
+            @if(Model.GetValue is UICActionGetPost getVal)
+            {
+                <text>
+                return @Html.JsEncode(getVal.ResultName);
+                </text>
+            }
+        }, 
+        async ()=>{
+            @await Model.ValidateTimestamp.InvokeAsync(Component)
+            @if (Model.GetValue is UICActionGetPost getTimestamp)
+            {
+                <text>
+                    return @Html.JsEncode(getTimestamp.ResultName);
+                </text>
+            }
+    });
+</script>

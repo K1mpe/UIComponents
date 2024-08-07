@@ -3,24 +3,24 @@ using UIComponents.Abstractions.Interfaces.Inputs;
 
 namespace UIComponents.Models.Models.Inputs;
 
-public class UICInputSelectListSource : IUICAction
+public class UICInputSelectListHtmlStorage : IUICAction
 {
 
     public string RenderLocation => this.CreateDefaultIdentifier();
 
     #region Ctor
-    public UICInputSelectListSource(UICInputSelectList inputSelectlist, UICActionGetPost getItemsMethod)
+    public UICInputSelectListHtmlStorage(UICInputSelectList inputSelectlist, UICHtmlStorage htmlStorage)
     {
         InputSelectList = inputSelectlist;
-        GetSelectListItems = getItemsMethod;
+        HtmlStorage = htmlStorage;
     }
-    public UICInputSelectListSource(UICInputMultiSelect inputMultiSelect, UICActionGetPost getItemsMethod)
+    public UICInputSelectListHtmlStorage(UICInputMultiSelect inputMultiSelect, UICHtmlStorage htmlStorage)
     {
         InputSelectList = inputMultiSelect;
-        GetSelectListItems = getItemsMethod;
+        HtmlStorage = htmlStorage;
     }
 
-    public UICInputSelectListSource()
+    public UICInputSelectListHtmlStorage()
     {
             
     }
@@ -35,7 +35,7 @@ public class UICInputSelectListSource : IUICAction
     /// <summary>
     /// The get or post request that gets the selectlistitems
     /// </summary>
-    public UICActionGetPost GetSelectListItems { get; set; }
+    public UICHtmlStorage HtmlStorage { get; set; }
 
     /// <summary>
     /// Sort the selectlistitems after fetching

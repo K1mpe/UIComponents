@@ -184,6 +184,10 @@ namespace UIComponents.Web.Tests.Controllers
         public IActionResult SelectList()
         {
             var group = new UICGroup();
+            group.Add(out var storage, new UICHtmlStorage("SelectList",
+                new UICActionGet("Home", "SelectListData"),
+                new UICActionGet("Home", "GetSelectListTime")));
+
             var multiselect = new UICInputMultiSelect()
             {
                 Color = new UICColor("Green"),//Colors.Green
@@ -210,6 +214,14 @@ namespace UIComponents.Web.Tests.Controllers
                 new(){Value = "5", Text = "five", Disabled = true},
 
             });
+
+            var selectStorage = new UICInputSelectList()
+            {
+                Color = new UICColor("orange"),
+            }.AddSource(storage);
+            group.Add(selectStorage);
+
+            group.Add(new UICInputMultiSelect().AddSource(storage));
             return ViewOrPartial(group);
         }
 
@@ -241,6 +253,12 @@ namespace UIComponents.Web.Tests.Controllers
                 };
                 return Json(items);
             }
+        }
+
+        public IActionResult GetSelectListTime()
+        {
+            var now = DateTime.Now;
+            return Json(now.ToString("yyyyMMddHH"));
         }
 
 
@@ -279,6 +297,20 @@ namespace UIComponents.Web.Tests.Controllers
             };
             UICFileExplorer.Addons.AddAllAddons(fileBrowser);
             return ViewOrPartial(fileBrowser);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetNavLeft()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(10));
+            return PartialView("/Views/Shared/Navigation/_LeftStored.cshtml");
+        }
+
+        [HttpGet]
+        public IActionResult GetNavLeftTime()
+        {
+            var now = DateTime.Now;
+            return Json(now.ToString("yyyyMMddHH"));
         }
     }
 }

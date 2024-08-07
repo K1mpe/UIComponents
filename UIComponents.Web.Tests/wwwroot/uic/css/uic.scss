@@ -755,7 +755,7 @@ body .modal-dialog.auto { /* Width */
 /*#endregion Tabs*/
 
 /* #region SidePanel */
-.uic .side-panel-container {
+.uic.side-panel-container {
     &.horizontal {
         > .side-panel {
             //transition: width $transition-speed ease-in-out;

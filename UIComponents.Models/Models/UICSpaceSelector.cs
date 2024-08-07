@@ -36,7 +36,7 @@ public class UICSpaceSelector : UIComponent
         {
             if (item is UICButton button)
             {
-                var id = button.GetAttribute("id");
+                var id = button.GetId();
                 var dropdownItem =button.ConvertToDropdownItem();
                 if(!string.IsNullOrEmpty(id))
                     dropdownItem.Attributes["id"] = "dropdown-"+id;

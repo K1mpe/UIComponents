@@ -51,6 +51,12 @@ public class UICButton : UIComponent
         dropdownItem.Content = ButtonText;
         dropdownItem.Icon = PrependButtonIcon;
         dropdownItem.OnClick= OnClick;
+        dropdownItem.Attributes = new();
+        foreach(var attr in Attributes)
+        {
+            dropdownItem.Attributes[attr.Key] = attr.Value;
+        }
+            
         return dropdownItem;
     }
     #endregion

@@ -153,15 +153,9 @@ $($0).trigger('uic-help');
 This will look at all parent elements and display the available methods in console.
 Most clientside .trigger('uic-...') methods stop propagation on the first matching element! 
 
-Example: 
-```html
-<body>
-    <div >
-</body>
-```
 
 ## changeWatcher
-You can use the uic.changeWatcher in javascript to check if properties are changed. more info can be found in the uic.js file.
+You can use the uic.changeWatcher in javascript to check if properties are changed. more info can be found in the changeWatcher.js file.
 
 # Component Models
 
@@ -196,16 +190,25 @@ myGroup
 Add method with out parameter:
 ```c#
 var myGroup = new UICGroup();
+
 //Add a new card to the group and assign it to a new variable, the card property is available for later use.
-myGroup.add(out var card, new UICCard("TestCard"));
+myGroup.Add(out var card, new UICCard("TestCard"));
+
+card.Add(out var button1, new UICButton());
+
+button1.OnClick = ...;
 ```
 
 Add method with action:
 ```c#
 var myGroup = new UICGroup();
-//Add a new card to the group and provide a action to configure the card further.
-myGroup.add(new UICCard("TestCard"), card =>{
 
+//Add a new card to the group and provide a action to configure the card further.
+myGroup.Add(new UICCard("TestCard"), card =>{
+    
+    card.Add(new UICButton(), button =>{
+        button.OnClick = ...;
+    })
 });
 ```
 
@@ -298,7 +301,7 @@ You can also place this interface on any model or viewmodel, and this object wil
 
 > If you want to add custom Html or javascript as a IUIComponent, you can use a [UICCustom](#uiccustom).
 
-> If you want to apply mutliple components as a IUIComponent, you can use a [UICGroup](#uicgroup).
+> If you want to apply multiple components as a IUIComponent, you can use a [UICGroup](#uicgroup).
 
 ```c#
 public interface IUIComponent
@@ -538,6 +541,7 @@ This component has 3 levels of data.
 - DefaultData
 - GetVariableData
 - FixedData
+
 DefaultData and FixedData are 2 dictionaries that post their items as properties, while **GetVariableData** is a clientside function that is run when trigging the request. This data will overwrite matching properties of DefaultData, but FixedData will not be effected.
 
 When creating a form, you can set the whole object as DefaultData and the [UICGetValue](#uicgetvalue) as **GetVariableData**. All properties that are not rendered will still be included in the post, but the rendered properties will overwrite these values.

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace UIComponents.Abstractions;
 
@@ -11,6 +12,7 @@ public class Translatable
         DefaultValue = defaultValue;
         Arguments = args;
     }
+    
 
     /// <summary>
     /// The Key to Identify the translation

@@ -4,7 +4,6 @@
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Models;
-
 @using UIComponents.Models.Models;
 @using UIComponents.Models.Models.Actions;
 @using UIComponents.Models.Models.Buttons;
@@ -13,12 +12,7 @@
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
-
 @model UICActionGetPost
-
-
-
-
 @if (Model.GetVariableData.HasValue())
 {
     <text>
@@ -34,7 +28,6 @@ else
     </text>
     
 }
-
 let data = $.extend(true, {},@Json.Serialize(Model.DefaultData), variableContent, @Json.Serialize(Model.FixedData));
 let postOptions = {};
 @if(Model.ClientSideOptions != null)
@@ -48,7 +41,6 @@ let postOptions = {};
     <text>
         postOptions.cancelPreviousRequests = @Json.Serialize(Model.Options.CancelPreviousRequests);
         postOptions.handlers = [];
-
         @foreach(var handler in Model.Options.Handlers)
         {
             <text>
@@ -57,24 +49,24 @@ let postOptions = {};
         }
     </text>
 }
-let @Model.ResultName = null;
+let @Html.JsEncode(Model.ResultName) = null;
 try{
 @switch (Model.ActionType)
 {
     case UICActionGetPost.ActionTypeEnum.Get:
         <text>
-            @Model.ResultName = await uic.getpost.get('@(string.IsNullOrEmpty(Model.Url) ? Url.Action(Model.Action, Model.Controller) : Html.Raw(Model.Url))', data, postOptions);
+            @Html.JsEncode(Model.ResultName) = await uic.getpost.get('@(string.IsNullOrEmpty(Model.Url) ? Url.Action(Model.Action, Model.Controller) : Html.Raw(Model.Url))', data, postOptions);
         </text>
         break;
     case UICActionGetPost.ActionTypeEnum.Post:
         <text>
-            @Model.ResultName = await uic.getpost.post('@(string.IsNullOrEmpty(Model.Url) ? Url.Action(Model.Action, Model.Controller) : Html.Raw(Model.Url))', data, postOptions);
+            @Html.JsEncode(Model.ResultName) = await uic.getpost.post('@(string.IsNullOrEmpty(Model.Url) ? Url.Action(Model.Action, Model.Controller) : Html.Raw(Model.Url))', data, postOptions);
         </text>
         break;
     default:
         throw new NotImplementedException();
 }
-    if(@Model.ResultName != false){
+    if(@Html.JsEncode(Model.ResultName) != false){
         @await Model.OnSuccess.InvokeAsync(Component);
     }
 
