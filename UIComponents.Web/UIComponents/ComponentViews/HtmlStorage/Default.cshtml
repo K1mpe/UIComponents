@@ -31,7 +31,7 @@
         }, 
         async ()=>{
             @await Model.ValidateTimestamp.InvokeAsync(Component)
-            @if (Model.GetValue is UICActionGetPost getTimestamp)
+            @if (Model.ValidateTimestamp is UICActionGetPost getTimestamp)
             {
                 <text>
                     return @Html.JsEncode(getTimestamp.ResultName);

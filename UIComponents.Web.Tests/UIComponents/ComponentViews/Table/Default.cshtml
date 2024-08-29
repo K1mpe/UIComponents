@@ -196,7 +196,7 @@
 
             $('#@id').on('uic-currentData', ev=>{
                 ev.stopPropagation();
-                return currentData;
+                return $('#@id').jsGrid('option', 'data');
             });
 
             $('#@id').jsGrid({
@@ -418,7 +418,7 @@
                         }
 
                         @Html.JsEncode(getpost.ResultName) =  uic.jsgrid.pageClientSide(@Html.JsEncode(getpost.ResultName), args.pageIndex, args.pageSize);
-                        currentData = @(Html.JsEncode(getpost.ResultName)).data;
+                        
                         $('#@id').trigger('uic-afterFetch', [@Html.JsEncode(getpost.ResultName), args]);
                         return @Html.JsEncode(getpost.ResultName);
                     </text>
@@ -446,7 +446,6 @@
                     let existingData = $('#@id').triggerHandler('uic-currentData');
                     let result = await getPagedData(filters);
                     existingData.push(...result.data);
-                    currentData = existingData;
                     $('#@id').jsGrid('option', 'data', existingData);
                     triggerHeight = null;
                     if(filters.pageSize <= result.data.length)

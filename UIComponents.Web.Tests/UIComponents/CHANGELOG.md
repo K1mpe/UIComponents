@@ -1,4 +1,5 @@
-﻿# 2024-08-07 (1.2.21)
+﻿# 2024-08-20 (1.2.22)
+- Adding UICCarousel﻿# 2024-08-07 (1.2.21)
 - Fix UICTagHelper constructor
 - Adding UICCached
 - Bugfix UICButton => UICDropdownItem

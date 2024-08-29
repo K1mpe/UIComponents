@@ -59,6 +59,9 @@
 
         $(document).click(function (e) {
 
+            if (!e.target.isConnected)
+                return;
+
             let target = $(e.target);
             if (!container.find('.side-panel').hasClass('overlay'))
                 return;

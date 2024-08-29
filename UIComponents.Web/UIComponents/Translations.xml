@@ -362,6 +362,21 @@
       </Files>
     </Translatable>
     <Translatable>
+      <Key>Carousel.Previous</Key>
+      <Translations />
+      <ArgumentsCount>0</ArgumentsCount>
+      <Files>
+        <FileAndNumber>
+          <File>UIComponents.Web\UIComponents\ComponentViews\Carousel\Default.cshtml</File>
+          <LineNumber>108</LineNumber>
+        </FileAndNumber>
+        <FileAndNumber>
+          <File>UIComponents.Web\UIComponents\ComponentViews\Carousel\Default.cshtml</File>
+          <LineNumber>114</LineNumber>
+        </FileAndNumber>
+      </Files>
+    </Translatable>
+    <Translatable>
       <Key>Common.And</Key>
       <Translations />
       <ArgumentsCount>0</ArgumentsCount>

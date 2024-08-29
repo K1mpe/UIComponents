@@ -455,7 +455,7 @@
             chart.stop(); // make sure animations are not running
             await LoadNewData(startdate, enddate);
             drawLineInterval = (maxDateTime-minDateTime)/1000;
-            if(100 > drawLineInterval)
+            if(50 > drawLineInterval)
                 drawLineInterval = 100;
             DrawNowLineRecursive();
             $('#@guid').trigger('uic-chartMoved', chart, minDateTime, maxDateTime);

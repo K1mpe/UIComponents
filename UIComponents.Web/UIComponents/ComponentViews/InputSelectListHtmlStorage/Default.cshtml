@@ -38,36 +38,6 @@
                 ev.stopPropagation();
                 @await Model.HtmlStorage.TriggerExpired().InvokeAsync(Component)
             });
-            
-            @if (!Model.SkipInitialLoad)
-            {
-                <text>
-                    $('#@id').trigger('uic-reload');
-                </text>
-            }
-
-            @(Html.JsEncode(Model.SkipInitialLoad? "uic.htmlStorage.onValueChanged": "uic.htmlStorage.onInitOrValueChanged"))(@Html.JsEncode(Model.HtmlStorage.Id, "'"), async ()=>{
-                let element = $('#@id');
-                element.triggerHandler('uic-before-load');
-
-                let selectListItems = await uic.htmlStorage.getValueAsync(@Html.JsEncode(Model.HtmlStorage.Id, "'"));
-                selectListItems = JSON.parse(selectListItems);
-                let currentValue = uic.getValue(element) || @Html.JsEncode(Model.InputSelectList.Value?.ToString() ?? string.Empty, "'");
-                @if (Model.MapToSelectListItems != null)
-                {
-                    <text>
-                        selectListItems = await Model.MapToSelectListItems.InvokeAsync(Component);
-                    </text>
-                }
-
-                element.children().remove();
-                element.append(uic.form.selectlistItems.convertJsonToSelectOptions(selectListItems, @((int)Model.Sorting), @await Html.TranslateJs(L, Model.InputSelectList.NoItemsText)));
-
-                uic.setValue(element, currentValue);
-
-                element.triggerHandler('uic-loaded');
-            })
-
             uic.htmlStorage.addToCollection(@Html.JsEncode(Model.HtmlStorage.Id, "'"),
                 async ()=>{
                     @await Model.HtmlStorage.GetValue.InvokeAsync(Component)
@@ -86,6 +56,27 @@
                             return @Html.JsEncode(getTimestamp.ResultName);
                         </text>
                     }
+            });
+
+            @(Html.JsEncode(Model.SkipInitialLoad? "uic.htmlStorage.onValueChanged": "uic.htmlStorage.onInitOrValueChanged"))(@Html.JsEncode(Model.HtmlStorage.Id, "'"), async ()=>{
+                let element = $('#@id');
+                element.triggerHandler('uic-before-load');
+                let selectListItems = await uic.htmlStorage.getValueAsync(@Html.JsEncode(Model.HtmlStorage.Id, "'"));
+                selectListItems = JSON.parse(selectListItems);
+                let currentValue = uic.getValue(element) || @Html.JsEncode(Model.InputSelectList.Value?.ToString() ?? string.Empty, "'");
+                @if (Model.MapToSelectListItems != null)
+                {
+                    <text>
+                        selectListItems = await Model.MapToSelectListItems.InvokeAsync(Component);
+                    </text>
+                }
+
+                element.children().remove();
+                element.append(uic.form.selectlistItems.convertJsonToSelectOptions(selectListItems, @((int)Model.Sorting), @await Html.TranslateJs(L, Model.InputSelectList.NoItemsText)));
+
+                uic.setValue(element, currentValue);
+
+                element.triggerHandler('uic-loaded');
             });
         </text>
     }

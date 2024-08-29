@@ -25,18 +25,19 @@
 
     Model.Initialize();
 
+    Model.AddClass("side-panel-container horizontal row");
+    Model.AddAttribute("data-sidebar-name", Model.SidePanelIdentifier);
 
 
-    
 }
 
 @if (Model.SidePanelContent.HasValue())
 {
     Model.AddScript(
     @<text>
-        uic.sidePanel.initialize($('#@id'), @((int)Model.DefaultState));
-    </text>);
-    <div id="@id" class="side-panel-container horizontal row" data-sidebar-name="@Html.JsEncode(Model.SidePanelIdentifier)">
+    uic.sidePanel.initialize($('#@id'), @((int)Model.DefaultState));
+</text>);
+    <div @Html.Raw(Model.GetHtmlAttributes())>
         <div class="side-panel col col-1 d-none">
             <div class="card">
                 @await Model.ButtonToolbar.InvokeAsync(Component)

@@ -441,7 +441,7 @@
     maxDateTime = moment(chart.scales.x.max);
 
     let enableDrawNowLine = @Json.Serialize(Model.EnableNowIndicator);
-    let drawLineInterval = 100;
+    let drawLineInterval = 20;
     var graphsIds;
     async function startFetch({ chart }) {
         let { min, max } = chart.scales.x;
@@ -455,8 +455,8 @@
             chart.stop(); // make sure animations are not running
             await LoadNewData(startdate, enddate);
             drawLineInterval = (maxDateTime-minDateTime)/1000;
-            if(100 > drawLineInterval)
-                drawLineInterval = 100;
+            if(50 > drawLineInterval)
+                drawLineInterval = 20;
             DrawNowLineRecursive();
             $('#@guid').trigger('uic-chartMoved', chart, minDateTime, maxDateTime);
         });

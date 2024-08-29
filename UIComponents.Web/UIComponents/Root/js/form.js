@@ -233,6 +233,11 @@
                         return;
 
                     let option = $('<option>', { value: item.Value, text: item.Text });
+
+                    if (item.SearchTag != undefined) {
+                        option.attr('data-select-search', item.SearchTag);
+                    }
+
                     if (item.Attributes != undefined) {
 
                         let attributes = Object.getOwnPropertyNames(item.Attributes);

@@ -29,13 +29,13 @@
 
     if (Model.Value != null)
     {
-        foreach (var item in Model.SelectListItems.Where(x => Model.Value.Contains(x.Value?.ToString()??string.Empty)))
+        foreach (var item in Model.SelectListItems.Where(x => Model.Value.Contains(x.Value?.ToString() ?? string.Empty)))
         {
             item.Selected = true;
         }
     }
 
-    Model.Value = Model.SelectListItems.Where(x => x.Selected).Select(x => x.Value?.ToString()??string.Empty).ToArray();
+    Model.Value = Model.SelectListItems.Where(x => x.Selected).Select(x => x.Value?.ToString() ?? string.Empty).ToArray();
 
 
     var style = Model.GetAttribute("style");
@@ -149,12 +149,13 @@
         tags: @Json.Serialize(Model.AllowDynamicOptions),
         allowClear: true,
         placeholder: @Html.JsEncode(placeholder, "'"),
+        dropdownParent: $('#@id').closest('form, .card, body')
         });
 
         $('#@id').data('select2').$dropdown.attr('data-for', '@id').addClass('include-items');
         $('#@id').on('uic-setValue', function(event, ...values){
 
-            $('#@id').val(values).change();
+        $('#@id').val(values).change();
         });
         @if(Model.ClearInputAfterSelecting)
     {

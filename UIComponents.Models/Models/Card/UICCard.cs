@@ -18,7 +18,7 @@ public class UICCard : UIComponent, IUICCardLike
     }
     public UICCard() : base()
     {
-
+        RenderConditions.Add(() => this.RenderWithoutBodyContent || this.Body.HasValue());
     }
     #endregion
 
@@ -65,6 +65,11 @@ public class UICCard : UIComponent, IUICCardLike
     /// If not empty, set this as the maximum width of the card
     /// </summary>
     public string MaxWidth { get; set; }
+
+    /// <summary>
+    /// If the body is empty, do not render this card
+    /// </summary>
+    public bool RenderWithoutBodyContent { get; set; }
 
 
     IUICHasAttributesAndChildren IUICCardLike.Content => Body;

@@ -1,0 +1,139 @@
+﻿@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Varia
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Tables;
+@using UIComponents.Models.Models.Tables.TableColumns;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@inject IUICLanguageService L
+@model UICCarousel
+
+@if(Model.OnlyRenderSingleContent && Model.Children.Where(x=>x.HasValue()).Count() == 1)
+{
+    var firstChild = Model.Children.Where(x => x.HasValue()).First();
+    @await firstChild.InvokeAsync(Component)
+}
+else
+{
+    string id = Model.GetId();
+    Model.AssignCollectionForChildren();
+    Model.AddClass("carousel slide");
+
+    if (Model.NextPageInterval.HasValue)
+    {
+        Model.AddAttribute("data-interval", Model.NextPageInterval.Value.TotalMilliseconds.ToString());
+        Model.AddAttribute("data-pauze", "hover");
+    }
+    else
+    {
+        Model.AddAttribute("data-pause", "true");
+    }
+
+
+    if (Model.Loop)
+        Model.AddAttribute("data-wrap", "true");
+
+    if (Model.FadeAnimation)
+        Model.AddClass("carousel-fade");
+
+    if (Model.ArrowIndicatorsVisibility == UICHoverVisibility.VisibleOnHover)
+        Model.AddClass("hover-arrow");
+    if (Model.TabIndicatorsVisibility == UICHoverVisibility.VisibleOnHover)
+        Model.AddClass("hover-indicators");
+
+    <div @Html.Raw(Model.GetHtmlAttributes())>
+        @if (Model.TabIndicatorsVisibility != UICHoverVisibility.Hidden)
+        {
+            int tabIndicator = 0;
+            <ol class="carousel-indicators">
+            @foreach (var child in Model.Children)
+            {
+                if (!child.HasValue())
+                    continue;
+
+                if (Model.ColorTabIndicators && child is IUICHasColor hasColor && hasColor.Color != null)
+                {
+                    <li class="indicator-@hasColor.Color.ToLower()" data-target="#@id" data-slide-to="@tabIndicator">
+                        <div class="indicator-background">
+                        </div>
+                    </li>
+                }
+                else
+                {
+                    <li data-target="#@id" data-slide-to="@tabIndicator">
+                        <div class="indicator-background">
+                        </div>
+                    </li>
+                }
+
+                tabIndicator++;
+            }
+            </ol>
+        }
+
+        <div class="carousel-inner">
+            @{
+                bool firstItem = true;
+            }
+            @foreach (var item in Model.Children)
+            {
+                if (!item.HasValue())
+                    continue;
+
+                <div class="carousel-item @(firstItem?"active":"")">
+                    @await item.InvokeAsync(Component)
+                </div>
+                firstItem = false;
+            }
+        </div>
+        @if (Model.ArrowIndicatorsVisibility != UICHoverVisibility.Hidden)
+        {
+            <a class="carousel-control-prev" href="#@id" role="button" data-slide="prev">
+                <i class="fa-solid fa-caret-left control-dark"></i>
+                <i class="fa-solid fa-caret-left control-light"></i>
+                @* <span class="carousel-control-prev-icon" aria-hidden="true"></span> *@
+                <span class="sr-only">@await Html.TranslateHtml(L, TranslatableSaver.Save("Carousel.Previous"))</span>
+            </a>
+            <a class="carousel-control-next" href="#@id" role="button" data-slide="next">
+                <i class="fa-solid fa-caret-right control-dark"></i>
+                <i class="fa-solid fa-caret-right control-light"></i>
+                @* <span class="carousel-control-next-icon" aria-hidden="true"></span> *@
+                <span class="sr-only">@await Html.TranslateHtml(L, TranslatableSaver.Save("Carousel.Previous"))</span>
+            </a>
+        }
+    </div>
+    Model.AddScript(@<text>
+        $('#@id').carousel();
+    </text>);
+
+    if (Model.OnSlideStart.HasValue())
+    {
+        Model.AddScript(@<text>
+            $('#@id').on('slide.bs.carousel', function (args) {
+                @await Model.OnSlideStart.InvokeAsync(Component)
+            });
+        </text>);
+    }
+    if (Model.OnSlideFinished.HasValue())
+    {
+        Model.AddScript(@<text>
+            $('#@id').on('slid.bs.carousel', function (args) {
+                @await Model.OnSlideFinished.InvokeAsync(Component)
+            });
+        </text>);
+    }
+    @await Model.RenderStylesAndScripts(Component)
+}

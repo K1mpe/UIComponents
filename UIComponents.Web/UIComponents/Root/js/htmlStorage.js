@@ -26,7 +26,7 @@
             throw "Id is required!";
         }
         if (uic.htmlStorage._collection[id] == undefined) {
-            throw `${id} does not exist!`; 
+            throw `${id} does not exist!`;
         }
 
         if (uic.htmlStorage._busyRequests[id] != undefined) {
@@ -37,7 +37,7 @@
             unblockBusy = resolve;
         });
         try {
-            
+
             let timestamp = uic.htmlStorage._collection[id].timestamp;
             let getTimestampFunc = uic.htmlStorage._collection[id].getTimestampFunc;
             let value = uic.htmlStorage._collection[id].value;
@@ -109,7 +109,7 @@
     },
 
 
-    
+
 
 
     //When the value is changed, this function will be called.
@@ -125,9 +125,11 @@
 
     // This will expire the current value, forcing the next GetValueAsync to make a new database request 
     triggerExpired: function (id) {
-        uic.htmlStorage._collection[id].value = undefined;
-        uic.htmlStorage._collection[id].timestamp = undefined;
-        uic.htmlStorage._collection[id].timestampValidated = false;
+        if (uic.htmlStorage._collection[id] != undefined) {
+            uic.htmlStorage._collection[id].value = undefined;
+            uic.htmlStorage._collection[id].timestamp = undefined;
+            uic.htmlStorage._collection[id].timestampValidated = false;
+        }
         uic.htmlStorage._triggerValueChanged(id);
     },
 

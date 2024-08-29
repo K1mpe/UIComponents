@@ -28,7 +28,7 @@
     string id = Model.GetId();
 
     if (!string.IsNullOrEmpty(Model.Value))
-        Model.SelectListItems.FirstOrDefault(x => (x.Value?.ToString()??string.Empty) == Model.Value, new()).Selected = true;
+        Model.SelectListItems.FirstOrDefault(x => (x.Value?.ToString() ?? string.Empty) == Model.Value, new()).Selected = true;
 
     Model.Actions.SetIdentifier($"#{id}");
 
@@ -41,20 +41,20 @@
     {
 
         Model.AddStyle(
-            @<text>
-                #@id + span .select2-selection__choice{
-                background-color: var(--@Model.Color.ToLower()) !important;
-                border-color: var(--@Model.Color.ToLower()) !important;
-                }
-                #@id + span.select2-container--focus .select2-selection--single {
-                border-color: var(--@Model.Color.ToLower()) !important;
-                }
+    @<text>
+        #@id + span .select2-selection__choice{
+        background-color: var(--@Model.Color.ToLower()) !important;
+        border-color: var(--@Model.Color.ToLower()) !important;
+        }
+        #@id + span.select2-container--focus .select2-selection--single {
+        border-color: var(--@Model.Color.ToLower()) !important;
+        }
 
-                #select2-@(id)-results .select2-results__option--highlighted{
-                background-color: var(--@Model.Color.ToLower()) !important;
-                }
-            </text>
-                );
+        #select2-@(id)-results .select2-results__option--highlighted{
+        background-color: var(--@Model.Color.ToLower()) !important;
+        }
+    </text>
+        );
     }
     Model.AddScript(
     @<text>
@@ -69,14 +69,15 @@
         templateResult: uic.form.select2.resultRenderer,
         tags: @Json.Serialize(Model.AllowDynamicOptions),
         width:'',
+        dropdownParent: $('#@id').closest('form, .card, body')
         });
 
         $('#@id').on('select2:opening', function(){
         uic.delayedAction.run('OpenDropdown-@id', 100, ()=>{$('#@id').triggerHandler('uic-open')});
         })
         $('#@id').on('uic-setValue', function (event, value) {
-            event.stopPropagation();
-            $(this).val(value).change();
+        event.stopPropagation();
+        $(this).val(value).change();
         });
 
         $('#@id').on('focus', ()=>{

@@ -7,8 +7,9 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.2.21</Version>
+	<Version>1.2.23</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<!--<PackageReadmeFile>README.md</PackageReadmeFile>-->
   </PropertyGroup>
 	
   <ItemGroup>
@@ -52,6 +53,7 @@
     <None Remove="UIComponents\ChangeLog\2024-07-15.md" />
     <None Remove="UIComponents\ChangeLog\2024-07-19.md" />
     <None Remove="UIComponents\ChangeLog\2024-07-23.md" />
+    <None Remove="UIComponents\ChangeLog\2024-08-20.md" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\7z.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\bak.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\db.png" />
@@ -89,6 +91,7 @@
 	
   <ItemGroup>
     <None Include="UIComponents\ComponentViews\Cached\Default.cshtml" />
+    <None Include="UIComponents\ComponentViews\Carousel\Default.cshtml" />
     <None Include="UIComponents\ComponentViews\HtmlStorage\Default.cshtml" />
     <None Include="UIComponents\ComponentViews\InputSelectListHtmlStorage\Default.cshtml" />
   </ItemGroup>

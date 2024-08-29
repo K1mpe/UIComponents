@@ -23,7 +23,7 @@
 
 
 @{
-    var accordion = new UICAccordion()
+    var accordion = new UIComponents.Models.Models.Card.UICAccordion()
     {
         AllowOneCardOpen = true
     };
@@ -138,8 +138,28 @@
         ));
     #endregion
 
+    
+
     #region Taghelper
     accordion.Add(new UICCard("CustomTaghelper").Add(out var taghelper, new UICCustom()));
+    #endregion
+
+    #region Carousel
+    accordion.Add(new UICCard(new Translatable("Card.carousel"))
+        .Add(new UICCarousel(), carousel =>
+        {
+            carousel.FadeAnimation = true;
+            carousel.ArrowIndicatorsVisibility = UICHoverVisibility.VisibleOnHover;
+            carousel.TabIndicatorsVisibility = UICHoverVisibility.VisibleOnHover;
+            carousel.AddAttribute("min-height", "300px");
+            var card1 = new UICCard().Add(taghelper);
+            card1.AddHeader(x => x.Color = new UICColor("primary"));
+            card1.Body.AddClass("bg-secondary");
+            card1.RenderWithoutBodyContent = true;
+            carousel.Add(card1);
+
+            carousel.Add(tree);
+        }));
     #endregion
 }
 <uic-custom uic="taghelper">

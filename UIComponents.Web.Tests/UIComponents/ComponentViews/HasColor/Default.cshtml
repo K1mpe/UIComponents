@@ -17,25 +17,5 @@
 @using UIComponents.Models.Models.Tables.TableColumns;
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
-@model UICHtmlStorage
-<script>
-    uic.htmlStorage.addToCollection(@Html.JsEncode(Model.Id, "'"), 
-        async ()=>{
-            @await Model.GetValue.InvokeAsync(Component)
-            @if(Model.GetValue is UICActionGetPost getVal)
-            {
-                <text>
-                return @Html.JsEncode(getVal.ResultName);
-                </text>
-            }
-        }, 
-        async ()=>{
-            @await Model.ValidateTimestamp.InvokeAsync(Component)
-            @if (Model.ValidateTimestamp is UICActionGetPost getTimestamp)
-            {
-                <text>
-                    return @Html.JsEncode(getTimestamp.ResultName);
-                </text>
-            }
-    });
-</script>
+@model UICHasColor
+@await Model.Component.InvokeAsync(Component)
