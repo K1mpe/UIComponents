@@ -76,9 +76,14 @@
         });
     },
     setHeight: function (container) {
+        
+        if (!$(container).find('> .side-panel.overlay').length)
+            return;
         let height = $(container).find('> .side-panel-content').height();
 
+        //$(container).find('.side-panel').height('100%');
         $(container).find('.side-panel').height(height + 'px');
+        
     },
     setHeightOnChange: function (container) {
         uic.sidePanel.setHeight(container);
@@ -115,13 +120,14 @@
 
         sidePanel.find('.btn-sidebar-fixed').removeClass('d-none');
         container.find('.btn-sidebar-open').addClass('d-none');
+        uic.sidePanel.setHeight(container);
         uic.sidePanel.saveState(container, 1);
     },
     setPinned: function (container) {
 
         let sidePanel = container.find('.side-panel');
         sidePanel.addClass('col col-1 fit-content');
-
+        sidePanel.css('height', '');
         sidePanel.removeClass('collapsed overlay');
         sidePanel.addClass('fixed');
 

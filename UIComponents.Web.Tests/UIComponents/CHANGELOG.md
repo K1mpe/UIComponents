@@ -1,4 +1,9 @@
-﻿# 2024-08-29 (1.2.24)
+﻿# 2024-09-03 (1.2.25)
+- BugFix Multiline input new line in form that prevents submit on "enter"
+- UICTable fix infinite scroll when scrollbar is a part of the page and not the full page
+- UICTable remove the scrollbar when height is set to "auto"
+- UICPartial support for Url
+- UICPartial does not render Json(null)﻿# 2024-08-29 (1.2.24)
 - BugFix StartInCard => Render = false﻿# 2024-08-20 (1.2.22)
 - Adding UICCarousel﻿# 2024-08-07 (1.2.21)
 - Fix UICTagHelper constructor

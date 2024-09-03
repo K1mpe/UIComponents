@@ -12,6 +12,11 @@ public class UICPartial : UIComponent, IUICHasChildren<IUIComponent>
 
     }
 
+    public UICPartial(string url, object data = null, ActionTypeEnum getPost = ActionTypeEnum.Get) : this(new UICActionGetPost(getPost, url, data))
+    {
+
+    }
+
     public UICPartial(UICActionGetPost getHtml) : this()
     {
         GetHtml = getHtml;

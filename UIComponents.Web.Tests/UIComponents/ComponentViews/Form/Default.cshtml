@@ -72,6 +72,8 @@ else
     {
         Model.AddScript(@<text>
             $('#@id').keydown(ev => {
+                if(ev.target.type == 'textarea')
+                    return;
                 if(ev.keyCode == 13)
                     ev.preventDefault();
             });

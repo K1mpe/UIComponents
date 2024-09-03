@@ -38,6 +38,8 @@
     if (Model.Minimal)
         Model.AddClass("jsgrid-minimal");
 
+    if (Model.Height.ToLower() == "auto")
+        Model.AddClass("no-scroll");
 
     if (Model.PageSize != int.MaxValue && Model.PageSize > 0 && !Model.InfinitePaging)
         Model.AddScript(@<text>
@@ -462,7 +464,8 @@
                 $('#@id .jsgrid-pager-container').remove();
             });
 
-                window.onscroll = ()=>{
+                $('#@id').scrollParent()[0].onscroll = ()=>{
+                    let scrollParent = $('#@id').scrollParent();
                     if(triggerHeight == null){
                         let gridPositions = $('#@id')[0].getBoundingClientRect();
 
@@ -470,7 +473,7 @@
                         triggerHeight = gridBottom - Math.min(gridPositions.height/4, 1000);
                         //reloading happens when you reach 3/4 of the table, or a max of 1000 pixels from the end of the table.
                     }
-                    if(window.scrollY+ window.innerHeight >= triggerHeight)
+                    if(scrollParent.scrollTop() + Math.min(scrollParent.innerHeight(), window.innerHeight) >= triggerHeight)
                         loadNextPage();
 
                 }

@@ -44,7 +44,9 @@
             if (partial.find(`#${forId}`).length)
                 select2Container.remove();
         }
-        
+        if (result == 'null')
+            result = null;
+
         partial.html(result);
 
         if (showOverlay)
