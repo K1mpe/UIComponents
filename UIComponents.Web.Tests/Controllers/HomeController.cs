@@ -281,6 +281,7 @@ namespace UIComponents.Web.Tests.Controllers
                 PostObjectAsDefault = true,
                 SubClassesInCard = new(),
                 ShowEditButton = false,
+                StartInCard = new UICCard("blub"),
                 PostForm= new UICActionPost("/home/Post")
             });
 

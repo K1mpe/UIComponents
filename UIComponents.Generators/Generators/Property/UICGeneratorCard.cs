@@ -38,6 +38,7 @@ public class UICGeneratorCard : UICGeneratorProperty
         if (card == null)
             return GeneratorHelper.Next();
 
+        card.Render = true;
         card.Parent = args.CallCollection.Caller;
         if (args.Options.ShowCardHeaders)
             card.Header = new UICCardHeader(TranslationDefaults.TranslateObject(args.ClassObject));
