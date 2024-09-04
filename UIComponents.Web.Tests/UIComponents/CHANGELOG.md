@@ -1,25 +1,44 @@
-﻿# 2024-09-03 (1.2.25)
+# 2024-09-04 (1.2.26)
+- Better stackoverflow message in IUIComponent.GetAllChildren()
+- UICIgnoreGetChildrenFunctionAttribute now works on classes as well as properties
+
+# 2024-09-03 (1.2.25)
 - BugFix Multiline input new line in form that prevents submit on "enter"
 - UICTable fix infinite scroll when scrollbar is a part of the page and not the full page
 - UICTable remove the scrollbar when height is set to "auto"
 - UICPartial support for Url
-- UICPartial does not render Json(null)﻿# 2024-08-29 (1.2.24)
-- BugFix StartInCard => Render = false﻿# 2024-08-20 (1.2.22)
-- Adding UICCarousel﻿# 2024-08-07 (1.2.21)
+- UICPartial does not render Json(null)
+
+
+# 2024-08-29 (1.2.24)
+- BugFix StartInCard => Render = false
+
+# 2024-08-20 (1.2.22)
+- Adding UICCarousel
+
+# 2024-08-07 (1.2.21)
 - Fix UICTagHelper constructor
 - Adding UICCached
 - Bugfix UICButton => UICDropdownItem
-- UICHtmlStorage﻿# 2024-07-23(1.2.20)
+- UICHtmlStorage
+
+# 2024-07-23(1.2.20)
 - Adding UICTaghelper Component
 - UICTable .triggerHandler('uic-currentData')
 - UICTable .triggerHandler('uic-getLastFilters')
-- UICTable Infinite loading﻿# 2024-07-19 (1.2.19)
+- UICTable Infinite loading
+
+# 2024-07-19 (1.2.19)
 - Fix readonly InputList
 - Fix dropdown buttons 
 - GetPost uses Raw Url
-- Fix parsing nullable enum﻿# 2024-07-15 (1.2.17)
+- Fix parsing nullable enum
+
+# 2024-07-15 (1.2.17)
 - Bugfix UICInputSelectList
-- Vertalingen aanpassen van NL-BE naar NL﻿# 2024-07-12 (1.2.16)
+- Vertalingen aanpassen van NL-BE naar NL
+
+# 2024-07-12 (1.2.16)
 - Cannot find children in UICInputList anymore
 - Performance fix for select2 selector
 - UICInputSelectList has color support
@@ -27,45 +46,71 @@
 - UICInputGroup InputAs options
 - Css Fix jsGrid selecting togglebutton
 - UICForm can prevent post on Enter Click
-- UICTable fix filtering on date﻿# 2024-06-20 (1.2.15)
+- UICTable fix filtering on date
+
+# 2024-06-20 (1.2.15)
 - Helpers for SelectListitems
-- TranslatableSaver﻿# 2024-06-13 (1.2.13)
+- TranslatableSaver
+
+# 2024-06-13 (1.2.13)
 - JsGrid Control can filter edit or delete button
-- Fix selectlist items for nullable enum﻿# 2024-06-10 (1.2.11)
-- Select list renderer voor UICInputTime﻿# 2024-06-06 (1.2.10)
-- Fix filter compabiliteit UICTable met oude JsGrid taghelper van CdcPortal﻿# 2024-05-31 (1.2.09)
+- Fix selectlist items for nullable enum
+
+# 2024-06-10 (1.2.11)
+- Select list renderer voor UICInputTime
+
+# 2024-06-06 (1.2.10)
+- Fix filter compabiliteit UICTable met oude JsGrid taghelper van CdcPortal
+
+# 2024-05-31 (1.2.09)
 - UICTable rowrenderer fix
 - UICActionRefresh fix
 - UICTableColumnPartial validation fix
 - Fix Recurring date modelbinder
-- bugfix UICSignalR this variable﻿# 2024-05-29 (1.2.08) 
+- bugfix UICSignalR this variable
+
+# 2024-05-29 (1.2.08) 
 - UICTableColumn checks for readonly validation
 - UICTable automatically adds 'item' as variable for getpost in Insert, update or delete
 - Adding a reload delay for UICTable
 - Tabs will change when Url hash changes
 - Bugfix: Implement TriggerReload on partial
 - Bugfix: UICGroup render script collection
-- UICTable control column﻿# 2024-05-22 (1.2.07)
-- Bugfix: UICGeneratorPropertySetReadonly where inherit property does not have set or get﻿# 2024-05-17 (1.2.06)
+- UICTable control column
+
+# 2024-05-22 (1.2.07)
+- Bugfix: UICGeneratorPropertySetReadonly where inherit property does not have set or get
+
+# 2024-05-17 (1.2.06)
 - Property without get parameter are always readonly
 - Tabs in tabs improvement. Support for diffrent tabstyles
-﻿# 2024-05-16 (1.2.05)
+
+
+# 2024-05-16 (1.2.05)
 - CSS fixes tabs in tabs
 - Defaults for UICTable
 - Partial will reload on card or tab open if reload trigger was ignored when closed.
 - UICOptions now has OnSuccessfullSubmit function
-﻿# 2024-05-14 (1.2.04)
+
+
+# 2024-05-14 (1.2.04)
 - Fix navigatieknop in card buttons
 - JsGrid pointer cursor on row click
 - Fix exception _Scripts.UIC.cshtml
 - Verwijderen reference SixLabors
-﻿# 2024-05-06 (1.2.03)
+
+
+# 2024-05-06 (1.2.03)
 - UICActionMarkChanges does not require UIComponent, can also be a provided selector.
 - Fix uic.translations
 - Fix column visibility in UICTable
-- Fix partial in UICTable﻿# 2024-05-02 (1.2.02)
+- Fix partial in UICTable
+
+# 2024-05-02 (1.2.02)
 - Fixes UICTable
-- Support for tooltip & infospan in UICTable﻿# 2024-04-26 (1.2.00)
+- Support for tooltip & infospan in UICTable
+
+# 2024-04-26 (1.2.00)
 - Css Fix Readonly form textarea
 - Add IUIComponentViewModel and UIComponentViewModel
 - Fixes JsTree refresh
@@ -74,28 +119,40 @@
 - Minor Fix UICActionRefresh
 - Adding 2 permissions to IUICPermissionService
 - Scriptloading changed
-- UICTable component (JsGrid)﻿# 2024-04-15 (1.1.30)
+- UICTable component (JsGrid)
+
+# 2024-04-15 (1.1.30)
 - UICInputList support for readonly
-﻿# 2024-04-12 (1.1.29)
+
+
+# 2024-04-12 (1.1.29)
 - Introducing IUICInitializeAsync
 - await FormSubmit
 - Adding changeWatcher in web
-﻿# 2024-04-11 (1.1.27)
+
+
+# 2024-04-11 (1.1.27)
 - Bugfix sorting selectlistsource empty text
 - Input Text Inherit DataType
 - Fix don't show tabs that don't render content
 - Label tooltip icon clickable for touch
 - FileExplorer in progress
-﻿
+
+
+
 # 2024-04-02 (1.1.26)
 - BugFixes Validator
 - Support for ReadonlyAttribute
 - Disable / Readonly support for Timespan
-﻿
+
+
+
 # 2024-04-02 (1.1.25)
 - Bugfix permission
 - InputTimeOnly
-﻿
+
+
+
 # 2024-03-28 (1.1.27)
 - Fix mark changes
 - Renderlocation can now end with .cshtml  (automatically add .cshtml if the last 7 characters do not contain a point)
@@ -105,7 +162,9 @@
 
 # 2024-03-28 (1.1.28)
 - Bugfix non-UIC tabs
-- Bugfix InternalHelper﻿# 2024-03-25 (1.1.23)
+- Bugfix InternalHelper
+
+# 2024-03-25 (1.1.23)
 - Hide Sidepanel if no sidepanelcontent is available
 - Fix Actions for Select2 input
 - Always include defaultValidationErrorHandles in registration
@@ -115,7 +174,9 @@
  - Adding Validators (See README.md)
  - Fix DeleteButton
  - Fix ContextMenu
- - Adding ListInput﻿# 2024-03-20 (1.1.21)
+ - Adding ListInput
+
+# 2024-03-20 (1.1.21)
  - Fix stackoverflow
 
 # 2024-03-20 (1.1.20)
@@ -129,7 +190,9 @@
 - UICActionGetPost support for default data and dictionaries
 - Overwritable renderlocation for datetime & defaults
 - Serialize Id in UICButtonDelete
-﻿
+
+
+
 # 2024-03-15 (1.1.18)
  - Fixing bug of stackoverflow in subcards
 
@@ -145,7 +208,9 @@
 ### Adding defaults
 - UICButtonToolbar
 
-﻿# 2024-03-03 (1.1.15)
+
+
+# 2024-03-03 (1.1.15)
 - Bugfix: Namespaces with Render.cshtml
 - ActionGetPost controller voor Url
 - AddReadme option in config
@@ -162,3 +227,5 @@
 - IUICQuestionService
 - Renaming IuicLanguageService => IUICLanguageService
 - Add 'col-form-label' class to labels in singleRow inputs
+
+

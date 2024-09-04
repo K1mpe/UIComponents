@@ -39,7 +39,7 @@
 
 
 <div @Html.Raw(Model.GetHtmlAttributes())>
-    <div class="card-title">
+    <div class="card-title" @(Model.CollapseCardOnClick ? Html.Raw("style=\"user-select:none;\"") : null)>
         @await Model.PrependTitle.InvokeAsync(Component)
         @await Html.TranslateHtml(L, Model.Title)
         @await Model.AppendTitle.InvokeAsync(Component)

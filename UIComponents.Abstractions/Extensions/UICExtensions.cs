@@ -16,60 +16,69 @@ public static class UICExtensions
     /// <returns></returns>
     public static List<(IUIComponent Component, IUIComponent Parent)> GetAllChildren(this IUIComponent element)
     {
-        var list = new List<(IUIComponent, IUIComponent)>();
-        if (element == null)
-            return list;
-        foreach (var prop in element.GetType().GetProperties())
+        try
         {
-            if (prop.GetCustomAttribute<UICIgnoreGetChildrenFunctionAttribute>() != null)
-                continue;
-
-            if (prop.PropertyType.IsAssignableTo(typeof(IUIComponent)))
+            var list = new List<(IUIComponent, IUIComponent)>();
+            if (element == null)
+                return list;
+            if (element.GetType().GetCustomAttribute<UICIgnoreGetChildrenFunctionAttribute>() != null)
+                return list;
+            foreach (var prop in element.GetType().GetProperties())
             {
-                var value = prop.GetValue(element);
-                if (value == null)
+                if (prop.GetCustomAttribute<UICIgnoreGetChildrenFunctionAttribute>() != null)
                     continue;
 
-                if (value == element)
-                    continue;
-
-                var UIC = (IUIComponent)value;
-                if (!UIC.HasValue())
-                    continue;
-                list.Add(new(UIC, element));
-                list.AddRange(UIC.GetAllChildren());
-            }
-            if (prop.PropertyType.IsAssignableTo(typeof(IEnumerable)) && prop.PropertyType != typeof(string))
-            {
-                var subList = (IEnumerable)prop.GetValue(element);
-                if (subList == null)
-                    continue;
-
-                foreach (var value in subList)
+                if (prop.PropertyType.IsAssignableTo(typeof(IUIComponent)))
                 {
+                    var value = prop.GetValue(element);
                     if (value == null)
                         continue;
+
                     if (value == element)
                         continue;
-                    if (value is IUIComponent componentValue)
-                    {
-                        if (!componentValue.HasValue())
-                            continue;
 
-                        list.Add(new(componentValue, element));
-                        list.AddRange(componentValue.GetAllChildren());
+                    var UIC = (IUIComponent)value;
+                    if (!UIC.HasValue())
+                        continue;
+                    list.Add(new(UIC, element));
+                    list.AddRange(UIC.GetAllChildren());
+                }
+                if (prop.PropertyType.IsAssignableTo(typeof(IEnumerable)) && prop.PropertyType != typeof(string))
+                {
+                    var subList = (IEnumerable)prop.GetValue(element);
+                    if (subList == null)
+                        continue;
+
+                    foreach (var value in subList)
+                    {
+                        if (value == null)
+                            continue;
+                        if (value == element)
+                            continue;
+                        if (value is IUIComponent componentValue)
+                        {
+                            if (!componentValue.HasValue())
+                                continue;
+
+                            list.Add(new(componentValue, element));
+                            list.AddRange(componentValue.GetAllChildren());
+                        }
                     }
                 }
-            }
 
+            }
+            return list.Where(x => x.Item1 != null).ToList();
         }
-        return list.Where(x => x.Item1 != null).ToList();
+        catch (StackOverflowException ex)
+        {
+            throw new StackOverflowException($"Stackoverflow while getting all children from {element}. Use {nameof(UICIgnoreGetChildrenFunctionAttribute)} to break the loop.", ex);
+        }
     }
 
     /// <summary>
     /// Remove a direct child of this component, if this component contains this child.
     /// </summary>
-    public static void RemoveComponent(this IUIComponent parent, IUIComponent child) 
+    public static void RemoveComponent(this IUIComponent parent, IUIComponent child)
     {
         foreach (var prop in parent.GetType().GetProperties())
         {
@@ -81,7 +90,7 @@ public static class UICExtensions
                 var value = prop.GetValue(parent);
                 if (value == child)
                     value = null;
-                    continue;
+                continue;
             }
             if (prop.PropertyType.IsAssignableTo(typeof(IList)) && prop.PropertyType != typeof(string))
             {
@@ -89,7 +98,7 @@ public static class UICExtensions
                 if (subList == null)
                     continue;
 
-                for(int i = 0; i < subList.Count; i++)
+                for (int i = 0; i < subList.Count; i++)
                 {
                     var value = subList[i];
                     if (value == child)
@@ -97,7 +106,7 @@ public static class UICExtensions
                         subList[i] = null;
                         break;
                     }
-                        
+
                 }
             }
 
@@ -133,7 +142,7 @@ public static class UICExtensions
     {
         foreach (var element in elements)
         {
-            if(element.HasValue()) 
+            if (element.HasValue())
                 return true;
         }
         return false;
@@ -154,7 +163,7 @@ public static class UICExtensions
                 action(onType);
             return onType;
         }
-        
+
         return element.FindFirstChildOfType<T>(action);
     }
 
@@ -163,7 +172,7 @@ public static class UICExtensions
         try
         {
             var result = FindFirstOfType<T>(element);
-            if(result == null)
+            if (result == null)
                 return false;
 
             action(result);
@@ -257,21 +266,21 @@ public static class UICExtensions
     /// <returns></returns>
     public static List<T> FindAllChildrenOfType<T>(this IUIComponent element) where T : IUIComponent
     {
-        var typeResults = element.GetAllChildren().Select(x=>x.Component).Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
+        var typeResults = element.GetAllChildren().Select(x => x.Component).Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
         return typeResults;
     }
 
-    public static T FindInputByPropertyName<T>(this IUIComponent element, string propertyName, Action<T> action= null) where T : UICInput
+    public static T FindInputByPropertyName<T>(this IUIComponent element, string propertyName, Action<T> action = null) where T : UICInput
     {
-        var typeResults = element.GetAllChildren().Select(x=>x.Component).Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
-        var firstInput =  typeResults.Where(x => x.PropertyName.ToLower() == propertyName.ToLower()).FirstOrDefault();
+        var typeResults = element.GetAllChildren().Select(x => x.Component).Where(x => x.GetType().IsAssignableTo(typeof(T))).OfType<T>().ToList();
+        var firstInput = typeResults.Where(x => x.PropertyName.ToLower() == propertyName.ToLower()).FirstOrDefault();
 
-        if(action != null && firstInput != null)
+        if (action != null && firstInput != null)
             action(firstInput);
         return firstInput;
     }
 
-    public static UICInput FindInputByPropertyName(this IUIComponent element, string propertyName, Action<UICInput> action = null) => FindInputByPropertyName<UICInput>(element, propertyName, action); 
+    public static UICInput FindInputByPropertyName(this IUIComponent element, string propertyName, Action<UICInput> action = null) => FindInputByPropertyName<UICInput>(element, propertyName, action);
 
     public static bool TryFindInputByPropertyName<T>(this IUIComponent element, string propertyName, Action<T> action) where T : UICInput
     {
@@ -326,7 +335,7 @@ public static class UICExtensions
     /// <exception cref="Exception"></exception>
     public static T SetId<T>(this T element, string id) where T : IUICHasAttributes
     {
-        if(id.StartsWith("#"))
+        if (id.StartsWith("#"))
             id = id.Substring(1);
 
         string existingId = element.GetAttribute("id");

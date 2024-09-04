@@ -103,18 +103,18 @@
                 console.log("JsGrid $('#@id').triggerHandler('uic-currentData') => Get the data that is currently displayed in the table");
                 console.log("JsGrid $('#@id').triggerHandler('uic-getLastFilters') => Get the last used filters for loading data");
 
-                console.log("JsGrid $('#@id').on('uic-getFilters', (args)=> {... return args}) => Called before loading data. Using this callback you can overwrite the filter data or sorting.");
-                console.log("JsGrid $('#@id').on('uic-beforeFetch', (args)=> {...}) => Triggered just before the LoadData function is called.");
-                console.log("JsGrid $('#@id').on('uic-afterFetch', (data, args)=> {...}) => Triggered after the LoadData function is called.");
+                console.log("JsGrid $('#@id').on('uic-getFilters', (ev, args)=> {... return args}) => Called before loading data. Using this callback you can overwrite the filter data or sorting.");
+                console.log("JsGrid $('#@id').on('uic-beforeFetch', (ev, args)=> {...}) => Triggered just before the LoadData function is called.");
+                console.log("JsGrid $('#@id').on('uic-afterFetch', (ev, data, args)=> {...}) => Triggered after the LoadData function is called.");
                 
-                console.log("JsGrid $('#@id').on('uic-beforeInsert', (item)=> {...}) => Triggered before inserting a item in the table.");
-                console.log("JsGrid $('#@id').on('uic-afterFetch', (item)=> {...}) => Triggered after inserting a item in the table.");
+                console.log("JsGrid $('#@id').on('uic-beforeInsert', (ev, item)=> {...}) => Triggered before inserting a item in the table.");
+                console.log("JsGrid $('#@id').on('uic-afterFetch', (ev, item)=> {...}) => Triggered after inserting a item in the table.");
                 
-                console.log("JsGrid $('#@id').on('uic-beforeUpdate', (item)=> {...}) => Triggered before updating a item in the table.");
-                console.log("JsGrid $('#@id').on('uic-beforeUpdate', (item)=> {...}) => Triggered after updating a item in the table.");
+                console.log("JsGrid $('#@id').on('uic-beforeUpdate', (ev, item)=> {...}) => Triggered before updating a item in the table.");
+                console.log("JsGrid $('#@id').on('uic-beforeUpdate', (ev, item)=> {...}) => Triggered after updating a item in the table.");
                 
-                console.log("JsGrid $('#@id').on('uic-beforeDelete', (item)=> {...}) => Triggered before deleting a item in the table.");
-                console.log("JsGrid $('#@id').on('uic-afterDelete', (item)=> {...}) => Triggered after deleting a item in the table.");
+                console.log("JsGrid $('#@id').on('uic-beforeDelete', (ev, item)=> {...}) => Triggered before deleting a item in the table.");
+                console.log("JsGrid $('#@id').on('uic-afterDelete', (ev, item)=> {...}) => Triggered after deleting a item in the table.");
 
 
                 console.log("JsGrid $('#@id').on('uic-dataLoaded', (args)=> {...}) => Triggered after data is loaded.");

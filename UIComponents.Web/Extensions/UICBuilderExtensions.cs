@@ -289,8 +289,14 @@ public static class UICBuilderExtensions
                 {
                     using (var resourceStream = currentAssembly.GetManifestResourceStream(readme))
                     {
+                        //Start after the UTF-8 BOM
+                        resourceStream.Position = 3;
                         resourceStream!.CopyTo(readMeFile);
                     }
+
+                    var newLine = Encoding.ASCII.GetBytes(Environment.NewLine);
+                    readMeFile.Write(newLine, 0, newLine.Length);
+                    readMeFile.Write(newLine, 0, newLine.Length);
                 }
             }
 
