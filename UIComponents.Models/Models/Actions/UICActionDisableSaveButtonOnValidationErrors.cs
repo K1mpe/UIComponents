@@ -6,8 +6,9 @@ namespace UIComponents.Models.Models.Actions;
 /// This will disable the selected button as long as there are any validation errors on the form.
 /// <br>If no form is provided, the entire page needs to be free of validation errors</br>
 /// </summary>
-public class UICActionDisableSaveButtonOnValidationErrors : UIComponent, IUICAction
+public class UICActionDisableSaveButtonOnValidationErrors : IUICAction
 {
+    public string RenderLocation => this.CreateDefaultIdentifier();
 
     #region Ctor
     public UICActionDisableSaveButtonOnValidationErrors()
@@ -39,5 +40,6 @@ public class UICActionDisableSaveButtonOnValidationErrors : UIComponent, IUICAct
     /// </summary>
     [UICIgnoreGetChildrenFunction]
     public UIComponent SaveButton { get; set; }
+
     #endregion
 }

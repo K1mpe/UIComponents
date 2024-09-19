@@ -29,14 +29,14 @@ public class UICGeneratorButtonToolbar : UICGeneratorProperty
             var createButton = await args.Configuration.ButtonGenerators.GenerateCreateButton(args, toolbar);
             buttons.Add(createButton);
             if (args.Options.DisableSaveButtonOnValidationErrors && createButton is UIComponent createButton2)
-                form.Add(new UICActionDisableSaveButtonOnValidationErrors(createButton2, form));
+                form.AddScript(new UICActionDisableSaveButtonOnValidationErrors(createButton2, form));
         }
         else
         {
             var saveButton = await args.Configuration.ButtonGenerators.GenerateSaveButton(args, toolbar);
             buttons.Add(saveButton);
             if (args.Options.DisableSaveButtonOnValidationErrors && saveButton is UIComponent saveButton2)
-                form.Add(new UICActionDisableSaveButtonOnValidationErrors(saveButton2, form));
+                form.AddScript(new UICActionDisableSaveButtonOnValidationErrors(saveButton2, form));
         }
 
         if (args.Options.ShowEditButton)

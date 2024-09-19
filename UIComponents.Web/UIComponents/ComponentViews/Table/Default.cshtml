@@ -92,35 +92,7 @@
 
 
     Model.AddScript(@<text>
-            $('#@id').on('uic-help', ()=>{
-                console.log("JsGrid $('#@id').trigger('uic-reload') => Reload the table if allowed.");
-                console.log("JsGrid $('#@id').trigger('uic-forceReload') => Always reload the table. (Not recommended!)");
-                console.log("JsGrid $('#@id').trigger('uic-disableReload') => Disable reloading the table");
-                console.log("JsGrid $('#@id').trigger('uic-enableReload') => Enable reloading the table. Will also trigger reload if a reload has failed");
-                console.log("JsGrid $('#@id').trigger('uic-addReloadCondition', ()=> {...}) => Add a new function that is checked on each reload. Returning false will disable the reload");
-                console.log("JsGrid $('#@id').trigger('uic-reloadConditionChanged') => One or more of the reload conditions have changed.");
-
-                console.log("JsGrid $('#@id').triggerHandler('uic-currentData') => Get the data that is currently displayed in the table");
-                console.log("JsGrid $('#@id').triggerHandler('uic-getLastFilters') => Get the last used filters for loading data");
-
-                console.log("JsGrid $('#@id').on('uic-getFilters', (ev, args)=> {... return args}) => Called before loading data. Using this callback you can overwrite the filter data or sorting.");
-                console.log("JsGrid $('#@id').on('uic-beforeFetch', (ev, args)=> {...}) => Triggered just before the LoadData function is called.");
-                console.log("JsGrid $('#@id').on('uic-afterFetch', (ev, data, args)=> {...}) => Triggered after the LoadData function is called.");
-                
-                console.log("JsGrid $('#@id').on('uic-beforeInsert', (ev, item)=> {...}) => Triggered before inserting a item in the table.");
-                console.log("JsGrid $('#@id').on('uic-afterFetch', (ev, item)=> {...}) => Triggered after inserting a item in the table.");
-                
-                console.log("JsGrid $('#@id').on('uic-beforeUpdate', (ev, item)=> {...}) => Triggered before updating a item in the table.");
-                console.log("JsGrid $('#@id').on('uic-beforeUpdate', (ev, item)=> {...}) => Triggered after updating a item in the table.");
-                
-                console.log("JsGrid $('#@id').on('uic-beforeDelete', (ev, item)=> {...}) => Triggered before deleting a item in the table.");
-                console.log("JsGrid $('#@id').on('uic-afterDelete', (ev, item)=> {...}) => Triggered after deleting a item in the table.");
-
-
-                console.log("JsGrid $('#@id').on('uic-dataLoaded', (args)=> {...}) => Triggered after data is loaded.");
-                console.log("JsGrid $('#@id').on('uic-editingData', (args)=> {...}) => Triggered when opening a edit row.");
-                console.log("JsGrid $('#@id').on('uic-dataLoadedAndFiltered') => Triggered after the selectlists are filtered.");
-            });
+            @Html.UICHelp(Model, "uic.jsgrid.help")
 
             let canReload = true; //Can the JsGrid Reload
             let tryReload = false; //If Reload Denied, set this true
@@ -128,13 +100,13 @@
             let lastFilters = null;
             let currentData = [];
 
-            let checkCanReload = function(){
+            let checkCanReload = async function(){
                 if(!canReload)
                     return false;
 
                 for(let i=0; reloadConditions.length>i; i++){
                     let condition = reloadConditions[i];
-                    let result = condition();
+                    let result = await condition();
                     if(!result)
                         return false;
                 }
@@ -144,8 +116,8 @@
                 ev.stopPropagation();
                 @if(Model.ReloadDelay > 0){
                     <text>
-                    uic.delayedAction.run("jsGrid-Reload-@id", @Json.Serialize(Model.ReloadDelay), ()=>{
-                        if(checkCanReload()){
+                    uic.delayedAction.run("jsGrid-Reload-@id", @Json.Serialize(Model.ReloadDelay), async ()=>{
+                        if(await checkCanReload()){
                             $('#@id').trigger('uic-forceReload')
                         } else{
                             tryReload = true;

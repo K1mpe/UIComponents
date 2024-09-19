@@ -48,6 +48,14 @@
                     $(this).attr('rows', currentRows);
             }
         });
+        $('#@id').on('change', () => {
+                var currentRows = $(this).val().split('\n').length;
+                currentRows = +currentRows + 1;
+                if (currentRows < @Json.Serialize(Model.MinRows ?? 1))
+                    currentRows = @Json.Serialize(Model.MinRows ?? 1);
+                if (currentRows <= @Json.Serialize(Model.MaxRows ?? int.MaxValue))
+                    $(this).attr('rows', currentRows);
+        });
         
         @{
 
@@ -55,44 +63,44 @@
     if (Model.DisplayName != null)
         propertyName = await L.Translate(Model.DisplayName);
 
-    <text>
-        function validateInput(element){
-            var currentValue = element.val();
-            var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
-            span.text("");
-            @if (Model.ValidationMaxLength != null)
+        <text>
+            function validateInput(element){
+                var currentValue = element.val();
+                var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+                span.text("");
+                @if (Model.ValidationMaxLength != null)
             {
-                <text>
-                    if (currentValue.length > @Model.ValidationMaxLength.Value)
-                        span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMaxLength(propertyName, Model.ValidationMaxLength.Value)));
-                </text>
+                    <text>
+                        if (currentValue.length > @Model.ValidationMaxLength.Value)
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMaxLength(propertyName, Model.ValidationMaxLength.Value)));
+                    </text>
             }
 
-            @if (Model.ValidationMinLength != null)
+                @if (Model.ValidationMinLength != null)
             {
-                <text>
-                    if (@(Model.ValidationMinLength.Value) > currentValue.length && currentValue.length > 0)
-                        span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMinLength(propertyName, Model.ValidationMinLength.Value)));
-                </text>
+                    <text>
+                        if (@(Model.ValidationMinLength.Value) > currentValue.length && currentValue.length > 0)
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMinLength(propertyName, Model.ValidationMinLength.Value)));
+                    </text>
             }
 
-            @if (Model.ValidationRequired)
+                @if (Model.ValidationRequired)
             {
-                <text>
-                    if (currentValue.length == 0)
-                        span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
-                </text>
+                    <text>
+                        if (currentValue.length == 0)
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                    </text>
             }
 
-        }
-        $('#@id').keyup(function(){
-            validateInput($(this));
-        });
+            }
+            $('#@id').keyup(function(){
+                validateInput($(this));
+            });
 
-        $('#@id').blur(function () {
-            validateInput($(this));
-        });
-    </text>
+            $('#@id').blur(function () {
+                validateInput($(this));
+            });
+        </text>
 
            
 }

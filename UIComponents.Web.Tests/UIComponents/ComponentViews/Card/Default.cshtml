@@ -53,43 +53,13 @@
     @if (!Model.DisableClosing)
     {
         <text>
-            $('#@id').on('uic-help', ()=>{
-                console.log("Card $('#@id').trigger('uic-open') Open the card");
-                console.log("Card $('#@id').trigger('uic-close') Close the card");
-                console.log("Card $('#@id').trigger('uic-toggle') Open or Close the card");
-                console.log("Card $('#@id').on('uic-before-open', ()=>{...}) Triggered before the card starts opening");
-                console.log("Card $('#@id').on('uic-before-close', ()=>{...}) Triggered before the card starts closing");
-                console.log("Card $('#@id').on('uic-opened', () =>{...}) Triggered when the opening animation is complete");
-                console.log("Card $('#@id').on('uic-closed', () =>{...}) Triggered when the clsoing animation is complete");
-            });
-
-            $('#@id').on('uic-open', (ev)=>{
-                ev.stopPropagation();
-                let card = $('#@id');
-                uic.card.openCard(card);
-            })
-            $('#@id').on('uic-close', (ev)=>{
-                ev.stopPropagation();
-                let card = $('#@id');
-                uic.card.closeCard(card);
-            });
-            $('#@id').on('uic-toggle', (ev)=>{
-                ev.stopPropagation();
-                let card = $('#@id');
-                uic.card.toggleCard(card);
-            });
-
-
-
-            //If the hash contains the card Id, open the card after 10ms
-            if(window.location.hash.includes('@id'))
-                setTimeout(()=>{
-                    $('#@id').trigger('uic-open');
-                }, 10);
+            @Html.UICHelp(Model, "uic.card.help")
+            uic.card._init($('#@id'));
+            
                 
         </text>
 
-        @if (Model.RememberCollapsedState && Model.Header.HasValue() && !Model.HideHeader)
+        @if (Model.RememberCollapsedState && !Model.DisableClosing && Model.Header.HasValue() && !Model.HideHeader)
         {
             <text>
                 try{
@@ -132,7 +102,4 @@
     @await Model.Body.InvokeAsync(Component)
     @await Model.Footer.InvokeAsync(Component)
 </div>
-
-
-
 @await Model.RenderStylesAndScripts(Component)

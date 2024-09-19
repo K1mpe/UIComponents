@@ -1,6 +1,21 @@
+# 2024-09-16 (1.2.28)
+- InputSelectListHtmlStorage => Init with old data for faster response
+- Multiline change lineheight on change
+- InputGroup does not support singleRow if label or input is not rendered
+- SingleRow has Support for defaults
+
+# 2024-09-13 (1.2.27)
+- Fixes for ChangeWatcher
+- Fix for uic.compareObject
+- UIC-Help is grouped and most of the code moved to javascript
+- UICPartial moved to javascript & support for conditional loading
+- Adding UICTooltipIcon attribute
+
+
 # 2024-09-04 (1.2.26)
 - Better stackoverflow message in IUIComponent.GetAllChildren()
 - UICIgnoreGetChildrenFunctionAttribute now works on classes as well as properties
+- Fix Changelog file
 
 # 2024-09-03 (1.2.25)
 - BugFix Multiline input new line in form that prevents submit on "enter"

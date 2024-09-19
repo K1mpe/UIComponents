@@ -59,6 +59,7 @@ namespace UIComponents.Models.Models
         /// <summary>
         /// A function that must return true or false to check if the action can be executed.
         /// </summary>
+        /// <remarks>This function has access to the <see cref="SubscriptionArguments"/></remarks>
         public IUICAction Condition { get; set; } = new UICCustom();
 
         public bool Debug { get; set; } = UIComponents.Defaults.Models.UICSignalR.Debug;

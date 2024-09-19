@@ -66,7 +66,7 @@ namespace UIComponents.Models.Models.Graphs.TimeLineGraph
         /// If the current time is visible in the on the graph and <see cref="DateTime.Now"/> + <see cref="MoveGraphAfterLiveUpdate"/> is larger than the current end of the graph,
         /// <br>the graph will move this timespan to always maintain a small empty range</br>
         /// </summary>
-        public TimeSpan MoveGraphAfterLiveUpdate { get; set; } = TimeSpan.Zero;
+        public TimeSpan? MoveGraphAfterLiveUpdate { get; set; } = TimeSpan.FromSeconds(1);
         #endregion
 
         #region Pan / Zoom

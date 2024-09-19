@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.ComponentModel;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Helpers;
@@ -53,6 +54,12 @@ public class UICGeneratorLabel : UICGeneratorProperty
         var toolTipCC = new UICCallCollection(UICGeneratorPropertyCallType.PropertyTooltip, label, args.CallCollection);
         var toolTipArgs = new UICPropertyArgs(args.ClassObject, args.PropertyInfo, args.UICPropertyType, args.Options, toolTipCC, args.Configuration);
         label.Tooltip = await args.Configuration.GetToolTipAsync(args, label);
+        if(label.Tooltip != null)
+        {
+            var tooltipClass = args.PropertyInfo.GetInheritAttribute<UICTooltipIconAttribute>();
+            if (tooltipClass != null)
+                label.TooltipIcon = new(tooltipClass.IconClass);
+        }
 
         if (args.Options.MarkLabelsAsRequired)
         {

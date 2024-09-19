@@ -87,10 +87,7 @@ else
         Model.AddScript(
             @<text>
 
-            $('#@id').on('uic-help', ()=>{
-                console.log("Form $('#@id').trigger('submit') => Submit this form");
-                console.log("Form await $('#@id').triggerHandler('awaitSubmit') => Submit this form and return the result");
-            });
+            @Html.UICHelp(Model, "uic.form.help")
 
             $('#@id').off('submit');
             $('#@id').on('submit', function(ev){
@@ -103,6 +100,9 @@ else
                 ev.stopPropagation();
                 
                 @await Model.Submit.InvokeAsync(Component)
+
+
+                @Html.Raw(Model.Submit.ResultName) = (await $('#@id').triggerHandler('uic-afterSubmit', @Html.Raw(Model.Submit.ResultName))) ||@Html.Raw(Model.Submit.ResultName);
                 return @Html.Raw(Model.Submit.ResultName);
             } )
             </text>

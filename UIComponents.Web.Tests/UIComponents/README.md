@@ -129,23 +129,31 @@ Create items manually or use the [IUIComponentGenerator](#IUIComponentGenerator)
 ```c#
 @await myComponent.InvokeAsync(Component)
 ```
-
+```c#
+@await Component.InvokeAsync(myComponent)
+```
 Rendering a Task< IUIComponent > is also supported
 ```c#
 @await _uic.CreateComponentAsync(testModel).InvokeAsync(Component)
 ```
 ## Rendering components from controller
 ```c#
-public IActionResult RenderMyComponent(){
-    var myComponent = ...
+public IActionResult RenderMyComponent()
+{
+    var myComponent = …
     return View("/UIComponents/ComponentViews/Render.cshtml", myComponent);
 }
 ```
 
+### :bulb: Hint:
+In the basecontroller you can create a overload that automatically goes to the correct view.
+```c#
+public IUIAction View(IUIComponent component) => View("/UIComponents/ComponentViews/Render.cshtml", component);
+```
 
 # ClientSide methods
 Some components support clientside methods.
-These often have Trigger.. methods available to quickly generate code that triggers a clientside function.
+These often have Trigger... methods available to quickly generate code that triggers a clientside function.
 When opening the console clientside, you can select a html element and run this line:
 ```javascript
 $($0).trigger('uic-help');

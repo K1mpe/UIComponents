@@ -1,4 +1,27 @@
 ﻿uic.jsgrid = uic.jsgrid || {
+    help: function(id){
+        console.log($(`#${id}`));
+        console.log(`$('#${id}').trigger('uic-reload') => Reload the table if allowed.`);
+        console.log(`$('#${id}').trigger('uic-forceReload') => Always reload the table. (Not recommended!)`);
+        console.log(`$('#${id}').trigger('uic-disableReload') => Disable reloading the table`);
+        console.log(`$('#${id}').trigger('uic-enableReload') => Enable reloading the table. Will also trigger reload if a reload has failed`);
+        console.log(`$('#${id}').trigger('uic-addReloadCondition', ()=> {...}) => Add a new function that is checked on each reload. Returning false will disable the reload`);
+        console.log(`$('#${id}').trigger('uic-reloadConditionChanged') => One or more of the reload conditions have changed.`);
+        console.log(`$('#${id}').triggerHandler('uic-currentData') => Get the data that is currently displayed in the table`);
+        console.log(`$('#${id}').triggerHandler('uic-getLastFilters') => Get the last used filters for loading data`);
+        console.log(`$('#${id}').on('uic-getFilters', (ev, args)=> {... return args}) => Called before loading data. Using this callback you can overwrite the filter data or sorting.`);
+        console.log(`$('#${id}').on('uic-beforeFetch', (ev, args)=> {...}) => Triggered just before the LoadData function is called.`);
+        console.log(`$('#${id}').on('uic-afterFetch', (ev, data, args)=> {...}) => Triggered after the LoadData function is called.`);
+        console.log(`$('#${id}').on('uic-beforeInsert', (ev, item)=> {...}) => Triggered before inserting a item in the table.`);
+        console.log(`$('#${id}').on('uic-afterFetch', (ev, item)=> {...}) => Triggered after inserting a item in the table.`);
+        console.log(`$('#${id}').on('uic-beforeUpdate', (ev, item)=> {...}) => Triggered before updating a item in the table.`);
+        console.log(`$('#${id}').on('uic-beforeUpdate', (ev, item)=> {...}) => Triggered after updating a item in the table.`);
+        console.log(`$('#${id}').on('uic-beforeDelete', (ev, item)=> {...}) => Triggered before deleting a item in the table.`);
+        console.log(`$('#${id}').on('uic-afterDelete', (ev, item)=> {...}) => Triggered after deleting a item in the table.`);
+        console.log(`$('#${id}').on('uic-dataLoaded', (args)=> {...}) => Triggered after data is loaded.`);
+        console.log(`$('#${id}').on('uic-editingData', (args)=> {...}) => Triggered when opening a edit row.`);
+        console.log(`$('#${id}').on('uic-dataLoadedAndFiltered') => Triggered after the selectlists are filtered.`);
+    },
     onInit: async function (id, loadUserPreference, args, sorter, defaultFilter) {
         var loadedFilter = defaultFilter;
         if (loadUserPreference) {

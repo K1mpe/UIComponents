@@ -57,11 +57,10 @@
                         </text>
                     }
             });
-
-            @(Html.JsEncode(Model.SkipInitialLoad? "uic.htmlStorage.onValueChanged": "uic.htmlStorage.onInitOrValueChanged"))(@Html.JsEncode(Model.HtmlStorage.Id, "'"), async ()=>{
+            let parseSelectItems = async function(getItemsFunc){
                 let element = $('#@id');
                 element.triggerHandler('uic-before-load');
-                let selectListItems = await uic.htmlStorage.getValueAsync(@Html.JsEncode(Model.HtmlStorage.Id, "'"));
+                let selectListItems = await getItemsFunc();
                 selectListItems = JSON.parse(selectListItems);
                 let currentValue = uic.getValue(element) || @Html.JsEncode(Model.InputSelectList.Value?.ToString() ?? string.Empty, "'");
                 @if (Model.MapToSelectListItems != null)
@@ -77,7 +76,25 @@
                 uic.setValue(element, currentValue);
 
                 element.triggerHandler('uic-loaded');
-            });
+            };
+            let runAsync = async function(){
+                parseSelectItems(()=>uic.htmlStorage.getValueNoValidation(@Html.JsEncode(Model.HtmlStorage.Id, "'")));
+                await uic.htmlStorage.onValueChanged(@Html.JsEncode(Model.HtmlStorage.Id, "'"), async ()=>{
+                    await parseSelectItems(async()=> await uic.htmlStorage.getValueAsync(@Html.JsEncode(Model.HtmlStorage.Id, "'")));
+                });
+                @if (!Model.SkipInitialLoad)
+                {
+                    <text>
+                        if(!await uic.htmlStorage.isValid(@Html.JsEncode(Model.HtmlStorage.Id, "'"))){
+                            uic.htmlStorage.triggerExpired(@Html.JsEncode(Model.HtmlStorage.Id, "'"));
+                        }
+                    </text>
+                }
+            };
+            runAsync();
+            
+            
+            
         </text>
     }
 }

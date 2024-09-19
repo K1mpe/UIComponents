@@ -35,24 +35,3 @@
     <input type="checkbox" @Html.Raw(Model.GetHtmlAttributes()) />
     <label class="custom-control-label" for="@id"></label>
 </div>
-@* 
-
-<script>
-    $(document).ready(function () {
-        uic.form.setThreeState($('#@id'));
-
-        $('#@id').click(function (e) {
-            console.log('three-state-toggle');
-            e.preventDefault;
-            var oldVal = $(this).data('value');
-            if (oldVal == "null" || oldVal == "")
-                $(this).data('value', "true");
-            else if (oldVal == "false")
-                $(this).data('value', "null");
-            else
-                $(this).data('value', "false");
-
-            uic.form.setThreeState($(this));
-        })
-    })
-</script> *@

@@ -16,6 +16,7 @@ namespace UIComponents.Web.Tests.Models
     public class TestModel
     {
         [UICTooltip("Dit is een test")]
+        [UICTooltipIcon("fas fa-warning text-warning")]
         public string TestString { get; set; } = "abc";
 
         [UICPropertyType(UICPropertyType.MultilineText)]

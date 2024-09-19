@@ -35,8 +35,7 @@
             //Method that checks if the properties are changed, stops after first change.
             isChanged: function () {
                 let elNames = Object.getOwnPropertyNames(this.elements);
-                for (let i = 0; i < elNames.length; i++)
-                {
+                for (let i = 0; i < elNames.length; i++) {
                     let elName = elNames[i];
                     let currentVal = uic.getValue(elName);
                     if (!uic.compareObjects(currentVal, this.elements[elName]))
@@ -49,7 +48,7 @@
         return watcher;
     },
 
-    //Provide this functino with a watcher and one or more selectors (array).
+    //Provide this function with a watcher and one or more selectors (array).
     //The remembered values of these selectors is than stored as the new InitialValue. (Can be triggered by SignalRChange).
     setInitialValues(watcher, $selectorsArray) {
 
@@ -61,12 +60,12 @@
                 let selector = `#${$(domEl).attr('id')}`;
                 if (selector == '#')
                     selector = domEl;
-                let value = uic.getValue(selector);
+                let value = uic.stringify(uic.getValue(selector));
 
                 watcher.elements[selector] = value;
             })
         });
     },
 
-    
+
 };

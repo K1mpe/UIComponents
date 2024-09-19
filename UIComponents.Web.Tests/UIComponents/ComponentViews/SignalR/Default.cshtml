@@ -53,7 +53,7 @@
             let aVeryUniqueParameterNameThatNobodyWillAccidentallyUse =  async function (@string.Join(", ", Model.SubscriptionArguments)){
             //SignalR does not work anymore if the html element has been removed.
             if (!$('#@id').length)
-            return;
+                return;
             @if (Model.DisableOnHidden)
             {
                 <text>
@@ -64,14 +64,25 @@
             }
             let myVeryUniqueValidationProperty = true;
             
-            if (true || uic.signalR.Debug) {
-            let color = window.getComputedStyle(document.body).getPropertyValue(`--${myVeryUniqueValidationProperty ? 'success' : 'danger'}`) || '#663399';
-            console.groupCollapsed('%cSignalR', `color: ${color}`, '@Html.JsEncode(Model.SubscriptionName)', '@Html.JsEncode(Model.Group)');
-            console.log('this', this);
-            @foreach(var argument in Model.SubscriptionArguments){
+            @if(Model.Condition.HasValue())
+            {
                 <text>
-                    console.log('@Html.JsEncode(argument):', @argument);
+                    myVeryUniqueValidationProperty = function(@string.Join(", ", Model.SubscriptionArguments)){
+                        @await Model.Condition.InvokeAsync(Component)
+                    }
+                    myVeryUniqueValidationProperty = uic.getResultOrInvoke(myVeryUniqueValidationProperty, @string.Join(", ", Model.SubscriptionArguments));
                 </text>
+            }
+
+            if (@Json.Serialize(Model.Debug) || uic.signalR.Debug) {
+                let color = uic.signalR.color(myVeryUniqueValidationProperty);
+                console.groupCollapsed('%cSignalR', `color: ${color}`, '@Html.JsEncode(Model.SubscriptionName)', '@Html.JsEncode(Model.Group)');
+                console.log('this', this);
+                @foreach(var argument in Model.SubscriptionArguments){
+                    <text>
+                        console.log('@Html.JsEncode(argument):', @argument);
+                    </text>
+                    }
                 }
             }
             try{
@@ -79,7 +90,7 @@
                     @await Model.Action.InvokeAsync(Component)
                 }
             } finally{
-                if (true || uic.signalR.Debug) {
+                if (@Json.Serialize(Model.Debug) || uic.signalR.Debug) {
                     console.groupEnd();
                 }
             }
@@ -87,7 +98,7 @@
             
             
         };
-            @if(Model.SubscriptionArguments.Any()){
+        @if(Model.SubscriptionArguments.Any()){
             <text>
                 await connection.on('@Model.SubscriptionName', (@(string.Join(", ", Model.SubscriptionArguments)))=>{ aVeryUniqueParameterNameThatNobodyWillAccidentallyUse.call($('#@id')[0], @(string.Join(", ", Model.SubscriptionArguments)));});
             </text>
@@ -106,6 +117,9 @@
                 return;
             console.log('Found SignalR', $('#@id'), '@Html.JsEncode(Model.SubscriptionName)', '@Html.JsEncode(Model.Group)')
         });
+        $('#@id').on('uic-triggerSignalR', (ev, ...args)=>{
+            aVeryUniqueParameterNameThatNobodyWillAccidentallyUse.call($('#@id')[0], args))
+        })
     </text>);
 }
 

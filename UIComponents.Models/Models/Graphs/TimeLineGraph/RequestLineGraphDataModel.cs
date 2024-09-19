@@ -47,6 +47,12 @@ public class RequestLineGraphDataModel
         return DataDecimation.LargestTriangleThreeBuckets(points, maxPointsCount);
     }
 
+    /// <summary>
+    /// Takes the average point from a given timespan. This solution is better when loading live data
+    /// </summary>
+    /// <param name="points"></param>
+    /// <param name="timeSpan"></param>
+    /// <returns></returns>
     public List<LineGraphPoint> AveragePerTimespan(List<LineGraphPoint> points, TimeSpan? timeSpan = null)
     {
         if (timeSpan == null)

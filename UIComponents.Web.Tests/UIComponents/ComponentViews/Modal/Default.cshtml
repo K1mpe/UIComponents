@@ -41,19 +41,8 @@
     Model.Body.AddClass("modal-body");
 
     Model.AddScript(@<text>
-        $('#@id').on('uic-help', ()=>{
-            console.log("Modal $('#@id').trigger('uic-open') => Open this modal");
-            console.log("Modal $('#@id').trigger('uic-openend') => Open this modal");
-            console.log("Modal $('#@id').trigger('uic-close') => Close this modal");
-            console.log("Modal $('#@id').trigger('uic-destroy') => Destroy the modal and remove the html");
-
-            console.log("Modal $('#@id').on('uic-showing') => Triggered when the modal is opening");
-            console.log("Modal $('#@id').on('uic-opened') => Triggered after the modal has finished opening");
-
-            console.log("Modal $('#@id').on('uic-beforeClose') => Triggered before the modal closes. This can be awaited.");
-            console.log("Modal $('#@id').on('uic-closed') => Triggered after the modal has been closed");
-        })
-
+        @Html.UICHelp(Model, "uic.modal.help")
+        uic.modal._init($('#@id'));
         @if(Model.MoveModalToBody){
         <text>
             uic.modal.moveModal($('#@id'), $('#@id').closest('[id]').attr('id'));
@@ -64,35 +53,6 @@
             keyboard: @Json.Serialize(!Model.DisableEscapeKeyToClickout),
             backdrop: @Json.Serialize(Model.DisableCloseOnClickout? "'static'":"true"),
             show: @Json.Serialize(Model.OpenOnLoad)
-        });
-
-        $('#@id').on('uic-open', (ev)=>{
-            ev.stopPropagation();
-            
-            $('#@id').modal('show');
-            $('#@id').trigger('uic-showing');
-        });
-        $('#@id').on('uic-close', async (ev)=>{
-            ev.stopPropagation();
-
-            if(uic.elementContainsEvent($('#@id'), 'uic-beforeClose')){
-                await $('#@id').triggerHandler('uic-beforeClose');
-            }
-            $('#@id').modal('hide');
-        });
-        $('#@id').on('uic-destroy', (ev)=>{
-            ev.stopPropagation();
-            $('#@id').trigger('uic-close');
-            $('#@id').modal('dispose');
-            $('#@id').remove();
-            $('#@(id+"scripts")').remove();
-        });
-
-        $('#@id').on('hidden.bs.modal', (ev)=>{
-            $('#@id').trigger('uic-closed');
-        });
-        $('#@id').on('shown.bs.modal', (ev)=>{
-            $('#@id').trigger('uic-opened');
         });
 
         @if(Model.RemoveModalOnClose){

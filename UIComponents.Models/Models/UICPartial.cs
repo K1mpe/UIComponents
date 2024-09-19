@@ -47,6 +47,13 @@ public class UICPartial : UIComponent, IUICHasChildren<IUIComponent>
     public bool ShowLoadingOverlay { get; set; } = true;
 
     /// <summary>
+    /// When triggering 'uic-reload', this is the delay before the reload is exicuted.
+    /// <br>This is usefull if multiple signalR triggers can influence the partial at the same time, only one trigger will be run</br>
+    /// <br>This uses the same function as <see cref="UICActionDelayedAction"/></br>
+    /// </summary>
+    public TimeSpan? ReloadDelay { get; set; }
+
+    /// <summary>
     /// if false, the reload will not be exexcuted if the content is hidden (example: partial in a closed card)
     /// </summary>
     /// <remarks>

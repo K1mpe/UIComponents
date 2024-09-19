@@ -81,4 +81,5 @@ public class UICInheritAttribute : Attribute
         inherit = propertyInfo;
         return false;
     }
+
 }

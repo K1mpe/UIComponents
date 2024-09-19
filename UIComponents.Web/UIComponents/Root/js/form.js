@@ -1,4 +1,9 @@
 ﻿uic.form = uic.form || {
+    help: function(id){
+        console.log(`$('#${id}').trigger('submit') => Submit this form`);
+        console.log(`await $('#${id}').triggerHandler('awaitSubmit') => Submit this form and return the result`);
+    },
+
     //Check if this element or any parent is hidden or collapsed
     isHidden: function (element) {
         element = $(element);

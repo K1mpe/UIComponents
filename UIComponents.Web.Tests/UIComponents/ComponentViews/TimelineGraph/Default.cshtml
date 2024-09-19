@@ -76,6 +76,7 @@
         console.log("Chart $('#@guid').trigger('uic-disableGraph', 'graphId')", "If this graph is on, turn it off");
         console.log("Chart $('#@guid').trigger('uic-toggleGraph', 'graphId')", "Turn this graph on or off");
         console.log("chart $('#@guid').trigger('uic-toggleNowIndicator', TrueFalseNull)", "Turn the now Indicator on or off. value null is toggle");
+        console.log("Chart $('#@guid').trigger('uic-moveTo', [moment, percent]) => Move the chart to this timepoint, 0 percent is left, 100 percent is right")
 
         console.log("Chart $('#@guid').on('uic-chartMoved', (ev, chart, momentStart, momentEnd) => {})", "Triggered if the chart moves or scales");
         console.log("Chart $('#@guid').on('uic-loaded', (ev, graph) => {})", "Triggered after one or more graphs have loaded data");
@@ -169,7 +170,11 @@
         else
             chart.render();
     });
+    $('#@guid').on('uic-moveTo', (ev, dateTime, percent=50)=>{
 
+
+        MoveToMoment(moment(dateTime), percent);
+    })
     function log(...rest){
         if(@Json.Serialize(Model.EnableConsoleLog))
             console.log('TimelineGraph @Model.GetId()', rest);
@@ -285,6 +290,7 @@
     }
     let minDateTime = @Model.Start.ToMoment(Html); //The smallest position on the current timeline
     let maxDateTime = @Model.End.ToMoment(Html); //The largest position on the current timeline
+    let autoMove = false;
     let chart;
 
         syncDataSets();
@@ -395,7 +401,7 @@
                     pan: {
                         enabled: @Json.Serialize(Model.EnablePanning),
                         mode: 'x',
-                        onPanComplete: startFetch,
+                        onPanComplete: afterChartMove,
                     },
                     zoom: {
 
@@ -406,7 +412,7 @@
                             enabled: @Json.Serialize(Model.EnableZoom),
                         },
                         mode: 'x',
-                        onZoomComplete: startFetch,
+                        onZoomComplete: afterChartMove,
                         onZoomStart: (args)=>{
                             var range = args.chart.scales.x.max - args.chart.scales.x.min;
                             @*args.deltaY is the scroll direction*@
@@ -443,7 +449,12 @@
     let enableDrawNowLine = @Json.Serialize(Model.EnableNowIndicator);
     let drawLineInterval = 100;
     var graphsIds;
-    async function startFetch({ chart }) {
+    async function afterChartMove(){
+        autoMove = false;
+        removeOldData();
+        await startFetch();
+    }
+    async function startFetch() {
         let { min, max } = chart.scales.x;
 
         minDateTime= moment(min);
@@ -485,11 +496,26 @@
     }
 
     function AutoloadData() {
+        
         if (autoInterval > 0 && liveUpdate) {
             setTimeout(async function() {
-                await LoadNewData(moment(chart.scales.x.min), moment(chart.scales.x.max));
+                let max = moment(chart.scales.x.max);
+                @if(Model.MoveGraphAfterLiveUpdate != null){
+                <text>
+                    if(autoMove){
+                        let pointRight = moment().add(@(Model.MoveGraphAfterLiveUpdate.Value.TotalMilliseconds), 'milliseconds');
+                            if(pointRight > max)
+                                max = pointRight;
+                            MoveToMoment(pointRight, 100);
+                    }
+                    
+                </text>
+    }
+                await LoadNewData(moment(chart.scales.x.min), max);
+                 
             }, autoInterval);
         }
+       
     }
 
     function reloadAllGraphData(){
@@ -533,7 +559,9 @@
             newMin = minDateTime;
 
         if(newMax == null || moment(newMax) > maxDateTime)
-        newMax = maxDateTime;
+            newMax = maxDateTime;
+        if(autoMove && moment() > newMax &&  newMax.add(@(Model.MoveGraphAfterLiveUpdate.Value.TotalMilliseconds), 'milliseconds') >= moment())
+            newMax = newMax.add(@(Model.MoveGraphAfterLiveUpdate.Value.TotalMilliseconds), 'milliseconds');
 
         //Set the max time to now if futureloading is disabled
         if(graphData.disableFutureLoading && newMax > moment())
@@ -709,6 +737,32 @@
             let pixelsLeft = scale.left + (width * percent);
             return Math.round(pixelsLeft);
         };
+        function MoveToMoment(momentTime, percent){
+            let scale = chart.scales.x;
+            let width = scale.width;
+            let range = scale.max - scale.min;
+            let momentValue = momentTime.valueOf();
+            let fromStart = momentValue - scale.min;
+            let percentFromStart = fromStart / range;
+            let currentOffsetFromLeft = scale.left + (width*percentFromStart);
+            let expectedOffsetFromLeft = scale.left + (width *percent /100);
+            let diff = expectedOffsetFromLeft - currentOffsetFromLeft;
+            chart.pan({x: diff}, undefined, 'default');
+            startFetch();
+        }
+        function removeOldData(){
+            uic.delayedAction.run('chart-clear-data-@guid', 60000, ()=>{
+                console.log('removing old data is not yet implemented');
+                let oldestPoint = moment(chart.scales.x.min).format('YYYY-MM-DDTHH:mm:ss');
+                for(let i=0; i < datasets.length; i++){
+                    let dataset = datasets[i];
+                    let filteredData = dataset.data.filter(x=> x.d >= oldestPoint);
+                    datasets[i].data = filteredData;
+                }
+                if(autoMove)
+                    removeOldData();
+            });
+        }
             DrawNowLineRecursive();
     </text>);
 }

@@ -125,6 +125,8 @@ public class UICInputGroup : UIComponent, IUISingleRowSupport
 
     public bool RendersInSingleRow()
     {
+        if (!Label.HasValue() || !Input.HasValue())
+            return false;
         return Renderer == InputGroupRenderer.Grid;
     }
     #endregion

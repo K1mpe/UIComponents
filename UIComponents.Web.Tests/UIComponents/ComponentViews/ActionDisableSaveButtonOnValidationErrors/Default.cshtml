@@ -23,51 +23,47 @@
         formId = $"#{Model.Form.GetId()}";
 }
 
-<script>
-    $(document).ready(function(){
-        var button = $('@buttonId');
+let button = $('@buttonId');
 
-        //Script will not work if button is already disabled
-        if(button.attr('disabled'))
-            return;
+//Script will not work if button is already disabled
+if(button.attr('disabled'))
+    return;
 
-        var form = $('@formId');
-        var buttonTooltip = button.attr('title');
+let form = $('@formId');
+let buttonTooltip = button.attr('title');
 
-        var validationSpans = form.find('span.field-validation-valid');
-        form.find('input, select').on('keyup', function(){
-            CheckButton();
-        });
-        form.find('input, select').on('blur', function(){
-            CheckButton();
-        });
-        form.find('input, select').on('change', function(){
-            CheckButton();
-        });
+let validationSpans = form.find('span.field-validation-valid');
+form.find('input, select').on('keyup', function(){
+    CheckButton();
+});
+form.find('input, select').on('blur', function(){
+    CheckButton();
+});
+form.find('input, select').on('change', function(){
+    CheckButton();
+});
 
-        button.hover(function(){
-            CheckButton();
-        });
+button.hover(function(){
+    CheckButton();
+});
 
-        function CheckButton(){
-            var validationMessages= "";
-            validationSpans.each(function(){
-                if($(this).text().length){
-                    validationMessages += $(this).text();
-                    validationMessages += '\r\n';
-                }
-            });
+function CheckButton(){
+    var validationMessages= "";
+    validationSpans.each(function(){
+        if($(this).text().length){
+            validationMessages += $(this).text();
+            validationMessages += '\r\n';
+        }
+    });
 
             
 
-            if(validationMessages.length){
-                console.log('savebutton has been disabled');
-                button.attr('title', validationMessages);
-                button.attr('disabled',true);
-            } else{
-                button.attr('title', buttonTooltip);
-                button.attr('disabled',false);
-            }
-        }
-    });
-</script>
+    if(validationMessages.length){
+        console.log('savebutton has been disabled');
+        button.attr('title', validationMessages);
+        button.attr('disabled',true);
+    } else{
+        button.attr('title', buttonTooltip);
+        button.attr('disabled',false);
+    }
+}

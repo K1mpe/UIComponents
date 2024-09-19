@@ -265,8 +265,13 @@ uic.getProperties = function (element) {
     $(element).removeClass('uic-find-subnames');
     return results;
 
-}
-
+};
+//The color that is used for uic-help
+uic.consoleColor = function(){
+    let style  = window.getComputedStyle(document.body);
+    let color = style.getPropertyValue('--custom') || '#663399';
+    return color;
+};
 
 //This function will return a true or false if the objects match.
 // comparison => The object you would like to check
@@ -278,7 +283,7 @@ uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
         return false;
 
     if (!$.isPlainObject(objectMatch))
-        return comparison == objectMatch;
+        return uic.stringify(comparison) == uic.stringify(objectMatch);
 
     var comparisonProps = Object.getOwnPropertyNames(objectMissMatch);
 
@@ -292,10 +297,10 @@ uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
             var e = "";
             var c = "";
             try {
-                e = comparison[prop].toString() || "";
+                e = uic.stringify(comparison[prop]) || "";
             } catch { }
             try {
-                c = objectMissMatch[prop].toString() || "";
+                c = uic.stringify(objectMissMatch[prop]) || "";
             } catch { }
 
             //if comparison contains *, replace * with any possible
@@ -340,10 +345,10 @@ uic.compareObjects = function (comparison, objectMatch, objectMissMatch = {}) {
             var e = "";
         var c = "";
         try {
-            e = comparison[prop].toString() || "";
+            e = uic.stringify(comparison[prop]) || "";
         } catch { }
         try {
-            c = objectMatch[prop].toString() || "";
+            c = uic.stringify(objectMatch[prop]) || "";
         } catch { }
 
         //if comparison contains *, replace * with any possible
@@ -430,3 +435,11 @@ uic.getResultOrInvoke = async function (result, ...args) {
         return await result.apply(this, args);
     return result;
 }
+
+//If input is a string, output as string, else stringify
+uic.stringify = function (input) {
+    if (typeof input == 'string')
+        return input;
+    return JSON.stringify(input);
+}
+

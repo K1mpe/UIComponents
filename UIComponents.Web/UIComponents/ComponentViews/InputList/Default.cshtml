@@ -74,7 +74,7 @@
                 }
             }
             instances.each((index, item) =>{
-                if(index > values.length)
+                if(index >= values.length)
                     $(item).trigger('uic-remove');
             });
         });

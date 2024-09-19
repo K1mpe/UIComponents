@@ -59,14 +59,14 @@
 
     Model.AddScript(
 @<text>
-    var isColor = (strColor) => {
+    let isColor = (strColor) => {
     const s = new Option().style;
     s.color = strColor;
     return s.color !== '';
     }
     function validateInput(element) {
-    var currentValue = element.val();
-    var span = element.parent().parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+    let currentValue = element.val();
+    let span = element.parent().parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
     span.text("");
 
     @if (Model.ValidationValidColor)

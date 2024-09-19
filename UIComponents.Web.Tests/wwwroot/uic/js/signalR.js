@@ -29,7 +29,14 @@
         });
     },
     debug: false,
-
+    color: function(conditionMatch){
+        let style = window.getComputedStyle(document.body);
+        if(conditionMatch){
+            return style.getPropertyValue('--success') || '#00FF00';
+        } else{
+            return style.getPropertyValue('--default') || '#0000FF';
+        }
+    },
     currentUserId: undefined
 }
 $(document).ready(() => {
