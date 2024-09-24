@@ -1,3 +1,8 @@
+# 2024-09-24 (1.2.29)
+- Mark Changes updated to modal
+- Bugfix subcards
+- IUICLanguageService has function to translate a object
+
 # 2024-09-16 (1.2.28)
 - InputSelectListHtmlStorage => Init with old data for faster response
 - Multiline change lineheight on change

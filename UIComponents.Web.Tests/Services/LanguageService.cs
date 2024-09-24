@@ -19,5 +19,10 @@ namespace UIComponents.Web.Tests.Services
 
             return Task.FromResult(string.Format(translationModel.DefaultValue, translationModel.Arguments));
         }
+
+        public Task<string> TranslateObject(object obj)
+        {
+            return Task.FromResult(obj.ToString());
+        }
     }
 }

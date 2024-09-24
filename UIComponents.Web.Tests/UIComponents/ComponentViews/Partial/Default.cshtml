@@ -42,7 +42,7 @@
         uic.partial._init($('#@Model.GetId()'), @Json.Serialize(!Model.SkipInitialLoad), @Json.Serialize(Model.ReloadDelay?.TotalMilliseconds??0));
         $('#@id').on('uic-forceReload', (ev)=>{
             ev.stopPropagation();
-            uic.partial._reloadPartial($('#@id'), @Json.Serialize(!Model.ShowLoadingOverlay), async() =>{
+            uic.partial._reloadPartial($('#@id'), @Json.Serialize(Model.ShowLoadingOverlay), async() =>{
 
                 @await Model.GetHtml.InvokeAsync(Component);
                 return @Html.Raw(Model.GetHtml.ResultName);

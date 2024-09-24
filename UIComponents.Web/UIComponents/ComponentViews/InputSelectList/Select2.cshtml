@@ -28,7 +28,11 @@
     string id = Model.GetId();
 
     if (!string.IsNullOrEmpty(Model.Value))
+    {
         Model.SelectListItems.FirstOrDefault(x => (x.Value?.ToString() ?? string.Empty) == Model.Value, new()).Selected = true;
+        Model.AddAttribute("value", Model.Value);
+    }
+
 
     Model.Actions.SetIdentifier($"#{id}");
 
@@ -54,12 +58,15 @@
         background-color: var(--@Model.Color.ToLower()) !important;
         }
     </text>
-        );
+                );
     }
     Model.AddScript(
     @<text>
         $('#@id').on('uic-help', ()=>{
         console.log("$('#@id').on('uic-open', ()=>{...}) Triggered when opening the selectlist");
+        });
+        $('#@id').on('uic-getValue', (ev)=>{
+        return $('#@id').val() || $('#@id').attr('value');
         });
 
         $('#@id').select2({

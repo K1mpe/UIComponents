@@ -63,6 +63,8 @@ namespace UIComponents.Web.Tests.Models
 
         public UICReferenceValues<TestModel2> References { get; set; } = new UICReferenceValues<TestModel2>().AssignProperties(x=>x.TestModel2Bool);
 
+        public TestModel2 SubClass { get; set; } = new();
+
     }
 
     public enum TestEnum

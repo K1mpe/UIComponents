@@ -101,8 +101,9 @@ else
                 
                 @await Model.Submit.InvokeAsync(Component)
 
-
-                @Html.Raw(Model.Submit.ResultName) = (await $('#@id').triggerHandler('uic-afterSubmit', @Html.Raw(Model.Submit.ResultName))) ||@Html.Raw(Model.Submit.ResultName);
+                let myResult = await $('#@id').triggerHandler('uic-afterSubmit', @Html.Raw(Model.Submit.ResultName));
+                if(myResult != undefined)
+                    return myResult;
                 return @Html.Raw(Model.Submit.ResultName);
             } )
             </text>

@@ -147,14 +147,18 @@ uic.markChanges = function (element, newValue) {
     if (!element.length)
         return;
 
-
-    if ($._data($(element).get(0), 'events') != undefined && $._data($(element).get(0), 'events')["uic-setValue"] != undefined) {
-        let oldValue = uic.getValue(element);
-        if (oldValue != newValue && !(!oldValue && !newValue)) {
-            uic.applyMark(element, oldValue, newValue);
-        }
+    let oldValue = uic.getValue(element);
+    if (uic.stringify(oldValue) == uic.stringify(newValue))
         return;
+
+    if (uic.elementContainsEvent(element, 'uic-markChanges')) {
+        //If the markChanges returns true, the default function will not continue
+        if (element.triggerHandler('uic-markChanges', [oldValue, newValue]))
+            return;
     }
+
+
+
 
     if (Array.isArray(newValue)) {
         let name = $(element).attr('name');
@@ -177,10 +181,108 @@ uic.markChanges = function (element, newValue) {
         return;
 
     }
-    let oldValue = uic.getValue(element);
-    if (oldValue != newValue && !(!oldValue && !newValue))
-        uic.applyMark(element, oldValue, newValue);
+    uic.markChangesOptions.applyMark(element, oldValue, newValue);
 }
+
+uic.markChangesOptions = {
+    applyMark: async function (element, oldValue, newValue) {
+        let mark = uic.markChangesOptions.markChangesIcon.clone();
+        let tooltip = await uic.markChangesOptions.markChangesTooltip(element, oldValue, newValue);
+
+        let elementId = element.attr('id');
+        let visualElement = element;
+        if (element.prop('tagName') == "SELECT") {
+            let option = element.find(`option[value=${newValue}]`);
+            if (option.length)
+                uic.markChangesOptions.markChangesTooltip(element, oldValue, option.text().replaceAll('\n', '').trim()).then((result) => {
+                    mark.attr('title', result);
+                });
+            let select2Span = element.next();
+            if (select2Span.length && select2Span.hasClass('select2'))
+                visualElement = select2Span;
+        } else {
+            uic.markChangesOptions.markChangesTooltip(element, oldValue, newValue).then((result) => {
+                mark.attr('title', result);
+            });
+        }
+        if (elementId.length) {
+            $(`.uic-value-changed[data-for=${elementId}]`).remove();
+            mark.attr('data-for', elementId);
+        }
+        uic.markChangesOptions.onClickMark(element, oldValue, newValue, visualElement, mark);
+
+        visualElement.each((index, item) => {
+            item = $(item);
+            if (item.attr('readonly')) {
+                uic.setValue(item, newValue);
+                return;
+            }
+
+            item.addClass('uic-value-changed');
+
+            let label = $(`label[for="${item.attr('id')}"]`);
+            if (label.length)
+                label.append(mark);
+            else
+                item.before(mark);
+        })
+    },
+    markChangesIcon: $('<i>', { class: 'fas fa-triangle-exclamation uic-value-changed' }),
+    markChangesTooltip: async function (element, oldValue, newValue) {
+        let translatable = {
+            ResourceKey: "UIC.MarkChanges",
+            DefaultValue: "Value has changed to {0}",
+            Arguments: [newValue]
+        };
+        return await uic.translation.translate(translatable);
+    },
+    onClickMark: function (element, oldValue, newValue, visualElement, mark) {
+        mark.click(async () => {
+            let modal = $('<div>', { class: "modal fade show" })
+                .append($('<div>', { class: "modal-dialog" })
+                    .append($('<div>', { class: "modal-content" })
+                        .append($('<div>', { class: "modal-body" })
+                            .append($('<div>', { class: "row" })))));
+            let col = $('<div>', { class: "col" }).append(element.clone().removeClass('uic-value-changed select2-hidden-accessible').attr('id', ''));
+
+            let translations = [
+                { ResourceKey: "MarkChanges.CurrentValue" },
+                { ResourceKey: "MarkChanges.ServerValue" }];
+            let translationResults = await uic.translation.translateMany(translations);
+            let elName = element.attr('name');
+            let colLeft = col.clone().addClass('old-val')
+                .append($('<button>', { class: "btn btn-default" }).text(translationResults["MarkChanges.CurrentValue"]).on('click', (ev) => {
+                    let value = uic.getValue(colLeft);
+                    uic.setValue(element, value[elName]);
+                    uic.markChangesOptions.removeMark(element, visualElement, mark);
+                    modal.modal('hide');
+                }));
+            let colRight = col.clone().addClass('new-val')
+                .append($('<button>', { class: "btn btn-default" }).text(translationResults["MarkChanges.ServerValue"]).on('click', (ev) => {
+                    let value = uic.getValue(colRight);
+                    uic.setValue(element, value[elName]);
+                    uic.markChangesOptions.removeMark(element, visualElement, mark);
+                    modal.modal('hide');
+                }));
+            uic.setValue(colLeft, oldValue);
+            uic.setValue(colRight, newValue);
+            modal.find('.row')
+                .append(colLeft)
+                .append(colRight)
+            modal.modal({
+                show: true
+            });
+            $('body').append(modal);
+            //uic.setValue(element, newValue);
+            //visualElement.removeClass('uic-value-changed');
+            //mark.remove();
+        });
+    },
+    removeMark: function (element, visualElement, mark) {
+        visualElement.removeClass('uic-value-changed');
+        mark.remove();
+    },
+};
 
 //Returns true or false if the element contains this event
 uic.elementContainsEvent = function ($element, eventKey) {
@@ -188,58 +290,6 @@ uic.elementContainsEvent = function ($element, eventKey) {
 }
 
 
-uic.markChangesIcon = $('<i>', { class: 'fas fa-triangle-exclamation uic-value-changed' });
-uic.markChangesTooltip = async function (element, oldValue, newValue) {
-    let translatable = {
-        ResourceKey: "UIC.MarkChanges",
-        DefaultValue: "Value has changed to {0}\r\nClick here to update value",
-        Arguments: [newValue]
-    };
-    return await uic.translation.translate(translatable);
-}
-
-uic.applyMark = async function (element, oldValue, newValue) {
-    let mark = uic.markChangesIcon.clone();
-    let tooltip = await uic.markChangesTooltip(element, oldValue, newValue);
-
-    let elementId = element.attr('id');
-    let visualElement = element;
-    if (element.prop('tagName') == "SELECT") {
-        let option = element.find(`option[value=${newValue}]`);
-        if (option.length)
-            tooltip = await uic.markChangesTooltip(element, oldValue, option.text().replaceAll('\n', '').trim());
-        let select2Span = element.next();
-        if (select2Span.length && select2Span.hasClass('select2'))
-            visualElement = select2Span;
-    }
-    if (tooltip.length)
-        mark.attr('title', tooltip);
-    if (elementId.length) {
-        $(`.uic-value-changed[data-for=${elementId}]`).remove();
-        mark.attr('data-for', elementId);
-    }
-    mark.click(() => {
-        uic.setValue(element, newValue);
-        visualElement.removeClass('uic-value-changed');
-        mark.remove();
-    });
-
-    visualElement.each((index, item) => {
-        item = $(item);
-        if (item.attr('readonly')) {
-            uic.setValue(item, newValue);
-            return;
-        }
-
-        item.addClass('uic-value-changed');
-
-        let label = $(`label[for="${item.attr('id')}"]`);
-        if (label.length)
-            label.append(mark);
-        else
-            item.before(mark);
-    })
-}
 uic.clearValues = function (object) {
     for (let [key, val] of Object.entries(object)) {
         if (val instanceof Object) {
@@ -267,8 +317,8 @@ uic.getProperties = function (element) {
 
 };
 //The color that is used for uic-help
-uic.consoleColor = function(){
-    let style  = window.getComputedStyle(document.body);
+uic.consoleColor = function () {
+    let style = window.getComputedStyle(document.body);
     let color = style.getPropertyValue('--custom') || '#663399';
     return color;
 };

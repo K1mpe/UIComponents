@@ -16,5 +16,10 @@ namespace UIComponents.Generators.Services.Internal
                 return Task.FromResult(string.Empty);
             return Task.FromResult(translationModel.ToString());
         }
+
+        public Task<string> TranslateObject(object obj)
+        {
+            return Task.FromResult(obj.ToString());
+        }
     }
 }

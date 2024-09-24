@@ -136,7 +136,6 @@ public class UICOptions
     #region Card
     public bool ShowCardHeaders { get; set; }
     public UICCard? StartInCard { get; set; } 
-    public CardTitleOverride StartCardTitleOverride { get; set; }
 
     public UICCard? SubClassesInCard { get; set; } = new();
     public CardTitleOverride SubCardTitleOverride { get; set; } = CardTitleOverride.ClassType;

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Helpers;
+using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Helpers;
 using UIComponents.Models.Models.Card;
@@ -8,10 +10,12 @@ namespace UIComponents.Generators.Generators.Property;
 
 public class UICGeneratorCard : UICGeneratorProperty
 {
-    public UICGeneratorCard(ILogger<UICGeneratorInputThreeStateBool> logger) : base(logger)
+    private readonly IUICLanguageService _languageService;
+    public UICGeneratorCard(ILogger<UICGeneratorInputThreeStateBool> logger, IUICLanguageService uICLanguageService) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.ClassObject;
         HasExistingResult = false;
+        _languageService = uICLanguageService;
     }
 
     public override double Priority { get; set; } = 0;
@@ -33,15 +37,37 @@ public class UICGeneratorCard : UICGeneratorProperty
             card.Body = new();
             card.Footer = InternalHelper.CloneObject(args.Options.SubClassesInCard.Footer, false);
             card.Header = InternalHelper.CloneObject(args.Options.SubClassesInCard.Header, false);
+            card.RenderConditions.Clear();
+            card.RenderConditions.Add(card.Body.HasValue);
+
+            if (card.Header == null)
+                card.Header = new UICCardHeader();
+            switch (args.Options.SubCardTitleOverride)
+            {
+                case CardTitleOverride.NoOverride:
+                    break;
+                case CardTitleOverride.ClassTranslatedNameOrTostring:
+                    card.Header.Title = await _languageService.TranslateObject(args.ClassObject);
+                    break;
+                case CardTitleOverride.ClassToString:
+                    card.Header.Title = args.ClassObject.ToString();
+                    break;
+                case CardTitleOverride.ClassType:
+                    card.Header.Title = Defaults.TranslationDefaults.TranslateType(args.ClassObject.GetType());
+                    break;
+                case CardTitleOverride.PropertyName:
+                    if(args.PropertyInfo != null)
+                        card.Header.Title = Defaults.TranslationDefaults.TranslateProperty(args.PropertyInfo, args.UICPropertyType);
+                    break;
+            }
         }
-            
+
         if (card == null)
             return GeneratorHelper.Next();
 
         card.Render = true;
         card.Parent = args.CallCollection.Caller;
-        if (args.Options.ShowCardHeaders)
-            card.Header = new UICCardHeader(TranslationDefaults.TranslateObject(args.ClassObject));
+        card.HideHeader = !args.Options.ShowCardHeaders;
 
 
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, card, args.CallCollection);

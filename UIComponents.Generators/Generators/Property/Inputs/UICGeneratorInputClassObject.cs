@@ -38,7 +38,7 @@ public class UICGeneratorInputClassObject : UICGeneratorProperty
 
 
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, null, args.CallCollection);
-        var newArgs = new UICPropertyArgs(args.PropertyValue, null, null, args.Options, cc, args.Configuration);
+        var newArgs = new UICPropertyArgs(args.PropertyValue, args.PropertyInfo, args.UICPropertyType, args.Options, cc, args.Configuration);
         
         var result =await args.Configuration.GetGeneratedResultAsync<UICPropertyArgs, IUIComponent>($"Object for {args.PropertyType.Name}", newArgs, args.Options);
 
