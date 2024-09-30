@@ -110,19 +110,29 @@ public class UICQuestionService : IUICQuestionService
                     continue;
                 _= _signalRService.SendUIComponentToUser(fetchComponent, userId.ToString());
             }
-
+            Console.WriteLine("blub");
             _questionPersistance[key].AutoResetEvent.WaitOne(timeout);
+            Console.WriteLine("blub2");
             result = _questionPersistance[key].Response;
+            if(result == null)
+            {
+                _logger.LogError("No response was received for {0}", question.DebugIdentifier);
+                return false;
+            }
+                
+            Console.WriteLine($"Response {result}");
             return _questionPersistance[key].Answered;
         }
         catch(NullReferenceException)
         {
+            Console.WriteLine("nullReference");
             //No response received within timespan
             _logger.LogError("No response was received for {0}", question.DebugIdentifier);
             return false;
         }
         catch(Exception ex)
         {
+            Console.WriteLine("Exception");
             _logger.LogError(ex, "Error for question {0}", question.DebugIdentifier);
             return false;
         }

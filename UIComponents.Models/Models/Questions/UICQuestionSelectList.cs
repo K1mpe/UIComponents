@@ -36,6 +36,11 @@ public class UICQuestionSelectList : UICQuestionBase
     {
         var instance = new UICQuestionSelectList(title, message, items);
         return instance.AssignClickEvents(questionService);
+    }
+    public static UICQuestionSelectList Create(Translatable title, Translatable message, List<SelectListItem> items, IUICQuestionService questionService)
+    {
+        var instance = new UICQuestionSelectList(title, message, items.Select(x=>(SelectItem)x).ToList());
+        return instance.AssignClickEvents(questionService);
 
     }
     public UICQuestionSelectList AssignClickEvents(IUICQuestionService questionService)

@@ -158,7 +158,7 @@ public class UICOptions
     /// <summary>
     /// Add a default item for selectlistitems
     /// </summary>
-    public bool SelectlistAddEmptyItem { get; set; } = true;
+    public bool SelectlistAddEmptyItem { get; set; } = OptionDefaults.SelectlistAddEmptyItem;
 
     /// <summary>
     /// If a selectlist has more or equal as this amount of items, it will be searchable
@@ -168,7 +168,7 @@ public class UICOptions
     /// <summary>
     /// If the user has permission to add this type of entity, show the add button
     /// </summary>
-    public bool SelectListShowAddButtonIfAllowed { get; set; } = true;
+    public bool SelectListShowAddButtonIfAllowed { get; set; } = OptionDefaults.SelectListShowAddButtonIfAllowed;
 
     /// <summary>
     /// Example: User.Field.UserGroupId => User.Field.UserGroup

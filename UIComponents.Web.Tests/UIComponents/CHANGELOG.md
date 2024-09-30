@@ -1,3 +1,9 @@
+# 2024-09-27 (1.2.30)
+- DelayedAction Changed
+- BugFix Permissions
+- Missing Namespace UIComponents.Abstractions
+- Fix UICQuestionService
+
 # 2024-09-24 (1.2.29)
 - Mark Changes updated to modal
 - Bugfix subcards

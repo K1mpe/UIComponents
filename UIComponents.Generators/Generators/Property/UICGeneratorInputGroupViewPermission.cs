@@ -40,7 +40,7 @@ public class UICGeneratorPropertyViewPermission : UICGeneratorProperty
                     if (!await permissionService!.CanViewObject(instance))
                         return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
 
-                    if (!await permissionService.CanViewProperty(instance, inheritInfo.Name))
+                    if (!await permissionService.CanViewPropertyOfType(inheritInfo.DeclaringType, inheritInfo.Name))
                         return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
                 }
                 catch (Exception ex)

@@ -66,7 +66,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
                         OnClick = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Get, propertyType.Name, "create")
                         {
                             OnSuccess = new UICActionOpenResultAsModal()
-                        }
+                        }.AddDefaultData("modaltitle", "")
                     }.AddClass("hidden-readonly"));
                 }
             }

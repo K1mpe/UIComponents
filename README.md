@@ -97,6 +97,7 @@ This partial is automatically generated in /views/shared/_UicScripts.cshtml
 These usings can also be added to GlobalUsings 
 ```
 @using UIComponents.Abstractions;
+@using UIComponents.Abstractions;
 @using UIComponents.Abstractions.Attributes;
 @using UIComponents.Abstractions.Enums;
 @using UIComponents.Abstractions.Extensions;

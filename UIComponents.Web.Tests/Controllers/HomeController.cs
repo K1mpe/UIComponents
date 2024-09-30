@@ -115,7 +115,7 @@ namespace UIComponents.Web.Tests.Controllers
 
                 var yesNo = UICQuestionYesNo.Create("Test Ja / nee", "Wilt u deze vraag beantwoorden?", _uicQuestionService, question => question.Icon = QuestionIconType.Warning);
 
-                var answered = _uicQuestionService.TryAskQuestion(yesNo, TimeSpan.FromMinutes(1), 1, out bool boolean);
+                var answered = _uicQuestionService.TryAskQuestion(yesNo, TimeSpan.FromSeconds(10), 1, out bool boolean);
                 if (boolean)
                 {
                     var dayOfWeek = UICQuestionSelectEnum<DayOfWeek>.Create("Favorite day", "What is your favorite day?", _uicQuestionService, question =>

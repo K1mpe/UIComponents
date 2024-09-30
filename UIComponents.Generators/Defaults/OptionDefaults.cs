@@ -23,4 +23,6 @@ public static class OptionDefaults
     public static bool ShowEditButton = true;
     public static bool ShowDeleteButton = true;
     public static bool ShowCancelButton = false;
+    public static bool SelectlistAddEmptyItem = false;
+    public static bool SelectListShowAddButtonIfAllowed = false;
 }
