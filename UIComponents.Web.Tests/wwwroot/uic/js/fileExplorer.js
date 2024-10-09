@@ -321,26 +321,47 @@
         console.log('openFile', explorerItem);
         let container = explorerItem.closest('.file-explorer-container');
         await container.triggerHandler('uic-before-open', explorerItem);
-        let controller = container.attr('data-controller');
-        let absolutePath = explorerItem.attr('data-absolutepath');
-        let relativePath = explorerItem.attr('data-relativepath');
-        await uic.fileExplorer.download(`/${controller}/DownloadFile`, {
-            pathModel: {
-                AbsolutePathReference: absolutePath,
-                relativePath: relativePath
-            }
-        });
+        await this.downloadFile(explorerItem);
 
         await container.triggerHandler('uic-after-open', explorerItem);
     },
-    openItem: function (explorerItem) {
-        explorerItem = $(explorerItem).closest('.explorer-item');
+    
+    openItem: function (ev) {
+        let explorerItem = $(ev.target).closest('.explorer-item');
         if (uic.elementContainsEvent(explorerItem, 'uic-openExplorerItem')) {
             explorerItem.trigger('uic-openExplorerItem');
             return;
         }
 
         uic.fileExplorer.openFile(explorerItem);
+    },
+    deleteSelected: async function (container) {
+        container = container.closest('.file-explorer-container');
+        let selectedFiles = container.find('.explorer-item.selected');
+        let controller = container.data('controller');
+        let files = [];
+        for (let i = 0; i < selectedFiles.length; i++) {
+            let file = selectedFiles[i];
+            files.push({
+                AbsolutePathReference: file.attr('data-absolutepath'),
+                RelativePath: file.attr('data-relativepath')
+            })
+        }
+        await uic.getpost.post(`${controller}/DeleteFiles`, files);
+    },
+    downloadSelected: async function (container) {
+        container = container.closest('.file-explorer-container');
+        let selectedFiles = container.find('.explorer-item.selected');
+        let controller = container.data('controller');
+        let files = [];
+        for (let i = 0; i < selectedFiles.length; i++) {
+            let file = $(selectedFiles[i]);
+            files.push({
+                AbsolutePathReference: file.attr('data-absolutepath'),
+                RelativePath: file.attr('data-relativepath')
+            })
+        }
+        await uic.fileExplorer.download(`/${controller}/Download`, { pathModels: files });
     },
     download: async function (source, data) {
         //https://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post
@@ -388,7 +409,7 @@
                     makeToast("Success", "File successfully downloaded");
                 }
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                ErrorBox(errorThrown);
+                makeToast("Error", errorThrown);
             }
         });
     }

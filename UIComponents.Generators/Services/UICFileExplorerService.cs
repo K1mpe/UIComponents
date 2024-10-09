@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Models.FileExplorer;
+using UIComponents.Abstractions.Varia;
 using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Services;
@@ -144,7 +146,89 @@ public class UICFileExplorerService : IUICFileExplorerService
         var absoluteFile = _pathMapper.GetAbsolutePath(pathModel);
         await _executeActions.RenameFileAsync(absoluteFile, newName);
     }
+    
+    public async Task<Stream> DownloadFilesAndDirectories(List<RelativePathModel> pathModels)
+    {
+        if (!pathModels.Any())
+            throw new ArgumentNullException(nameof(pathModels));
 
+        if (pathModels.Count() == 1)
+        {
+            var pathModel = pathModels[0];
+
+            string absolutePath = _pathMapper.GetAbsolutePath(pathModel);
+            if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
+                throw new AccessViolationException();
+
+            if (System.IO.File.Exists(absolutePath))
+            {
+
+                FileInfo fileInfo = new FileInfo(absolutePath);
+
+                var memory = new MemoryStream();
+                using (var stream = new FileStream(absolutePath, FileMode.Open))
+                {
+                    await stream.CopyToAsync(memory);
+                }
+                memory.Position = 0;
+                return memory;
+            }
+        }
+
+        var zipMemoryStream = new MemoryStream();
+        await _logger.LogFunction("Creating Zip file", true, async () =>
+        {
+            using (var archive = new ZipArchive(zipMemoryStream, ZipArchiveMode.Create, true))
+            {
+                foreach (var pathModel in pathModels)
+                {
+                    var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
+                    
+
+                    if (File.Exists(absolutePath))
+                    {
+                        var fileInfo = new FileInfo(absolutePath);
+                        var fileEntry = archive.CreateEntry(fileInfo.Name);
+                        using (_logger.BeginScopeKvp("FilePath", absolutePath))
+                        {
+                            await _logger.LogFunction($"Adding file to zip", true, async () =>
+                            {
+                                using (var entryStream = fileEntry.Open())
+                                using (var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read))
+                                {
+                                    await fileStream.CopyToAsync(entryStream);
+                                }
+                            }, LogLevel.Information);
+                        } 
+                    }
+                    else if (Directory.Exists(absolutePath))
+                    {
+                        var dirInfo = new DirectoryInfo(absolutePath);
+                        foreach (var filePath in Directory.GetFiles(absolutePath, "*", SearchOption.AllDirectories))
+                        {
+                            using (_logger.BeginScopeKvp("FilePath", filePath))
+                            {
+                                await _logger.LogFunction($"Adding file to zip", true, async () =>
+                                {
+                                    var fileEntry = archive.CreateEntry(_pathMapper.ReplaceRoot(filePath, absolutePath, $"{dirInfo.Name}\\"));
+
+                                    using (var entryStream = fileEntry.Open())
+                                    using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                                    {
+                                        await fileStream.CopyToAsync(entryStream);
+                                    }
+                                }, LogLevel.Information);
+                            }
+                        }
+                    }
+                }
+            }
+        }, LogLevel.Information);
+        
+
+        zipMemoryStream.Position = 0;
+        return zipMemoryStream;
+    }
     #endregion
 
     public async Task<GetFilesForDirectoryResultModel> GetFilesFromDirectoryAsync(GetFilesForDirectoryFilterModel filterModel, CancellationToken cancellationToken)

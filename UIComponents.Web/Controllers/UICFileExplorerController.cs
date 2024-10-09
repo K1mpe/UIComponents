@@ -6,11 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Models.FileExplorer;
+using UIComponents.Abstractions.Varia;
 using UIComponents.Web.Components;
 using UIComponents.Web.Interfaces.FileExplorer;
 
@@ -59,26 +61,25 @@ namespace UIComponents.Web.Tests.Controllers
             }
         }
 
-        public async Task<IActionResult> DownloadFile(RelativePathModel pathModel)
+        public async Task<IActionResult> Download(RelativePathModel[] pathModels)
         {
             try
             {
-                string absolutePath = _fileExplorerPathMapper.GetAbsolutePath(pathModel);
-                if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
-                    throw new AccessViolationException();
-
-                FileInfo fileInfo = new FileInfo(absolutePath);
-
-                var memory = new MemoryStream();
-                using (var stream = new FileStream(absolutePath, FileMode.Open))
+                string fileName= $"{Assembly.GetExecutingAssembly().GetName().Name}.zip";
+                if(pathModels.Length == 1)
                 {
-                    await stream.CopyToAsync(memory);
+                    var fileInfo = new FileInfo(_fileExplorerPathMapper.GetAbsolutePath(pathModels[0]));
+                    if(fileInfo.Exists)
+                        fileName = fileInfo.Name;
+                    else
+                    {
+                        var dirInfo = new DirectoryInfo(_fileExplorerPathMapper.GetAbsolutePath(pathModels[0]));
+                        fileName = $"{dirInfo.Name}.zip";
+                    }
                 }
-                memory.Position = 0;
-                return File(memory, System.Net.Mime.MediaTypeNames.Application.Octet, fileInfo.Name);
-                //return File(absolutePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileInfo.Name);
+                var stream = await _fileExplorerService.DownloadFilesAndDirectories(pathModels.ToList());
+                return File(stream, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
 
-                throw new NotImplementedException();
             }
             catch (Exception ex)
             {
@@ -86,14 +87,7 @@ namespace UIComponents.Web.Tests.Controllers
                 throw;
             }
         }
-        public Task<IActionResult> DownloadFileTest() 
-        {
-            return DownloadFile(new()
-            {
-                RelativePath = @"C:/Jonas/Nieuw.png",
-                AbsolutePathReference=""
-            });
-        }
+        
 
         [HttpPost]
         public async Task<IActionResult> GetFilesForDirectoryPartial(GetFilesForDirectoryFilterModel fm)
@@ -214,6 +208,10 @@ namespace UIComponents.Web.Tests.Controllers
                 return request.Headers["X-Requested-With"] == "XMLHttpRequest";
 
             return false;
+        }
+        protected IActionResult Error(Translatable message = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }

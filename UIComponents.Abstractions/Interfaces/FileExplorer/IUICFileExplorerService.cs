@@ -20,5 +20,7 @@ namespace UIComponents.Abstractions.Interfaces.FileExplorer
         Task MoveFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory);
 
         Task RenameFileAsync(RelativePathModel pathModel, string newName);
+
+        Task<Stream> DownloadFilesAndDirectories(List<RelativePathModel> pathModels);
     }
 }

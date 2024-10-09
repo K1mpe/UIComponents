@@ -192,7 +192,7 @@ public class UICFileExplorer :UIComponent
                 Category = fileGroup.CategoryId
             };
             contextMenuItems.Add(openFolder);
-            var download = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item:not(.cannot-open)", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Download")) { Icon = IconDefaults.Download}, new UICCustom("uic.fileExplorer.openItem(target);"))
+            var download = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item:not(.cannot-open)", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Download")) { Icon = IconDefaults.Download}, new UICCustom("uic.fileExplorer.downloadSelected(target);"))
             {
                 Id = "FileExplorer.Actions.Download",
                 Category = fileGroup.CategoryId
@@ -210,7 +210,7 @@ public class UICFileExplorer :UIComponent
                 Category = fileGroup.CategoryId
             };
             contextMenuItems.Add(copy);
-            var delete = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item.can-delete", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Delete")) { Icon = IconDefaults.Delete}, new UICCustom("uic.fileExplorer.openItem(target);"))
+            var delete = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item.can-delete", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Delete")) { Icon = IconDefaults.Delete}, new UICCustom("uic.fileExplorer.deleteSelected(target);"))
             {
                 Id = "FileExplorer.Actions.Delete",
                 Category = fileGroup.CategoryId,

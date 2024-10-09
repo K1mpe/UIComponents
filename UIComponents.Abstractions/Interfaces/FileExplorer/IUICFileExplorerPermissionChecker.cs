@@ -36,4 +36,5 @@ public interface IUICFileExplorerPermissionChecker
     /// <param name="newFilename"></param>
     /// <returns></returns>
     public Task ThrowIfCurrentUserCantRenameFileOrDirectory(RelativePathModel sourcePath, string newFilename);
+    
 }
