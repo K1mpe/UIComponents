@@ -56,12 +56,12 @@ namespace UIComponents.Models.Models
         public IUIComponent LoadHere(bool loadOutdatedFirst)
         {
 
-            var div = new UICGroup().AddAttribute("html-storage", Id)
+            var div = new UICGroup().AddAttribute("html-storage", Id).AddCss("display", "contents")
                 .Add(new UICGroup()
                 {
                     RenderWithoutContent = true,
                     Renderer = UICGroupRenderer.Div,
-                });
+                }.AddCss("display", "contents"));
 
             var script = new UICCustom()
                 .AddLine("<script>")

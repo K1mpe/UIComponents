@@ -16,14 +16,14 @@ using UIComponents.Web.Interfaces.FileExplorer;
 
 namespace UIComponents.Web.Tests.Controllers
 {
-    public class UICFileExplorerController : Controller, IFileExplorerController
+    public class UICFileExplorerController : Controller, IUICFileExplorerController
     {
         private readonly ILogger _logger;
-        private readonly IFileExplorerService _fileExplorerService;
-        private readonly IFileExplorerPermissionService _permissionService;
-        private readonly IFileExplorerPathMapper _fileExplorerPathMapper;
+        private readonly IUICFileExplorerService _fileExplorerService;
+        private readonly IUICFileExplorerPermissionService _permissionService;
+        private readonly IUICFileExplorerPathMapper _fileExplorerPathMapper;
 
-        public UICFileExplorerController(ILogger<UICFileExplorerController> logger, IFileExplorerService fileExplorerService, IFileExplorerPathMapper fileExplorerPathMapper, IFileExplorerPermissionService permissionService = null)
+        public UICFileExplorerController(ILogger<UICFileExplorerController> logger, IUICFileExplorerService fileExplorerService, IUICFileExplorerPathMapper fileExplorerPathMapper, IUICFileExplorerPermissionService permissionService = null)
         {
             _logger = logger;
             _fileExplorerService = fileExplorerService;
@@ -31,11 +31,11 @@ namespace UIComponents.Web.Tests.Controllers
             _fileExplorerPathMapper = fileExplorerPathMapper;
         }
 
-        public async Task<IActionResult> CopyFiles((RelativePathModel FromPath, RelativePathModel ToPath)[] files)
+        public async Task<IActionResult> CopyFiles(RelativePathModel[] FromPath, RelativePathModel ToPath)
         {
             try
             {
-                await _fileExplorerService.CopyFilesAsync(files);
+                await _fileExplorerService.CopyFilesAsync(FromPath.ToList(), ToPath);
                 return Json(true);
             }
             catch(Exception ex)
@@ -49,7 +49,7 @@ namespace UIComponents.Web.Tests.Controllers
         {
             try
             {
-                await _fileExplorerService.DeleteFilesAsync(pathModel);
+                await _fileExplorerService.DeleteFilesAsync(pathModel.ToList());
                 return Json(true);
             }
             catch (Exception ex)
@@ -135,11 +135,11 @@ namespace UIComponents.Web.Tests.Controllers
             }
         }
 
-        public async Task<IActionResult> MoveFiles((RelativePathModel FromPath, RelativePathModel ToPath)[] files)
+        public async Task<IActionResult> MoveFiles(RelativePathModel[] FromPath, RelativePathModel ToPath)
         {
             try
             {
-                await _fileExplorerService.MoveFilesAsync(files);
+                await _fileExplorerService.MoveFilesAsync(FromPath.ToList(), ToPath);
                 return Json(true);
             }
             catch (Exception ex)

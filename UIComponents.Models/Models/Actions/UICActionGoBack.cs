@@ -2,8 +2,16 @@
 
 public class UICActionGoBack : UICCustom
 {
-    public UICActionGoBack()
+    public UICActionGoBack(bool forceReload)
     {
-        Content = "history.back();";
+        if(forceReload)
+        {
+            Content = "location = navigation.activation.from?.url ?? '/'";
+        }
+        else
+        {
+            Content = "history.back();";
+        }
+        
     }
 }

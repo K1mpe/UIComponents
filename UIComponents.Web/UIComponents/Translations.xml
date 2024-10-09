@@ -201,7 +201,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>135</LineNumber>
+          <LineNumber>131</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -221,7 +221,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>110</LineNumber>
+          <LineNumber>106</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -241,7 +241,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>141</LineNumber>
+          <LineNumber>137</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -261,7 +261,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>116</LineNumber>
+          <LineNumber>112</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -448,6 +448,61 @@
       </Files>
     </Translatable>
     <Translatable>
+      <Key>FileExplorer.Copy</Key>
+      <Translations />
+      <ArgumentsCount>0</ArgumentsCount>
+      <Files>
+        <FileAndNumber>
+          <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
+          <LineNumber>207</LineNumber>
+        </FileAndNumber>
+      </Files>
+    </Translatable>
+    <Translatable>
+      <Key>FileExplorer.CreateDirectory</Key>
+      <Translations />
+      <ArgumentsCount>0</ArgumentsCount>
+      <Files>
+        <FileAndNumber>
+          <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
+          <LineNumber>160</LineNumber>
+        </FileAndNumber>
+      </Files>
+    </Translatable>
+    <Translatable>
+      <Key>FileExplorer.Cut</Key>
+      <Translations />
+      <ArgumentsCount>0</ArgumentsCount>
+      <Files>
+        <FileAndNumber>
+          <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
+          <LineNumber>201</LineNumber>
+        </FileAndNumber>
+      </Files>
+    </Translatable>
+    <Translatable>
+      <Key>FileExplorer.Delete</Key>
+      <Translations />
+      <ArgumentsCount>0</ArgumentsCount>
+      <Files>
+        <FileAndNumber>
+          <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
+          <LineNumber>213</LineNumber>
+        </FileAndNumber>
+      </Files>
+    </Translatable>
+    <Translatable>
+      <Key>FileExplorer.Download</Key>
+      <Translations />
+      <ArgumentsCount>0</ArgumentsCount>
+      <Files>
+        <FileAndNumber>
+          <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
+          <LineNumber>195</LineNumber>
+        </FileAndNumber>
+      </Files>
+    </Translatable>
+    <Translatable>
       <Key>FileExplorer.FileName</Key>
       <Translations>
         <Translation>
@@ -512,6 +567,32 @@
       </Files>
     </Translatable>
     <Translatable>
+      <Key>FileExplorer.Open</Key>
+      <Translations />
+      <ArgumentsCount>0</ArgumentsCount>
+      <Files>
+        <FileAndNumber>
+          <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
+          <LineNumber>182</LineNumber>
+        </FileAndNumber>
+        <FileAndNumber>
+          <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
+          <LineNumber>189</LineNumber>
+        </FileAndNumber>
+      </Files>
+    </Translatable>
+    <Translatable>
+      <Key>FileExplorer.Rename</Key>
+      <Translations />
+      <ArgumentsCount>0</ArgumentsCount>
+      <Files>
+        <FileAndNumber>
+          <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
+          <LineNumber>219</LineNumber>
+        </FileAndNumber>
+      </Files>
+    </Translatable>
+    <Translatable>
       <Key>FileExplorer.Size</Key>
       <Translations>
         <Translation>
@@ -524,6 +605,17 @@
         <FileAndNumber>
           <File>UIComponents.Web\UIComponents\ComponentViews\FileExplorer\ExplorerViews\Details.cshtml</File>
           <LineNumber>33</LineNumber>
+        </FileAndNumber>
+      </Files>
+    </Translatable>
+    <Translatable>
+      <Key>FileExplorer.Upload</Key>
+      <Translations />
+      <ArgumentsCount>0</ArgumentsCount>
+      <Files>
+        <FileAndNumber>
+          <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
+          <LineNumber>167</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -1304,7 +1396,7 @@
       <Translations>
         <Translation>
           <Code>EN</Code>
-          <Translation>The length of {0} must be shorter than {1}</Translation>
+          <Translation>The length of {0} must be shorter or equal to {1}</Translation>
         </Translation>
         <Translation>
           <Code>NL</Code>
@@ -1344,7 +1436,7 @@
       <Translations>
         <Translation>
           <Code>EN</Code>
-          <Translation>The length of {0} must be longer than {1}</Translation>
+          <Translation>The length of {0} must be longer or equal to {1}</Translation>
         </Translation>
         <Translation>
           <Code>NL</Code>

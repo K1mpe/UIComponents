@@ -291,6 +291,14 @@ form {
         &.hide-empty .input-no-value {
             display: none;
         }
+
+        .singlerow-groups label:has(+.form-column .custom-switch) {
+            padding-top: add($input-padding-y, $input-border-width);
+            padding-bottom: add($input-padding-y, $input-border-width);
+            margin-bottom: 0;
+            @include font-size(inherit);
+            line-height: $input-line-height;
+        }
     }
 
     &:not(.readonly-form) {
@@ -877,4 +885,10 @@ body .modal-dialog.auto { /* Width */
     }
 }
 /* #endregion SidePanel */
+/* #region SingleRow */
+.singlerow-groups label {
+    padding-top: add($input-padding-y, $input-border-width);
+    padding-bottom: add($input-padding-y, $input-border-width);
+}
+/* #endregion SingleRow */
 

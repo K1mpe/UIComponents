@@ -8,12 +8,14 @@ using UIComponents.Abstractions.DataTypes;
 using UIComponents.Abstractions.DataTypes.RecurringDates;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces;
+using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Models;
 using UIComponents.Abstractions.Varia;
 using UIComponents.Defaults;
 using UIComponents.Defaults.Models.Graphs;
 using UIComponents.Generators.Interfaces;
+using UIComponents.Generators.Services;
 using UIComponents.Models.Extensions;
 using UIComponents.Models.Models;
 using UIComponents.Models.Models.Actions;
@@ -42,7 +44,8 @@ namespace UIComponents.Web.Tests.Controllers
         private readonly IUICQuestionService _uicQuestionService;
         private readonly TestModelValidator _validator;
         private readonly TestService _testService;
-        public HomeController(ILogger<HomeController> logger, IUIComponentGenerator uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator, TestService testService)
+        private readonly IUICFileExplorerPathMapper _pathMapper;
+        public HomeController(ILogger<HomeController> logger, IUIComponentGenerator uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator, TestService testService, IUICFileExplorerPathMapper pathMapper)
         {
             _logger = logger;
             _uic = uic;
@@ -51,6 +54,7 @@ namespace UIComponents.Web.Tests.Controllers
             _uicQuestionService = uicQuestionService;
             _validator = validator;
             _testService = testService;
+            _pathMapper = pathMapper;
         }
 
         public static int Counter { get; set; } = 0;
@@ -296,7 +300,17 @@ namespace UIComponents.Web.Tests.Controllers
             {
                 RootDirectory = "C:\\Jonas",
             };
+            _pathMapper.RegisterPath("C:");
             UICFileExplorer.Addons.AddAllAddons(fileBrowser);
+
+            UICFileExplorerService.IsDirectory("C:\\Jonas", false);
+            UICFileExplorerService.IsDirectory("C:\\Jonas\\blub", false);
+
+            var a1 = new DirectoryInfo("C:\\Jonas\\");
+            var a2 = new DirectoryInfo("C:\\Jonas");
+            var b = new DirectoryInfo("C:\\Jonas\\asqdf\\");
+            var c = new DirectoryInfo("C:\\Jonas\\droogvoer.bak");
+
             return ViewOrPartial(fileBrowser);
         }
 

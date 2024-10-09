@@ -1,28 +1,101 @@
 ﻿
+using UIComponents.Models.Models.Card;
+
 namespace UIComponents.Defaults;
 
 public static class OptionDefaults
 {
+    /// <inheritdoc cref="UICOptions.CheckReadPermissions" />
+    public static bool CheckReadPermissions = true;
 
-    public static bool IdHidden = true;
-    public static bool HideReadonlyProperties = true;
-    public static string ExcludedProperties = "IsDeleted";
-    public static bool PostObjectAsDefault = false;
-    public static bool PostIdAsFixed = false;
+    /// <inheritdoc cref="UICOptions.CheckWritePermissions" />
+    public static bool CheckWritePermissions = true;
 
-    public static bool HideEmptyInReadonly = false;
-
+    /// <inheritdoc cref="UICOptions.DisableSaveButtonOnValidationErrors" />
     public static bool DisableSaveButtonOnValidationErrors = true;
 
-    public static IUICAction OnSuccessfullSubmit = new UICCustom();
+    /// <inheritdoc cref="UICOptions.FormReadonly" />
+    public static bool FormReadonly = false;
 
-    public static ButtonPosition ButtonPosition = ButtonPosition.Right;
+    /// <inheritdoc cref="UICOptions.FormToolbarInCardFooter" />
+    public static bool FormToolbarInCardFooter = false;
+
+    /// <inheritdoc cref="UICOptions.HideEmptyInReadonly" />
+    public static bool HideEmptyInReadonly = false;
+
+    /// <inheritdoc cref="UICOptions.HideReadonlyProperties" />
+    public static bool HideReadonlyProperties = true;
+
+    /// <inheritdoc cref="UICOptions.HideId" />
+    public static bool HideId = true;
+
+    ///<inheritdoc cref="UICOptions.CheckReadPermissions" />
+    public static string ExcludedProperties = string.Empty;
+
+    /// <inheritdoc cref="UICOptions.IncludedUndefinedProperties" />
+    public static bool IncludedUndefinedProperties = false;
+
+    /// <inheritdoc cref="UICOptions.InputGroupSingleRow" />
+    public static bool InputGroupSingleRow = true;
+
+    /// <inheritdoc cref="UICOptions.MarkLabelsAsRequired" />
+    public static bool MarkLabelsAsRequired = true;
+
+    ///<inheritdoc cref="UICOptions.NoForm" />
+    public static bool NoForm = false;
+
+    ///<inheritdoc cref="UICOptions.PostIdAsFixed" />
+    public static bool PostIdAsFixed = false;
+
+    ///<inheritdoc cref="UICOptions.PostObjectAsDefault" />
+    public static bool PostObjectAsDefault = false;
+
+    ///<inheritdoc cref="UICOptions.ReplaceSaveButtonWithCreateButton" />
+    public static bool ReplaceSaveButtonWithCreateButton = false;
+
+    ///<inheritdoc cref="UICOptions.ReverseButtonOrder" />
+    public static bool ReverseButtonOrder = true;
+
+    ///<inheritdoc cref="UICOptions.SelectlistAddEmptyItem" />
+    public static bool SelectlistAddEmptyItem = false;
+
+    ///<inheritdoc cref="UICOptions.SelectListShowAddButtonIfAllowed" />
+    public static bool SelectListShowAddButtonIfAllowed = false;
+
+    ///<inheritdoc cref="UICOptions.SelectlistSearableForItems" />
+    public static int SelectlistSearableForItems = 10;
+
+    ///<inheritdoc cref="UICOptions.ShowCancelButton" />
+    public static bool ShowCancelButton = false;
+
+    ///<inheritdoc cref="UICOptions.ShowCardHeaders" />
+    public static bool ShowCardHeaders = false;
+
+    ///<inheritdoc cref="UICOptions.ShowDeleteButton" />
+    public static bool ShowDeleteButton = true;
+
+    ///<inheritdoc cref="UICOptions.ShowEditButton" />
+    public static bool ShowEditButton = true;
+
+    ///<inheritdoc cref="UICOptions.ButtonDistance" />
     public static ButtonDistance ButtonDistance = ButtonDistance.Medium;
 
-    public static bool ReverseButtonOrder = true;
-    public static bool ShowEditButton = true;
-    public static bool ShowDeleteButton = true;
-    public static bool ShowCancelButton = false;
-    public static bool SelectlistAddEmptyItem = false;
-    public static bool SelectListShowAddButtonIfAllowed = false;
+    ///<inheritdoc cref="UICOptions.ButtonPosition" />
+    public static ButtonPosition ButtonPosition = ButtonPosition.Right;
+
+    ///<inheritdoc cref="UICOptions.ToolbarPosition" />
+    public static ToolbarPosition ToolbarPosition = ToolbarPosition.BelowForm;
+
+    ///<inheritdoc cref="UICOptions.CheckboxColor" />
+    public static IColor? CheckboxColor = null;
+
+    ///<inheritdoc cref="UICOptions.OnSuccessfullSubmit" />
+    public static IUICAction OnSuccessfullSubmit = new UICCustom();
+
+    ///<inheritdoc cref="UICOptions.StartInCard" />
+    public static UICCard? StartInCard = null;
+
+    ///<inheritdoc cref="UICOptions.SubClassesInCard" />
+    public static UICCard? SubClassesInCard = new();
+
 }

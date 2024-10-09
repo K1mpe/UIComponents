@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UIComponents.Abstractions;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Services;
@@ -16,12 +17,13 @@ public class UICConfig
     private readonly UicConfigOptions _options;
     private readonly ILogger<UICConfig> _logger;
 
-    public UICConfig(UicConfigOptions options, IServiceProvider serviceProvider, ILogger<UICConfig> logger)
+    public UICConfig(UicConfigOptions options, IServiceProvider serviceProvider, ILogger<UICConfig> logger, IUICValidationService validationService)
     {
         _options = options;
         ServiceProvider = serviceProvider;
         _logger = logger;
         ButtonGenerators = new(this);
+        ValidationService = validationService;
     }
 
 
@@ -77,6 +79,8 @@ public class UICConfig
             
         }
     }
+
+    public IUICValidationService ValidationService { get; init; }
 
 
     public bool TryGetLanguageService(out IUICLanguageService? languageService)
@@ -182,7 +186,9 @@ public class UICConfig
             propType = await GetPropertyTypeAsync(propertyInfo, options);
 
         var args = new UICPropertyArgs(parentObject, propertyInfo, propType, options, cc, this);
-        
+
+        if (args.PropertyInfo != null)
+            _logger.BeginScopeKvp("UICPropertyName", args.PropertyInfo.Name);
         return await GetGeneratedResultAsync<UICPropertyArgs, IUIComponent>($"{args.CallCollection.CurrentCallType} {args.ClassObject.GetType().Name}{((args.PropertyInfo == null)?"":$" => {args.PropertyName}")}",args, options);
     }
 

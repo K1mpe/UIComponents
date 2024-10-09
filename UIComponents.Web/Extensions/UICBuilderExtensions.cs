@@ -304,7 +304,6 @@ public static class UICBuilderExtensions
 
         if (options.AddFileExplorerImgs)
         {
-
             string targetRoote = $"{dir}\\wwwroot\\uic\\img\\file-explorer";
             string sourceRoute = $"{currentAssemblyName}.UIComponents.Root.img.file_explorer";
             if (!Directory.Exists(targetRoote))

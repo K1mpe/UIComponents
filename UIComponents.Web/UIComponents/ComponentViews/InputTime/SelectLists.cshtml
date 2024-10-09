@@ -149,7 +149,6 @@
             <script>
 
                 $(document).ready(function () {
-                    console.log('selectlists');
                     $('#@id').on('uic-getValue', ()=>{
                         let hours = (uic.getValue('#@id [name="@(Model.PropertyName).Hours"]') || 0).toString().padStart(2, '0');
                         let minutes = (uic.getValue('#@id [name="@(Model.PropertyName).Minutes"]') || 0).toString().padStart(2, '0');

@@ -17,6 +17,7 @@ namespace UIComponents.Web.Tests.Models
     {
         [UICTooltip("Dit is een test")]
         [UICTooltipIcon("fas fa-warning text-warning")]
+        [MinLength(3)]
         public string TestString { get; set; } = "abc";
 
         [UICPropertyType(UICPropertyType.MultilineText)]
@@ -36,7 +37,7 @@ namespace UIComponents.Web.Tests.Models
         [ReadOnly(true)]
         public TimeSpan TimeSpan { get; set; }
 
-        public TestEnum? Enum { get; set; } = TestEnum.Two;
+        public TestEnum Enum { get; set; } = TestEnum.Two;
 
         public string Color { get; set; }
 

@@ -88,9 +88,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
                     _logger.LogDebug($"{{0}} is required because of {nameof(UICInheritAttribute)} => has {nameof(FakeForeignKeyAttribute)}", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
                 return fakeForeignKey2.IsRequired;
             }
-                
-
         }
-        return false;
+        return !propertyInfo.PropertyType.IsClass;
     }
 }

@@ -7,17 +7,18 @@ using UIComponents.Abstractions.Models.FileExplorer;
 
 namespace UIComponents.Abstractions.Interfaces.FileExplorer
 {
-    public interface IFileExplorerService
+    public interface IUICFileExplorerService
     {
-        Task CopyFilesAsync((RelativePathModel FromPath, RelativePathModel ToPath)[] copyFiles);
+        Task CopyFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory);
 
-        Task DeleteFilesAsync(RelativePathModel[] pathModels);
+        Task DeleteFilesAsync(List<RelativePathModel> pathModels);
 
         Task<GetFilesForDirectoryResultModel> GetFilesFromDirectoryAsync(GetFilesForDirectoryFilterModel filterModel, CancellationToken cancellationToken);
 
         Task<UICFileInfo> GetFilePreviewAsync(RelativePathModel pathModel, CancellationToken cancellationToken);
 
-        Task MoveFilesAsync((RelativePathModel FromPath, RelativePathModel ToPath)[] moveFiles);
+        Task MoveFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory);
 
+        Task RenameFileAsync(RelativePathModel pathModel, string newName);
     }
 }

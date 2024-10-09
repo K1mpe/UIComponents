@@ -1,55 +1,55 @@
 ﻿uic.fileExplorer = uic.fileExplorer || {
-    renderMethods: {
-        details: async (container) => {
-            let main = container.find('.file-explorer-main');
-            let headerRow = $('<tr>')
-                .append($('<th>', { name: 'Icon' }).text(await uic.translation.translateKey("FileExplorer.Icon")))
-                .append($('<th>', { name: 'FileName' }).text(await uic.translation.translateKey("FileExplorer.FileName")))
-                .append($('<th>', { name: 'FileType' }).text(await uic.translation.translateKey("FileExplorer.FileType")))
-                .append($('<th>', { name: 'LastModified' }).text(await uic.translation.translateKey("FileExplorer.LastModified")))
-                .append($('<th>', { name: 'Size' }).text(await uic.translation.translateKey("FileExplorer.Size")));
-            let tbody = $('<tbody>');
-            let table = $('<table>', {class:'table'})
-                .append($('<thead>').append(headerRow))
-                .append(tbody);
+    //renderMethods: {
+    //    details: async (container) => {
+    //        let main = container.find('.file-explorer-main');
+    //        let headerRow = $('<tr>')
+    //            .append($('<th>', { name: 'Icon' }).text(await uic.translation.translateKey("FileExplorer.Icon")))
+    //            .append($('<th>', { name: 'FileName' }).text(await uic.translation.translateKey("FileExplorer.FileName")))
+    //            .append($('<th>', { name: 'FileType' }).text(await uic.translation.translateKey("FileExplorer.FileType")))
+    //            .append($('<th>', { name: 'LastModified' }).text(await uic.translation.translateKey("FileExplorer.LastModified")))
+    //            .append($('<th>', { name: 'Size' }).text(await uic.translation.translateKey("FileExplorer.Size")));
+    //        let tbody = $('<tbody>');
+    //        let table = $('<table>', {class:'table'})
+    //            .append($('<thead>').append(headerRow))
+    //            .append(tbody);
 
-            let getFilesForDirectoryResultModel = container.triggerHandler('uic-getLastDirectoryResult');
+    //        let getFilesForDirectoryResultModel = container.triggerHandler('uic-getLastDirectoryResult');
 
-            getFilesForDirectoryResultModel.Files.forEach((item) => {
+    //        getFilesForDirectoryResultModel.Files.forEach((item) => {
 
-                let row =$('<tr>', { class:'explorer-item', 'data-absolutePath': item.AbsolutePathReference, 'data-relativePath': item.RelativePath })
-                    .append($('<td>').append(item.Icon))
-                    .append($('<td>').append(item.FileName))
-                    .append($('<td>').append(item.FileType??item.Extension))
-                    .append($('<td>').append(moment(item.LastModified).format('LLL')))
-                    .append($('<td>').append(item.Size));
+    //            let row =$('<tr>', { class:'explorer-item', 'data-absolutePath': item.AbsolutePathReference, 'data-relativePath': item.RelativePath })
+    //                .append($('<td>').append(item.Icon))
+    //                .append($('<td>').append(item.FileName))
+    //                .append($('<td>').append(item.FileType??item.Extension))
+    //                .append($('<td>').append(moment(item.LastModified).format('LLL')))
+    //                .append($('<td>').append(item.Size));
 
-                if (item.Extension == 'folder') {
-                    row.addClass('explorer-folder');
-                }
-                tbody.append(row);
+    //            if (item.Extension == 'folder') {
+    //                row.addClass('explorer-folder');
+    //            }
+    //            tbody.append(row);
 
-            });
-            main.append(table);
-        },
-        large: async (container) => {
-            let main = container.find('.file-explorer-main');
+    //        });
+    //        main.append(table);
+    //    },
+    //    large: async (container) => {
+    //        let main = container.find('.file-explorer-main');
 
-            let row = $('<div>', { class: 'row' });
+    //        let row = $('<div>', { class: 'row' });
 
-            let getFilesForDirectoryResultModel = container.triggerHandler('uic-getLastDirectoryResult');
-            getFilesForDirectoryResultModel.Files.forEach((item) => {
-                let col = $('<div>', { class: 'col col-md-4 col-xl-3 explorer-item', 'data-absolutePath': item.AbsolutePathReference, 'data-relativePath': item.RelativePath })
-                    .append($('<div>', {class: 'explorer-thumbnail'}).append(item.Thumbnail ?? item.Icon))
-                    .append(item.FileName);
-                if (item.Extension == 'folder') {
-                    col.addClass('explorer-folder');
-                }
-                row.append(col);
-            });
-            main.append(row);
-        },
-    },
+    //        let getFilesForDirectoryResultModel = container.triggerHandler('uic-getLastDirectoryResult');
+    //        getFilesForDirectoryResultModel.Files.forEach((item) => {
+    //            let col = $('<div>', { class: 'col col-md-4 col-xl-3 explorer-item', 'data-absolutePath': item.AbsolutePathReference, 'data-relativePath': item.RelativePath })
+    //                .append($('<div>', {class: 'explorer-thumbnail'}).append(item.Thumbnail ?? item.Icon))
+    //                .append(item.FileName);
+    //            if (item.Extension == 'folder') {
+    //                col.addClass('explorer-folder');
+    //            }
+    //            row.append(col);
+    //        });
+    //        main.append(row);
+    //    },
+    //},
     initialize:
     {
         start: function (container) {
@@ -279,22 +279,42 @@
 
     setMainEvents: function (container) {
         container.find('.explorer-item').on('click', (ev) => {
-            container.find('.explorer-item').removeClass('selected');
-            $(ev.target).closest('.explorer-item').addClass('selected');
+            if (ev.shiftKey == true) {
+                let currentItem = $(ev.target).closest('.explorer-item');
+                let parent = currentItem.parent();
+                let previous = currentItem.prevAll('.explorer-item.selected')[0] || currentItem.nextAll('.explorer-item.selected')[0] || currentItem[0];
+                let currentIndex = currentItem.index();
+                let prevIndex = $(previous).index();
+                if (prevIndex > currentIndex) {
+                    for (let i = prevIndex; i <= currentIndex; i++) {
+                        $(parent.children()[i]).addClass('selected');
+                    }
+                } else {
+                    for (let i = currentIndex; i >= prevIndex; i--) {
+                        $(parent.children()[i]).addClass('selected');
+                    }
+                }
+            } else if (ev.ctrlKey == true) {
+                $(ev.target).closest('.explorer-item').addClass('selected');
+            } else {
+                container.find('.explorer-item').removeClass('selected');
+                $(ev.target).closest('.explorer-item').addClass('selected');
+            }
         });
+        container.find('.explorer-item').on('contextmenu', (ev) => {
+            let currentItem = $(ev.target).closest('.explorer-item');
+            if (!currentItem.hasClass('selected')) {
+                container.find('.explorer-item').removeClass('selected');
+                $(ev.target).closest('.explorer-item').addClass('selected');
+            }
+        })
         container.find('.explorer-folder').on('uic-openExplorerItem', (ev) => {
             let target = $(ev.target).closest('.explorer-folder');
             let relativePath = target.attr('data-relativepath');
             uic.fileExplorer.loadRelativeDir(container, relativePath);
         })
         container.find('.explorer-item').on('dblclick', (ev) => {
-            let explorerItem = $(ev.target).closest('.explorer-item');
-            if (uic.elementContainsEvent(explorerItem, 'uic-openExplorerItem')) {
-                explorerItem.trigger('uic-openExplorerItem');
-                return;
-            }
-
-            uic.fileExplorer.openFile(explorerItem);
+            this.openItem(ev);
         })
     },
     openFile: async function (explorerItem) {
@@ -306,13 +326,21 @@
         let relativePath = explorerItem.attr('data-relativepath');
         await uic.fileExplorer.download(`/${controller}/DownloadFile`, {
             pathModel: {
-                AbsoluePathReference: absolutePath,
+                AbsolutePathReference: absolutePath,
                 relativePath: relativePath
             }
         });
-        
 
         await container.triggerHandler('uic-after-open', explorerItem);
+    },
+    openItem: function (explorerItem) {
+        explorerItem = $(explorerItem).closest('.explorer-item');
+        if (uic.elementContainsEvent(explorerItem, 'uic-openExplorerItem')) {
+            explorerItem.trigger('uic-openExplorerItem');
+            return;
+        }
+
+        uic.fileExplorer.openFile(explorerItem);
     },
     download: async function (source, data) {
         //https://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post

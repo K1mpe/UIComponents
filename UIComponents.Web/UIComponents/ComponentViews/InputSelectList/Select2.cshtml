@@ -33,7 +33,7 @@
         Model.SelectListItems.FirstOrDefault(x => (x.Value?.ToString() ?? string.Empty) == Model.Value, new()).Selected = true;
         Model.AddAttribute("value", Model.Value);
     }
-
+    var hasEmptyItem = Model.SelectListItems.Where(x => x.Value == null).Any();
 
     Model.Actions.SetIdentifier($"#{id}");
 
@@ -41,6 +41,7 @@
         Model.AddAttribute("class", "form-control-plaintext");
     if (Model.AllowDynamicOptions)
         Model.SearchableIfMinimimResults = 0;
+
 
     if (Model.Color != null)
     {
@@ -54,12 +55,11 @@
         #@id + span.select2-container--focus .select2-selection--single {
         border-color: var(--@Model.Color.ToLower()) !important;
         }
-
         #select2-@(id)-results .select2-results__option--highlighted{
         background-color: var(--@Model.Color.ToLower()) !important;
         }
     </text>
-                );
+        );
     }
     Model.AddScript(
     @<text>
@@ -77,8 +77,23 @@
         templateResult: uic.form.select2.resultRenderer,
         tags: @Json.Serialize(Model.AllowDynamicOptions),
         width:'',
-        dropdownParent: $('#@id').closest('form, .card, body')
+        dropdownParent: $('#@id').closest('form, .card, body'),
+        @if(Model.Placeholder != null && !hasEmptyItem){
+        <text>
+            placeholder: @await Html.TranslateJs(L, Model.Placeholder, "'"),
+        </text>
+    }
         });
+        @if(Model.Placeholder != null && hasEmptyItem){
+        <text>
+            //manually set the placeholder because select2 refuses to show the option with empty value when using the placeholder
+            if(uic.getValue('#@id') ==''){
+                let rendered = $('#@id').next().find('.select2-selection__rendered');
+                if(rendered.text().trim() =='')
+                    rendered.html($('<span>',{class:'select2-selection__placeholder'}).html(@await Html.TranslateJs(L, Model.Placeholder, "'")));
+            }
+        </text>
+    }
 
         $('#@id').on('select2:opening', function(){
         uic.delayedAction.run('OpenDropdown-@id', 100, ()=>{$('#@id').triggerHandler('uic-open')});

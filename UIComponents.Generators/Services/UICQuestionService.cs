@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Models.HtmlResponse;
 using UIComponents.Models.Models.Questions;
@@ -83,7 +84,10 @@ public class UICQuestionService : IUICQuestionService
         if (_signalRService == null)
             throw new Exception($"There is no implementation for {nameof(IUICSignalRService)} registrated.");
         result = string.Empty;
-
+        _logger.BeginScopeKvp(
+            new("UICQuestionIdentifier", question.DebugIdentifier),
+            new("UICQuestionUserIds", string.Join(", ", userIds))
+            );
         try
         {
             var key = _storedComponents.StoreComponentForUsers(question, userIds, userIds.Count == 1);
@@ -157,6 +161,7 @@ public class UICQuestionService : IUICQuestionService
         {
             if (_questionPersistance.TryGetValue(key, out var question))
             {
+                _logger.BeginScopeKvp("UICQuestionIdentifier", question.DebugIdentifier);
                 _logger.LogInformation("Answered question {0} with '{1}'", question.DebugIdentifier, response);
                 question.Response = response;
                 question.Answered = true;
@@ -174,6 +179,7 @@ public class UICQuestionService : IUICQuestionService
         {
             if (_questionPersistance.TryGetValue(key, out var question))
             {
+                _logger.BeginScopeKvp("UICQuestionIdentifier", question.DebugIdentifier);
                 _logger.LogInformation("Question {0} was cancelled", question.DebugIdentifier);
                 question.AutoResetEvent.Set();
             }

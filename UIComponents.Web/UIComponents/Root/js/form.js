@@ -41,6 +41,7 @@
 
         form.addClass('readonly-form');
 
+        form.trigger('uic-formReadonly');
         //form.find('.cdc-select-btn-add').addClass("d-none");
         //form.find('.btn-save').attr('hidden', true);
         //form.find('.btn-readonly').attr('hidden', true);
@@ -69,7 +70,8 @@
             .attr("readonly", false)
             .attr("disabled", false);
 
-        form.removeClass('readonly-form').removeClass('hide-empty');;
+        form.removeClass('readonly-form').removeClass('hide-empty');
+        form.trigger('uic-formEditable');
         //form.find('.select2-container:not(.always-readonly)')
         //    .addClass("select2-container--bootstrap4")
         //    .find('.select2-selection__rendered').removeClass('px-0');

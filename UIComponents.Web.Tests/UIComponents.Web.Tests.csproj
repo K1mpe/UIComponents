@@ -24,9 +24,6 @@
 		<PackageReference Include="FluentValidation" Version="11.9.0" />
 		<PackageReference Include="LigerShark.WebOptimizer.Sass" Version="3.0.91" />
 	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="wwwroot\uic\img\" />
-	</ItemGroup>
 
 
 </Project>

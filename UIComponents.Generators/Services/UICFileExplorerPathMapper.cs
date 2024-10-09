@@ -3,7 +3,7 @@ using UIComponents.Abstractions.Interfaces.FileExplorer;
 
 namespace UIComponents.Generators.Services;
 
-public class UICFileExplorerPathMapper : IFileExplorerPathMapper
+public class UICFileExplorerPathMapper : IUICFileExplorerPathMapper
 {
     protected Dictionary<string, string> PathMapper { get; set; } = new();
 
@@ -35,7 +35,7 @@ public class UICFileExplorerPathMapper : IFileExplorerPathMapper
                 return relativePath.RelativePath?.Replace("/", "\\");
             if (PathMapper.TryGetValue(relativePath.AbsolutePathReference, out var path))
             {
-                var fullpath = path + relativePath.RelativePath.Substring(1);
+                var fullpath = ReplaceRoot(relativePath.RelativePath, "~", path);
                 return fullpath.Replace("/","\\");
             }
         }
@@ -48,7 +48,8 @@ public class UICFileExplorerPathMapper : IFileExplorerPathMapper
     {
         lock (PathMapper)
         {
-            var dictValues = PathMapper.Where(x => absolutePath.StartsWith(x.Key));
+            absolutePath = absolutePath.Replace("/", "\\");
+            var dictValues = PathMapper.Where(x => absolutePath.StartsWith(x.Value));
             var instance = Activator.CreateInstance<T>();
             if (!dictValues.Any())
             {
@@ -58,10 +59,18 @@ public class UICFileExplorerPathMapper : IFileExplorerPathMapper
             }
 
             //Take the longest matching path
-            var longest = dictValues.OrderByDescending(x => x.Key.Length).First();
+            var longest = dictValues.OrderByDescending(x => x.Value.Length).First();
             instance.AbsolutePathReference = longest.Key;
-            instance.RelativePath = "~" + absolutePath.Substring(longest.Value.Length).Replace("\\", "/");
+            instance.RelativePath = ReplaceRoot(absolutePath, longest.Value, "~").Replace("\\", "/");
             return instance;
         }
+    }
+
+    public string ReplaceRoot(string path, string sourceRoot, string targetRoot)
+    {
+        if (!path.StartsWith(sourceRoot))
+            throw new ArgumentException(path);
+        //Do not use the ReplaceMethod since this could replace multiple times in the directory
+        return $"{targetRoot}{path.Substring(sourceRoot.Length)}";
     }
 }

@@ -130,8 +130,8 @@ public static class TranslationDefaults
     /// </summary>
     public static Func<Translatable, Translatable> ValidationIsRequired = (translatedPropertyName) => TranslatableSaver.Save("Validation.Required", "{0} is required", translatedPropertyName);
 
-    public static Func<Translatable, int, Translatable> ValidateMinLength = (translatedPropertyName, minLenght) => TranslatableSaver.Save("Validation.MinLength", "The length of {0} must be longer than {1}", translatedPropertyName, minLenght);
-    public static Func<Translatable, int, Translatable> ValidateMaxLength = (translatedPropertyName, maxLength) => TranslatableSaver.Save("Validation.MaxLength", "The length of {0} must be shorter than {1}", translatedPropertyName, maxLength);
+    public static Func<Translatable, int, Translatable> ValidateMinLength = (translatedPropertyName, minLenght) => TranslatableSaver.Save("Validation.MinLength", "The length of {0} must be longer or equal to {1}", translatedPropertyName, minLenght);
+    public static Func<Translatable, int, Translatable> ValidateMaxLength = (translatedPropertyName, maxLength) => TranslatableSaver.Save("Validation.MaxLength", "The length of {0} must be shorter or equal to {1}", translatedPropertyName, maxLength);
     public static Func<Translatable, object, Translatable> ValidateMinValue = (translatedPropertyName, minValue) => TranslatableSaver.Save("Validation.MinValue", "The value of {0} must be higher than or equal to {1}", translatedPropertyName, minValue);
     public static Func<Translatable, object, Translatable> ValidateMaxValue = (translatedPropertyName, maxValue) => TranslatableSaver.Save("Validation.MaxValue", "The value of {0} must be lower or equal to {1}", translatedPropertyName, maxValue);
     public static Func<Translatable, Translatable> ValidateColor = (translatedPropertyName) => TranslatableSaver.Save("Validation.Color.Invalid", "{0} has a invalid color", translatedPropertyName);

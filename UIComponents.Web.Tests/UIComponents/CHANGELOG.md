@@ -1,3 +1,15 @@
+# 2024-10-08 (1.2.31)
+- UIComponents.Defaults.RenderDefaults.OverwriteRenderLocation is possible
+- Extension methods for Logger.BeginScopeKvp
+- IValidationService available as property in UICConfig
+- Adding UICOption Defaults
+- UICOption for toolbar placement
+- Hide readonly properties available as option
+- UICActionGoBack can force reload of previous page
+- Fix for select2 Placeholder item
+- Css singleRow fix
+- Form has events on Editing / readonly toggle
+
 # 2024-09-27 (1.2.30)
 - DelayedAction Changed
 - BugFix Permissions

@@ -57,10 +57,11 @@
                         ReplaceSaveButtonWithCreateButton = true,
                         ShowEditButton = false,
                         //IncludedProperties = "teststring, number, decimal, checkbox, enum, recurringDate,SubClass",
-                        PostForm = new UICActionPost("home", "post")
+                        PostForm = new UICActionPost("home", "post"),
+                        SelectlistAddEmptyItem = false
                     })).Add(await UIC.CreateComponentAsync(testModel, x => x.TestString)))
         .Add(new UICCard(new Translatable("Card.Edit"))
-            .Add(new UICSidePanel(await UIC.CreateComponentAsync(new TestModel()), new UICGroup()
+            .Add(new UICSidePanel(await UIC.CreateComponentAsync(new TestModel(), new(){ToolbarPosition = ToolbarPosition.AboveForm}), new UICGroup()
                     .AddAttribute("width", "300px")
                     .AddAttribute("height", "100%"))), sidePanel =>
                     {

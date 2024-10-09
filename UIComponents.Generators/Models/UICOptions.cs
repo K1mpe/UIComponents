@@ -36,10 +36,10 @@ public class UICOptions
     #region Properties
 
 
-    /// <summary>
+    /// <<summary>
     /// Hide all properties with name "Id"
-    /// </summary>
-    public bool IdHidden { get; set; } = OptionDefaults.IdHidden;
+    /// </summary>>
+    public bool HideId { get; set; } = OptionDefaults.HideId;
 
     /// <summary>
     /// Hide all readonly properties
@@ -61,7 +61,7 @@ public class UICOptions
     /// </summary>
     /// <remarks>
     /// Is always done if <see cref="IncludedProperties"/> is empty</remarks>
-    public bool IncludedUndefinedProperties { get; set; }
+    public bool IncludedUndefinedProperties { get; set; } = OptionDefaults.IncludedUndefinedProperties;
 
     /// <summary>
     /// A opitional list of excluded properties.
@@ -76,25 +76,35 @@ public class UICOptions
 
     #region Form
 
-    public bool NoForm { get; set; }
+    /// <summary>
+    /// If true, there will be no form created. Usefull for a subform or something that does not need to be posted 
+    /// </summary>
+    public bool NoForm { get; set; } = OptionDefaults.NoForm;
 
-    public bool FormReadonly { get; set; }
+    /// <summary>
+    /// The form is only readonly
+    /// </summary>
+    public bool FormReadonly { get; set; } = OptionDefaults.FormReadonly;
 
     /// <summary>
     /// If the form is in readonly modus, hide all inputs that do not have a value
     /// </summary>
     public bool HideEmptyInReadonly { get; set; } = OptionDefaults.HideEmptyInReadonly;
 
+    /// <summary>
+    /// The submit action when posting the form. Can be a custom action, but <see cref="UICActionGetPost"/> is prefered
+    /// </summary>
     public ISubmitAction PostForm { get; set; }
 
     /// <summary>
-    /// The action that should occure when posting the form successfully. may not work with a custom <see cref="PostForm"/>
+    /// The action that should occur when posting the form successfully. may not work with a custom <see cref="PostForm"/>
     /// </summary>
     /// <remarks>
     /// result is available as argument, can be changed if <see cref="UICActionGetPost.ResultName"/> is changed</remarks>
     public IUICAction OnSuccessfullSubmit { get; set; } = OptionDefaults.OnSuccessfullSubmit;
+    
     /// <summary>
-    /// Post all properties as <see cref="UICActionGetPost.DefaultData"/>. This means that properties that are not visualised, will still post their current value.
+    /// Post all properties as <see cref="UICActionGetPost.DefaultData" />. This means that properties that are not visualised, will still post their current value.
     /// </summary>
     public bool PostObjectAsDefault { get; set; } = OptionDefaults.PostObjectAsDefault;
 
@@ -106,38 +116,73 @@ public class UICOptions
     public bool PostIdAsFixed { get; set; } = OptionDefaults.PostIdAsFixed;
 
     /// <summary>
-    /// Replace the Save button with a Create button
+    /// Replace the <see cref="UIComponents.Defaults.TranslationDefaults.ButtonSave"/> to <see cref="UIComponents.Defaults.TranslationDefaults.ButtonCreate"/>
     /// </summary>
-    public bool ReplaceSaveButtonWithCreateButton { get; set; }
+    public bool ReplaceSaveButtonWithCreateButton { get; set; } = OptionDefaults.ReplaceSaveButtonWithCreateButton;
 
     /// <summary>
     /// Create a card inside the form and place its toolbar in the footer of the card
     /// </summary>
-    public bool FormToolbarInCardFooter { get; set; }
+    public bool FormToolbarInCardFooter { get; set; } = OptionDefaults.FormToolbarInCardFooter;
 
     /// <summary>
-    /// As long as there are validation errors, disable the save button.
+    /// As long as there are validation errors clientside, disable the save button.
     /// </summary>
     public bool DisableSaveButtonOnValidationErrors { get; set; } = OptionDefaults.DisableSaveButtonOnValidationErrors;
 
     #region Buttons
+    public ToolbarPosition ToolbarPosition { get; set; } = OptionDefaults.ToolbarPosition;
+
+    /// <summary>
+    /// Where in the toolbar are the generated buttons placed?
+    /// </summary>
     public ButtonPosition ButtonPosition { get; set; } = OptionDefaults.ButtonPosition;
     public ButtonDistance ButtonDistance { get; set; } = OptionDefaults.ButtonDistance;
 
+    /// <summary>
+    /// reverse the order of the buttons in the toolbar
+    /// </summary>
     public bool ReverseButtonOrder { get; set; } = OptionDefaults.ReverseButtonOrder;
 
+    /// <summary>
+    /// This button makes the form readonly at first, when clicking the edit button it transforms to a editable version.
+    /// </summary>
     public bool ShowEditButton { get; set; } = OptionDefaults.ShowEditButton;
+
+    /// <summary>
+    /// Show the delete button in the toolbar.
+    /// </summary>
+    /// <remarks>
+    /// The default button only available for <see cref="IDbEntity"/>
+    /// </remarks>
     public bool ShowDeleteButton { get; set; } = OptionDefaults.ShowDeleteButton;
 
+    /// <summary>
+    /// The cancel button tries to close a modal, if this does not work it will go back to the previous page
+    /// </summary>
     public bool ShowCancelButton { get; set; } = OptionDefaults.ShowCancelButton;
     #endregion
     #endregion
 
     #region Card
-    public bool ShowCardHeaders { get; set; }
-    public UICCard? StartInCard { get; set; } 
+    /// <summary>
+    /// Show or hide all the headers of all the cards
+    /// </summary>
+    public bool ShowCardHeaders { get; set; } = OptionDefaults.ShowCardHeaders;
 
-    public UICCard? SubClassesInCard { get; set; } = new();
+    /// <summary>
+    /// When providing a card here, the component is placed inside this card as a start
+    /// </summary>
+    public UICCard? StartInCard { get; set; } = OptionDefaults.StartInCard;
+
+    /// <summary>
+    /// When a subclass needs to be rendered, it will be rendered inside this card.
+    /// </summary>
+    public UICCard? SubClassesInCard { get; set; } = OptionDefaults.SubClassesInCard;
+
+    /// <summary>
+    /// Override the name of the subcards with one of these options
+    /// </summary>
     public CardTitleOverride SubCardTitleOverride { get; set; } = CardTitleOverride.ClassType;
 
     #endregion
@@ -146,10 +191,10 @@ public class UICOptions
     /// <summary>
     /// The default color assigned to all checkboxes and toggleswitches
     /// </summary>
-    public IColor? CheckboxColor { get; set; }
+    public IColor? CheckboxColor { get; set; } = OptionDefaults.CheckboxColor;
 
     /// <summary>
-    /// This is used for all checkboxes & checkboxthreestates
+    /// This is used for all checkboxes and checkboxthreestates
     /// </summary>
     public CheckboxRenderer CheckboxRenderer { get; set; } = CheckboxRenderer.ToggleSwitch;
     #endregion
@@ -163,31 +208,26 @@ public class UICOptions
     /// <summary>
     /// If a selectlist has more or equal as this amount of items, it will be searchable
     /// </summary>
-    public int SelectlistSearableForItems { get; set; } = 10;
+    public int SelectlistSearableForItems { get; set; } = OptionDefaults.SelectlistSearableForItems;
 
     /// <summary>
     /// If the user has permission to add this type of entity, show the add button
     /// </summary>
     public bool SelectListShowAddButtonIfAllowed { get; set; } = OptionDefaults.SelectListShowAddButtonIfAllowed;
 
-    /// <summary>
-    /// Example: User.Field.UserGroupId => User.Field.UserGroup
-    /// </summary>
-    public bool RemoveIdFromTranslationKey { get; set; } = true;
-
     #endregion
 
     public UICDatetimeStep DatetimePrecision { get; set; } = UICDatetimeStep.Minute;
     public UICTimeonlyEnum TimeOnlyPrecision { get; set; } = UICTimeonlyEnum.Minute;
-    public bool InputGroupSingleRow { get; set; } = true;
+    public bool InputGroupSingleRow { get; set; } = OptionDefaults.InputGroupSingleRow;
 
     /// <summary>
     /// If a input is required, visualise this on the label with a red *
     /// </summary>
-    public bool MarkLabelsAsRequired { get; set; } = true;
+    public bool MarkLabelsAsRequired { get; set; } = OptionDefaults.MarkLabelsAsRequired;
 
-    public bool CheckReadPermissions { get; set; } = true;
-    public bool CheckWritePermissions { get; set; } = true;
+    public bool CheckReadPermissions { get; set; } = OptionDefaults.CheckReadPermissions;
+    public bool CheckWritePermissions { get; set; } = OptionDefaults.CheckWritePermissions;
 
     public UICOptions AddDictionaryOption(string key, object value)
     {
@@ -202,7 +242,11 @@ public enum ButtonPosition
     Center,
     Right,
 }
-
+public enum ToolbarPosition
+{
+    AboveForm,
+    BelowForm
+}
 public enum CardTitleOverride
 {
     /// <summary>

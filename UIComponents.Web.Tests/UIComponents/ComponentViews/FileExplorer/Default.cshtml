@@ -2,6 +2,7 @@
 @using UIComponents.Abstractions.Attributes;
 @using UIComponents.Abstractions.Enums
 @using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.FileExplorer
 @using UIComponents.Abstractions.Interfaces.Services;
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
@@ -19,6 +20,7 @@
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
 
+@inject IUICFileExplorerPathMapper _pathMapper;
 @model UICFileExplorer
 
 @{
@@ -29,18 +31,20 @@
         Model.RootDirectory += "/";
     Model.RootDirectory = Model.RootDirectory.Replace("\\", "/");
 
+    var relPath = _pathMapper.GetRelativePath(Model.RootDirectory);
+    string GetRelPath(string input) => input.Replace(Model.RootDirectory, relPath.RelativePath);
     Model.AssignCollectionForChildren();
     Model
         .AddAttribute("data-controller", Model.ControllerName)
-        .AddAttribute("data-rootAbsolutePath", Model.AbsolutePathReference)
-        .AddAttribute("data-rootDirectory", Model.RootDirectory)
+        .AddAttribute("data-rootAbsolutePath", relPath.AbsolutePathReference)
+        .AddAttribute("data-rootDirectory", relPath.RelativePath)
         .AddAttribute("for-explorer", id);
     Model.AddScript(@<text>
 
         let filterModel = @Json.Serialize(new GetFilesForDirectoryFilterModel(){
-            AbsolutePathReference = Model.AbsolutePathReference,
-            RelativePath = Model.StartDirectory,
-            RenderLocation= @Model.RenderMethod
+            AbsolutePathReference = relPath.AbsolutePathReference,
+            RelativePath = GetRelPath(Model.StartDirectory?? Model.RootDirectory),
+            RenderLocation= Model.RenderMethod
         })
 
         let getFilesForDirectoryResultModel = null;
@@ -77,7 +81,7 @@
         });
 
         uic.fileExplorer.initialize.start($('#@id'));
-        uic.fileExplorer.loadRelativeDir($('#@id'), @Html.JsEncode(Model.StartDirectory??Model.RootDirectory,"'"));
+        uic.fileExplorer.loadRelativeDir($('#@id'), @Html.JsEncode(GetRelPath(Model.StartDirectory??Model.RootDirectory),"'"));
         </text>);
 }
 

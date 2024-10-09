@@ -73,10 +73,18 @@ public class UICGeneratorForm : UICGeneratorProperty
 
         var toolbarCC = new UICCallCollection(UICGeneratorPropertyCallType.ButtonToolbar, form, args.CallCollection);
         var toolbar =await args.Configuration.GetChildComponentAsync(args.ClassObject, args.PropertyInfo, args.Options, toolbarCC);
+        
         if (form.Children.FirstOrDefault()?.GetType().IsAssignableTo(typeof(UICCard)) ?? false)
-           form.FindFirstOfType<UICCard>().AddFooter(toolbar);
+            if(args.Options.ToolbarPosition == ToolbarPosition.AboveForm)
+                form.FindFirstOfType<UICCard>().Body.Components.Insert(0, toolbar);
+            else
+                form.FindFirstOfType<UICCard>().AddFooter(toolbar);
         else
-            form.Add(toolbar);
+            if (args.Options.ToolbarPosition == ToolbarPosition.AboveForm)
+                form.Children.Insert(0, toolbar);
+            else
+                form.Add(toolbar);
+        
 
 
         return GeneratorHelper.Success<IUIComponent>(form, true);

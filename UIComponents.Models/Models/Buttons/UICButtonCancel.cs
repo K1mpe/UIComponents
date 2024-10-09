@@ -6,7 +6,7 @@ public class UICButtonCancel : UICButton
     {
         OnClick = new UICActionCloseModal()
         {
-            OnFailed = new UICActionGoBack()
+            OnFailed = new UICActionGoBack(false)
         };
 
         AddAttributeToDictionary("type", "reset", Attributes);

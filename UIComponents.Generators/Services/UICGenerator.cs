@@ -1,7 +1,9 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.Extensions.Logging;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
@@ -14,10 +16,12 @@ namespace UIComponents.Generators.Services;
 public class UICGenerator : IUIComponentGenerator
 {
     protected readonly UICConfig _configuration;
+    private readonly ILogger _logger;
 
-    public UICGenerator(UICConfig configuration)
+    public UICGenerator(UICConfig configuration, ILogger<UICGenerator> logger)
     {
         _configuration = configuration;
+        _logger = logger;
     }
 
 
@@ -29,15 +33,21 @@ public class UICGenerator : IUIComponentGenerator
 
         options = GetOptions(options);
 
-        var cc = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, null, null);
-        return _configuration.GetChildComponentAsync(classObject, null, options!, cc);
-
+        using (_logger.BeginScopeKvp(
+            new("UICObjectType", typeof(T).FullName),
+            new("UICObjectName", classObject.ToString()
+        )))
+        {
+            var cc = new UICCallCollection(UICGeneratorPropertyCallType.ClassObject, null, null);
+            return _configuration.GetChildComponentAsync(classObject, null, options!, cc);
+        }
     }
 
     public Task<IUIComponent?> CreateComponentAsync<T, TProp>(T classObject, Expression<Func<T, TProp>> expression, UICOptions? options = null) where T : class
     {
         var propertyInfo = GetPropertyInfoFromExpression(expression);
         return CreateElementFromProperty(propertyInfo, classObject, options);
+        
     }
 
     public Task<IUIComponent?> CreateElementFromProperty(PropertyInfo propertyInfo, object classObject, UICOptions? options = null)
@@ -45,9 +55,15 @@ public class UICGenerator : IUIComponentGenerator
         options = GetOptions(options);
 
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.PropertyGroup, null, null);
-        return _configuration.GetChildComponentAsync(classObject, propertyInfo, options!, cc);
+        using (_logger.BeginScopeKvp(
+            new("UICObjectType", classObject.GetType().FullName),
+            new("UICObjectName", classObject.ToString()),
+            new("UICPropertyName", propertyInfo.Name)
+        ))
+        {
+            return _configuration.GetChildComponentAsync(classObject, propertyInfo, options!, cc);
+        }
     }
-
 
 
     public async Task<Translatable> GetPropertyTranslatable(PropertyInfo propertyInfo, UICOptions? options = null)

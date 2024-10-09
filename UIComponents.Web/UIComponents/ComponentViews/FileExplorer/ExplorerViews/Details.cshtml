@@ -23,7 +23,7 @@
 
 @model GetFilesForDirectoryResultModel
 
-<table class="table">
+<table class="table @(Model.CanCreateInDirectory?"can-create":"")">
     <thead>
         <tr>
             <th name="Icon">@await Html.TranslateHtml(L, TranslatableSaver.Save("FileExplorer.Icon"))</th>
@@ -38,7 +38,19 @@
         {
             item.Data["data-AbsolutePath"] = item.AbsolutePathReference;
             item.Data["data-RelativePath"] = item.RelativePath;
-            <tr class="explorer-item @(item.IsFolder?"explorer-folder":"")" @Html.GetAttributesFromDictionary(item.Data)>
+            string additionalClasses = string.Empty;
+            if (item.IsFolder)
+                additionalClasses += " explorer-folder";
+            if (!item.CanOpen)
+                additionalClasses += " cannot-open";
+            if (item.CanMove)
+                additionalClasses += " can-move";
+            if (item.CanDelete)
+                additionalClasses += " can-delete";
+            if (item.CanRename)
+                additionalClasses += " can-rename";
+
+            <tr class="explorer-item @additionalClasses" @Html.GetAttributesFromDictionary(item.Data)>
                 <td>@Html.Raw(item.Icon)</td>
                 <td>@Html.Raw(item.FileName)</td>
                 <td>@Html.Raw(item.FileType??item.Extension)</td>

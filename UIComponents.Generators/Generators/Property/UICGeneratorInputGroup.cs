@@ -30,6 +30,9 @@ namespace UIComponents.Generators.Generators.Property
                 return new UICGeneratorResponseNext<IUIComponent>();
             }
 
+            if (args.Options.HideReadonlyProperties && await args.Configuration.ValidationService.ValidatePropertyReadonly(args.PropertyInfo, args.ClassObject))
+                return new UICGeneratorResponseNext<IUIComponent>();
+
             var inputGroup = new UICInputGroup()
             {
                 Parent = args.CallCollection.Caller

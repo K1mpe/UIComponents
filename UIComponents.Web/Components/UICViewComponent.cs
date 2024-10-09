@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Extensions;
+﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
 using UIComponents.Generators.Configuration;
 
@@ -9,10 +10,12 @@ public class UICViewComponent : ViewComponent
 {
     private readonly UICConfig _uicConfig;
     private readonly IServiceProvider _serviceProvider;
-    public UICViewComponent(UICConfig uicConfig, IServiceProvider serviceProvider)
+    private readonly ILogger _logger;
+    public UICViewComponent(UICConfig uicConfig, IServiceProvider serviceProvider, ILogger<UICViewComponent> logger)
     {
         _uicConfig = uicConfig;
         _serviceProvider = serviceProvider;
+        _logger = logger;
     }
 
     public async Task<IViewComponentResult> InvokeAsync(IUIComponent element)
@@ -51,6 +54,15 @@ public class UICViewComponent : ViewComponent
             }
         }
         string renderLocation = element.RenderLocation;
+        if(UIComponents.Defaults.RenderDefaults.OverwriteRenderLocation != null)
+        {
+            string newRenderLocation = RenderDefaults.OverwriteRenderLocation(element)?? element.RenderLocation;
+            if(newRenderLocation != renderLocation)
+            {
+                _logger.LogInformation("Renderlocation for {0} has changed from {1} to {2}", element.GetType().Name, renderLocation, newRenderLocation);
+                renderLocation = newRenderLocation;
+            }
+        }
         if (element.RenderLocation.Length < 7)
         {
             renderLocation += ".cshtml";

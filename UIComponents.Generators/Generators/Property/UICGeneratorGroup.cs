@@ -36,7 +36,7 @@ public class UICGeneratorGroup : UICGeneratorProperty
         var excludedProperties = new List<string>();
         if(!string.IsNullOrEmpty(args.Options.ExcludedProperties))
             excludedProperties = args.Options.ExcludedProperties.ToLower().Split(",").Select(x=>x.Trim()).ToList();
-        if (args.Options.IdHidden)
+        if (args.Options.HideId)
             excludedProperties.Add("Id");
         
 

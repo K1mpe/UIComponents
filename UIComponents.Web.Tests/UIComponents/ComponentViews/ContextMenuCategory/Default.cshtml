@@ -27,68 +27,72 @@
         uic.contextMenu.addCategory({
             categoryId: @Html.JsEncode(Model.CategoryId,"'"),
             categoryRenderer: @await Model.CategoryRenderer.InvokeAsync(Component),
-            menuItem:{
-                selector: '@Html.Raw(Model.MenuItem.Selector())',
-
-                @if (!string.IsNullOrEmpty(Model.MenuItem.Id))
-                {
+            @if(Model.MenuItem.HasValue()){
                 <text>
-                    id: '@Html.Raw(Model.MenuItem.Id)',
-                </text>
-                }
+                menuItem:{
+                    selector: '@Html.Raw(Model.MenuItem.Selector())',
 
-                @if (!string.IsNullOrWhiteSpace(Model.MenuItem.Category))
-                {
-                <text>
-                    category: '@Html.Raw(Model.MenuItem.Category)',
-                </text>
-                }
+                    @if (!string.IsNullOrEmpty(Model.MenuItem.Id))
+                    {
+                    <text>
+                        id: '@Html.Raw(Model.MenuItem.Id)',
+                    </text>
+                    }
 
-                @if (Model.MenuItem.DropdownItem.HasValue())
-                {
-                <text>
-                    element: $('#@guid').html(),
-                </text>
-                }
+                    @if (!string.IsNullOrWhiteSpace(Model.MenuItem.Category))
+                    {
+                    <text>
+                        category: '@Html.Raw(Model.MenuItem.Category)',
+                    </text>
+                    }
 
-                @if (Model.MenuItem.Position != null)
-                {
-                <text>
-                    position: @Json.Serialize(Model.MenuItem.Position.Value),
-                </text>
-                }
-                optional: @Json.Serialize(Model.MenuItem.Optional),
+                    @if (Model.MenuItem.DropdownItem.HasValue())
+                    {
+                    <text>
+                        element: $('#@guid').html(),
+                    </text>
+                    }
+
+                    @if (Model.MenuItem.Position != null)
+                    {
+                    <text>
+                        position: @Json.Serialize(Model.MenuItem.Position.Value),
+                    </text>
+                    }
+                    optional: @Json.Serialize(Model.MenuItem.Optional),
 
 
-                @if (Model.MenuItem.OnClick.HasValue())
-                {
-                <text>
-                    onClick: async function(target, clickedElement, event){
-                        @await Model.MenuItem.OnClick.InvokeAsync(Component)
-                    },
-                </text>
-                }
+                    @if (Model.MenuItem.OnClick.HasValue())
+                    {
+                    <text>
+                        onClick: async function(target, clickedElement, event){
+                            @await Model.MenuItem.OnClick.InvokeAsync(Component)
+                        },
+                    </text>
+                    }
 
-                @if (Model.MenuItem.Text.HasValue())
-                {
-                <text>
-                    text: @await Model.MenuItem.Text.InvokeAsync(Component),
-                </text>
-                }
+                    @if (Model.MenuItem.Text.HasValue())
+                    {
+                    <text>
+                        text: @await Model.MenuItem.Text.InvokeAsync(Component),
+                    </text>
+                    }
 
-                @if (Model.MenuItem.Title.HasValue())
-                {
-                <text>
-                    title: @await Model.MenuItem.Title.InvokeAsync(Component),
-                </text>
-                }
+                    @if (Model.MenuItem.Title.HasValue())
+                    {
+                    <text>
+                        title: @await Model.MenuItem.Title.InvokeAsync(Component),
+                    </text>
+                    }
 
-                @if (Model.MenuItem.Attributes.HasValue())
-                {
-                <text>
-                    attr: @await Model.MenuItem.Attributes.InvokeAsync(Component),
-                </text>
+                    @if (Model.MenuItem.Attributes.HasValue())
+                    {
+                    <text>
+                        attr: @await Model.MenuItem.Attributes.InvokeAsync(Component),
+                    </text>
+                    }
                 }
+                </text>
             }
         
         });
@@ -96,9 +100,12 @@
 
 }
 
+@if (Model.MenuItem.HasValue())
+{
+    <script type="text/html" id="@guid">
+        @await Model.MenuItem.DropdownItem.InvokeAsync(Component)
+    </script>
+}
 
-<script type="text/html" id="@guid">
-    @await Model.MenuItem.DropdownItem.InvokeAsync(Component)
-</script>
 
 @await Model.RenderStylesAndScripts(Component,guid)

@@ -97,7 +97,6 @@ This partial is automatically generated in /views/shared/_UicScripts.cshtml
 These usings can also be added to GlobalUsings 
 ```
 @using UIComponents.Abstractions;
-@using UIComponents.Abstractions;
 @using UIComponents.Abstractions.Attributes;
 @using UIComponents.Abstractions.Enums;
 @using UIComponents.Abstractions.Extensions;
@@ -512,15 +511,50 @@ public IUIAction OnFailed { get; set; } = new UICCustom();
 
 #### UICActionDelayedAction
 ```c#
+public UICActionDelayedAction()
+{
+            
+}
+public UICActionDelayedAction(int miliseconds, DelayedActionType delayType, IUICAction action)
+{
+    Miliseconds = miliseconds;
+    Action = action;
+    DelayType = delayType;
+}
+
+
 /// <summary>
-/// When triggering this DelayedAction, triggering again will reset the timer. After the miliseconds the <see cref="Action"/> is run once.
+/// The time used by the <see cref="DelayType"/>
 /// </summary>
 public int Miliseconds { get; set; }
+
+/// <summary>
+/// The type of the delay is configured here
+/// </summary>
+public DelayedActionType DelayType { get; set; }
 
 /// <summary>
 /// This action will trigger after the <see cref="Miliseconds"/> delay. Multiple triggers of this will only result in 1 trigger.
 /// </summary>
 public IUICAction Action { get; set; } = new UICCustom();
+
+public enum DelayedActionType
+{
+    /// <summary>
+    /// Waits for a period of inactivity, then execute the action
+    /// </summary>
+    Debounce,
+
+    /// <summary>
+    /// Waits for the delay, then execute once. All other triggers while waiting are ignored
+    /// </summary>
+    Delay,
+
+    /// <summary>
+    /// Trigger instantly, then block all triggers in the delay. After the delay is completed and one or more triggers are blocked, execute the action again one time
+    /// </summary>
+    Throttle
+}
 ```
 
 #### UICActionDisableSaveButtonOnValidationErrors
@@ -1453,7 +1487,7 @@ Also checks the Inherit property (if available).
 #### Adding custom ValidationRules
 
 
-#### Createing service on interface
+#### Creating service on interface
 When adding custom validationRules, try using the most exact interface, as described above.
 If you use **IUICPropertyValidationRule**, this will be used in server validation, but will not be checked for MinValue requirement.
 Only these specific interfaces can check these options.
@@ -1505,6 +1539,17 @@ config.AddValidatorPropertyRequired((propertyInfo, obj) =>
 {
     ...
 });
+```
+
+#### Example for implementing custom attributes for validation
+```c#
+config.AddValidatorPropertyMinLength((propinfo, obj) =>
+    {
+        var minLengthAttr = propinfo.GetInheritAttribute<MinLengthAttribute>();
+        if (minLengthAttr == null)
+            return Task.FromResult<int?>(null);
+        return Task.FromResult<int?>(minLengthAttr.Length);
+    });
 ```
 
 

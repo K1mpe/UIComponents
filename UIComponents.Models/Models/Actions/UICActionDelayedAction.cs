@@ -23,7 +23,7 @@ namespace UIComponents.Models.Models.Actions
 
 
         /// <summary>
-        /// When triggering this DelayedAction, triggering again will reset the timer. After the miliseconds the <see cref="Action"/> is run once.
+        /// The time used by the <see cref="DelayType"/>
         /// </summary>
         public int Miliseconds { get; set; }
 

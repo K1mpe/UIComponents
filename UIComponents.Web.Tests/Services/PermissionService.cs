@@ -46,6 +46,8 @@ namespace UIComponents.Web.Tests.Services
 
         public Task<bool> CanViewPropertyOfType(Type type, string propertyName)
         {
+            if(type.GetProperty(propertyName) == null)
+                return Task.FromResult(false);
             return Task.FromResult(true);
         }
     }

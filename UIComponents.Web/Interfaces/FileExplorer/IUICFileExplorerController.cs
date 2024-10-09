@@ -2,7 +2,7 @@
 
 namespace UIComponents.Web.Interfaces.FileExplorer;
 
-public interface IFileExplorerController
+public interface IUICFileExplorerController
 {
     /// <summary>
     /// This controllerfunction must return a JSON result with a <see cref="GetFilesForDirectoryResultModel"/>
@@ -30,9 +30,9 @@ public interface IFileExplorerController
 
     public Task<IActionResult> DownloadFile(RelativePathModel pathModel);
 
-    public Task<IActionResult> MoveFiles((RelativePathModel FromPath, RelativePathModel ToPath)[] files);
+    public Task<IActionResult> MoveFiles(RelativePathModel[] FromPath, RelativePathModel ToPath);
 
-    public Task<IActionResult> CopyFiles((RelativePathModel FromPath, RelativePathModel ToPath)[] files);
+    public Task<IActionResult> CopyFiles(RelativePathModel[] FromPath, RelativePathModel ToPath);
 
     public Task<IActionResult> DeleteFiles(RelativePathModel[] pathModel);
 

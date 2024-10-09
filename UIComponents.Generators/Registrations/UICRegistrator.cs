@@ -177,8 +177,10 @@ public static class UICConfigure
 
     public static UicConfigOptions AddDefaultFileExplorerServices(this UicConfigOptions configOptions, IServiceCollection serviceCollection)
     {
-        serviceCollection.TryAddSingleton<IFileExplorerPathMapper, UICFileExplorerPathMapper>();
-        serviceCollection.TryAddScoped<IFileExplorerService, UICFileExplorerService>();
+        serviceCollection.TryAddSingleton<IUICFileExplorerPathMapper, UICFileExplorerPathMapper>();
+        serviceCollection.TryAddScoped<IUICFileExplorerPermissionChecker, UICFileExplorerPermissionChecker>();
+        serviceCollection.TryAddScoped<IUICFileExplorerExecuteActions, UICFileExplorerExecuteActions>();
+        serviceCollection.TryAddScoped<IUICFileExplorerService, UICFileExplorerService>();
 
         return configOptions;
     }
