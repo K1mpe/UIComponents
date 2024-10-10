@@ -250,6 +250,25 @@
         }
     }
 }
+.file-explorer-progress-indicator {
+    position: fixed;
+    z-index: 10000;
+    width: 200px;
+    background: var(--success);
+    left: auto;
+    right: 2rem;
+    top: 2rem;
+    bottom: auto;
+    opacity: 0.8;
+
+    div:not(.progress-bar){
+        display:flex;
+        justify-content: space-around;
+    }
+    .progress-bar {
+        height: 5px;
+    }
+}
 /*#endregion FileExplorer*/
 /*#region Form*/
 form {

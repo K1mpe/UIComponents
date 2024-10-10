@@ -146,8 +146,8 @@ public class UICFileExplorerService : IUICFileExplorerService
         var absoluteFile = _pathMapper.GetAbsolutePath(pathModel);
         await _executeActions.RenameFileAsync(absoluteFile, newName);
     }
-    
-    public async Task<Stream> DownloadFilesAndDirectories(List<RelativePathModel> pathModels)
+
+    public async Task DownloadFilesAndDirectories(List<RelativePathModel> pathModels, Stream outputStream)
     {
         if (!pathModels.Any())
             throw new ArgumentNullException(nameof(pathModels));
@@ -162,72 +162,61 @@ public class UICFileExplorerService : IUICFileExplorerService
 
             if (System.IO.File.Exists(absolutePath))
             {
-
                 FileInfo fileInfo = new FileInfo(absolutePath);
 
-                var memory = new MemoryStream();
-                using (var stream = new FileStream(absolutePath, FileMode.Open))
+                using (var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
                 {
-                    await stream.CopyToAsync(memory);
+                    // Directly copy the file stream to the output stream (the response)
+                    await fileStream.CopyToAsync(outputStream);
                 }
-                memory.Position = 0;
-                return memory;
+
+                // Flush the output stream to ensure the response is sent to the client
+                await outputStream.FlushAsync();
+                return; // Exit after sending the single file
             }
         }
 
-        var zipMemoryStream = new MemoryStream();
+        // Create the ZipArchive directly in the outputStream (i.e., response stream)
         await _logger.LogFunction("Creating Zip file", true, async () =>
         {
-            using (var archive = new ZipArchive(zipMemoryStream, ZipArchiveMode.Create, true))
+            using (var archive = new ZipArchive(outputStream, ZipArchiveMode.Create, leaveOpen: true))
             {
                 foreach (var pathModel in pathModels)
                 {
                     var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
-                    
 
                     if (File.Exists(absolutePath))
                     {
                         var fileInfo = new FileInfo(absolutePath);
                         var fileEntry = archive.CreateEntry(fileInfo.Name);
-                        using (_logger.BeginScopeKvp("FilePath", absolutePath))
+
+                        using (var entryStream = fileEntry.Open())
+                        using (var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
                         {
-                            await _logger.LogFunction($"Adding file to zip", true, async () =>
-                            {
-                                using (var entryStream = fileEntry.Open())
-                                using (var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read))
-                                {
-                                    await fileStream.CopyToAsync(entryStream);
-                                }
-                            }, LogLevel.Information);
-                        } 
+                            await fileStream.CopyToAsync(entryStream);  // Stream each file directly into the ZIP
+                        }
                     }
                     else if (Directory.Exists(absolutePath))
                     {
                         var dirInfo = new DirectoryInfo(absolutePath);
                         foreach (var filePath in Directory.GetFiles(absolutePath, "*", SearchOption.AllDirectories))
                         {
-                            using (_logger.BeginScopeKvp("FilePath", filePath))
-                            {
-                                await _logger.LogFunction($"Adding file to zip", true, async () =>
-                                {
-                                    var fileEntry = archive.CreateEntry(_pathMapper.ReplaceRoot(filePath, absolutePath, $"{dirInfo.Name}\\"));
+                            var relativePath = _pathMapper.ReplaceRoot(filePath, absolutePath, $"{dirInfo.Name}\\");
+                            var fileEntry = archive.CreateEntry(relativePath);
 
-                                    using (var entryStream = fileEntry.Open())
-                                    using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                                    {
-                                        await fileStream.CopyToAsync(entryStream);
-                                    }
-                                }, LogLevel.Information);
+                            using (var entryStream = fileEntry.Open())
+                            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
+                            {
+                                await fileStream.CopyToAsync(entryStream);  // Stream each file directly into the ZIP
                             }
                         }
                     }
                 }
             }
         }, LogLevel.Information);
-        
 
-        zipMemoryStream.Position = 0;
-        return zipMemoryStream;
+        // Flush the output stream to ensure all data is sent to the client
+        await outputStream.FlushAsync();
     }
     #endregion
 

@@ -13,9 +13,10 @@
   </PropertyGroup>
 	
   <ItemGroup>
-	  <None Include="..\README.md" Pack="true" PackagePath="\"/>
+	  <None Include="..\README.md" Pack="true" PackagePath="\" />
 	  <EmbeddedResource Include="UIComponents\ComponentViews\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="UIComponents\Root\**" Pack="true" />
+	  <Content Remove="UIComponents\ComponentViews\FileExplorer\Download.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\FileExplorer\FilePreview.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\InputTime\Default.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\RenderMultiple.cshtml" />

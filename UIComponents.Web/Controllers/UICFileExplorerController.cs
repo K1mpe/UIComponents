@@ -14,6 +14,7 @@ using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Models.FileExplorer;
 using UIComponents.Abstractions.Varia;
 using UIComponents.Web.Components;
+using UIComponents.Web.Helpers;
 using UIComponents.Web.Interfaces.FileExplorer;
 
 namespace UIComponents.Web.Tests.Controllers
@@ -65,29 +66,15 @@ namespace UIComponents.Web.Tests.Controllers
         {
             try
             {
-                string fileName= $"{Assembly.GetExecutingAssembly().GetName().Name}.zip";
-                if(pathModels.Length == 1)
-                {
-                    var fileInfo = new FileInfo(_fileExplorerPathMapper.GetAbsolutePath(pathModels[0]));
-                    if(fileInfo.Exists)
-                        fileName = fileInfo.Name;
-                    else
-                    {
-                        var dirInfo = new DirectoryInfo(_fileExplorerPathMapper.GetAbsolutePath(pathModels[0]));
-                        fileName = $"{dirInfo.Name}.zip";
-                    }
-                }
-                var stream = await _fileExplorerService.DownloadFilesAndDirectories(pathModels.ToList());
-                return File(stream, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-
+                var files = pathModels.Select(x => _fileExplorerPathMapper.GetAbsolutePath(x));
+                return await FileExplorerHelper.DownloadFileOrZip(files, HttpContext, _logger);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
-        
 
         [HttpPost]
         public async Task<IActionResult> GetFilesForDirectoryPartial(GetFilesForDirectoryFilterModel fm)

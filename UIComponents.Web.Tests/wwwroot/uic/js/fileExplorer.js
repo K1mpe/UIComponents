@@ -365,12 +365,39 @@
     },
     download: async function (source, data) {
         //https://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post
-        await $.ajax({
+        let response = await $.ajax({
             type: "POST",
             url: source,
             data: data,
             xhrFields: {
                 responseType: 'blob' // to avoid binary data being mangled on charset conversion
+            },
+            xhr: function () {
+                // Create a new XMLHttpRequest object
+                const xhr = new window.XMLHttpRequest();
+                let completed = -1;
+                // Event listener for tracking progress
+                xhr.onprogress = (ev => {
+                    let estimatedSize = +xhr.getResponseHeader('Estimated-Content-Length')
+                    if (ev.lengthComputable) {
+                        estimatedSize = ev.total;
+                    }
+                    if (estimatedSize != null) {
+                        let percentComplete = Math.round((ev.loaded / estimatedSize) * 100);
+                        if (percentComplete != completed) {
+                            completed = percentComplete;
+                            $('.file-explorer-progress-indicator').remove();
+                            let indicator = $('<div>', { class: 'file-explorer-progress-indicator' })
+                                .append($('<div>')
+                                    .append($('<span>').html(`Downloading...`))
+                                    .append($('<span>').html(`${percentComplete} %`)))
+                                .append($('<div>', { class: 'progress-bar', width: `${percentComplete}%` }));
+                            $('body').append(indicator);
+                        }
+                    }
+                })
+
+                return xhr;
             },
             success: function (blob, status, xhr) {
                 // check for a filename
@@ -406,10 +433,16 @@
                     }
 
                     setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+                    $('.file-explorer-progress-indicator').remove();
                     makeToast("Success", "File successfully downloaded");
                 }
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                makeToast("Error", errorThrown);
+                $('.file-explorer-progress-indicator').remove();
+                let indicator = $('<div>', { class: 'file-explorer-progress-indicator' }).text('Failed!')
+                $('body').append(indicator);
+                setTimeout(() => {
+                    indicator.remove();
+                }, 10000);
             }
         });
     }

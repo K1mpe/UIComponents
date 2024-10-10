@@ -12,6 +12,7 @@ using UIComponents.Web.Tests.Validators;
 using UIComponents.Web.Tests.Factory;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,11 @@ builder.Services.AddSingleton<MainHub>();
 builder.Services.AddScoped<TestModelValidator>();
 builder.Services.AddScoped<TestComponentFactory>();
 builder.Services.AddSingleton<TestService>();
+
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.AllowSynchronousIO = true;
+});
 
 builder.Services.AddWebOptimizer(pipeline =>
 {

@@ -13,6 +13,8 @@ public static class LoggerExtensions
     /// <returns></returns>
     public static IDisposable BeginScopeKvp(this ILogger logger, params KeyValuePair<string, object>[] kvps)
     {
+        if (logger == null)
+            return default;
         return logger.BeginScope(new Dictionary<string, object>(kvps));
     }
 
@@ -40,7 +42,8 @@ public static class LoggerExtensions
     {
         try
         {
-
+            if (logger == null)
+                action();
             if (logTime)
             {
                 var stopwatch = Stopwatch.StartNew();
@@ -49,7 +52,7 @@ public static class LoggerExtensions
                 stopwatch.Stop();
                 var elapsed = $"{Math.Round(stopwatch.Elapsed.TotalMilliseconds, 2)} ms";
                 if (stopwatch.ElapsedMilliseconds > 10)
-                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} ms";
+                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} sec";
 
                 logger.Log(logLevel, eventId, "Finished {0} in {1}", name, elapsed);
 
@@ -75,7 +78,8 @@ public static class LoggerExtensions
     {
         try
         {
-
+            if (logger == null)
+                return function();
             if (logTime)
             {
                 var stopwatch = Stopwatch.StartNew();
@@ -84,7 +88,7 @@ public static class LoggerExtensions
                 stopwatch.Stop();
                 var elapsed = $"{Math.Round(stopwatch.Elapsed.TotalMilliseconds, 2)} ms";
                 if (stopwatch.ElapsedMilliseconds > 10)
-                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} ms";
+                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} sec";
 
                 logger.Log(logLevel, eventId, "Finished {0} in {1}", name, elapsed);
                 return result;
@@ -109,7 +113,11 @@ public static class LoggerExtensions
     {
         try
         {
-
+            if (logger == null)
+            {
+                await function();
+                return;
+            }
             if (logTime)
             {
                 var stopwatch = Stopwatch.StartNew();
@@ -118,7 +126,7 @@ public static class LoggerExtensions
                 stopwatch.Stop();
                 var elapsed = $"{Math.Round(stopwatch.Elapsed.TotalMilliseconds, 2)} ms";
                 if (stopwatch.ElapsedMilliseconds > 10)
-                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} ms";
+                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} sec";
 
                 logger.Log(logLevel, eventId, "Finished {0} in {1}", name, elapsed);
 
@@ -143,7 +151,8 @@ public static class LoggerExtensions
     {
         try
         {
-
+            if(logger == null)
+                return await function();
             if (logTime)
             {
                 var stopwatch = Stopwatch.StartNew();
@@ -152,7 +161,7 @@ public static class LoggerExtensions
                 stopwatch.Stop();
                 var elapsed = $"{Math.Round(stopwatch.Elapsed.TotalMilliseconds, 2)} ms";
                 if (stopwatch.ElapsedMilliseconds > 10)
-                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} ms";
+                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} sec";
 
                 logger.Log(logLevel, eventId, "Finished {0} in {1}", name, elapsed);
                 return result;
