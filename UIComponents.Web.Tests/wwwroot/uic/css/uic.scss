@@ -20,6 +20,16 @@
     &.dist-none {
         > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right, span {
             @extend .btn-group;
+
+            input:not(:first-child){
+                border-top-left-radius:0;
+                border-bottom-left-radius:0;
+                margin-left:-1px;
+            }
+            input:not(:last-child){
+                border-top-right-radius:0;
+                border-bottom-right-radius:0;
+            }
         }
     }
 

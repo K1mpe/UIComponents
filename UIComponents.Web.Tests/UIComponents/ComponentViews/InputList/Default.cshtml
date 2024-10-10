@@ -36,20 +36,21 @@
     Model.MoveDownButton.AddClass("uic-btn-move-down");
     Model.RemoveButton.AddClass("uic-btn-delete-instance");
 
-
+    Model.AddClass("loading-data"); //this class is removed when the data is finished loading
     if (!Model.Readonly || true)
     {
         Model.AddScript(
             @<text>
 
         $('#@id').on('uic-help', ()=>{
-        console.log("ListInput $('#@id').trigger('uic-setValue', value) => Sets the value of all list items");
-        console.log("ListInput $('#@id').trigger('uic-setValue-index', [value, index]) => Sets the value of the item at this index");
-        console.log("ListInput $('#@id').trigger('uic-clearValues') => Empty all listitems");
-        console.log("ListInput $('#@id').trigger('uic-add', value) => Add a new item to the list, value is optional");
-        console.log("ListInput $('#@id').trigger('uic-remove', index) => Remove the item at this index");
+            console.log("ListInput $('#@id').trigger('uic-setValue', value) => Sets the value of all list items");
+            console.log("ListInput $('#@id').trigger('uic-setValue-index', [value, index]) => Sets the value of the item at this index");
+            console.log("ListInput $('#@id').trigger('uic-clearValues') => Empty all listitems");
+            console.log("ListInput $('#@id').trigger('uic-add', value) => Add a new item to the list, value is optional");
+            console.log("ListInput $('#@id').trigger('uic-remove', index) => Remove the item at this index");
 
-        console.log("ListInput $('#@id').on('uic-change') => Something has changed in the list");
+            console.log("ListInput $('#@id').on('uic-change') => Something has changed in the list");
+            console.log("ListInput $('#@id').on('uic-initialised') => The list has loaded its initial data");
         });
         $('#@id').on('uic-help',  '> .input-instances > .input-instance', ()=>{
         console.log("ListInput-Item $().trigger('uic-remove') => Remove this item");
@@ -265,7 +266,9 @@
                 console.log('adding', @Json.Serialize(value));
                 $('#@id').trigger('uic-add', @Json.Serialize(value));
             </text>
-        }
+    }
+        $('#@id').removeClass('loading-data');
+        $('#@id').trigger('uic-initialised');
         </text>);
 }
 

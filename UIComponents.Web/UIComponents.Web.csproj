@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.2.31</Version>
+	<Version>1.2.32</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -16,7 +16,6 @@
 	  <None Include="..\README.md" Pack="true" PackagePath="\" />
 	  <EmbeddedResource Include="UIComponents\ComponentViews\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="UIComponents\Root\**" Pack="true" />
-	  <Content Remove="UIComponents\ComponentViews\FileExplorer\Download.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\FileExplorer\FilePreview.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\InputTime\Default.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\RenderMultiple.cshtml" />
@@ -64,6 +63,7 @@
     <None Remove="UIComponents\ChangeLog\2024-09-24.md" />
     <None Remove="UIComponents\ChangeLog\2024-09-27.md" />
     <None Remove="UIComponents\ChangeLog\2024-10-08.md" />
+    <None Remove="UIComponents\ChangeLog\2024-10-10.md" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\7z.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\bak.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\db.png" />

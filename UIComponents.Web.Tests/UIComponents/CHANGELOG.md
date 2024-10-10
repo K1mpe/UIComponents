@@ -1,3 +1,8 @@
+# 2024-10-10 (1.2.32)
+- Fix dependency IUICValidatorService <-> IUIComponentGenerator
+- Progress on fileExplorer
+
+
 # 2024-10-08 (1.2.31)
 - UIComponents.Defaults.RenderDefaults.OverwriteRenderLocation is possible
 - Extension methods for Logger.BeginScopeKvp

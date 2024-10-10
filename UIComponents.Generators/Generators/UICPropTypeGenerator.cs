@@ -30,7 +30,7 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
             uicPropertyType = uicPropertyAttribute.Type;
         else
         {
-            var type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+            Type type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
             bool nullable = type != propertyInfo.PropertyType;
 
             var dataTypeAttr = propertyInfo.GetCustomAttribute<DataTypeAttribute>();
@@ -96,12 +96,56 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
             if(propertyInfo.PropertyType.IsAssignableTo(typeof(IEnumerable)) && propertyInfo.PropertyType != typeof(string))
             {
                 if(propertyInfo.PropertyType.IsArray)
-                    type = propertyInfo.PropertyType.GetElementType();
+                    type = propertyInfo.PropertyType.GetElementType()!;
                 else
                     type = propertyInfo.PropertyType.GetGenericArguments()[0];
             }
 
 
+
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Object:
+                    if(type == typeof(TimeSpan))
+                    {
+
+                    }
+
+                    break;
+                case TypeCode.Boolean:
+                    break;
+                case TypeCode.Char:
+                    break;
+                case TypeCode.SByte:
+                    break;
+                case TypeCode.Byte:
+                    break;
+                case TypeCode.Int16:
+                    break;
+                case TypeCode.UInt16:
+                    break;
+                case TypeCode.Int32:
+                    break;
+                case TypeCode.UInt32:
+                    break;
+                case TypeCode.Int64:
+                    break;
+                case TypeCode.UInt64:
+                    break;
+                case TypeCode.Single:
+                    break;
+                case TypeCode.Double:
+                    break;
+                case TypeCode.Decimal:
+                    break;
+                case TypeCode.DateTime:
+                    break;
+                case TypeCode.String:
+                    break;
+                default:
+                    break;
+            }
+           
             switch (type.Name.ToLower())
             {
                 case "string":
@@ -147,7 +191,7 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
                     break;
             }
         }
-        await Task.Delay(0);
+
         return GeneratorHelper.Success<UICPropertyType?>(uicPropertyType, true);
     }
 }

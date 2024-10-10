@@ -17,13 +17,12 @@ public class UICConfig
     private readonly UicConfigOptions _options;
     private readonly ILogger<UICConfig> _logger;
 
-    public UICConfig(UicConfigOptions options, IServiceProvider serviceProvider, ILogger<UICConfig> logger, IUICValidationService validationService)
+    public UICConfig(UicConfigOptions options, IServiceProvider serviceProvider, ILogger<UICConfig> logger)
     {
         _options = options;
         ServiceProvider = serviceProvider;
         _logger = logger;
         ButtonGenerators = new(this);
-        ValidationService = validationService;
     }
 
 
@@ -80,7 +79,7 @@ public class UICConfig
         }
     }
 
-    public IUICValidationService ValidationService { get; init; }
+    public IUICValidationService ValidationService => ServiceProvider.GetRequiredService<IUICValidationService>();
 
 
     public bool TryGetLanguageService(out IUICLanguageService? languageService)

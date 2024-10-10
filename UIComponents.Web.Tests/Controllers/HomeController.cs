@@ -299,9 +299,8 @@ namespace UIComponents.Web.Tests.Controllers
             var fileBrowser = new UICFileExplorer()
             {
                 RootDirectory = "C:\\Jonas",
-            };
+            }.AddAllAddons();
             _pathMapper.RegisterPath("C:");
-            UICFileExplorer.Addons.AddAllAddons(fileBrowser);
 
             UICFileExplorerService.IsDirectory("C:\\Jonas", false);
             UICFileExplorerService.IsDirectory("C:\\Jonas\\blub", false);

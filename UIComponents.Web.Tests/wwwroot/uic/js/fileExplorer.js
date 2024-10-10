@@ -246,6 +246,21 @@
         filterModel.RelativePath = directory;
         await this.loadMainWindow(container, controller, filterModel);
     },
+    directoryGoUp: async function (container) {
+        let filterModel = container.triggerHandler('uic-getFilterModel');
+        let dir = filterModel.RelativePath;
+        if (dir.endsWith('/'))
+            dir = dir.substring(0, dir.length - 1);
+        let root = container.attr('data-rootdirectory');
+        if (root.endsWith('/'))
+            root = root.substring(0, root.length - 1);
+        if (root == dir)
+            return;
+        if (dir.includes('/')) {
+            dir = dir.substring(0, dir.lastIndexOf('/'));
+            await this.loadRelativeDir(container, dir);
+        }
+    },
     SetRenderer: async function (container, renderer) {
         let controller = container.data('controller');
         let filterModel = container.triggerHandler('uic-getFilterModel');
@@ -321,7 +336,7 @@
         console.log('openFile', explorerItem);
         let container = explorerItem.closest('.file-explorer-container');
         await container.triggerHandler('uic-before-open', explorerItem);
-        await this.downloadFile(explorerItem);
+        await this.downloadSelected(explorerItem);
 
         await container.triggerHandler('uic-after-open', explorerItem);
     },
