@@ -24,7 +24,7 @@ namespace UIComponents.Generators.Services
             _pathMapper = pathMapper;
         }
 
-        public async Task ThrowIfCurrentUserCantCopyFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel destinationPath)
+        public async virtual Task ThrowIfCurrentUserCantCopyFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel destinationPath)
         {
             if (_permissionService == null)
                 return;
@@ -79,7 +79,7 @@ namespace UIComponents.Generators.Services
             }
         }
 
-        public async Task ThrowIfCurrentUserCantDeleteFilesAsync(List<RelativePathModel> pathModels)
+        public async virtual Task ThrowIfCurrentUserCantDeleteFilesAsync(List<RelativePathModel> pathModels)
         {
             if (_permissionService == null)
                 return;
@@ -97,7 +97,7 @@ namespace UIComponents.Generators.Services
             }
         }
 
-        public async Task ThrowIfCurrentUserCantMoveFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel destinationPath)
+        public async virtual Task ThrowIfCurrentUserCantMoveFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel destinationPath)
         {
             if (_permissionService == null)
                 return;
@@ -155,7 +155,7 @@ namespace UIComponents.Generators.Services
             }
         }
 
-        public async Task ThrowIfCurrentUserCantRenameFileOrDirectory(RelativePathModel sourcePath, string newFilename)
+        public async virtual Task ThrowIfCurrentUserCantRenameFileOrDirectory(RelativePathModel sourcePath, string newFilename)
         {
             if(string.IsNullOrWhiteSpace(newFilename))
                 throw new ArgumentNullException(nameof(newFilename));

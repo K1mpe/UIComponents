@@ -224,6 +224,8 @@
     }
 
     .file-explorer-main {
+        min-height: 100%;
+
         &[data-renderer='large'] {
             .explorer-thumbnail {
                 height: 200px;
@@ -235,6 +237,10 @@
         }
 
         &[data-renderer='details'] {
+            table {
+                min-height: 100%;
+            }
+
             img {
                 max-width: 30px;
             }
@@ -257,6 +263,35 @@
             &:not(.selected):hover {
                 background-color: #92e4fc10;
             }
+
+            &.selected-to-cut{
+                opacity:0.4;
+            }
+        }
+    }
+}
+.uic.file-explorer-modal .modal-body {
+    .image-viewer{
+        max-width: 90vw;
+        max-height: 90vh;
+    }
+    .carousel-control-prev, .carousel-control-next {
+        font-size:10rem;
+        height: 100%;
+
+        i {
+            position: absolute;
+        }
+
+        .control-dark {
+            color: var(--dark);
+            opacity: 0.5;
+            font-size: 11rem;
+        }
+
+        .control-light {
+            color: var(--light);
+            opacity: 0.5;
         }
     }
 }

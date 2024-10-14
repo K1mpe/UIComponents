@@ -69,11 +69,15 @@ namespace UIComponents.Models.Models.Tables
         public List<object> Data { get; set; } = new();
 
         /// <summary>
-        /// When triggering 'uic-reload', this is the delay before the reload is exicuted.
-        /// <br>This is usefull if multiple signalR triggers can influence the table at the same time, only one trigger will be run</br>
-        /// <br>This uses the same function as <see cref="UICActionDelayedAction"/></br>
+        /// When triggering 'uic-reload', this is the delay before the reload is executed.
+        /// <br>This is usefull to prevent the table from reloading multiple times</br>
+        /// <br>The <see cref="UICActionDelayedAction.Action"/> is overwritten by the reload if the table</br>
         /// </summary>
-        public int ReloadDelay { get; set; } = Defaults.Models.Table.UICTable.ReloadDelay;
+        public UICActionDelayedAction DelayedAction{ get; set; } = new()
+        {
+            Miliseconds = Defaults.Models.Table.UICTable.DelayedAction.Miliseconds,
+            DelayType = Defaults.Models.Table.UICTable.DelayedAction.DelayType
+        };
 
         /// <summary>
         /// Default sorting on this property
@@ -664,7 +668,7 @@ namespace UIComponents.Defaults.Models.Table
         public static bool SaveOnBlur { get; set; }
         public static bool SaveOnEnter { get; set; }
         public static List<UIComponents.Models.Models.UICSignalR> SignalRRefreshTriggers { get; set; } = new();
-        public static int ReloadDelay { get; set; } = 250;
+        public static UICActionDelayedAction DelayedAction { get; set; } = new UICActionDelayedAction(1000, UICActionDelayedAction.DelayedActionType.Throttle, null);
         public static IUICAction OnInit { get; set; } = new UICCustom();
         public static IUICAction OnDataLoaded { get; set; } = new UICCustom();
         public static IUICAction OnDataEditing { get; set; } = new UICCustom();

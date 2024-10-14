@@ -14,7 +14,7 @@ namespace UIComponents.Generators.Services
             _logger = logger;
         }
 
-        public Task CopyFileAsync(string sourceFile, string destinationFile)
+        public virtual Task CopyFileAsync(string sourceFile, string destinationFile)
         {
             return _logger.LogFunction($"Copying {sourceFile}", true, async () =>
             {
@@ -31,14 +31,14 @@ namespace UIComponents.Generators.Services
             }, LogLevel.Information);
         }
 
-        public Task CreateDirectoryAsync(string path)
+        public virtual Task CreateDirectoryAsync(string path)
         {
             _logger.LogInformation("Creating directory {0}", path);
             Directory.CreateDirectory(path);
             return Task.CompletedTask;
         }
 
-        public Task DeleteFileAsync(string filepath)
+        public virtual Task DeleteFileAsync(string filepath)
         {
             if(Directory.Exists(filepath))
             {
@@ -57,7 +57,7 @@ namespace UIComponents.Generators.Services
             return Task.CompletedTask;
         }
 
-        public Task MoveFileAsync(string sourceFile, string destinationFile)
+        public virtual Task MoveFileAsync(string sourceFile, string destinationFile)
         {
             return _logger.LogFunction("Moving {0}", true, async () =>
             {
@@ -66,12 +66,21 @@ namespace UIComponents.Generators.Services
             }, LogLevel.Information);
         }
 
-        public Task RenameFileAsync(string sourceFile, string newName)
+        public virtual Task RenameFileAsync(string sourceFile, string newName)
         {
             var directory = Path.GetDirectoryName(sourceFile);
             var targetFile = Path.Combine(directory, newName);
+            
             _logger.LogInformation("Renaming file {0} to {1}", sourceFile, newName);
             File.Move(sourceFile, targetFile);
+            return Task.CompletedTask;
+        }
+        public virtual Task RenameDirectoryAsync(string sourceDirectory, string newName)
+        {
+            var directory = new DirectoryInfo(sourceDirectory);
+            var targetFile = Path.Combine(directory.Parent.FullName, newName);
+            _logger.LogInformation("Renaming directory {0} to {1}", sourceDirectory, newName);
+            Directory.Move(sourceDirectory, targetFile);
             return Task.CompletedTask;
         }
     }

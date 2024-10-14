@@ -48,6 +48,18 @@
         </text>
     );
 
+    if(Model.DelayedAction != null)
+    {
+        Model.DelayedAction.Action = new UICCustom(
+        @<text>
+            if(await checkCanReload()){
+                $('#@id').trigger('uic-forceReload')
+            } else{
+                tryReload = true;
+            }
+        </text>);
+    }
+
     if (Model.OnInsertButtonClick.HasValue())
         Model.AddScript(@<text>
             setTimeout(()=>{
@@ -115,16 +127,8 @@
             };
             $('#@id').on('uic-reload', (ev)=>{
                 ev.stopPropagation();
-                @if(Model.ReloadDelay > 0){
-                    <text>
-                    uic.delayedAction.throttle("jsGrid-Reload-@id",  async ()=>{
-                        if(await checkCanReload()){
-                            $('#@id').trigger('uic-forceReload')
-                        } else{
-                            tryReload = true;
-                        }
-                    },@Json.Serialize(Model.ReloadDelay));
-                    </text>
+                @if(Model.DelayedAction != null){
+                    @await Model.DelayedAction.InvokeAsync(Component)
                 } else{
                      <text>
                     if(checkCanReload()){

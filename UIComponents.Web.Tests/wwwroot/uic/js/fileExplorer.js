@@ -1,55 +1,4 @@
 ﻿uic.fileExplorer = uic.fileExplorer || {
-    //renderMethods: {
-    //    details: async (container) => {
-    //        let main = container.find('.file-explorer-main');
-    //        let headerRow = $('<tr>')
-    //            .append($('<th>', { name: 'Icon' }).text(await uic.translation.translateKey("FileExplorer.Icon")))
-    //            .append($('<th>', { name: 'FileName' }).text(await uic.translation.translateKey("FileExplorer.FileName")))
-    //            .append($('<th>', { name: 'FileType' }).text(await uic.translation.translateKey("FileExplorer.FileType")))
-    //            .append($('<th>', { name: 'LastModified' }).text(await uic.translation.translateKey("FileExplorer.LastModified")))
-    //            .append($('<th>', { name: 'Size' }).text(await uic.translation.translateKey("FileExplorer.Size")));
-    //        let tbody = $('<tbody>');
-    //        let table = $('<table>', {class:'table'})
-    //            .append($('<thead>').append(headerRow))
-    //            .append(tbody);
-
-    //        let getFilesForDirectoryResultModel = container.triggerHandler('uic-getLastDirectoryResult');
-
-    //        getFilesForDirectoryResultModel.Files.forEach((item) => {
-
-    //            let row =$('<tr>', { class:'explorer-item', 'data-absolutePath': item.AbsolutePathReference, 'data-relativePath': item.RelativePath })
-    //                .append($('<td>').append(item.Icon))
-    //                .append($('<td>').append(item.FileName))
-    //                .append($('<td>').append(item.FileType??item.Extension))
-    //                .append($('<td>').append(moment(item.LastModified).format('LLL')))
-    //                .append($('<td>').append(item.Size));
-
-    //            if (item.Extension == 'folder') {
-    //                row.addClass('explorer-folder');
-    //            }
-    //            tbody.append(row);
-
-    //        });
-    //        main.append(table);
-    //    },
-    //    large: async (container) => {
-    //        let main = container.find('.file-explorer-main');
-
-    //        let row = $('<div>', { class: 'row' });
-
-    //        let getFilesForDirectoryResultModel = container.triggerHandler('uic-getLastDirectoryResult');
-    //        getFilesForDirectoryResultModel.Files.forEach((item) => {
-    //            let col = $('<div>', { class: 'col col-md-4 col-xl-3 explorer-item', 'data-absolutePath': item.AbsolutePathReference, 'data-relativePath': item.RelativePath })
-    //                .append($('<div>', {class: 'explorer-thumbnail'}).append(item.Thumbnail ?? item.Icon))
-    //                .append(item.FileName);
-    //            if (item.Extension == 'folder') {
-    //                col.addClass('explorer-folder');
-    //            }
-    //            row.append(col);
-    //        });
-    //        main.append(row);
-    //    },
-    //},
     initialize:
     {
         start: function (container) {
@@ -246,26 +195,19 @@
         filterModel.RelativePath = directory;
         await this.loadMainWindow(container, controller, filterModel);
     },
-    directoryGoUp: async function (container) {
-        let filterModel = container.triggerHandler('uic-getFilterModel');
-        let dir = filterModel.RelativePath;
-        if (dir.endsWith('/'))
-            dir = dir.substring(0, dir.length - 1);
-        let root = container.attr('data-rootdirectory');
-        if (root.endsWith('/'))
-            root = root.substring(0, root.length - 1);
-        if (root == dir)
-            return;
-        if (dir.includes('/')) {
-            dir = dir.substring(0, dir.lastIndexOf('/'));
-            await this.loadRelativeDir(container, dir);
-        }
-    },
+    
     SetRenderer: async function (container, renderer) {
         let controller = container.data('controller');
         let filterModel = container.triggerHandler('uic-getFilterModel');
         filterModel.RenderLocation = renderer;
         await this.loadMainWindow(container, controller, filterModel);
+    },
+    addCuttingClass: function () {
+        if (this._copyMode == "cut") {
+            this._copiedFiles.forEach(item => {
+                $(`.explorer-item[data-absolutepath="${item.AbsolutePathReference}"][data-relativepath="${item.RelativePath}"]`).addClass("selected-to-cut");
+            });
+        }
     },
     loadMainWindow: async function (container, controller, getFilesForDirectoryFilterModel) {
         let mainWindow = container.find('.file-explorer-main');
@@ -323,32 +265,77 @@
                 $(ev.target).closest('.explorer-item').addClass('selected');
             }
         })
-        container.find('.explorer-folder').on('uic-openExplorerItem', (ev) => {
-            let target = $(ev.target).closest('.explorer-folder');
-            let relativePath = target.attr('data-relativepath');
-            uic.fileExplorer.loadRelativeDir(container, relativePath);
-        })
+        
         container.find('.explorer-item').on('dblclick', (ev) => {
             this.openItem(ev);
         })
+        this.addCuttingClass(container);
     },
-    openFile: async function (explorerItem) {
-        console.log('openFile', explorerItem);
-        let container = explorerItem.closest('.file-explorer-container');
-        await container.triggerHandler('uic-before-open', explorerItem);
-        await this.downloadSelected(explorerItem);
-
-        await container.triggerHandler('uic-after-open', explorerItem);
-    },
-    
-    openItem: function (ev) {
-        let explorerItem = $(ev.target).closest('.explorer-item');
-        if (uic.elementContainsEvent(explorerItem, 'uic-openExplorerItem')) {
-            explorerItem.trigger('uic-openExplorerItem');
-            return;
+    copySelected: function (container) {
+        container = container.closest('.file-explorer-container');
+        let selectedFiles = container.find('.explorer-item.selected');
+        this._copiedFiles = [];
+        this._copyMode = "copy";
+        for (let i = 0; i < selectedFiles.length; i++) {
+            let file = $(selectedFiles[i]);
+            this._copiedFiles.push({
+                AbsolutePathReference: file.attr('data-absolutepath'),
+                RelativePath: file.attr('data-relativepath')
+            })
         }
+    },
+    cutSelected: function (container) {
+        container = container.closest('.file-explorer-container');
+        let selectedFiles = container.find('.explorer-item.selected');
+        this._copiedFiles = [];
+        this._copyMode = "cut";
+        for (let i = 0; i < selectedFiles.length; i++) {
+            let file = $(selectedFiles[i]);
+            this._copiedFiles.push({
+                AbsolutePathReference: file.attr('data-absolutepath'),
+                RelativePath: file.attr('data-relativepath')
+            })
+        }
+        this.addCuttingClass();
+    },
+    createDirectory: async function (container) {
+        container = container.closest('.file-explorer-container');
+        let translations = await uic.translation.translateMany([
+            { ResourceKey: "FileExplorer.CreateDirectory.Title", DefaultValue: "Create Directory" },
+            { ResourceKey: "FileExplorer.CreateDirectory.Message", DefaultValue: "Give a name for the new directory" },
+            { ResourceKey: "FileExplorer.CreateDirectory.Create", DefaultValue: "Create" },
+            { ResourceKey: "Button.Cancel", DefaultValue: "Cancel" },
 
-        uic.fileExplorer.openFile(explorerItem);
+        ]);
+
+        Swal.fire({
+            title: translations["FileExplorer.CreateDirectory.Title"],
+            text: translations["FileExplorer.CreateDirectory.Message"],
+            showCloseButton: true,
+            showCancelButton: true,
+            input: "text",
+            allowOutsideClick: true,
+            allowEscapeKey: true,
+            confirmButtonText: translations["FileExplorer.CreateDirectory.Create"],
+            cancelButtonText: translations["Button.Cancel"],
+        }).then(async result => {
+            if (!result.isConfirmed)
+                return;
+            let dirName = result.value;
+
+            let filterModel = container.triggerHandler('uic-getFilterModel');
+            let absolutePath = container.attr('data-rootabsolutepath');
+            let controller = container.data('controller');
+            let relativePath = filterModel.RelativePath;
+            if (!relativePath.endsWith("/"))
+                relativePath = relativePath + "/";
+            relativePath = relativePath + dirName;
+            await uic.getpost.post(`/${controller}/CreateDirectory`, {
+                AbsolutePathReference: absolutePath,
+                RelativePath: relativePath
+            });
+            container.trigger('uic-reload');
+        })
     },
     deleteSelected: async function (container) {
         container = container.closest('.file-explorer-container');
@@ -356,13 +343,69 @@
         let controller = container.data('controller');
         let files = [];
         for (let i = 0; i < selectedFiles.length; i++) {
-            let file = selectedFiles[i];
+            let file = $(selectedFiles[i]);
             files.push({
                 AbsolutePathReference: file.attr('data-absolutepath'),
                 RelativePath: file.attr('data-relativepath')
             })
         }
-        await uic.getpost.post(`${controller}/DeleteFiles`, files);
+        if (files.length == 1) {
+            let translations = await uic.translation.translateMany([
+                { ResourceKey: "FileExplorer.DeleteOneFile", DefaultValue: "Are you sure you want to delete this file?" },
+                { ResourceKey: "Button.Delete", DefaultValue: "Delete" },
+                { ResourceKey: "Button.Cancel", DefaultValue: "Cancel" },
+            ])
+            Swal.fire({
+                title: translations["FileExplorer.DeleteOneFile"],
+                text: files[0].RelativePath,
+                showCloseButton: true,
+                showCancelButton: true,
+                allowOutsideClick: true,
+                allowEscapeKey: true,
+                confirmButtonText: translations["Button.Delete"],
+                cancelButtonText: translations["Button.Cancel"],
+            }).then(async result => {
+                if (!result.isConfirmed)
+                    return;
+                await uic.getpost.post(`/${controller}/DeleteFiles`, { pathModel: files });
+                container.trigger('uic-reload');
+            });
+        } else {
+            let translations = await uic.translation.translateMany([
+                { ResourceKey: "FileExplorer.DeleteManyFile", DefaultValue: "Are you sure you want to delete {0} files?", Arguments:[files.length] },
+                { ResourceKey: "Button.Delete", DefaultValue: "Delete" },
+                { ResourceKey: "Button.Cancel", DefaultValue: "Cancel" },
+            ])
+            Swal.fire({
+                title: translations["FileExplorer.DeleteManyFile"],
+                showCloseButton: true,
+                showCancelButton: true,
+                allowOutsideClick: true,
+                allowEscapeKey: true,
+                confirmButtonText: translations["Button.Delete"],
+                cancelButtonText: translations["Button.Cancel"],
+            }).then(async result => {
+                if (!result.isConfirmed)
+                    return;
+                await uic.getpost.post(`/${controller}/DeleteFiles`, { pathModel: files });
+                container.trigger('uic-reload');
+            });
+        }
+    },
+    directoryGoUp: async function (container) {
+        let filterModel = container.triggerHandler('uic-getFilterModel');
+        let dir = filterModel.RelativePath;
+        if (dir.endsWith('/'))
+            dir = dir.substring(0, dir.length - 1);
+        let root = container.attr('data-rootdirectory');
+        if (root.endsWith('/'))
+            root = root.substring(0, root.length - 1);
+        if (root == dir)
+            return;
+        if (dir.includes('/')) {
+            dir = dir.substring(0, dir.lastIndexOf('/'));
+            await this.loadRelativeDir(container, dir);
+        }
     },
     downloadSelected: async function (container) {
         container = container.closest('.file-explorer-container');
@@ -460,5 +503,167 @@
                 }, 10000);
             }
         });
-    }
+    },
+    //When opening a file, these handlers are checked until one returns true.
+    //If no handler returns true, the 'downloadSelected' will be used.
+    openHandlers: [
+        async function (explorerItem, extension, relativePath) {
+            if (!explorerItem.hasClass('explorer-folder'))
+                return false;
+            let container = explorerItem.closest('.file-explorer-container');
+            await uic.fileExplorer.loadRelativeDir(container, relativePath);
+            return true;
+        },
+        function (explorerItem, extension, relativePath) {
+            switch (extension.toLowerCase()) {
+                case "pdf":
+                case "mp4":
+                case "m4v":
+                case "avi":
+                    uic.fileExplorer.openItemInNewTab(explorerItem);
+                    return true;
+            }
+        },
+        async function (explorerItem, extension, relativePath) {
+            if (explorerItem.hasClass('explorer-img')) {
+                    uic.fileExplorer.openImageViewer(explorerItem);
+                    return true;
+            }
+        }
+    ],
+    openItem: async function (ev) {
+        let explorerItem = $(ev.target).closest('.explorer-item:not(.cannot-open)');
+        let container = explorerItem.closest('.file-explorer-container');
+        await container.triggerHandler('uic-before-open', explorerItem);
+        let extension = explorerItem.attr('data-Extension');
+        let relativePath = explorerItem.attr('data-relativepath');
+        if (uic.elementContainsEvent(explorerItem, 'uic-openExplorerItem')) {
+            explorerItem.trigger('uic-openExplorerItem');
+            return;
+        }
+
+        for (let i = 0; i < this.openHandlers.length; i++) {
+            let handler = this.openHandlers[i];
+            if (await handler(explorerItem, extension, relativePath))
+                return;
+        }
+        
+
+        await container.triggerHandler('uic-after-open', explorerItem);
+
+        await this.downloadSelected(explorerItem);
+    },
+    openItemInNewTab: function (explorerItem) {
+        explorerItem = $(explorerItem).closest('.explorer-item');
+        let container = explorerItem.closest('.file-explorer-container');
+        let controller = container.data('controller');
+        let absolutePathReference = explorerItem.attr('data-absolutepath');
+        let relativePath = explorerItem.attr('data-relativepath');
+        let data = {
+            AbsolutePathReference:  absolutePathReference,
+            RelativePath: relativePath
+        };
+        let json = JSON.stringify(data);
+        let base64 = btoa(json); // convert to base64 string
+        window.open(`/${controller}/OpenFile/?base64=${base64}`, '_blank');
+    },
+    openImageViewer: async function (explorerItem) {
+
+        let container = explorerItem.closest('.file-explorer-container');
+        let controller = container.data('controller');
+        let absolutePathReference = explorerItem.attr('data-absolutepath');
+        let relativePath = explorerItem.attr('data-relativepath');
+        let result = await uic.getpost.post(`/${controller}/OpenImage`, {
+            pathModel: {
+                AbsolutePathReference: absolutePathReference,
+                RelativePath: relativePath
+            },
+            explorerId: container.attr('id')
+        });
+
+        if (result != false)
+            $('body').append(result);
+    },
+    pasteSelected: async function (source) {
+        let selectedItem = source.closest('.explorer-item');
+        let container = source.closest('.file-explorer-container');
+
+        let filterModel = container.triggerHandler('uic-getFilterModel');
+        let absolutePath = container.attr('data-rootabsolutepath');
+        let controller = container.data('controller');
+        let relativePath = filterModel.RelativePath;
+        if (selectedItem.hasClass('explorer-folder')) {
+            relativePath = selectedItem.attr('data-relativepath')
+        }
+
+        if (!relativePath.endsWith("/"))
+            relativePath = relativePath + "/";
+
+        if (this._copyMode == "cut") {
+            await uic.getpost.post(`/${controller}/MoveFiles`, {
+                FromPath: this._copiedFiles,
+                ToPath: {
+                    AbsolutePathReference: absolutePath,
+                    RelativePath: relativePath
+                }
+            });
+        } else if (this._copyMode == "copy") {
+            await uic.getpost.post(`/${controller}/CopyFiles`, {
+                FromPath: this._copiedFiles,
+                ToPath: {
+                    AbsolutePathReference: absolutePath,
+                    RelativePath: relativePath
+                }
+            });
+        }
+        
+
+        if (this._copyMode == "cut") {
+            this._copiedFiles = [];
+            this._copyMode = "";
+        }
+        container.trigger('uic-reload');
+    },
+    rename: async function (item) {
+        item = $(item).closest('.explorer-item');
+        let container = item.closest('.file-explorer-container');
+        let controller = container.data('controller');
+        let file = {
+            AbsolutePathReference: item.attr('data-absolutepath'),
+            RelativePath: item.attr('data-relativepath')
+        };
+        let translations = await uic.translation.translateMany([
+            { ResourceKey: "FileExplorer.Rename.Title", DefaultValue: "Rename file or directory" },
+            { ResourceKey: "Button.Rename", DefaultValue: "Rename" },
+            { ResourceKey: "Button.Cancel", DefaultValue: "Cancel" }
+        ]);
+
+        Swal.fire({
+            title: translations["FileExplorer.Rename.Title"],
+            text: file.RelativePath,
+            showCloseButton: true,
+            showCancelButton: true,
+            input: "text",
+            allowOutsideClick: true,
+            allowEscapeKey: true,
+            confirmButtonText: translations["Button.Rename"],
+            cancelButtonText: translations["Button.Cancel"],
+        }).then(async result => {
+            if (!result.isConfirmed)
+                return;
+            let newFileName = result.value;
+
+            await uic.getpost.post(`/${controller}/Rename`, {
+                pathModel: file,
+                newName: newFileName
+            });
+            container.trigger('uic-reload');
+        })
+    },
+
+    
+    //The files that are selected to copy or move
+    _copiedFiles: [],
+    //Should be copy or cut
+    _copyMode:"",
 };

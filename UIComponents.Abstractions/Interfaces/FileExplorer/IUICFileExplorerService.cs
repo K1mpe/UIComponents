@@ -9,6 +9,7 @@ namespace UIComponents.Abstractions.Interfaces.FileExplorer
 {
     public interface IUICFileExplorerService
     {
+        Task CreateDirectory(RelativePathModel pathModel);
         Task CopyFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory);
 
         Task DeleteFilesAsync(List<RelativePathModel> pathModels);
@@ -19,7 +20,7 @@ namespace UIComponents.Abstractions.Interfaces.FileExplorer
 
         Task MoveFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory);
 
-        Task RenameFileAsync(RelativePathModel pathModel, string newName);
+        Task RenameFileOrDirectoryAsync(RelativePathModel pathModel, string newName);
 
         Task DownloadFilesAndDirectories(List<RelativePathModel> pathModels, Stream outputStream);
     }

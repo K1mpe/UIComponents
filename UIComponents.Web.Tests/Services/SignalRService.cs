@@ -50,7 +50,7 @@ public class SignalRService : IUICSignalRService
         await SignalRHub.Clients.All.RemoveUIComponentWithId(id);
     }
 
-    public async Task SendUIComponentToUser(FetchComponent fetchComponent, string userId)
+    public async Task SendUIComponentToUser(UICFetchComponent fetchComponent, string userId)
     {
         await SignalRHub.Clients.All.SendUIComponentToUser(fetchComponent, userId);
     }

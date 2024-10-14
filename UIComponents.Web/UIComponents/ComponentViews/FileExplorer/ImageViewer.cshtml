@@ -1,0 +1,92 @@
+﻿@using UIComponents.Abstractions;
+@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Varia
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Tables;
+@using UIComponents.Models.Models.Tables.TableColumns;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@using UIComponents.Web.Models;
+@inject IUICLanguageService L;
+@model ImageViewerViewModel
+
+@{
+    var modal = new UICModal();
+    modal.AddClass("file-explorer-modal");
+    modal.Add(new UICCustom(@<text>
+        <div>
+            <a class="carousel-control-prev" href="#@modal.GetId()" role="button" data-slide="prev">
+                <i class="fa-solid fa-caret-left control-dark"></i>
+                <i class="fa-solid fa-caret-left control-light"></i>
+                @* <span class="carousel-control-prev-icon" aria-hidden="true"></span> *@
+                <span class="sr-only">@await Html.TranslateHtml(L, TranslatableSaver.Save("Carousel.Previous"))</span>
+            </a>
+            <a class="carousel-control-next" href="#@modal.GetId()" role="button" data-slide="next">
+                <i class="fa-solid fa-caret-right control-dark"></i>
+                <i class="fa-solid fa-caret-right control-light"></i>
+                @* <span class="carousel-control-next-icon" aria-hidden="true"></span> *@
+                <span class="sr-only">@await Html.TranslateHtml(L, TranslatableSaver.Save("Carousel.Previous"))</span>
+            </a>
+            <img class="image-viewer img-fluid" />
+        </div>
+        
+        </text>));
+    modal.AddScript(new UICCustom(@<text>
+        let relativePath = @Html.JsEncode(Model.FilePath.RelativePath, "'");
+        let absoluteRef = @Html.JsEncode(Model.FilePath.AbsolutePathReference, "'");
+        function updatePath(){
+            let base64 = btoa(`{"AbsolutePathReference": "${absoluteRef}", "RelativePath": "${relativePath}" }`);
+            $('#@modal.GetId() .image-viewer').attr('src', `/@(Model.ControllerName)/openfile/?base64=${base64}`);
+            let currentItem = $(`#@Model.ExplorerContainerId .explorer-item[data-RelativePath="${relativePath}"]`);
+            let prevItem = currentItem.prev('.explorer-item.explorer-img:not(.cannot-open)');
+            let nextItem = currentItem.next('.explorer-item.explorer-img:not(.cannot-open)');
+            if(prevItem.length)
+                $('.carousel-control-prev[href="#@modal.GetId()"]').removeClass('d-none');
+            else 
+                $('.carousel-control-prev[href="#@modal.GetId()"]').addClass('d-none');
+
+            if(nextItem.length)
+                $('.carousel-control-next[href="#@modal.GetId()"]').removeClass('d-none');
+            else 
+                $('.carousel-control-next[href="#@modal.GetId()"]').addClass('d-none');
+        }
+        updatePath();
+        $('.carousel-control-prev[href="#@modal.GetId()"]').on('click', (ev)=>{
+            ev.preventDefault();
+            ev.stopPropagation();
+
+            let currentItem = $(`#@Model.ExplorerContainerId .explorer-item[data-RelativePath="${relativePath}"]`);
+            let prevItem = currentItem.prev('.explorer-item.explorer-img:not(.cannot-open)');
+            if(prevItem.length){
+                relativePath = prevItem.attr('data-RelativePath');
+                updatePath();
+            } 
+        })
+        $('.carousel-control-next[href="#@modal.GetId()"]').on('click', (ev)=>{
+            ev.preventDefault();
+            ev.stopPropagation();
+
+            let currentItem = $(`#@Model.ExplorerContainerId .explorer-item[data-RelativePath="${relativePath}"]`);
+            let nextItem = currentItem.next('.explorer-item.explorer-img:not(.cannot-open)');
+            if(nextItem.length){
+                relativePath = nextItem.attr('data-RelativePath');
+                updatePath();
+            } 
+        })
+             </text>));
+}
+
+@await modal.InvokeAsync(Component)

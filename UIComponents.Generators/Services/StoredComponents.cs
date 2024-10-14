@@ -33,7 +33,7 @@ public class StoredComponents : IUICStoredComponents
     /// <summary>
     /// Try to get a component with a given key.
     /// </summary>
-    public bool TryGetComponent(string key, out IUIComponent component)
+    public virtual bool TryGetComponent(string key, out IUIComponent component)
     {
         try
         {
@@ -49,7 +49,7 @@ public class StoredComponents : IUICStoredComponents
     /// <summary>
     /// Get a component by key. Returns null if key not found or expired.
     /// </summary>
-    public IUIComponent GetComponent(string key)
+    public virtual IUIComponent GetComponent(string key)
     {
         lock (_components)
         {
@@ -77,7 +77,7 @@ public class StoredComponents : IUICStoredComponents
         }
     }
 
-    public List<IUIComponent> GetComponentsByUser(object userId)
+    public virtual List<IUIComponent> GetComponentsByUser(object userId)
     {
         if (userId == null)
             throw new ArgumentNullException(nameof(userId));
@@ -101,7 +101,7 @@ public class StoredComponents : IUICStoredComponents
     /// <param name="userIds">Can be empty if not for a specific user.</param>
     /// <param name="singleUse">If true, component is removed after a single get request</param>
     /// <returns></returns>
-    public string StoreComponentForUsers(IUIComponent component, IEnumerable<object> userIds, bool singleUse)
+    public virtual string StoreComponentForUsers(IUIComponent component, IEnumerable<object> userIds, bool singleUse)
     {
         if (userIds == null)
             userIds = new List<string>();
@@ -130,7 +130,7 @@ public class StoredComponents : IUICStoredComponents
     #region Remove
 
 
-    public void RemoveStoredComponent(string key)
+    public virtual void RemoveStoredComponent(string key)
     {
         lock (_components)
         {
@@ -138,7 +138,7 @@ public class StoredComponents : IUICStoredComponents
         }
     }
 
-    public void RemoveStoredComponent(string key, object userId)
+    public virtual void RemoveStoredComponent(string key, object userId)
     {
         if(userId == null)
             throw new ArgumentNullException(nameof(userId));
@@ -160,7 +160,7 @@ public class StoredComponents : IUICStoredComponents
 
     #endregion
 
-    public Task SendComponentToUserSignalR(IUIComponent component, object userId)
+    public virtual Task SendComponentToUserSignalR(IUIComponent component, object userId)
     {
         if (_signalRService == null)
             throw new Exception($"There is no implementation for {nameof(IUICSignalRService)} registrated.");

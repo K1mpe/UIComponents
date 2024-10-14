@@ -34,6 +34,7 @@
   </ItemGroup>
 	
   <ItemGroup>
+    <EmbeddedResource Remove="UIComponents\ComponentViews\FileExplorer\ImageViewer.cshtml" />
     <EmbeddedResource Remove="UIComponents\ComponentViews\InputTime\SelectLists.cshtml" />
   </ItemGroup>
 	
@@ -62,6 +63,7 @@
     <None Remove="UIComponents\ChangeLog\2024-09-19.md" />
     <None Remove="UIComponents\ChangeLog\2024-09-24.md" />
     <None Remove="UIComponents\ChangeLog\2024-09-27.md" />
+    <None Remove="UIComponents\ChangeLog\2024-10-...md" />
     <None Remove="UIComponents\ChangeLog\2024-10-08.md" />
     <None Remove="UIComponents\ChangeLog\2024-10-10.md" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\7z.png" />
@@ -86,16 +88,12 @@
     <None Remove="UIComponents\Root\js\htmlStorage.js" />
     <None Remove="UIComponents\Root\js\jsGrid.js" />
     <None Remove="UIComponents\Root\js\jsgridResize.js" />
-    <None Remove="UIComponents\Translations.xml" />
   </ItemGroup>
 	
   <ItemGroup>
     <EmbeddedResource Include="UIComponents\Taghelpers\UICCustomTaghelper.cs" />
     <EmbeddedResource Include="..\README.md" Link="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Translations.xml">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 	

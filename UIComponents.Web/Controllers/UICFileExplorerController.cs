@@ -1,204 +1,293 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Models.FileExplorer;
-using UIComponents.Abstractions.Varia;
+using UIComponents.Abstractions.Models.FileExplorer.Exceptions;
+using UIComponents.Abstractions.Models.HtmlResponses;
 using UIComponents.Web.Components;
 using UIComponents.Web.Helpers;
 using UIComponents.Web.Interfaces.FileExplorer;
+using UIComponents.Web.Models;
 
-namespace UIComponents.Web.Tests.Controllers
+namespace UIComponents.Web.Tests.Controllers;
+
+public class UICFileExplorerController : Controller
 {
-    public class UICFileExplorerController : Controller, IUICFileExplorerController
+    private readonly ILogger _logger;
+    private readonly IUICLanguageService _languageService;
+    private readonly IUICFileExplorerService _fileExplorerService;
+    private readonly IUICFileExplorerPathMapper _pathMapper;
+    private readonly IUICFileExplorerPermissionService _permissionService;
+
+    public UICFileExplorerController(ILogger<UICFileExplorerController> logger, IUICFileExplorerService fileExplorerService, IUICFileExplorerPathMapper pathMapper, IUICLanguageService languageService, IUICFileExplorerPermissionService permissionService=null)
     {
-        private readonly ILogger _logger;
-        private readonly IUICFileExplorerService _fileExplorerService;
-        private readonly IUICFileExplorerPermissionService _permissionService;
-        private readonly IUICFileExplorerPathMapper _fileExplorerPathMapper;
+        _logger = logger;
+        _fileExplorerService = fileExplorerService;
+        _pathMapper = pathMapper;
+        _languageService = languageService;
+        _permissionService = permissionService;
+    }
 
-        public UICFileExplorerController(ILogger<UICFileExplorerController> logger, IUICFileExplorerService fileExplorerService, IUICFileExplorerPathMapper fileExplorerPathMapper, IUICFileExplorerPermissionService permissionService = null)
+    public virtual async Task<IActionResult> CopyFiles(RelativePathModel[] FromPath, RelativePathModel ToPath)
+    {
+        try
         {
-            _logger = logger;
-            _fileExplorerService = fileExplorerService;
-            _permissionService = permissionService;
-            _fileExplorerPathMapper = fileExplorerPathMapper;
+            await _fileExplorerService.CopyFilesAsync(FromPath.ToList(), ToPath);
+            return Json(true);
         }
-
-        public async Task<IActionResult> CopyFiles(RelativePathModel[] FromPath, RelativePathModel ToPath)
+        catch(Exception ex)
         {
-            try
-            {
-                await _fileExplorerService.CopyFilesAsync(FromPath.ToList(), ToPath);
-                return Json(true);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            return await Error(ex);
         }
+    }
 
-        public async Task<IActionResult> DeleteFiles(RelativePathModel[] pathModel)
+    public virtual async Task<IActionResult> CreateDirectory(RelativePathModel pathModel)
+    {
+        try
         {
-            try
-            {
-                await _fileExplorerService.DeleteFilesAsync(pathModel.ToList());
-                return Json(true);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            await _fileExplorerService.CreateDirectory(pathModel);
+            return Json(true);
         }
-
-        public async Task<IActionResult> Download(RelativePathModel[] pathModels)
+        catch (Exception ex)
         {
-            try
-            {
-                var files = pathModels.Select(x => _fileExplorerPathMapper.GetAbsolutePath(x));
-                return await FileExplorerHelper.DownloadFileOrZip(files, HttpContext, _logger);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
-            }
+            return await Error(ex);
         }
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> GetFilesForDirectoryPartial(GetFilesForDirectoryFilterModel fm)
+    public virtual async Task<IActionResult> DeleteFiles(RelativePathModel[] pathModel)
+    {
+        try
         {
-            try
+            await _fileExplorerService.DeleteFilesAsync(pathModel.ToList());
+            return Json(true);
+        }
+        catch (Exception ex)
+        {
+            return await Error(ex);
+        }
+    }
+
+    public virtual async Task<IActionResult> Download(RelativePathModel[] pathModels)
+    {
+        try
+        {
+            var files = pathModels.Select(x => _pathMapper.GetAbsolutePath(x));
+            return await FileExplorerHelper.DownloadFileOrZip(files, HttpContext, _logger);
+        }
+        catch (Exception ex)
+        {
+            return await Error(ex);
+        }
+    }
+
+    [HttpPost]
+    public virtual async Task<IActionResult> GetFilesForDirectoryPartial(GetFilesForDirectoryFilterModel fm)
+    {
+        try
+        {
+            var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
+            string renderLocation = fm.RenderLocation;
+            if (!renderLocation.Contains("/"))
+                renderLocation = "/UIComponents/ComponentViews/FileExplorer/ExplorerViews/" + renderLocation;
+            return ViewComponent(typeof(UICViewComponent), new UICViewModel(renderLocation, result));
+        }
+        catch (OperationCanceledException)
+        {
+            return Json(false);
+        }
+        catch (Exception ex)
+        {
+            return await Error(ex);
+        }
+    }
+    [HttpPost]
+    public virtual async Task<IActionResult> GetFilesForDirectoryJson(GetFilesForDirectoryFilterModel fm)
+    {
+        try
+        {
+            var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
+            return Json(result);
+        }
+        catch (OperationCanceledException)
+        {
+            return Json(false);
+        }
+        catch (Exception ex)
+        {
+            return await Error(ex);
+        }
+    }
+
+    public virtual async Task<IActionResult> MoveFiles(RelativePathModel[] FromPath, RelativePathModel ToPath)
+    {
+        try
+        {
+            await _fileExplorerService.MoveFilesAsync(FromPath.ToList(), ToPath);
+            return Json(true);
+        }
+        catch (Exception ex)
+        {
+            return await Error(ex);
+        }
+    }
+
+
+    [HttpGet]
+    public virtual async Task<IActionResult> OpenFile(string base64)
+    {
+        try
+        {
+            base64 = base64.Replace(" ", "+");
+            var json = UTF8Encoding.UTF8.GetString(Convert.FromBase64String(base64));
+            var pathModel = JsonSerializer.Deserialize<RelativePathModel>(json);
+
+            var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
+            if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
+                throw new UICFileExplorerCannotOpenException(pathModel.RelativePath);
+            var memstream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
+            
+            return File(memstream, GetMimeType(absolutePath));
+            
+        }
+        catch(Exception ex)
+        {
+            return await Error(ex);
+        }
+    }
+
+    public virtual async Task<IActionResult> OpenImage(RelativePathModel pathModel, string explorerId)
+    {
+        try
+        {
+            var vm = new ImageViewerViewModel()
             {
-                var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
-                string renderLocation = fm.RenderLocation;
-                if (!renderLocation.Contains("\\"))
-                    renderLocation = "/UIComponents/ComponentViews/FileExplorer/ExplorerViews/" + renderLocation;
-                return ViewComponent(typeof(UICViewComponent), new UICViewModel(renderLocation, result));
-            }
-            catch (OperationCanceledException)
-            {
+                FilePath = pathModel,
+                ExplorerContainerId = explorerId,
+                ControllerName = this.GetType().Name
+            };
+            if (vm.ControllerName.EndsWith("Controller"))
+                vm.ControllerName = vm.ControllerName.Remove(vm.ControllerName.LastIndexOf("Controller"));
+            return PartialView("/UIComponents/ComponentViews/FileExplorer/ImageViewer.cshtml", vm);
+        }
+        catch (Exception ex)
+        {
+            return await Error(ex);
+        }
+    }
+
+    [HttpPost]
+    public virtual async Task<IActionResult> Preview(RelativePathModel pathModel)
+    {
+        try
+        {
+            var result = await _fileExplorerService.GetFilePreviewAsync(pathModel, HttpContext.RequestAborted);
+            if (result == null)
                 return Json(false);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            return ViewOrPartial(new UICViewModel("/UIComponents/ComponentViews/FileExplorer/FilePreview",result));
         }
-        [HttpPost]
-        public async Task<IActionResult> GetFilesForDirectoryJson(GetFilesForDirectoryFilterModel fm)
+        catch (OperationCanceledException)
         {
-            try
-            {
-                var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
-                return Json(result);
-            }
-            catch (OperationCanceledException)
-            {
-                return Json(false);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            return Json(false);
         }
-
-        public async Task<IActionResult> MoveFiles(RelativePathModel[] FromPath, RelativePathModel ToPath)
+        catch (Exception ex)
         {
-            try
-            {
-                await _fileExplorerService.MoveFilesAsync(FromPath.ToList(), ToPath);
-                return Json(true);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            return await Error(ex);
         }
+    }
 
-        public Task<IActionResult> OpenFiles(RelativePathModel pathModel)
+    public virtual async Task<IActionResult> Rename(RelativePathModel pathModel, string newName)
+    {
+        try
         {
-            try
-            {
-                throw new NotImplementedException();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            await _fileExplorerService.RenameFileOrDirectoryAsync(pathModel, newName);
+            return Json(true);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Preview(RelativePathModel pathModel)
+        catch (Exception ex)
         {
-            try
-            {
-                var result = await _fileExplorerService.GetFilePreviewAsync(pathModel, HttpContext.RequestAborted);
-                if (result == null)
-                    return Json(false);
-                return ViewOrPartial(new UICViewModel("/UIComponents/ComponentViews/FileExplorer/FilePreview",result));
-            }
-            catch (OperationCanceledException)
-            {
-                return Json(false);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
+            return await Error(ex);
         }
+    }
 
-        public Task<IActionResult> UploadFiles(RelativePathModel directoryPathModel)
-        {
-            try
-            {
-                throw new NotImplementedException();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
-        }
-
-
-
-
-        protected IActionResult ViewOrPartial(IUIComponent component)
-        {
-            if (IsAjaxReques(Request))
-                return PartialView("/UIComponents/ComponentViews/Render.cshtml", component);
-            return View("/UIComponents/ComponentViews/Render.cshtml", component);
-        }
-        protected bool IsAjaxReques(HttpRequest request)
-        {
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
-
-            if (request.Headers != null)
-                return request.Headers["X-Requested-With"] == "XMLHttpRequest";
-
-            return false;
-        }
-        protected IActionResult Error(Translatable message = null)
+    public virtual async Task<IActionResult> UploadFiles(RelativePathModel directoryPathModel)
+    {
+        try
         {
             throw new NotImplementedException();
         }
+        catch (Exception ex)
+        {
+            return await Error(ex);
+        }
+    }
+
+    
+
+
+    protected virtual IActionResult ViewOrPartial(IUIComponent component)
+    {
+        if (IsAjaxReques(Request))
+            return PartialView("/UIComponents/ComponentViews/Render.cshtml", component);
+        return View("/UIComponents/ComponentViews/Render.cshtml", component);
+    }
+    protected bool IsAjaxReques(HttpRequest request)
+    {
+        if (request == null)
+            throw new ArgumentNullException(nameof(request));
+
+        if (request.Headers != null)
+            return request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+        return false;
+    }
+    protected virtual Task<IActionResult> Error(Exception ex) 
+    {
+        if (ex is ArgumentStringException stringException)
+        {
+            _logger.LogError(ex, stringException.UnformattedMessage, stringException.Arguments);
+            return Error(new Translatable(stringException.UnformattedMessage, stringException.UnformattedMessage, stringException.Arguments));
+        }
+
+        _logger.LogError(ex, ex.Message);
+        return Error(ex.Message);
+    }
+    protected virtual async Task<IActionResult> Error(Translatable message = null)
+    {
+        var translated = await _languageService.Translate(message);
+        return Json(new UICToastResponse()
+        {
+            Notification = new UICToastRNotification(IUICToastNotification.ToastType.Error, translated)
+        });
+
+    }
+
+    protected virtual string GetMimeType(string filePath)
+    {
+        var fileInfo = new FileInfo(filePath);
+        string mimeType = "application/octet-stream"; // default MIME type
+        RegistryKey key = Registry.ClassesRoot.OpenSubKey(fileInfo.Extension.ToLower());
+
+        if (key != null)
+        {
+            object value = key.GetValue("Content Type");
+            if (value != null)
+            {
+                mimeType = value.ToString();
+            }
+        }
+
+        return mimeType;
     }
 }

@@ -38,19 +38,22 @@
         {
             item.Data["data-AbsolutePath"] = item.AbsolutePathReference;
             item.Data["data-RelativePath"] = item.RelativePath;
-            string additionalClasses = string.Empty;
+            item.Data["data-Extension"] = item.Extension;
+            if (!item.Data.ContainsKey("class"))
+                item.Data["class"] = string.Empty;
+            item.Data["class"] += " explorer-item";
             if (item.IsFolder)
-                additionalClasses += " explorer-folder";
+                item.Data["class"] += " explorer-folder";
             if (!item.CanOpen)
-                additionalClasses += " cannot-open";
+                item.Data["class"] += " cannot-open";
             if (item.CanMove)
-                additionalClasses += " can-move";
+                item.Data["class"] += " can-move";
             if (item.CanDelete)
-                additionalClasses += " can-delete";
+                item.Data["class"] += " can-delete";
             if (item.CanRename)
-                additionalClasses += " can-rename";
+                item.Data["class"] += " can-rename";
 
-            <tr class="explorer-item @additionalClasses" @Html.GetAttributesFromDictionary(item.Data)>
+            <tr @Html.GetAttributesFromDictionary(item.Data)>
                 <td>@Html.Raw(item.Icon)</td>
                 <td>@Html.Raw(item.FileName)</td>
                 <td>@Html.Raw(item.FileType??item.Extension)</td>

@@ -61,13 +61,12 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Index()
         {
-
             return View();
             var testModel = new TestModel();
             var component = await _uic.CreateComponentAsync(testModel, new()
             {
                 CheckboxRenderer = UIComponents.Models.Models.Inputs.CheckboxRenderer.ToggleSwitch,
-                SelectlistSearableForItems = 2,
+                SelectlistSearchableForItems = 2,
                 ShowCardHeaders = true,
                 FormToolbarInCardFooter = true,
                 PostForm= new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Post, "Home", "Post", new {Test="blub"})
@@ -113,8 +112,9 @@ namespace UIComponents.Web.Tests.Controllers
                 var validation = _validator.Validate(post);
                 if (!validation.IsValid)
                 {
-                    var errors = validation.ToValidationErrors();
-                    return Json(errors);
+                    return this.ValidationErrors(validation);
+                    //var errors = validation.ValidationErrors();
+                    //return Json(errors);
                 }
 
                 var yesNo = UICQuestionYesNo.Create("Test Ja / nee", "Wilt u deze vraag beantwoorden?", _uicQuestionService, question => question.Icon = QuestionIconType.Warning);
@@ -128,7 +128,6 @@ namespace UIComponents.Web.Tests.Controllers
                         question.CanCancel = false;
                     });
                     answered = _uicQuestionService.TryAskQuestion(dayOfWeek, TimeSpan.FromMinutes(1),  1, out DayOfWeek favoriteDay);
-
                 }
 
 
@@ -307,8 +306,6 @@ namespace UIComponents.Web.Tests.Controllers
 
             var a1 = new DirectoryInfo("C:\\Jonas\\");
             var a2 = new DirectoryInfo("C:\\Jonas");
-            var b = new DirectoryInfo("C:\\Jonas\\asqdf\\");
-            var c = new DirectoryInfo("C:\\Jonas\\droogvoer.bak");
 
             return ViewOrPartial(fileBrowser);
         }

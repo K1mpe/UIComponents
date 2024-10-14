@@ -19,7 +19,19 @@
 @model UICActionDelayedAction
 @{
     string id = Guid.NewGuid().ToString("n").Substring(0, 6);
+    if (!Model.Action.HasValue())
+        return;
 }
-uic.delayedAction.run(@id, @Json.Serialize(Model.Miliseconds), ()=>{
+
+@if (Model.Miliseconds <= 0)
+{
     @await Model.Action.InvokeAsync(Component)
-});
+}
+else
+{
+    <text>
+        uic.delayedAction.run(@id, @Json.Serialize(Model.Miliseconds), async ()=>{
+            @await Model.Action.InvokeAsync(Component)
+        });
+    </text>
+}

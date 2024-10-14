@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Models.FileExplorer;
+using UIComponents.Abstractions.Models.FileExplorer.Exceptions;
 using UIComponents.Abstractions.Varia;
 using UIComponents.Generators.Helpers;
 
@@ -35,8 +36,17 @@ public class UICFileExplorerService : IUICFileExplorerService
     public static List<FileExplorerGenerator> FileExplorerGenerators { get; set; } = new();
 
     #region Actions
+    public async virtual Task CreateDirectory(RelativePathModel pathModel)
+    {
+        var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
+        if (Directory.Exists(absolutePath))
+            return;
 
-    public async Task CopyFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory)
+        if (!await HasPermission(p => p.CurrentUserCanCreateDirectory(absolutePath)))
+            throw new UICFileExplorerCannotCreateException(absolutePath);
+        await _executeActions.CreateDirectoryAsync(absolutePath);
+    }
+    public async virtual Task CopyFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory)
     {
         await _permissionChecker.ThrowIfCurrentUserCantCopyFilesAsync(sourceFiles, targetDirectory);
         
@@ -49,6 +59,7 @@ public class UICFileExplorerService : IUICFileExplorerService
             {
                 var fileInfo = new FileInfo(absoluteSource);
                 sourceRoot = fileInfo.DirectoryName;
+                await CopyFile(absoluteSource);
             }
 
             async Task CopyFile(string sourcePath)
@@ -81,7 +92,7 @@ public class UICFileExplorerService : IUICFileExplorerService
         }
     }
 
-    public async Task DeleteFilesAsync(List<RelativePathModel> pathModels)
+    public async virtual Task DeleteFilesAsync(List<RelativePathModel> pathModels)
     {
         await _permissionChecker.ThrowIfCurrentUserCantDeleteFilesAsync(pathModels);
         foreach(var pathModel in pathModels)
@@ -95,7 +106,7 @@ public class UICFileExplorerService : IUICFileExplorerService
     }
 
     
-    public async Task MoveFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory)
+    public async virtual Task MoveFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory)
     {
         await _permissionChecker.ThrowIfCurrentUserCantCopyFilesAsync(sourceFiles, targetDirectory);
 
@@ -108,6 +119,7 @@ public class UICFileExplorerService : IUICFileExplorerService
             {
                 var fileInfo = new FileInfo(absoluteSource);
                 sourceRoot = fileInfo.DirectoryName;
+                await MoveFile(absoluteSource);
             }
 
             async Task MoveFile(string sourcePath)
@@ -140,14 +152,21 @@ public class UICFileExplorerService : IUICFileExplorerService
         }
     }
 
-    public async Task RenameFileAsync(RelativePathModel pathModel, string newName)
+    public async virtual Task RenameFileOrDirectoryAsync(RelativePathModel pathModel, string newName)
     {
         await _permissionChecker.ThrowIfCurrentUserCantRenameFileOrDirectory(pathModel, newName);
         var absoluteFile = _pathMapper.GetAbsolutePath(pathModel);
-        await _executeActions.RenameFileAsync(absoluteFile, newName);
+        if (File.Exists(absoluteFile))
+        {
+            await _executeActions.RenameFileAsync(absoluteFile, newName);
+        } else if (Directory.Exists(absoluteFile))
+        {
+            await _executeActions.RenameDirectoryAsync(absoluteFile, newName);
+        }
+        
     }
 
-    public async Task DownloadFilesAndDirectories(List<RelativePathModel> pathModels, Stream outputStream)
+    public async virtual Task DownloadFilesAndDirectories(List<RelativePathModel> pathModels, Stream outputStream)
     {
         if (!pathModels.Any())
             throw new ArgumentNullException(nameof(pathModels));
@@ -220,9 +239,8 @@ public class UICFileExplorerService : IUICFileExplorerService
     }
     #endregion
 
-    public async Task<GetFilesForDirectoryResultModel> GetFilesFromDirectoryAsync(GetFilesForDirectoryFilterModel filterModel, CancellationToken cancellationToken)
+    public async virtual Task<GetFilesForDirectoryResultModel> GetFilesFromDirectoryAsync(GetFilesForDirectoryFilterModel filterModel, CancellationToken cancellationToken)
     {
-
         string absolutePath = _pathMapper.GetAbsolutePath(filterModel);
 
         var result = new GetFilesForDirectoryResultModel();
@@ -232,6 +250,8 @@ public class UICFileExplorerService : IUICFileExplorerService
 
         if (!await HasPermission(p => p.CurrentUserCanOpenFileOrDirectory(absolutePath)))
             throw new AccessViolationException();
+
+        result.CanCreateInDirectory = await HasPermission(p=>p.CurrentUserCanCreateInThisDirectory(absolutePath));
 
         if (!filterModel.FilesOnly)
         {
@@ -265,7 +285,7 @@ public class UICFileExplorerService : IUICFileExplorerService
         return result;
     }
 
-    public async Task<UICFileInfo> CreateFileInfoFromFilePath(string filepath, GetFilesForDirectoryFilterModel filterModel)
+    public async virtual Task<UICFileInfo> CreateFileInfoFromFilePath(string filepath, GetFilesForDirectoryFilterModel filterModel)
     {
         if (!File.Exists(filepath))
             throw new ArgumentNullException();
@@ -287,7 +307,7 @@ public class UICFileExplorerService : IUICFileExplorerService
 
         return info;
     }
-    public async Task<UICFileInfo> CreateFileInfoFromDirectoryPath(string filepath, GetFilesForDirectoryFilterModel filterModel)
+    public async virtual Task<UICFileInfo> CreateFileInfoFromDirectoryPath(string filepath, GetFilesForDirectoryFilterModel filterModel)
     {
         if (!filepath.EndsWith("\\"))
             filepath += "\\";
@@ -300,6 +320,11 @@ public class UICFileExplorerService : IUICFileExplorerService
         info.Created = fileInfo.CreationTime;
         info.LastModified = fileInfo.LastWriteTime;
 
+        info.SizeValue = 0;
+        foreach(var file in fileInfo.GetFiles("*", SearchOption.AllDirectories))
+        {
+            info.SizeValue += file.Length;
+        }
 
         info.CanOpen = await HasPermission(p => p.CurrentUserCanOpenFileOrDirectory(filepath));
         info.CanMove = await HasPermission(p => p.CurrentUserCanMoveFileOrDirectory(filepath));
@@ -309,7 +334,7 @@ public class UICFileExplorerService : IUICFileExplorerService
         return info;
     }
 
-    public async Task<UICFileInfo> GetFilePreviewAsync(RelativePathModel pathModel, CancellationToken cancellationToken)
+    public async virtual Task<UICFileInfo> GetFilePreviewAsync(RelativePathModel pathModel, CancellationToken cancellationToken)
     {
         var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
         await Task.Delay(0);
@@ -338,7 +363,7 @@ public class UICFileExplorerService : IUICFileExplorerService
         var relativePath = filePathInRoot.Replace($"{Directory.GetCurrentDirectory()}\\wwwroot", "").Replace("\\", "/");
         return $"<img src=\"{relativePath}\">";
     }
-    public void AddGenerator(string name, double priority, Func<UICFileInfo, GetFilesForDirectoryFilterModel, string, Task> function)
+    public virtual void AddGenerator(string name, double priority, Func<UICFileInfo, GetFilesForDirectoryFilterModel, string, Task> function)
     {
         lock (FileExplorerGenerators)
         {
@@ -387,7 +412,7 @@ public class UICFileExplorerService : IUICFileExplorerService
     /// </summary>
     /// <param name="fontAwesomeFilePath"></param>
     /// <param name="priority"></param>
-    public void UseFontAwesomeIcons(string fontAwesomeFilePath, double priority)
+    public virtual void UseFontAwesomeIcons(string fontAwesomeFilePath, double priority)
     {
         AddGenerator("FontAwesomeIcons", priority, (fileInfo, filterMode, absolutePath) =>
         {
@@ -418,7 +443,7 @@ public class UICFileExplorerService : IUICFileExplorerService
                 case "JPG":
                 case "JPEG":
                 case "PNG":
-                case "BNP":
+                case "BMP":
                     break;
                 default:
                     return;
@@ -463,6 +488,10 @@ public class UICFileExplorerService : IUICFileExplorerService
                 default:
                     return;
             }
+            if(!fileInfo.Data.ContainsKey("class"))
+                fileInfo.Data["class"] = string.Empty;
+            fileInfo.Data["class"] += "explorer-img";
+
             var photoIcon = $"{FileExplorerImgRoot}photo.png";
             if (File.Exists(photoIcon))
                 fileInfo.Icon = ImgTag(photoIcon);
@@ -532,36 +561,5 @@ public class UICFileExplorerService : IUICFileExplorerService
 
     #endregion
 
-    #region Logging
-    public async Task LogProgress(Func<Task> task, string message, params object[] args)
-    {
-        try
-        {
-            var stopWatch = Stopwatch.StartNew();
-            _logger.LogInformation($"Starting {message}", args);
-            await task();
-            stopWatch.Stop();
-            var elapsed = $"{Math.Round(stopWatch.Elapsed.TotalMilliseconds, 2)} ms";
-            if (stopWatch.ElapsedMilliseconds > 10)
-                elapsed = $"{Math.Round(stopWatch.Elapsed.TotalSeconds, 2)} seconds";
-            if (stopWatch.ElapsedMilliseconds > 120000)
-            {
-                elapsed = $"{stopWatch.Elapsed.Minutes} minutes";
-                if (stopWatch.Elapsed.Seconds > 0)
-                    elapsed += $"{stopWatch.Elapsed.Seconds.ToString("N2")} seconds";
-            }
-            var newArgs = args.ToList();
-            newArgs.Add(elapsed);
-            _logger.LogInformation($"Finished {message} in {{{args.Count()}}}", newArgs);
-        }
-        catch (Exception)
-        {
-            _logger.LogError($"Failed {message}!", args);
-            throw;
-        }
-    }
-
-    
-    #endregion
 
 }

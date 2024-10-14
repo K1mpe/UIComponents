@@ -55,7 +55,7 @@
 
         $('#@id').on('uic-reload', (ev)=>{
             ev.stopPropagation();
-            uic.loadRelativeDir($('#@id'), filterModel.RelativePath);
+            uic.fileExplorer.loadRelativeDir($('#@id'), filterModel.RelativePath);
         });
 
         $('#@id').on('uic-getFilterModel', ()=>{

@@ -7,4 +7,5 @@ public interface IUICFileExplorerExecuteActions
     public Task DeleteFileAsync(string filepath);
     public Task MoveFileAsync(string sourceFile, string destinationFile);
     public Task RenameFileAsync(string sourceFile, string newName);
+    public Task RenameDirectoryAsync(string sourceFile, string newName);
 }

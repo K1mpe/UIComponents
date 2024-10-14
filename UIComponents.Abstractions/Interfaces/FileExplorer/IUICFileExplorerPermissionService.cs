@@ -31,6 +31,11 @@ namespace UIComponents.Abstractions.Interfaces.FileExplorer
         /// <returns></returns>
         Task<bool> CurrentUserCanCreateOrEditFile(string path);
 
+        /// <summary>
+        /// Check if the current user can create this directory.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         Task<bool> CurrentUserCanCreateDirectory(string path);
 
 

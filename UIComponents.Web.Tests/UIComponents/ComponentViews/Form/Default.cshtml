@@ -26,47 +26,25 @@
     if(!isSubForm)
         Model.GetAllChildren().Select(x=>x.Component).AddAttribute("formidentifier", $"#{id}");
 
-}
 
-
-@if (isSubForm)
-{
-    <div @Html.Raw(Model.GetHtmlAttributes())>
-        @foreach (var element in Model.Children)
-        {
-            @await element.InvokeAsync(Component)
-        }
-    </div>
-}
-else
-{
-    <form @Html.Raw(Model.GetHtmlAttributes())>
     
-    @foreach(var element in Model.Children)
-    {
-        @await element.InvokeAsync(Component)
-    }
-    
-    </form>
-
-
-    @if(Model.Readonly)
+    if(Model.Readonly)
     {
         Model.AddScript(
-    @<text>
-        uic.form.readonly($('#@id'));
-    </text>);
+        @<text>
+            uic.form.readonly($('#@id'));
+        </text>);
     }
 
-    @if(Model.SetFocusOnFirstInput)
+    if(Model.SetFocusOnFirstInput)
     {
         Model.AddScript(
-    @<text>
-        setTimeout(() => {
-            $('#@id input, #@id select')[0].focus();
-        }, 500);
-    </text>
-);
+            @<text>
+                setTimeout(() => {
+                    $('#@id input, #@id select')[0].focus();
+                }, 500);
+            </text>
+        );
     }
 
     if (Model.DisablePostOnEnterClick)
@@ -78,13 +56,23 @@ else
                 if(ev.keyCode == 13)
                     ev.preventDefault();
             });
-            </text>);
+            </text>
+    );
     }
 
-    @if(Model.Submit != null)
+    if(Model.Submit != null)
     {
         if (Model.Submit is UICActionGetPost getPost)
+        {
+            if (string.IsNullOrWhiteSpace(getPost.Url))
+                Model.AddAttribute("action", Url.Action(getPost.Action, getPost.Controller));
+            else
+                Model.AddAttribute("action", getPost.Url);
+
             getPost.GetVariableData = new UICCustom($"uic.getValue($('#{id}'));");
+        }
+
+            
         Model.AddScript(
             @<text>
 
@@ -112,6 +100,30 @@ else
 
         
    }
+}
+
+
+@if (isSubForm)
+{
+    <div @Html.Raw(Model.GetHtmlAttributes())>
+        @foreach (var element in Model.Children)
+        {
+            @await element.InvokeAsync(Component)
+        }
+    </div>
+}
+else
+{
+    <form @Html.Raw(Model.GetHtmlAttributes())>
+    
+    @foreach(var element in Model.Children)
+    {
+        @await element.InvokeAsync(Component)
+    }
+    
+    </form>
+
+
 }
 
 @await Model.RenderStylesAndScripts(Component)

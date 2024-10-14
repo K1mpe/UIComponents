@@ -102,7 +102,7 @@ public class UICValidationService : IUICValidationService
 
     #region Interface implementation
 
-    public async Task<ValidationRuleResult> ValidateObjectAsync(object obj)
+    public async virtual Task<ValidationRuleResult> ValidateObjectAsync(object obj)
     {
         if(obj == null)
             throw new ArgumentNullException(nameof(obj));
@@ -127,7 +127,7 @@ public class UICValidationService : IUICValidationService
         return result;
     }
 
-    public async Task<ValidationRuleResult> ValidateObjectProperty(PropertyInfo propertyInfo, object obj)
+    public async virtual Task<ValidationRuleResult> ValidateObjectProperty(PropertyInfo propertyInfo, object obj)
     {
         if (obj == null)
             throw new ArgumentNullException(nameof(obj));
@@ -318,7 +318,7 @@ public class UICValidationService : IUICValidationService
         }
     }
 
-    public async Task<int?> ValidatePropertyMaxLength(PropertyInfo propertyInfo, object obj)
+    public async virtual Task<int?> ValidatePropertyMaxLength(PropertyInfo propertyInfo, object obj)
     {
         if (!propertyInfo.PropertyType.IsAssignableTo(typeof(string)))
             return null;
@@ -350,7 +350,7 @@ public class UICValidationService : IUICValidationService
         }
     }
 
-    public async Task<Nullable<TValueType>> ValidatePropertyMaxValue<TValueType>(PropertyInfo propertyInfo, object obj) where TValueType : struct, IComparable
+    public async virtual Task<Nullable<TValueType>> ValidatePropertyMaxValue<TValueType>(PropertyInfo propertyInfo, object obj) where TValueType : struct, IComparable
     {
         using (var scope = _serviceProvider.CreateScope())
         {
@@ -378,7 +378,7 @@ public class UICValidationService : IUICValidationService
         }
     }
 
-    public async Task<int?> ValidatePropertyMinLength(PropertyInfo propertyInfo, object obj)
+    public async virtual Task<int?> ValidatePropertyMinLength(PropertyInfo propertyInfo, object obj)
     {
         if (!propertyInfo.PropertyType.IsAssignableTo(typeof(string)))
             return null;
@@ -408,7 +408,7 @@ public class UICValidationService : IUICValidationService
         }
     }
 
-    public async Task<Nullable<TValueType>> ValidatePropertyMinValue<TValueType>(PropertyInfo propertyInfo, object obj) where TValueType : struct, IComparable
+    public async virtual Task<Nullable<TValueType>> ValidatePropertyMinValue<TValueType>(PropertyInfo propertyInfo, object obj) where TValueType : struct, IComparable
     {
         using (var scope = _serviceProvider.CreateScope())
         {
@@ -436,7 +436,7 @@ public class UICValidationService : IUICValidationService
         }
     }
 
-    public async Task<bool> ValidatePropertyReadonly(PropertyInfo propertyInfo, object obj)
+    public async virtual Task<bool> ValidatePropertyReadonly(PropertyInfo propertyInfo, object obj)
     {
         using (var scope = _serviceProvider.CreateScope())
         {
@@ -476,7 +476,7 @@ public class UICValidationService : IUICValidationService
         }
     }
 
-    public async Task<bool> ValidatePropertyRequired(PropertyInfo propertyInfo, object obj)
+    public async virtual Task<bool> ValidatePropertyRequired(PropertyInfo propertyInfo, object obj)
     {
         using (var scope = _serviceProvider.CreateScope())
         {

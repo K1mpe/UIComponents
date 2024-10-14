@@ -24,6 +24,7 @@ public partial class IconDefaults
     public static UICIcon CreateFolder = new UICIcon("fas fa-folder-plus");
     public static UICIcon Cut = new UICIcon("fas fa-cut");
     public static UICIcon Copy = new UICIcon("fas fa-copy");
+    public static UICIcon Paste = new UICIcon("fas fa-paste");
     public static UICIcon OpenFolder = new UICIcon("fas fa-folder-open");
     public static UICIcon OpenFile = new UICIcon("fas fa-eye");
     public static UICIcon DirectoryUp = new UICIcon("fas fa-folder-arrow-up");

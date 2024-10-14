@@ -7,7 +7,7 @@ public class UICFileExplorerPathMapper : IUICFileExplorerPathMapper
 {
     protected Dictionary<string, string> PathMapper { get; set; } = new();
 
-    public string RegisterPath(string basePath)
+    public virtual string RegisterPath(string basePath)
     {
         lock (PathMapper)
         {
@@ -27,7 +27,7 @@ public class UICFileExplorerPathMapper : IUICFileExplorerPathMapper
 
     }
 
-    public string GetAbsolutePath(IRelativePath relativePath)
+    public virtual string GetAbsolutePath(IRelativePath relativePath)
     {
         lock (PathMapper)
         {
@@ -44,7 +44,7 @@ public class UICFileExplorerPathMapper : IUICFileExplorerPathMapper
     }
 
 
-    public T GetRelativePath<T>(string absolutePath) where T : class, IRelativePath
+    public virtual T GetRelativePath<T>(string absolutePath) where T : class, IRelativePath
     {
         lock (PathMapper)
         {
@@ -66,7 +66,7 @@ public class UICFileExplorerPathMapper : IUICFileExplorerPathMapper
         }
     }
 
-    public string ReplaceRoot(string path, string sourceRoot, string targetRoot)
+    public virtual string ReplaceRoot(string path, string sourceRoot, string targetRoot)
     {
         if (!path.StartsWith(sourceRoot))
             throw new ArgumentException(path);

@@ -16,7 +16,7 @@ public class StoredEvents : IUICStoredEvents
         _ = ClearStorageRecurring();
     }
 
-    public Task IncommingSignalRTrigger(string key, Dictionary<string, string> data)
+    public virtual Task IncommingSignalRTrigger(string key, Dictionary<string, string> data)
     {
         Func<Dictionary<string, string>, Task> func = null;
         lock (_storedEvents)
@@ -35,7 +35,7 @@ public class StoredEvents : IUICStoredEvents
         }
         return func(data);
     }
-    public string SubscribeIncommingEvent(Func<Dictionary<string, string>, Task> func, TimeSpan lifeTime, bool singleUse)
+    public virtual string SubscribeIncommingEvent(Func<Dictionary<string, string>, Task> func, TimeSpan lifeTime, bool singleUse)
     {
         lock (_storedEvents)
         {

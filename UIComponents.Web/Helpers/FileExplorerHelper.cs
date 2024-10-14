@@ -12,7 +12,7 @@ namespace UIComponents.Web.Helpers
 {
     public static class FileExplorerHelper
     {
-        public static async Task<IActionResult> DownloadFileOrZip(IEnumerable<string> files, HttpContext httpContext, ILogger? logger, LogLevel logLevel = LogLevel.Information, LogLevel loglevelZippedFiles = LogLevel.Debug, CompressionLevel zipCompressionLevel =CompressionLevel.NoCompression)
+        public static async Task<IActionResult> DownloadFileOrZip(IEnumerable<string> files, HttpContext httpContext, ILogger? logger, LogLevel logLevel = LogLevel.Information, LogLevel loglevelZippedFiles = LogLevel.Debug, CompressionLevel zipCompressionLevel = CompressionLevel.NoCompression)
         {
             if (!files.Any())
                 throw new ArgumentNullException(nameof(files));

@@ -32,7 +32,7 @@ public class UICQuestionService : IUICQuestionService
     /// <param name="userId">The id of the user that should answer the message</param>
     /// <param name="response">The response from the user (if successfull)</param>
     /// <returns></returns>
-    public bool TryAskQuestion<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, object userId, out TResponse response) where TQuestion : IUIQuestionComponent<TResponse>
+    public virtual bool TryAskQuestion<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, object userId, out TResponse response) where TQuestion : IUIQuestionComponent<TResponse>
     {
         return TryAskQuestion(question, timeout, new() { userId }, out response);
     }
@@ -45,7 +45,7 @@ public class UICQuestionService : IUICQuestionService
     /// <param name="userIds">The ids of the users that should answer the message</param>
     /// <param name="response">The response from the user (if successfull)</param>
     /// <returns></returns>
-    public bool TryAskQuestion<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, List<object> userIds, out TResponse response) where TQuestion : IUIQuestionComponent<TResponse>
+    public virtual bool TryAskQuestion<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, List<object> userIds, out TResponse response) where TQuestion : IUIQuestionComponent<TResponse>
     {
         response = default;
         var result = TryAskQuestion(question, timeout, userIds, out var stringResponse);
@@ -62,7 +62,7 @@ public class UICQuestionService : IUICQuestionService
     /// <param name="userId">The id of the user that should answer the message</param>
     /// <param name="response">The response from the user (if successfull)</param>
     /// <returns></returns>
-    public bool TryAskQuestion(IUIQuestionComponent question, TimeSpan timeout, object userId, out string response)
+    public virtual bool TryAskQuestion(IUIQuestionComponent question, TimeSpan timeout, object userId, out string response)
     {
         return TryAskQuestion(question, timeout, new() { userId }, out response);
     }
@@ -75,11 +75,11 @@ public class UICQuestionService : IUICQuestionService
     /// <param name="userIds">The ids of the users that should answer the message</param>
     /// <param name="response">The response from the user (if successfull)</param>
     /// <returns></returns>
-    public bool TryAskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds, out string response)
+    public virtual bool TryAskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds, out string response)
     {
         return AskQuestion(question, timeout, userIds, out response);
     }
-    protected bool AskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds, out string result)
+    protected virtual bool AskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds, out string result)
     {
         if (_signalRService == null)
             throw new Exception($"There is no implementation for {nameof(IUICSignalRService)} registrated.");
@@ -154,7 +154,7 @@ public class UICQuestionService : IUICQuestionService
 
     #region Answer Question
 
-    public void AnswerQuestion(string key, string response)
+    public virtual void AnswerQuestion(string key, string response)
     {
         lock(_questionPersistance)
         {
@@ -172,7 +172,7 @@ public class UICQuestionService : IUICQuestionService
             }
         }
     }
-    public void CancelQuestion(string key)
+    public virtual void CancelQuestion(string key)
     {
         lock (_questionPersistance)
         {
@@ -193,7 +193,7 @@ public class UICQuestionService : IUICQuestionService
     /// </summary>
     /// <param name="questionId"></param>
     /// <returns></returns>
-    public Task RemoveQuestion(string questionId)
+    public virtual Task RemoveQuestion(string questionId)
     {
         return _signalRService.RemoveUIComponentWithId(questionId);
     }
