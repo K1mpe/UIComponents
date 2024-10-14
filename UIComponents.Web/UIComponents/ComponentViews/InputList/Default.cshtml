@@ -35,8 +35,8 @@
     Model.MoveUpButton.AddClass("uic-btn-move-up");
     Model.MoveDownButton.AddClass("uic-btn-move-down");
     Model.RemoveButton.AddClass("uic-btn-delete-instance");
-
-    Model.AddClass("loading-data"); //this class is removed when the data is finished loading
+    if(Model.Value.Any())
+        Model.AddClass("loading-data"); //this class is removed when the data is finished loading
     if (!Model.Readonly || true)
     {
         Model.AddScript(
@@ -94,7 +94,7 @@
         });
 
         let counter = 0;
-        
+
         $('#@id').on('uic-remove', (ev, index) =>{
             ev.stopPropagation();
             let instance = $('#@id > .input-instances .input-instance')[index];
@@ -188,6 +188,7 @@
         });
 
         let counter = 0;
+        let busyElements = 0;
         $('#@id').on('uic-add', async (ev, value)=>{
             let instanceList = $('#@id > .input-instances');
             let currentChildCount = instanceList.children().length;
@@ -215,13 +216,20 @@
                 default:
                     throw new NotImplementedException();
             }
-            
-            //Let the document ready run before setting the value
-            setTimeout(()=>{
-                if(value != undefined)
+
+        //Let the document ready run before setting the value
+            if(value != undefined){
+                busyElements++;
+                setTimeout(()=>{
                     $('#@id').trigger('uic-setValue-index', [value, currentChildCount]);
-                triggerChange();
-            },1);       
+                    busyElements--;
+                    if(busyElements <=0){
+                        $('#@id').removeClass('loading-data');
+                        $('#@id').trigger('uic-initialised');
+                    }
+                },1);
+            }
+                       
         });
 
 
@@ -266,9 +274,7 @@
                 console.log('adding', @Json.Serialize(value));
                 $('#@id').trigger('uic-add', @Json.Serialize(value));
             </text>
-    }
-        $('#@id').removeClass('loading-data');
-        $('#@id').trigger('uic-initialised');
+        }
         </text>);
 }
 

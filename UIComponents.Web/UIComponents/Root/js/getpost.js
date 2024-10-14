@@ -17,21 +17,30 @@
         post : [],
         both : [
             (response) => {
-                if (response.type == "ValidationErrors") {
+                if (response.Type == "ValidationErrors") {
                     $('span.text-danger').each(function () {
                         if ($(this).text() != "*")
                             $(this).text("");
                     });
+                    let errors = [];
                     response.Errors.forEach((item) => {
-                        var propertyName = item.PropertyName;
-                        var errors = item.Error;
+                        let propertyName = item.PropertyName;
+                        let error = item.Error;
+                        let spanElement = $();
 
-                        var spanElement = $(`span.field-validation-valid[data-valmsg-for="${propertyName}"]`);
+                        //If there is a Url in the response, first try to find a matching validation inside a form with the same url as action
+                        if (response.Url != undefined && response.Url != null && response.Url.length) 
+                            spanElement = $(`form[action="${response.Url}"] span.field-validation-valid[data-valmsg-for="${propertyName}"]`)
+
+                        // Get a validation span without the form
+                        if(!spanElement.length)
+                            spanElement = $(`span.field-validation-valid[data-valmsg-for="${propertyName}"]`);
                         if (!spanElement.length)
                             spanElement = $(`span.field-validation-valid[data-valmsg-for$=".${propertyName}"]`);
                         if (!spanElement.length) {
                             try {
-                                var spanElement = $(`span[for=${propertyName}]`);
+                                //Find any span for this element and add the class text-danger
+                                let spanElement = $(`span[for=${propertyName}]`);
                                 spanElement.removeClass();
                                 spanElement.addClass("text-danger");
                             } catch {
@@ -39,16 +48,18 @@
                             }
                             
                         }
-                        spanElement.text(errors);
-                        makeToast('error', null, errors, { timeOut: 60000, closeButton: true, progressBar: true, extendedTimeOut: 10000 });
+                        spanElement.text(error);
+                        errors.push(error)
                     })
+                    let error = errors.join('<br />');
+                    makeToast('error', null, error, { timeOut: 30000, closeButton: true, progressBar: true, extendedTimeOut: 5000 });
                     return false;
                 }
             },
             async(response) => {
-                if (response.type == "ToastResponse") {
-                    var level;
-                    switch (response.notification.Type) {
+                if (response.Type == "ToastResponse") {
+                    let level;
+                    switch (response.Notification.Type) {
                         case 1:
                             level = "Success";
                             break;
@@ -60,28 +71,29 @@
                             break;
                         case 4:
                             level = "Error";
-                            console.error(response.data);
+                            console.error(response.Data);
                             break;
                     }
-                    let message = await uic.translation.translate(response.notification.Message);
+                    let message = await uic.translation.translate(response.Notification.Message);
                     if (message == "null")
                         message = "";
-                    let title = await uic.translation.translate(response.notification.Title);
+                    let title = await uic.translation.translate(response.Notification.Title);
                     if (title == "null")
                         title = "";
 
                     makeToast(level, message, title, { timeOut: response.Duration * 1000, closeButton: true, progressBar: true, preventDuplicates: true, }); //TOASTR
                     if (level === 'Success') {
-                        if (response.data != null)
-                            return response.data;
+                        if (response.Data != null)
+                            return response.Data;
                         return true;
                     }
                     return false;
                 }
             },
-            (response) => {
-                if (response.type == "AccessDenied") {
-                    makeToast("Error", "", response.Message)
+            async(response) => {
+                if (response.Type == "AccessDenied") {
+                    let message = await uic.translation.translate(response.Message);
+                    makeToast("Error", "", message)
                     return false;
                 }
             },
@@ -95,12 +107,12 @@
                 }
             }, 
             (response) => {
-                if (response.type == "Redirect") {
+                if (response.Type == "Redirect") {
 
-                    if (!response.url.length)
+                    if (!response.Url.length)
                         location.reload();
                     else
-                        location.href = response.url;
+                        location.href = response.Url;
                     return true;
                 }
             }

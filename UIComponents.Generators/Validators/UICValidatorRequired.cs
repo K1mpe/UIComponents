@@ -30,7 +30,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
             
 
 
-        if (propertyInfo.PropertyType.IsAssignableTo(typeof(Nullable<>)))
+        if (Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null) //nullable type
         {
             _logger.LogDebug("{0} is NOT required => has nullable type", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
             return false;

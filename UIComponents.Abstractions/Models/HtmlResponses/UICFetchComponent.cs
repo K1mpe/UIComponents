@@ -1,17 +1,17 @@
 ﻿namespace UIComponents.Abstractions.Models.HtmlResponse;
 
-public class FetchComponent : IHtmlResponse
+public class UICFetchComponent : IHtmlResponse
 {
-    public FetchComponent()
+    public UICFetchComponent()
     {
 
     }
-    public FetchComponent(string key)
+    public UICFetchComponent(string key)
     {
         ComponentKey = key;
     }
 
-    public string type => nameof(FetchComponent);
+    public string Type => nameof(UICFetchComponent);
 
     public string ComponentKey { get; set; }
 

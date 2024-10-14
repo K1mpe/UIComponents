@@ -117,13 +117,13 @@
                 ev.stopPropagation();
                 @if(Model.ReloadDelay > 0){
                     <text>
-                    uic.delayedAction.throttle("jsGrid-Reload-@id", @Json.Serialize(Model.ReloadDelay), async ()=>{
+                    uic.delayedAction.throttle("jsGrid-Reload-@id",  async ()=>{
                         if(await checkCanReload()){
                             $('#@id').trigger('uic-forceReload')
                         } else{
                             tryReload = true;
                         }
-                    });
+                    },@Json.Serialize(Model.ReloadDelay));
                     </text>
                 } else{
                      <text>

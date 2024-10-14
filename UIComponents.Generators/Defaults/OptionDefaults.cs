@@ -24,7 +24,7 @@ public static class OptionDefaults
     public static bool HideEmptyInReadonly = false;
 
     /// <inheritdoc cref="UICOptions.HideReadonlyProperties" />
-    public static bool HideReadonlyProperties = true;
+    public static bool HideReadonlyProperties = false;
 
     /// <inheritdoc cref="UICOptions.HideId" />
     public static bool HideId = true;
@@ -62,8 +62,8 @@ public static class OptionDefaults
     ///<inheritdoc cref="UICOptions.SelectListShowAddButtonIfAllowed" />
     public static bool SelectListShowAddButtonIfAllowed = false;
 
-    ///<inheritdoc cref="UICOptions.SelectlistSearableForItems" />
-    public static int SelectlistSearableForItems = 10;
+    ///<inheritdoc cref="UICOptions.SelectlistSearchableForItems" />
+    public static int SelectlistSearchableForItems = 10;
 
     ///<inheritdoc cref="UICOptions.ShowCancelButton" />
     public static bool ShowCancelButton = false;

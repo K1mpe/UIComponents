@@ -2,6 +2,6 @@
 
 public interface IHtmlResponse
 {
-    public string type { get; }
+    public string Type { get; }
 
 }

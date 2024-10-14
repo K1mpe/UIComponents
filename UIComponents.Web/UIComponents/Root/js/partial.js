@@ -49,7 +49,7 @@
 
     handlers: [
         (response) => {
-            if (response.type == "AccessDenied") {
+            if (response.Type == "AccessDenied") {
                 return $('<div>', {
                     class: 'alert alert-danger',
                     role: 'alert'

@@ -208,7 +208,7 @@ public class UICOptions
     /// <summary>
     /// If a selectlist has more or equal as this amount of items, it will be searchable
     /// </summary>
-    public int SelectlistSearableForItems { get; set; } = OptionDefaults.SelectlistSearableForItems;
+    public int SelectlistSearchableForItems { get; set; } = OptionDefaults.SelectlistSearchableForItems;
 
     /// <summary>
     /// If the user has permission to add this type of entity, show the add button

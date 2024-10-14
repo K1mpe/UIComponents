@@ -93,7 +93,7 @@ public class UICQuestionService : IUICQuestionService
             var key = _storedComponents.StoreComponentForUsers(question, userIds, userIds.Count == 1);
             question.Id = key;
 
-            var fetchComponent = new FetchComponent()
+            var fetchComponent = new UICFetchComponent()
             {
                 ComponentKey = key
             };
@@ -114,7 +114,6 @@ public class UICQuestionService : IUICQuestionService
                     continue;
                 _= _signalRService.SendUIComponentToUser(fetchComponent, userId.ToString());
             }
-            Console.WriteLine("blub");
             _questionPersistance[key].AutoResetEvent.WaitOne(timeout);
             Console.WriteLine("blub2");
             result = _questionPersistance[key].Response;

@@ -10,7 +10,7 @@ public interface IUICSignalRService
     /// <summary>
     /// Handled by uic.signalR.handleUIComponentFetch
     /// </summary>
-    public Task SendUIComponentToUser(FetchComponent fetchComponent, string userId);
+    public Task SendUIComponentToUser(UICFetchComponent fetchComponent, string userId);
 
     /// <summary>
     /// Triggers $('#id').trigger('uic-remove') clientside

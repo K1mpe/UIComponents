@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
@@ -37,10 +38,36 @@ public static class IUICValidatorExtensions
     }
 
 
-
-    public static ValidationErrors ToValidationErrors(this FluentValidation.Results.ValidationResult ModelState)
+    public static IActionResult ValidationErrors(this Controller controller, FluentValidation.Results.ValidationResult validationResult=null)
     {
-        var response = new ValidationErrors();
+        UICValidationErrors errors = null;
+        if (validationResult == null)
+            errors = controller.ModelState.ValidationErrors();
+        else
+            errors = validationResult.ValidationErrors();
+
+        errors.Url = controller.Request.Path.Value;
+        return controller.Json(errors);
+    }
+
+    public static UICValidationErrors ValidationErrors(this ModelStateDictionary ModelState)
+    {
+        var response = new UICValidationErrors();
+        foreach (var item in ModelState.Where(x => x.Value.Errors.Any()))
+        {
+            var messages = item.Value.Errors.Select(x => x.ErrorMessage);
+            response.Errors.Add(new()
+            {
+                PropertyName = item.Key,
+                Error = string.Join("<br />", messages)
+            });
+        }
+        return response;
+    }
+
+    public static UICValidationErrors ValidationErrors(this FluentValidation.Results.ValidationResult ModelState)
+    {
+        var response = new UICValidationErrors();
         ModelState.Errors.ForEach(x =>
         {
             response.Errors.Add(new()

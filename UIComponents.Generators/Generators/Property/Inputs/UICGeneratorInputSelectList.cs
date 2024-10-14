@@ -74,7 +74,7 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
         }
         
 
-        input.SearchableIfMinimimResults = args.Options.SelectlistSearableForItems;
+        input.SearchableIfMinimimResults = args.Options.SelectlistSearchableForItems;
 
         return GeneratorHelper.Success<IUIComponent>(input, true);
         
