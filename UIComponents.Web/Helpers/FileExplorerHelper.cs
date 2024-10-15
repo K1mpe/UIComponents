@@ -2,9 +2,11 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +14,15 @@ namespace UIComponents.Web.Helpers
 {
     public static class FileExplorerHelper
     {
-        public static async Task<IActionResult> DownloadFileOrZip(IEnumerable<string> files, HttpContext httpContext, ILogger? logger, LogLevel logLevel = LogLevel.Information, LogLevel loglevelZippedFiles = LogLevel.Debug, CompressionLevel zipCompressionLevel = CompressionLevel.NoCompression)
+        /// <summary>
+        /// This method can stream a one or more files or folders to the client for download. If there is more than one file to be transfered, a zip is created and streamed to the client
+        /// </summary>
+        /// <remarks>
+        /// Since this method uses streaming, there is no heavy memory usage on the server or client for large files.
+        /// </remarks>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static async Task<IActionResult> DownloadFileOrZipStream(IEnumerable<string> files, HttpContext httpContext, ILogger? logger, LogLevel logLevel = LogLevel.Information, LogLevel loglevelZippedFiles = LogLevel.Debug, CompressionLevel zipCompressionLevel = CompressionLevel.NoCompression)
         {
             if (!files.Any())
                 throw new ArgumentNullException(nameof(files));
@@ -135,6 +145,116 @@ namespace UIComponents.Web.Helpers
             // Flush the output stream to ensure all data is sent to the client
             await httpContext.Response.Body.FlushAsync();
             return new EmptyResult();
+        }
+
+
+        private static Dictionary<string, DateTime> StartUploadingFiles = new();
+
+        /// <summary>
+        /// This methods saves all files from the <see cref="HttpContent"/> and saves them in the target directory.
+        /// <br>If Dropzone is used with chinking, This method can stream download the files</br>
+        /// </summary>
+        /// <remarks>
+        /// All existing files with the same name will be removed before the upload! make sure to check all of them before calling this method!
+        /// </remarks>
+        /// <param name="httpContext"></param>
+        /// <param name="targetDirectory"></param>
+        /// <returns></returns>
+        public static async Task UploadFilesFromDropzoneStream(HttpContext httpContext, string targetDirectory, ILogger logger = null)
+        {
+            var form = httpContext.Request.Form;
+            if (form.ContainsKey("dzchunkindex"))
+            {
+                var chunkIndex = int.Parse(form["dzchunkindex"]);
+                var totalChunks = int.Parse(form["dztotalchunkcount"]);
+                var fileSize = long.Parse(form["dztotalfilesize"]);
+
+                var file = form.Files.FirstOrDefault();
+                if (file == null)
+                    return;
+                var filename = form["dzuuid"] + "_" + file.FileName;
+
+                var filePath = Path.Combine(Path.GetTempPath(), filename);
+                var finalFilePath = Path.Combine(targetDirectory, file.FileName);
+                using (logger?.BeginScopeKvp(
+                    new("FilePath", finalFilePath),
+                    new("FileSize", fileSize)))
+                { 
+                    try
+                    {
+                        if (chunkIndex == 0 && logger != null)
+                        {
+                            logger.LogInformation("Start uploading file stream");
+                            lock (StartUploadingFiles)
+                            {
+                                StartUploadingFiles[finalFilePath] = DateTime.Now;
+                            }
+                        }
+
+
+                        // Append the current chunk to the file on the server
+                        using (var stream = new FileStream(filePath, FileMode.Append))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
+                        // Check if this is the last chunk, if so we can finalize the upload
+                        if (chunkIndex == totalChunks-1)
+                        {
+                            // Optional: Move the file to the final destination, or perform any processing needed
+                            if (File.Exists(finalFilePath))
+                                File.Delete(finalFilePath);
+                            System.IO.File.Move(filePath, finalFilePath);
+
+                            if(StartUploadingFiles.TryGetValue(finalFilePath, out var dateTime))
+                            {
+                                var timePassed = DateTime.Now - dateTime;
+                                var formatted = UIComponents.Defaults.FormatDefaults.FormatTimespan(timePassed);
+                                logger?.LogInformation("Finished uploading file stream in {0}", formatted);
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        logger?.LogInformation("Uploading file has been canceled");
+                        lock (StartUploadingFiles)
+                        {
+                            StartUploadingFiles.Remove(filePath);
+                        }
+                        throw;
+                    }
+                    catch
+                    {
+                        logger?.LogError("Error while uploading file stream");
+                        lock (StartUploadingFiles)
+                        {
+                            StartUploadingFiles.Remove(filePath);
+                        }
+                        throw;
+                    }
+                }
+
+            }
+            else
+            {
+                foreach (var file in form.Files)
+                {
+                    var fileName = Path.GetFileName(file.FileName);
+                    string filepath = Path.Combine(targetDirectory, fileName);
+                    if (System.IO.File.Exists(filepath))
+                        System.IO.File.Delete(filepath);
+                    using (logger.BeginScopeKvp("FilePath", filepath))
+                    {
+                        await logger.LogFunction("Uploading file", true, async () =>
+                        {
+                            using (var fileStream = new FileStream(filepath, FileMode.Create, FileAccess.Write))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
+                        }, LogLevel.Information);
+                    }
+                }
+            }
         }
     }
 }

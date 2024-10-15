@@ -50,9 +50,7 @@ public static class LoggerExtensions
                 logger.Log(logLevel, eventId, "Starting {0}...", name);
                 action();
                 stopwatch.Stop();
-                var elapsed = $"{Math.Round(stopwatch.Elapsed.TotalMilliseconds, 2)} ms";
-                if (stopwatch.ElapsedMilliseconds > 10)
-                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} sec";
+                var elapsed = Defaults.FormatDefaults.FormatTimespan(stopwatch.Elapsed);
 
                 logger.Log(logLevel, eventId, "Finished {0} in {1}", name, elapsed);
 
@@ -86,9 +84,7 @@ public static class LoggerExtensions
                 logger.Log(logLevel, eventId, "Starting {0}...", name);
                 var result = function();
                 stopwatch.Stop();
-                var elapsed = $"{Math.Round(stopwatch.Elapsed.TotalMilliseconds, 2)} ms";
-                if (stopwatch.ElapsedMilliseconds > 10)
-                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} sec";
+                var elapsed = Defaults.FormatDefaults.FormatTimespan(stopwatch.Elapsed);
 
                 logger.Log(logLevel, eventId, "Finished {0} in {1}", name, elapsed);
                 return result;
@@ -124,9 +120,7 @@ public static class LoggerExtensions
                 logger.Log(logLevel, eventId, "Starting {0}...", name);
                 await function();
                 stopwatch.Stop();
-                var elapsed = $"{Math.Round(stopwatch.Elapsed.TotalMilliseconds, 2)} ms";
-                if (stopwatch.ElapsedMilliseconds > 10)
-                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} sec";
+                var elapsed = Defaults.FormatDefaults.FormatTimespan(stopwatch.Elapsed);
 
                 logger.Log(logLevel, eventId, "Finished {0} in {1}", name, elapsed);
 
@@ -159,9 +153,7 @@ public static class LoggerExtensions
                 logger.Log(logLevel, eventId, "Starting {0}...", name);
                 var result = await function();
                 stopwatch.Stop();
-                var elapsed = $"{Math.Round(stopwatch.Elapsed.TotalMilliseconds, 2)} ms";
-                if (stopwatch.ElapsedMilliseconds > 10)
-                    elapsed = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)} sec";
+                var elapsed = Defaults.FormatDefaults.FormatTimespan(stopwatch.Elapsed);
 
                 logger.Log(logLevel, eventId, "Finished {0} in {1}", name, elapsed);
                 return result;

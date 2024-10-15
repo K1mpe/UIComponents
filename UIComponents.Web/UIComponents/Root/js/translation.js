@@ -6,7 +6,7 @@
     translate: async function (translatable) {
 
         //If the input has no resourceKey, inputting strings will just return the string
-        if (translatable.ResourceKey == undefined)
+        if (translatable == null || translatable.ResourceKey == undefined)
             return translatable;
 
         //If the key is untranslatedKey, return the first argument without translations

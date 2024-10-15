@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Drawing;
 using System.Runtime.Serialization;
+using UIComponents.Abstractions.Varia;
 
 namespace UIComponents.Web.Extensions;
 
@@ -37,5 +38,12 @@ public static class WebExtensions
         if (!contentString.Contains(model.GetId()))
             contentString += $"('{model.GetId()}')";
         return htmlHelper.Raw($"\r\n$('#{model.GetId()}').on('uic-help', ()=>{{console.groupCollapsed('%c'+'{model.GetType().Name}: $(\"#{model.GetId()}\")', `color: ${{uic.consoleColor()}}`); {contentString}; console.groupEnd();}})\r\n");
+    }
+
+    public static IHtmlContent Conditional(this IHtmlHelper htmlHelper, bool condition, RazerBlock razerBlock) => Conditional(htmlHelper, condition, razerBlock.GetContent());
+    public static IHtmlContent Conditional(this IHtmlHelper htmlHelper, bool condition, string content)
+    {
+        string contentString = condition ? content : string.Empty;
+        return htmlHelper.Raw(contentString);
     }
 }

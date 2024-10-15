@@ -117,9 +117,44 @@ public static class UICExtensions
 
         return htmlContentBuilder;
     }
-
-
-    public static async Task<IHtmlContent> ConvertToJavascript(this Dictionary<string, object> dict, IUICLanguageService languageService, IHtmlHelper htmlHelper, IJsonHelper jsonHelper,  IViewComponentHelper componentHelper)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dict"></param>
+    /// <param name="func">Takes the key and value as string, returns a string result</param>
+    /// <returns></returns>
+    public static IHtmlContent FlattenDictionary(this Dictionary<string, object> dict, Func<string, string,string> func= null)
+    {
+        if (func == null)
+            func = (key, value) => $"{key}: {value},";
+        var content = new HtmlContentBuilder();
+        foreach (var kvp in dict)
+        {
+            content.AppendHtmlLine(Flatten(kvp.Key, kvp.Value));
+        }
+        return content;
+        string Flatten(string key, object value)
+        {
+            
+            if(value is not null && value is not string)
+            {
+                var subProperties = value.GetType().GetProperties();
+                if (subProperties.Any())
+                {
+                    string content = string.Empty;
+                    foreach(var subProp in subProperties)
+                    {
+                        var subValue = subProp.GetValue(value);
+                        content = string.Join(Environment.NewLine, content, Flatten($"{key}.{subProp.Name}", subValue));
+                    }
+                    return content;
+                }
+            }
+            return func(key, value?.ToString() ?? string.Empty);
+            
+        }
+    }
+    public static async Task<IHtmlContent> ConvertToJavascript(this Dictionary<string, object> dict, IUICLanguageService languageService, IHtmlHelper htmlHelper, IJsonHelper jsonHelper,  IViewComponentHelper componentHelper, bool splitObjectProperties = false)
     {
         var collection = new HtmlContentBuilder();
         foreach(var item in dict)
@@ -129,6 +164,18 @@ public static class UICExtensions
                 content = await component.InvokeAsync(componentHelper);
             else if (item.Value is Translatable translatable)
                 content = await htmlHelper.TranslateJs(languageService, translatable, "'");
+            else if(splitObjectProperties && item.Value != null && item.Value is not string)
+            {
+                var properties = item.Value.GetType().GetProperties();
+                if (properties.Any())
+                {
+                    foreach(var prop in properties)
+                    {
+                        await FlattenObjectProperties(collection, prop, item.Key, item.Value, languageService, htmlHelper, jsonHelper, componentHelper);
+                    }
+                    continue;
+                }
+            }
             else 
                 content = jsonHelper.Serialize(item.Value);
             collection.AppendHtml($"'{item.Key}': ");
@@ -138,7 +185,55 @@ public static class UICExtensions
         }
         return collection;
     }
+    private static async Task FlattenObjectProperties(
+    HtmlContentBuilder collection,
+    PropertyInfo property,
+    string parentKey,
+    object parentObject,
+    IUICLanguageService languageService,
+    IHtmlHelper htmlHelper,
+    IJsonHelper jsonHelper,
+    IViewComponentHelper componentHelper)
+    {
+        var propertyName = property.Name;
+        var fullKey = $"{parentKey}.{propertyName}";
 
+        // Get the property value
+        var propertyValue = property.GetValue(parentObject);
+
+        IHtmlContent content = null;
+
+        if (propertyValue is IUIComponent component)
+        {
+            // Handle UI components
+            content = await component.InvokeAsync(componentHelper);
+        }
+        else if (propertyValue is Translatable translatable)
+        {
+            // Handle translatable strings
+            content = await htmlHelper.TranslateJs(languageService, translatable, "'");
+        }
+        else if (propertyValue != null && propertyValue is not string &&  propertyValue.GetType().GetProperties().Any())
+        {
+            // If property is an object, recurse into it
+            foreach (var nestedProp in propertyValue.GetType().GetProperties())
+            {
+                await FlattenObjectProperties(collection, nestedProp, fullKey, propertyValue, languageService, htmlHelper, jsonHelper, componentHelper);
+            }
+            return;
+        }
+        else
+        {
+            // Serialize primitive or simple types
+            content = jsonHelper.Serialize(propertyValue);
+        }
+
+        // Append the flattened property to the collection
+        collection.AppendHtml($"'{fullKey}': ");
+        collection.AppendHtml(content);
+        collection.Append(",");
+        collection.AppendLine();
+    }
     #region ScriptCollection
 
 

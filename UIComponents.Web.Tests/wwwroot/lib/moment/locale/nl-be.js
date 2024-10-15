@@ -1,5 +1,5 @@
 //! moment.js locale configuration
-//! locale : Dutch (Belgium) [NL]
+//! locale : Dutch (Belgium) [nl-be]
 //! author : Joris Röling : https://github.com/jorisroling
 //! author : Jacob Middag : https://github.com/middagj
 
@@ -33,7 +33,7 @@
         monthsRegex =
             /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
 
-    var nlBe = moment.defineLocale('NL', {
+    var nlBe = moment.defineLocale('nl-be', {
         months: 'januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december'.split(
             '_'
         ),

@@ -71,7 +71,8 @@
                             break;
                         case 4:
                             level = "Error";
-                            console.error(response.Data);
+                            if(response.Data != null && response.Data != undefined)
+                                console.error(response.Data);
                             break;
                     }
                     let message = await uic.translation.translate(response.Notification.Message);

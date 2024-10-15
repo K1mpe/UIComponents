@@ -73,32 +73,12 @@
     {
       "provider": "cdnjs",
       "library": "toastr.js@2.1.4",
-      "destination": "wwwroot/lib/toastr/",
-      "files": [
-        "toastr.min.js",
-        "toastr.min.css"
-      ]
+      "destination": "wwwroot/lib/toastr/"
     },
     {
       "provider": "cdnjs",
       "library": "moment.js@2.29.4",
-      "destination": "wwwroot/lib/moment/",
-      "files": [
-        "moment.js",
-        "moment.min.js",
-        "moment.min.js.map",
-        "moment-with-locales.js",
-        "moment-with-locales.min.js",
-        "moment-with-locales.min.js.map",
-        "locale/de.js",
-        "locale/de.min.js",
-        "locale/fr.js",
-        "locale/fr.min.js",
-        "locale/nl.js",
-        "locale/nl.min.js",
-        "locale/NL.js",
-        "locale/NL.min.js"
-      ]
+      "destination": "wwwroot/lib/moment/"
     },
     {
       "library": "fullcalendar@5.11.0",
@@ -126,7 +106,7 @@
         "dist/jsgrid-theme.css",
         "dist/jsgrid-theme.min.css",
         "dist/i18n/jsgrid-de.js",
-        "dist/i18n/jsgrid-fr.js",
+        "dist/i18n/jsgrid-fr.js"
       ]
     },
     {
@@ -213,15 +193,6 @@
     },
     {
       "provider": "cdnjs",
-      "library": "Chart.js@4.4.1",
-      "destination": "wwwroot/lib/Chart.js/",
-      "files": [
-        "chart.min.js",
-        "chart.umd.js"
-      ]
-    },
-    {
-      "provider": "cdnjs",
       "library": "hammer.js@2.0.8",
       "destination": "wwwroot/lib/hammer.js/",
       "files": [
@@ -248,6 +219,11 @@
       "provider": "cdnjs",
       "library": "Chart.js@4.4.1",
       "destination": "wwwroot/lib/Chart.js/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "dropzone@5.9.3",
+      "destination": "wwwroot/lib/dropzone/"
     }
   ]
 }

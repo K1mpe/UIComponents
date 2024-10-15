@@ -46,6 +46,8 @@ builder.Services.AddUIComponentWeb(config =>
     config.AddReadMe = true;
     config.AddTranslationFile = true;
     config.AddFileExplorerImgs = true;
+    UIComponents.Defaults.Models.UICUpload.DropzoneCss = "~/lib/dropzone/dropzone.min.css";
+    UIComponents.Defaults.Models.UICUpload.DropzoneScript = "/lib/dropzone/dropzone.min.js";
     config.AddDefaultGenerators(builder.Services);
     config.AddDefaultValidators(builder.Services);
     config.AddValidatorPropertyMinLength((propinfo, obj) =>

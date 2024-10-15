@@ -17,6 +17,8 @@ using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Models.FileExplorer;
 using UIComponents.Abstractions.Models.FileExplorer.Exceptions;
 using UIComponents.Abstractions.Models.HtmlResponses;
+using UIComponents.Models.Models.Actions;
+using UIComponents.Models.Models.Card;
 using UIComponents.Web.Components;
 using UIComponents.Web.Helpers;
 using UIComponents.Web.Interfaces.FileExplorer;
@@ -85,7 +87,7 @@ public class UICFileExplorerController : Controller
         try
         {
             var files = pathModels.Select(x => _pathMapper.GetAbsolutePath(x));
-            return await FileExplorerHelper.DownloadFileOrZip(files, HttpContext, _logger);
+            return await FileExplorerHelper.DownloadFileOrZipStream(files, HttpContext, _logger);
         }
         catch (Exception ex)
         {
@@ -221,13 +223,58 @@ public class UICFileExplorerController : Controller
         }
     }
 
+    public virtual async Task<IActionResult> UploadPartial(RelativePathModel directoryPathModel)
+    {
+        try
+        {
+            var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
+            if (_permissionService != null && await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath))
+                throw new UICFileExplorerCannotCreateInDirectoryException(directoryPathModel.RelativePath);
+
+            var modal = new UICModal(directoryPathModel.RelativePath);
+            modal.Add(new UICUpload(Url.Action(nameof(UploadFiles))), upload=>{
+                upload.AllowChunking = !true;
+                upload.ParallelUploads = 5;
+                upload.MaxFileCount = 100;
+                upload.ChunkSizeMB = 50;
+                upload.DisplayFileCountMessage = false;
+                upload.PostData["directoryPathModel"] = directoryPathModel;
+                upload.OnSuccessAll = new UICCustom()
+                    .AddLine($"$('#{modal.GetId()}').trigger('uic-close');")
+                    .AddLine($"$('.file-explorer-container').trigger('uic-reload');");
+            });
+            return ViewOrPartial(modal);
+        }
+        catch (Exception ex)
+        {
+            return await Error(ex);
+        }
+    }
     public virtual async Task<IActionResult> UploadFiles(RelativePathModel directoryPathModel)
     {
         try
         {
-            throw new NotImplementedException();
+            var files = Request.Form.Files;
+            var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
+            if (_permissionService != null && await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath))
+                throw new UICFileExplorerCannotCreateInDirectoryException(directoryPathModel.RelativePath);
+
+            foreach (var file in files)
+            {
+                var fileName = Path.GetFileName(file.FileName);
+                string filepath = Path.Combine(absolutePath, fileName);
+
+                if (_permissionService != null && !await _permissionService.CurrentUserCanCreateOrEditFile(filepath))
+                {
+                    var relativePath = _pathMapper.GetRelativePath(filepath);
+                    throw new UICFileExplorerCannotCreateException(relativePath.RelativePath);
+                }
+            }
+            await FileExplorerHelper.UploadFilesFromDropzoneStream(HttpContext, absolutePath, _logger);
+
+            return Json(true);
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
             return await Error(ex);
         }
@@ -266,6 +313,7 @@ public class UICFileExplorerController : Controller
     protected virtual async Task<IActionResult> Error(Translatable message = null)
     {
         var translated = await _languageService.Translate(message);
+        HttpContext.Response.StatusCode = 500;
         return Json(new UICToastResponse()
         {
             Notification = new UICToastRNotification(IUICToastNotification.ToastType.Error, translated)

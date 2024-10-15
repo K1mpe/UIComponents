@@ -660,7 +660,20 @@
             container.trigger('uic-reload');
         })
     },
-
+    uploadPage: async function (item) {
+        let container = item.closest('.file-explorer-container');
+        let controller = container.data('controller');
+        let filterModel = container.triggerHandler('uic-getFilterModel');
+        let absolutePath = container.attr('data-rootabsolutepath');
+        let relativePath = filterModel.RelativePath;
+        let result = await uic.getpost.post(`/${controller}/UploadPartial`, {
+            AbsolutePathReference: absolutePath,
+            RelativePath: relativePath
+        });
+        if (result != false) {
+            $('body').append(result);
+        }
+    },
     
     //The files that are selected to copy or move
     _copiedFiles: [],

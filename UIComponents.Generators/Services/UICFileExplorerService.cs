@@ -9,6 +9,7 @@ using UIComponents.Abstractions.Models.FileExplorer;
 using UIComponents.Abstractions.Models.FileExplorer.Exceptions;
 using UIComponents.Abstractions.Varia;
 using UIComponents.Generators.Helpers;
+using UICFileInfo = UIComponents.Abstractions.Models.FileExplorer.UICFileInfo;
 
 namespace UIComponents.Generators.Services;
 

@@ -142,7 +142,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>106</LineNumber>
+          <LineNumber>108</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -158,7 +158,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>143</LineNumber>
+          <LineNumber>145</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -174,7 +174,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>118</LineNumber>
+          <LineNumber>120</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -190,7 +190,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>149</LineNumber>
+          <LineNumber>151</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -206,7 +206,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>124</LineNumber>
+          <LineNumber>126</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -367,7 +367,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>219</LineNumber>
+          <LineNumber>221</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -378,7 +378,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>172</LineNumber>
+          <LineNumber>174</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -389,7 +389,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>213</LineNumber>
+          <LineNumber>215</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -400,7 +400,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>240</LineNumber>
+          <LineNumber>242</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -411,7 +411,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>207</LineNumber>
+          <LineNumber>209</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -466,11 +466,11 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>194</LineNumber>
+          <LineNumber>196</LineNumber>
         </FileAndNumber>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>201</LineNumber>
+          <LineNumber>203</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -481,7 +481,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>226</LineNumber>
+          <LineNumber>228</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -492,7 +492,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>246</LineNumber>
+          <LineNumber>248</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -514,7 +514,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\FileExplorer\UICFileExplorer.cs</File>
-          <LineNumber>179</LineNumber>
+          <LineNumber>181</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>
@@ -1075,7 +1075,7 @@
       <Files>
         <FileAndNumber>
           <File>UIComponents.Models\Models\UICUpload.cs</File>
-          <LineNumber>83</LineNumber>
+          <LineNumber>144</LineNumber>
         </FileAndNumber>
       </Files>
     </Translatable>

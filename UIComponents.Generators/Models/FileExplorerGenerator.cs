@@ -11,6 +11,6 @@ namespace UIComponents.Generators.Models
     {
         public double Score { get; set; }
         public string Name { get; set; }
-        public Func<UICFileInfo, GetFilesForDirectoryFilterModel, string, Task> Function { get; set; }
+        public Func<Abstractions.Models.FileExplorer.UICFileInfo, GetFilesForDirectoryFilterModel, string, Task> Function { get; set; }
     }
 }
