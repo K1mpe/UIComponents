@@ -31,8 +31,6 @@ namespace UIComponents.Models.Models.FileExplorer
         public string ControllerName { get; set; } = "UICFileExplorer";
 
 
-        public bool ShowSideBar { get; set; } = true;
-
         public string RenderMethod { get; set; } = Renderers.Details;
 
         #region Additional content
@@ -66,11 +64,6 @@ namespace UIComponents.Models.Models.FileExplorer
         /// </summary>
         public UICGroup BottomContainer { get; set; } = new();
         #endregion
-
-        public bool CanCreate { get; set; }
-        public bool CanMove { get; set; }
-        public bool CanCopy { get; set; }
-        public bool CanDelete { get; set; }
 
         public static class Renderers
         {

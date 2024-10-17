@@ -339,10 +339,12 @@ public static class UICBuilderExtensions
                 Directory.CreateDirectory(targetRoote);
             }
 
-            var translations = manifestNames.Where(x => x.EndsWith("Translations.xml")).OrderBy(x => x).FirstOrDefault();
+            var translations = manifestNames.Where(x => x.EndsWith("Translations.json")).OrderBy(x => x).FirstOrDefault();
             if (!string.IsNullOrEmpty(translations))
             {
-                var dest = $"{targetRoote}\\Translations.xml";
+                var dest = $"{targetRoote}\\Translations.json";
+                if (File.Exists($"{targetRoote}\\Translations.xml"))
+                    File.Delete(dest);
                 if (File.Exists(dest))
                     File.Delete(dest);
 

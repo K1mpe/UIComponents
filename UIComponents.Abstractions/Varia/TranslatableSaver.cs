@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -206,15 +208,35 @@ public static class TranslatableSaver
         {
             Translatables = savedModels
         };
-        using (var streamWriter = new StreamWriter(filepath, new FileStreamOptions()
+        var fileInfo = new FileInfo(filepath);
+        switch (fileInfo.Extension.ToLower())
         {
-            Access = FileAccess.Write,
-            Mode = FileMode.Create,
-        }))
-        {
-            var serialised = Serialize(model);
-            await streamWriter.WriteAsync(serialised);
+            case ".xml":
+                using (var streamWriter = new StreamWriter(filepath, new FileStreamOptions()
+                {
+                    Access = FileAccess.Write,
+                    Mode = FileMode.Create,
+                }))
+                {
+                    var serialised = Serialize(model);
+                    await streamWriter.WriteAsync(serialised);
+                }
+                break;
+            case ".json":
+                using (var streamWriter = new StreamWriter(filepath, new FileStreamOptions()
+                {
+                    Access = FileAccess.Write,
+                    Mode = FileMode.Create,
+                }))
+                {
+                    var serialised = JsonSerializer.Serialize(model);
+                    await streamWriter.WriteAsync(serialised);
+                }
+                break;
+            default:
+                throw new Exception("Unknow file extension. Currently only xml and json are supported");
         }
+        
 
         string Serialize(TranslatableXmlModel model)
         {
@@ -234,6 +256,12 @@ public static class TranslatableSaver
 
         var fileContent = await File.ReadAllTextAsync(filePath);
 
+        var fileInfo = new FileInfo(filePath);
+        if(fileInfo.Extension.ToLower() == ".json")
+        {
+            var content= JsonSerializer.Deserialize<TranslatableXmlModel>(fileContent);
+            return content.Translatables;
+        }
         return LoadFromXmlString(fileContent);
     }
 
@@ -267,12 +295,14 @@ public static class TranslatableSaver
 
         public int ArgumentsCount { get; set; }
         [XmlIgnore]
+        [JsonIgnore]
         public DateTime LastScanned { get; set; }
 
         [XmlArray("Files", IsNullable = false), XmlArrayItem("FileAndNumber", IsNullable = false)]
         public List<FileAndLine> FilesAndLinesUsed { get; set; } = new();
 
         [XmlIgnore]
+        [JsonIgnore]
         public Dictionary<string, string> TranslationsDict => TranslationsList.ToDictionary(x => x.Code, x => x.Translation);
 
 

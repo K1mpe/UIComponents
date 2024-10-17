@@ -11,18 +11,47 @@ public class UICQuestionService : IUICQuestionService
 {
     private readonly IUICSignalRService _signalRService;
     private readonly IUICStoredComponents _storedComponents;
+    private readonly IUICGetCurrentUserId _uICGetCurrentUserId;
     private static readonly Dictionary<string, QuestionPersistance> _questionPersistance = new();
     private readonly ILogger _logger;
 
-    public UICQuestionService(ILogger<UICQuestionService> logger, IUICStoredComponents storedComponents, IUICSignalRService signalRService = null)
+    public UICQuestionService(ILogger<UICQuestionService> logger, IUICStoredComponents storedComponents, IUICSignalRService signalRService = null, IUICGetCurrentUserId uICGetCurrentUserId = null)
     {
         _storedComponents = storedComponents;
         _logger = logger;
         _signalRService = signalRService;
+        _uICGetCurrentUserId = uICGetCurrentUserId;
     }
 
 
     #region Ask Question
+
+
+    public bool TryAskQuestionToCurrentUser<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, out TResponse response) where TQuestion : IUIQuestionComponent<TResponse>
+    {
+        if (_uICGetCurrentUserId == null)
+            throw new Exception($"There is no implementation for {nameof(IUICGetCurrentUserId)} registrated.");
+        var userId = _uICGetCurrentUserId.GetCurrentUserId();
+        if (userId == null)
+        {
+            response = default;
+            return false;
+        }
+        return TryAskQuestion(question, timeout, userId, out response);
+    }
+
+    public bool TryAskQuestionToCurrentUser(IUIQuestionComponent question, TimeSpan timeout, out string response)
+    {
+        if (_uICGetCurrentUserId == null)
+            throw new Exception($"There is no implementation for {nameof(IUICGetCurrentUserId)} registrated.");
+        var userId = _uICGetCurrentUserId.GetCurrentUserId();
+        if (userId == null)
+        {
+            response = default;
+            return false;
+        }
+        return TryAskQuestion(question, timeout, userId, out response);
+    }
 
     /// <summary>
     /// Ask a question to a User and await the response. Returns false if the timeout expires or the user presses the cancel button
@@ -115,27 +144,22 @@ public class UICQuestionService : IUICQuestionService
                 _= _signalRService.SendUIComponentToUser(fetchComponent, userId.ToString());
             }
             _questionPersistance[key].AutoResetEvent.WaitOne(timeout);
-            Console.WriteLine("blub2");
             result = _questionPersistance[key].Response;
             if(result == null)
             {
                 _logger.LogError("No response was received for {0}", question.DebugIdentifier);
                 return false;
             }
-                
-            Console.WriteLine($"Response {result}");
             return _questionPersistance[key].Answered;
         }
         catch(NullReferenceException)
         {
-            Console.WriteLine("nullReference");
             //No response received within timespan
             _logger.LogError("No response was received for {0}", question.DebugIdentifier);
             return false;
         }
         catch(Exception ex)
         {
-            Console.WriteLine("Exception");
             _logger.LogError(ex, "Error for question {0}", question.DebugIdentifier);
             return false;
         }
@@ -197,6 +221,5 @@ public class UICQuestionService : IUICQuestionService
     {
         return _signalRService.RemoveUIComponentWithId(questionId);
     }
-    
 
 }

@@ -252,7 +252,7 @@
                     }
                 }
             } else if (ev.ctrlKey == true) {
-                $(ev.target).closest('.explorer-item').addClass('selected');
+                $(ev.target).closest('.explorer-item').toggleClass('selected');
             } else {
                 container.find('.explorer-item').removeClass('selected');
                 $(ev.target).closest('.explorer-item').addClass('selected');

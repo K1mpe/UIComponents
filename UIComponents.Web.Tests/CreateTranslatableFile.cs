@@ -13,7 +13,7 @@ namespace UIComponents.Web.Tests
             {
                 var results = TranslatableSaver.ScanSolution();
                 var dir = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.FullName;
-                await TranslatableSaver.SaveToFileAsync(results, $"{dir}\\UIComponents.Web\\UIComponents\\Translations.xml", false, false);
+                await TranslatableSaver.SaveToFileAsync(results, $"{dir}\\UIComponents.Web\\UIComponents\\Translations.json", false, false);
             }
             catch (Exception ex)
             {

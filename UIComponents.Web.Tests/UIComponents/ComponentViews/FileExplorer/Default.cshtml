@@ -82,6 +82,7 @@
 
         uic.fileExplorer.initialize.start($('#@id'));
         uic.fileExplorer.loadRelativeDir($('#@id'), @Html.JsEncode(GetRelPath(Model.StartDirectory??Model.RootDirectory),"'"));
+        uic.fileExplorer.showhide.preview($('#@id'), false);
         </text>);
 }
 

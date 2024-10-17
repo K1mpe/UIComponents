@@ -5,10 +5,11 @@ using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
+using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Models.FileExplorer;
-using UIComponents.Abstractions.Models.FileExplorer.Exceptions;
 using UIComponents.Abstractions.Varia;
 using UIComponents.Generators.Helpers;
+using UIComponents.Models.Models.Questions;
 using UICFileInfo = UIComponents.Abstractions.Models.FileExplorer.UICFileInfo;
 
 namespace UIComponents.Generators.Services;
@@ -17,18 +18,26 @@ public class UICFileExplorerService : IUICFileExplorerService
 {
     private readonly IUICFileExplorerPathMapper _pathMapper;
     private readonly ILogger _logger;
-    private readonly IUICFileExplorerPermissionChecker _permissionChecker;
     private readonly IUICFileExplorerExecuteActions _executeActions;
     private readonly IUICFileExplorerPermissionService _permissionService;
-    public UICFileExplorerService(IUICFileExplorerPathMapper pathMapper, ILogger<UICFileExplorerService> logger, IUICFileExplorerPermissionChecker permissionChecker, IUICFileExplorerExecuteActions executeActions, IUICFileExplorerPermissionService permissionService= null)
+    private readonly IUICQuestionService _questionService;
+    private readonly IUICLanguageService _languageService;
+    public UICFileExplorerService(IUICFileExplorerPathMapper pathMapper,
+                                  ILogger<UICFileExplorerService> logger,
+                                  IUICFileExplorerExecuteActions executeActions,
+                                  IUICQuestionService questionService,
+                                  IUICLanguageService languageService,
+                                  IUICFileExplorerPermissionService permissionService)
     {
         _pathMapper = pathMapper;
         _logger = logger;
-        if (!FileExplorerGenerators.Any())
-            AddDefaultGenerators();
-        _permissionChecker = permissionChecker;
         _executeActions = executeActions;
         _permissionService = permissionService;
+        _languageService = languageService;
+        _questionService = questionService;
+
+        if (!FileExplorerGenerators.Any())
+            AddDefaultGenerators();
     }
 
 
@@ -43,60 +52,226 @@ public class UICFileExplorerService : IUICFileExplorerService
         if (Directory.Exists(absolutePath))
             return;
 
-        if (!await HasPermission(p => p.CurrentUserCanCreateDirectory(absolutePath)))
-            throw new UICFileExplorerCannotCreateException(absolutePath);
+        if (!await _permissionService.CurrentUserCanCreateDirectory(absolutePath))
+        {
+            _logger.LogError("Cannot create directory {0}");
+            return;
+        }
         await _executeActions.CreateDirectoryAsync(absolutePath);
     }
     public async virtual Task CopyFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory)
     {
-        await _permissionChecker.ThrowIfCurrentUserCantCopyFilesAsync(sourceFiles, targetDirectory);
-        
+        List<(string sourcePath, string targetPath)> copyPaths = new();
+        List<(string sourcePath, string targetPath)> targetExists = new();
+        List<(string sourcePath, string targetPath, bool isFolder)> accessDenied = new();
+
         var destination = _pathMapper.GetAbsolutePath(targetDirectory);
-        foreach(var copy in sourceFiles)
+
+        foreach (var source in sourceFiles)
         {
-            string absoluteSource = _pathMapper.GetAbsolutePath(copy);
+            string absoluteSource = _pathMapper.GetAbsolutePath(source);
             string sourceRoot = absoluteSource;
-            if(File.Exists(absoluteSource))
+            if (File.Exists(absoluteSource))
             {
                 var fileInfo = new FileInfo(absoluteSource);
                 sourceRoot = fileInfo.DirectoryName;
-                await CopyFile(absoluteSource);
+            } else if (Directory.Exists(absoluteSource))
+            {
+                var dirInfo = new DirectoryInfo(absoluteSource);
+                sourceRoot = dirInfo.Parent.FullName;
             }
+            await ValidateFile(absoluteSource);
 
-            async Task CopyFile(string sourcePath)
+            async Task ValidateFile(string sourcePath)
             {
                 string absoluteDestination = _pathMapper.ReplaceRoot(sourcePath, sourceRoot, destination);
                 using (_logger.BeginScopeKvp(new("FilePath", absoluteDestination), new("FileSource", sourcePath)))
                 {
-                    if (Directory.Exists(sourcePath) && !Directory.Exists(absoluteDestination))
+                    if (!await _permissionService.CurrentUserCanViewFileOrDirectory(sourcePath))
                     {
-                        await _executeActions.CreateDirectoryAsync(absoluteDestination);
+                        _logger.LogDebug("Ignoring {0} from copy list since user cannot view file or directory", sourcePath);
+                        return;
+                    }
+                        
+
+                    if (Directory.Exists(sourcePath)) // is Directory
+                    {
+                        if (!Directory.Exists(absoluteDestination)) // Target directory does not exist
+                        {
+                            if(!await _permissionService.CurrentUserCanCreateDirectory(absoluteDestination))
+                            {
+                                _logger.LogDebug("Access denied to create directory {0}", absoluteDestination);
+                                accessDenied.Add(new(sourcePath, absoluteDestination, true));
+                                return;
+                            }
+                        }
 
                         var subDirectories = Directory.GetDirectories(sourcePath);
                         foreach (var subDirectory in subDirectories)
                         {
-                            await CopyFile(subDirectory);
+                            await ValidateFile(subDirectory);
                         }
                         var subFiles = Directory.GetFiles(sourcePath);
-                        foreach(var subFile in subFiles)
+                        foreach (var subFile in subFiles)
                         {
-                            await CopyFile(subFile);
+                            await ValidateFile(subFile);
                         }
                     }
                     else if (File.Exists(sourcePath))
                     {
-                        await _executeActions.CopyFileAsync(sourcePath, absoluteDestination);
+                        if(!await _permissionService.CurrentUserCanOpenFileOrDirectory(sourcePath))
+                        {
+                            _logger.LogDebug("Access denied to open file {0}", sourcePath);
+                            accessDenied.Add(new(sourcePath, absoluteDestination, false));
+                            return;
+                        }
+                        if (File.Exists(absoluteDestination))
+                        {
+                            _logger.LogDebug("File {0} already exists", absoluteDestination);
+                            targetExists.Add(new(sourcePath, absoluteDestination));
+                            return;
+                        }
+                        if(!await _permissionService.CurrentUserCanCreateOrEditFile(absoluteDestination))
+                        {
+                            _logger.LogDebug("Access denied to create {0}", absoluteDestination);
+                            accessDenied.Add(new(sourcePath, absoluteDestination, false));
+                            return;
+                        }
+                        _logger.LogDebug("{0} -> {1} is valid to copy", sourcePath, absoluteDestination);
+                        copyPaths.Add(new(sourcePath, absoluteDestination));
                     }
-
                 }
+            }
+        }
+
+        // Overwrite files or make copy
+        if (targetExists.Any())
+        {
+            var title = TranslatableSaver.Save("FileExplorer.TargetExists.Title", "Target exists");
+            var message = TranslatableSaver.Save("FileExplorer.TargetExists.Message", "There are {0} files that already exist. Do you want to replace them?", targetExists.Count);
+            if(targetExists.Count == 1)
+            {
+                var relPath = _pathMapper.GetRelativePath(targetExists.First().targetPath);
+                message = TranslatableSaver.Save("FileExplorer.TargetExists.MessageSingle", "{0} already exists. Do you want to replace this item?", relPath);
+            }
+
+            var question = UICQuestionYesNo.Create(title, message, _questionService);
+            question.ButtonYes.ButtonText = TranslatableSaver.Save("FileExplorer.TargetExists.ReplaceButton", "Replace existing files");
+            question.ButtonNo.ButtonText = TranslatableSaver.Save("FileExplorer.TargetExists.Keep both", "Keep both");
+            if (!_questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1), out bool replaceFiles))
+                return;
+
+            var copyText = await _languageService.Translate(TranslatableSaver.Save("FileExplorer.TargetExists.UniqueNameSuffix", " (1)"));
+            foreach (var file in targetExists)
+            {
+                var targetPath = file.targetPath;
+                if (!replaceFiles)
+                {
+                    var fileInfo = new FileInfo(targetPath);
+                    targetPath = $"{fileInfo.DirectoryName}\\{fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length)}{copyText}{fileInfo.Extension}";
+                }
+
+                if(await _permissionService.CurrentUserCanCreateOrEditFile(targetPath))
+                {
+                    copyPaths.Add(new(file.sourcePath, targetPath));
+                }
+                else
+                {
+                    _logger.LogDebug("Access denied to create {0}", targetPath);
+                    accessDenied.Add(new(file.sourcePath, targetPath, false));
+                }
+            }
+        }
+        if (!copyPaths.Any())
+            throw new AccessViolationException();
+
+        if (accessDenied.Any())
+        {
+            var folders = accessDenied.Where(x => x.isFolder).Count();
+            var files = accessDenied.Where(x=>!x.isFolder).Count();
+            var title = TranslatableSaver.Save("FileExplorer.CannotCopy.Title", "Cannot copy files");
+            var message = TranslatableSaver.Save("FileExplorer.CannotCopy.MessageFilesAndFolders", "There are {0} files and {1} folders that you cannot copy, do you want to continue?", files, folders);
+            if(folders == 0)
+                message = TranslatableSaver.Save("FileExplorer.CannotCopy.MessageFiles", "There are {0} files that you cannot copy, do you want to continue?", files);
+            else if(files == 0)
+                message = TranslatableSaver.Save("FileExplorer.CannotCopy.MessageFolders", "There are {0} folders that you cannot copy, do you want to continue?", files);
+
+            var question = UICQuestionYesNo.Create(title, message, _questionService);
+            question.ButtonNo.Render = false;
+            if (!_questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1), out bool contin))
+                return;
+            if (!contin)
+                return;
+        }
+
+        foreach (var file in copyPaths)
+        {
+            using (_logger.BeginScopeKvp(new("FilePath", file.targetPath), new("FileSource", file.sourcePath)))
+            {
+                var fileInfo = new FileInfo(file.targetPath);
+                var directory = fileInfo.DirectoryName;
+                if(!Directory.Exists(directory))
+                    await _executeActions.CreateDirectoryAsync(directory);
+
+                await _executeActions.CopyFileAsync(file.sourcePath, file.targetPath);
             }
         }
     }
 
     public async virtual Task DeleteFilesAsync(List<RelativePathModel> pathModels)
     {
-        await _permissionChecker.ThrowIfCurrentUserCantDeleteFilesAsync(pathModels);
-        foreach(var pathModel in pathModels)
+        bool failed = false;
+        foreach (var source in pathModels)
+        {
+            string absoluteSource = _pathMapper.GetAbsolutePath(source);
+            string sourceRoot = absoluteSource;
+            if (File.Exists(absoluteSource))
+            {
+                var fileInfo = new FileInfo(absoluteSource);
+                sourceRoot = fileInfo.DirectoryName;
+                await ValidateFile(absoluteSource);
+            }
+
+            async Task ValidateFile(string sourcePath)
+            {
+                using (_logger.BeginScopeKvp("FilePath", sourcePath))
+                {
+                    if (!await _permissionService.CurrentUserCanViewFileOrDirectory(sourcePath))
+                    {
+                        _logger.LogDebug("Access denied to delete a folder containing a file the user cannot view");
+                        failed = true;
+                        return;
+                    }
+                    if (!await _permissionService.CurrentUserCanDeleteFileOrDirectory(sourcePath))
+                    {
+                        _logger.LogDebug("Access denied to delete file or folder {0}", sourcePath);
+                        failed = true;
+                        return;
+                    }
+
+                    if (Directory.Exists(sourcePath)) // is Directory
+                    { 
+                        var subDirectories = Directory.GetDirectories(sourcePath);
+                        foreach (var subDirectory in subDirectories)
+                        {
+                            await ValidateFile(subDirectory);
+                        }
+                        var subFiles = Directory.GetFiles(sourcePath);
+                        foreach (var subFile in subFiles)
+                        {
+                            await ValidateFile(subFile);
+                        }
+                    }
+                    else if (File.Exists(sourcePath))
+                    {
+                        
+                        _logger.LogDebug("{0} is valid to delete", sourcePath);
+                    }
+                }
+            }
+        }
+
+        foreach (var pathModel in pathModels)
         {
             var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
             using(_logger.BeginScopeKvp("FilePath", absolutePath))
@@ -109,54 +284,163 @@ public class UICFileExplorerService : IUICFileExplorerService
     
     public async virtual Task MoveFilesAsync(List<RelativePathModel> sourceFiles, RelativePathModel targetDirectory)
     {
-        await _permissionChecker.ThrowIfCurrentUserCantCopyFilesAsync(sourceFiles, targetDirectory);
+        List<(string sourcePath, string targetPath)> movePaths = new();
+        List<(string sourcePath, string targetPath)> targetExists = new();
+        List<(string sourcePath, string targetPath, bool isFolder)> accessDenied = new();
 
         var destination = _pathMapper.GetAbsolutePath(targetDirectory);
-        foreach (var copy in sourceFiles)
+
+        foreach (var source in sourceFiles)
         {
-            string absoluteSource = _pathMapper.GetAbsolutePath(copy);
+            string absoluteSource = _pathMapper.GetAbsolutePath(source);
             string sourceRoot = absoluteSource;
             if (File.Exists(absoluteSource))
             {
                 var fileInfo = new FileInfo(absoluteSource);
                 sourceRoot = fileInfo.DirectoryName;
-                await MoveFile(absoluteSource);
             }
+            else if (Directory.Exists(absoluteSource))
+            {
+                var dirInfo = new DirectoryInfo(absoluteSource);
+                sourceRoot = dirInfo.Parent.FullName;
+            }
+            await ValidateFile(absoluteSource);
 
-            async Task MoveFile(string sourcePath)
+            async Task ValidateFile(string sourcePath)
             {
                 string absoluteDestination = _pathMapper.ReplaceRoot(sourcePath, sourceRoot, destination);
                 using (_logger.BeginScopeKvp(new("FilePath", absoluteDestination), new("FileSource", sourcePath)))
                 {
-                    if (Directory.Exists(sourcePath) && !Directory.Exists(absoluteDestination))
+                    if (!await _permissionService.CurrentUserCanMoveFileOrDirectory(sourcePath))
                     {
-                        await _executeActions.CreateDirectoryAsync(absoluteDestination);
+                        _logger.LogDebug("Access denied to move file {0}", sourcePath);
+                        accessDenied.Add(new(sourcePath, absoluteDestination, false));
+                        return;
+                    }
+
+                    if (Directory.Exists(sourcePath)) // is Directory
+                    {
+                        if (!Directory.Exists(absoluteDestination)) // Target directory does not exist
+                        {
+                            if (!await _permissionService.CurrentUserCanCreateDirectory(absoluteDestination))
+                            {
+                                _logger.LogDebug("Access denied to create directory {0}", absoluteDestination);
+                                accessDenied.Add(new(sourcePath, absoluteDestination, true));
+                                return;
+                            }
+                        }
 
                         var subDirectories = Directory.GetDirectories(sourcePath);
                         foreach (var subDirectory in subDirectories)
                         {
-                            await MoveFile(subDirectory);
+                            await ValidateFile(subDirectory);
                         }
                         var subFiles = Directory.GetFiles(sourcePath);
                         foreach (var subFile in subFiles)
                         {
-                            await MoveFile(subFile);
+                            await ValidateFile(subFile);
                         }
                     }
                     else if (File.Exists(sourcePath))
                     {
-                        await _executeActions.MoveFileAsync(sourcePath, absoluteDestination);
+                        if (!await _permissionService.CurrentUserCanOpenFileOrDirectory(sourcePath))
+                        {
+                            _logger.LogDebug("Access denied to open file {0}", sourcePath);
+                            accessDenied.Add(new(sourcePath, absoluteDestination, false));
+                            return;
+                        }
+                        if (File.Exists(absoluteDestination))
+                        {
+                            _logger.LogDebug("File {0} already exists", absoluteDestination);
+                            targetExists.Add(new(sourcePath, absoluteDestination));
+                            return;
+                        }
+                        if (!await _permissionService.CurrentUserCanCreateOrEditFile(absoluteDestination))
+                        {
+                            _logger.LogDebug("Access denied to create {0}", absoluteDestination);
+                            accessDenied.Add(new(sourcePath, absoluteDestination, false));
+                            return;
+                        }
+                        _logger.LogDebug("{0} -> {1} is valid to move", sourcePath, absoluteDestination);
+                        movePaths.Add(new(sourcePath, absoluteDestination));
                     }
-
                 }
+            }
+        }
+
+        // Overwrite files or make copy
+        if (targetExists.Any())
+        {
+            var title = TranslatableSaver.Save("FileExplorer.TargetExists.Title", "Target exists");
+            var message = TranslatableSaver.Save("FileExplorer.TargetExists.Message", "There are {0} files that already exist. Do you want to replace them?", targetExists.Count);
+            if (targetExists.Count == 1)
+            {
+                var relPath = _pathMapper.GetRelativePath(targetExists.First().targetPath);
+                message = TranslatableSaver.Save("FileExplorer.TargetExists.MessageSingle", "{0} already exists. Do you want to replace this item?", relPath);
+            }
+
+            var question = UICQuestionYesNo.Create(title, message, _questionService);
+            question.ButtonYes.ButtonText = TranslatableSaver.Save("FileExplorer.TargetExists.ReplaceButton", "Replace existing files");
+            question.ButtonNo.ButtonText = TranslatableSaver.Save("FileExplorer.TargetExists.Keep both", "Keep both");
+            if (!_questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1), out bool replaceFiles))
+                return;
+
+            var copyText = await _languageService.Translate(TranslatableSaver.Save("FileExplorer.TargetExists.UniqueNameSuffix", " (1)"));
+            foreach (var file in targetExists)
+            {
+                var targetPath = file.targetPath;
+                if (!replaceFiles)
+                {
+                    var fileInfo = new FileInfo(targetPath);
+                    targetPath = $"{fileInfo.DirectoryName}\\{fileInfo.Name}{copyText}{fileInfo.Extension}";
+                    if (targetPath.EndsWith("."))
+                        targetPath = targetPath.Substring(0, targetPath.Length - 1);
+                }
+
+                if (await _permissionService.CurrentUserCanCreateOrEditFile(targetPath))
+                {
+                    movePaths.Add(new(file.sourcePath, targetPath));
+                }
+                else
+                {
+                    _logger.LogDebug("Access denied to create {0}", targetPath);
+                    accessDenied.Add(new(file.sourcePath, targetPath, false));
+                }
+            }
+        }
+        if (accessDenied.Any())
+        {
+            var folders = accessDenied.Where(x => x.isFolder).Count();
+            var files = accessDenied.Where(x => !x.isFolder).Count();
+            var title = TranslatableSaver.Save("FileExplorer.CannotMove.Title", "Cannot move files");
+            var message = TranslatableSaver.Save("FileExplorer.CannotMove.MessageFilesAndFolders", "There are {0} files and {1} folders that you cannot move, action is cancelled", files, folders);
+            
+            var question = UICQuestionYesNo.Create(title, message, _questionService);
+            question.ButtonNo.Render = false;
+            question.ButtonCancel.Render = false;
+            _questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1), out bool contin);
+            return;
+        }
+
+        foreach (var file in movePaths)
+        {
+            using (_logger.BeginScopeKvp(new("FilePath", file.targetPath), new("FileSource", file.sourcePath)))
+            {
+                var fileInfo = new FileInfo(file.targetPath);
+                var directory = fileInfo.DirectoryName;
+                if (!Directory.Exists(directory))
+                    await _executeActions.CreateDirectoryAsync(directory);
+                await _executeActions.MoveFileAsync(file.sourcePath, file.targetPath);
             }
         }
     }
 
     public async virtual Task RenameFileOrDirectoryAsync(RelativePathModel pathModel, string newName)
     {
-        await _permissionChecker.ThrowIfCurrentUserCantRenameFileOrDirectory(pathModel, newName);
         var absoluteFile = _pathMapper.GetAbsolutePath(pathModel);
+        if (!await _permissionService.CurrentUserCanRenameFileOrDirectory(absoluteFile, newName))
+            return;
+
         if (File.Exists(absoluteFile))
         {
             await _executeActions.RenameFileAsync(absoluteFile, newName);
@@ -249,17 +533,17 @@ public class UICFileExplorerService : IUICFileExplorerService
         if (!Directory.Exists(absolutePath))
             return result;
 
-        if (!await HasPermission(p => p.CurrentUserCanOpenFileOrDirectory(absolutePath)))
+        if (!await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
             throw new AccessViolationException();
 
-        result.CanCreateInDirectory = await HasPermission(p=>p.CurrentUserCanCreateInThisDirectory(absolutePath));
+        result.CanCreateInDirectory = await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath);
 
         if (!filterModel.FilesOnly)
         {
             var subDirectories = Directory.GetDirectories(absolutePath);
             foreach (var subDirectory in subDirectories)
             {
-                if (!await HasPermission(p => p.CurrentUserCanViewFileOrDirectory(subDirectory)))
+                if (!await _permissionService.CurrentUserCanViewFileOrDirectory(subDirectory))
                     continue;
 
                 var info = await CreateFileInfoFromDirectoryPath(subDirectory, filterModel);
@@ -274,7 +558,7 @@ public class UICFileExplorerService : IUICFileExplorerService
 
             foreach (var file in files)
             {
-                if (!await HasPermission(p => p.CurrentUserCanViewFileOrDirectory(file)))
+                if (!await _permissionService.CurrentUserCanViewFileOrDirectory(file))
                     continue;
                 var info = await CreateFileInfoFromFilePath(file, filterModel);
 
@@ -299,10 +583,10 @@ public class UICFileExplorerService : IUICFileExplorerService
         info.SizeValue = fileInfo.Length;
 
 
-        info.CanOpen = await HasPermission(p => p.CurrentUserCanOpenFileOrDirectory(filepath));
-        info.CanMove = await HasPermission(p => p.CurrentUserCanMoveFileOrDirectory(filepath));
-        info.CanDelete = await HasPermission(p => p.CurrentUserCanDeleteFileOrDirectory(filepath));
-        info.CanRename = await HasPermission(p => p.CurrentUserCanRenameFileOrDirectory(filepath, null));
+        info.CanOpen = await _permissionService.CurrentUserCanOpenFileOrDirectory(filepath);
+        info.CanMove = await _permissionService.CurrentUserCanMoveFileOrDirectory(filepath);
+        info.CanDelete = await _permissionService.CurrentUserCanDeleteFileOrDirectory(filepath);
+        info.CanRename = await _permissionService.CurrentUserCanRenameFileOrDirectory(filepath, null);
 
         info = await RunFileInfoGeneratorsAsync(info, filterModel, filepath);
 
@@ -327,10 +611,10 @@ public class UICFileExplorerService : IUICFileExplorerService
             info.SizeValue += file.Length;
         }
 
-        info.CanOpen = await HasPermission(p => p.CurrentUserCanOpenFileOrDirectory(filepath));
-        info.CanMove = await HasPermission(p => p.CurrentUserCanMoveFileOrDirectory(filepath));
-        info.CanDelete = await HasPermission(p => p.CurrentUserCanDeleteFileOrDirectory(filepath));
-        info.CanRename = await HasPermission(p => p.CurrentUserCanRenameFileOrDirectory(filepath, null));
+        info.CanOpen = await _permissionService.CurrentUserCanOpenFileOrDirectory(filepath);
+        info.CanMove = await _permissionService.CurrentUserCanMoveFileOrDirectory(filepath);
+        info.CanDelete = await _permissionService.CurrentUserCanDeleteFileOrDirectory(filepath);
+        info.CanRename = await _permissionService.CurrentUserCanRenameFileOrDirectory(filepath, null);
         info = await RunFileInfoGeneratorsAsync(info, filterModel, filepath);
         return info;
     }
@@ -553,13 +837,7 @@ public class UICFileExplorerService : IUICFileExplorerService
         return fileInfo.Extension != string.Empty;
     }
 
-    public Task<bool> HasPermission(Func<IUICFileExplorerPermissionService, Task<bool>> permission)
-    {
-        if (_permissionService == null)
-            return Task.FromResult(true);
-        return permission(_permissionService);
-    }
-
+   
     #endregion
 
 

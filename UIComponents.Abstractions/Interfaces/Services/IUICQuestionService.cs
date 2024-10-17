@@ -26,6 +26,19 @@ public interface IUICQuestionService
     public bool TryAskQuestion<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, List<object> userIds, out TResponse response) where TQuestion : IUIQuestionComponent<TResponse>;
 
     /// <summary>
+    /// Ask a question to the current user and await the response. Returns false if the timeout expires or the user presses the cancel button
+    /// <br>This method will instantly return false if no user is found</br>
+    /// </summary>
+    /// <typeparam name="TQuestion"></typeparam>
+    /// <typeparam name="TResponse"></typeparam>
+    /// <param name="question"></param>
+    /// <param name="timeout"></param>
+    /// <param name="response"></param>
+    /// <remarks>This method requires you have a implementation of <see cref="IUICGetCurrentUserId"/></remarks>
+    /// <returns></returns>
+    public bool TryAskQuestionToCurrentUser<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, out TResponse response) where TQuestion : IUIQuestionComponent<TResponse>;
+
+    /// <summary>
     /// Ask a question to a User and await the response. Returns false if the timeout expires or the user presses the cancel button
     /// </summary>
     /// <param name="question">The question to ask the user</param>
@@ -44,6 +57,17 @@ public interface IUICQuestionService
     /// <param name="response">The response from the user (if successfull)</param>
     /// <returns></returns>
     public bool TryAskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds, out string response);
+
+    /// <summary>
+    /// Ask a question to the current User. This method will fail if there is no current user available
+    /// <br>This method will instantly return false if no user is found</br>
+    /// </summary>
+    /// <param name="question"></param>
+    /// <param name="timeout"></param>
+    /// <param name="response"></param>
+    /// <remarks>This method requires you have a implementation of <see cref="IUICGetCurrentUserId"/></remarks>
+    /// <returns></returns>
+    public bool TryAskQuestionToCurrentUser(IUIQuestionComponent question, TimeSpan timeout,  out string response);
 
     #endregion
 

@@ -243,29 +243,42 @@ uic.markChangesOptions = {
                     .append($('<div>', { class: "modal-content" })
                         .append($('<div>', { class: "modal-body" })
                             .append($('<div>', { class: "row" })))));
-            let col = $('<div>', { class: "col" }).append(element.clone().removeClass('uic-value-changed select2-hidden-accessible').attr('id', ''));
 
+
+            let cloneLeft = element.clone().removeClass('uic-value-changed select2-hidden-accessible').attr('id', '');
+            let cloneRight = element.clone().removeClass('uic-value-changed select2-hidden-accessible').attr('id', '');
+            if (uic.elementContainsEvent(element, 'uic-getClone')) {
+                cloneLeft = await element.triggerHandler('uic-getClone');
+                cloneRight = await element.triggerHandler('uic-getClone');
+            } else if (uic.elementContainsEvent(element.parent(), 'uic-getClone')) {
+                cloneLeft = await element.parent().triggerHandler('uic-getClone');
+                cloneRight = await element.parent().triggerHandler('uic-getClone');
+            }
             let translations = [
                 { ResourceKey: "MarkChanges.CurrentValue" },
                 { ResourceKey: "MarkChanges.ServerValue" }];
             let translationResults = await uic.translation.translateMany(translations);
-            let elName = element.attr('name');
-            let colLeft = col.clone().addClass('old-val')
+            let colLeft = $('<div>', { class: "col old-val" }).append(cloneLeft)
                 .append($('<button>', { class: "btn btn-default" }).text(translationResults["MarkChanges.CurrentValue"]).on('click', (ev) => {
                     let value = uic.getValue(colLeft);
                     uic.setValue(element, value[elName]);
                     uic.markChangesOptions.removeMark(element, visualElement, mark);
                     modal.modal('hide');
                 }));
-            let colRight = col.clone().addClass('new-val')
+            let colRight = $('<div>', { class: "col new-val" }).append(cloneRight)
                 .append($('<button>', { class: "btn btn-default" }).text(translationResults["MarkChanges.ServerValue"]).on('click', (ev) => {
                     let value = uic.getValue(colRight);
                     uic.setValue(element, value[elName]);
                     uic.markChangesOptions.removeMark(element, visualElement, mark);
                     modal.modal('hide');
                 }));
-            uic.setValue(colLeft, oldValue);
-            uic.setValue(colRight, newValue);
+
+
+            let elName = element.attr('name');
+            setTimeout(() => {
+                uic.setValue(colLeft, oldValue);
+                uic.setValue(colRight, newValue);
+            }, 1);
             modal.find('.row')
                 .append(colLeft)
                 .append(colRight)

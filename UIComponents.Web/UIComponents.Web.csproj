@@ -19,6 +19,7 @@
 	  <Content Remove="UIComponents\ComponentViews\FileExplorer\FilePreview.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\InputTime\Default.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\RenderMultiple.cshtml" />
+	  <Content Remove="UIComponents\Translations.json" />
 	  <EmbeddedResource Include="UIComponents\ChangeLog\**" />
   </ItemGroup>
 	
@@ -95,6 +96,7 @@
     <EmbeddedResource Include="..\README.md" Link="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Translations.json" />
   </ItemGroup>
 	
   <ItemGroup>

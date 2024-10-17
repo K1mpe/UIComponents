@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace UIComponents.Web.Helpers
 {
-    public static class FileExplorerHelper
+    public static class UICFileExplorerHelper
     {
         /// <summary>
         /// This method can stream a one or more files or folders to the client for download. If there is more than one file to be transfered, a zip is created and streamed to the client

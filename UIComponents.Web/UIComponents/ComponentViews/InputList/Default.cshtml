@@ -22,35 +22,35 @@
 @{
     string id = Model.GetId();
     Model.AssignCollectionForChildren();
-    string indexRef = id.Length > 7 ? id.Substring(3, 7) : "l"+Guid.NewGuid().ToString("n").Substring(0, 3);
+    string indexRef = id.Length > 7 ? id.Substring(3, 7) : "l" + Guid.NewGuid().ToString("n").Substring(0, 3);
     Model.SingleInstanceInput.AddAttribute("data-list-item", indexRef);
 
-    if(Model.Readonly)
+    if (Model.Readonly)
         Model.SingleInstanceInput.FindAllChildrenOfType<UICInput>().ForEach(x => x.Readonly = true);
 
-    if(Model.AddButton.HasValue() && !Model.AddButton.OnClick.HasValue())
+    if (Model.AddButton.HasValue() && !Model.AddButton.OnClick.HasValue())
     {
         Model.AddButton.OnClick = Model.TriggerAddInstance();
     }
     Model.MoveUpButton.AddClass("uic-btn-move-up");
     Model.MoveDownButton.AddClass("uic-btn-move-down");
     Model.RemoveButton.AddClass("uic-btn-delete-instance");
-    if(Model.Value.Any())
+    if (Model.Value.Any())
         Model.AddClass("loading-data"); //this class is removed when the data is finished loading
     if (!Model.Readonly || true)
     {
         Model.AddScript(
-            @<text>
+    @<text>
 
         $('#@id').on('uic-help', ()=>{
-            console.log("ListInput $('#@id').trigger('uic-setValue', value) => Sets the value of all list items");
-            console.log("ListInput $('#@id').trigger('uic-setValue-index', [value, index]) => Sets the value of the item at this index");
-            console.log("ListInput $('#@id').trigger('uic-clearValues') => Empty all listitems");
-            console.log("ListInput $('#@id').trigger('uic-add', value) => Add a new item to the list, value is optional");
-            console.log("ListInput $('#@id').trigger('uic-remove', index) => Remove the item at this index");
+        console.log("ListInput $('#@id').trigger('uic-setValue', value) => Sets the value of all list items");
+        console.log("ListInput $('#@id').trigger('uic-setValue-index', [value, index]) => Sets the value of the item at this index");
+        console.log("ListInput $('#@id').trigger('uic-clearValues') => Empty all listitems");
+        console.log("ListInput $('#@id').trigger('uic-add', value) => Add a new item to the list, value is optional");
+        console.log("ListInput $('#@id').trigger('uic-remove', index) => Remove the item at this index");
 
-            console.log("ListInput $('#@id').on('uic-change') => Something has changed in the list");
-            console.log("ListInput $('#@id').on('uic-initialised') => The list has loaded its initial data");
+        console.log("ListInput $('#@id').on('uic-change') => Something has changed in the list");
+        console.log("ListInput $('#@id').on('uic-initialised') => The list has loaded its initial data");
         });
         $('#@id').on('uic-help',  '> .input-instances > .input-instance', ()=>{
         console.log("ListInput-Item $().trigger('uic-remove') => Remove this item");
@@ -59,232 +59,240 @@
         })
 
         let triggerChange = function(){
-            $('#@id').trigger('uic-change');
-            $('#@id').change();
+        $('#@id').trigger('uic-change');
+        $('#@id').change();
         }
 
 
         $('#@id').on('uic-setValue', (ev, ...values) => {
-            ev.stopPropagation();
-            let inputList = $('#@id');
-            let instances = $('#@id .input-instances .input-instance');
-            for(let i=0; i< values.length; i++){
-                if(instances.length > i){
-                    $('#@id').trigger('uic-setValue-index', [values[i], i]);
-                } else{
-                    $('#@id').trigger('uic-add', values[i]);
-                }
-            }
-            instances.each((index, item) =>{
-                if(index >= values.length)
-                    $(item).trigger('uic-remove');
-            });
+        ev.stopPropagation();
+        let inputList = $('#@id');
+        let instances = $('#@id .input-instances .input-instance');
+        for(let i=0; i< values.length; i++){
+        if(instances.length > i){
+        $('#@id').trigger('uic-setValue-index', [values[i], i]);
+        } else{
+        $('#@id').trigger('uic-add', values[i]);
+        }
+        }
+        instances.each((index, item) =>{
+        if(index >= values.length)
+        $(item).trigger('uic-remove');
+        });
         });
 
         $('#@id').on('uic-setValue-index', (ev, value, index) =>{
-            ev.stopPropagation();
-            uic.setValue($('#@id .input-instances .input-instance')[index], value);
-            triggerChange();
+        ev.stopPropagation();
+        uic.setValue($('#@id .input-instances .input-instance')[index], value);
+        triggerChange();
         });
 
         $('#@id').on('uic-clearValues', (ev)=>{
-            ev.stopPropagation();
-            $('#@id > .input-instances').html('');
-            triggerChange();
+        ev.stopPropagation();
+        $('#@id > .input-instances').html('');
+        triggerChange();
         });
 
         let counter = 0;
 
         $('#@id').on('uic-remove', (ev, index) =>{
-            ev.stopPropagation();
-            let instance = $('#@id > .input-instances .input-instance')[index];
-            $(instance).trigger('uic-remove');
-            triggerChange();
+        ev.stopPropagation();
+        let instance = $('#@id > .input-instances .input-instance')[index];
+        $(instance).trigger('uic-remove');
+        triggerChange();
         });
         $('#@id').on('click', '.uic-btn-delete-instance', (ev) => $(ev.target).trigger('uic-remove'));
         $('#@id').on('.input-instances > .input-instance').on('uic-remove', (ev)=>{
-            ev.stopPropagation();
-            $(ev.target).closest('.input-instance').remove();
+        ev.stopPropagation();
+        $(ev.target).closest('.input-instance').remove();
         });
         $('#@id').on('click', '.uic-btn-move-up', (ev) => $(ev.target).trigger('uic-moveUp'));
         $('#@id').on('click', '.uic-btn-move-down', (ev) => $(ev.target).trigger('uic-moveDown'));
         $('#@id').on('uic-moveUp', '> .input-instances > .input-instance', (ev) =>{
-            ev.stopPropagation();
+        ev.stopPropagation();
         let el = $(ev.target).closest('.input-instance');
         $(el).prev().before($(el));
-            triggerChange();
+        triggerChange();
         });
         $('#@id').on('uic-moveDown', '> .input-instances > .input-instance', (ev) => {
-            ev.stopPropagation();
-            let el = $(ev.target).closest('.input-instance');
-            $(el).next().after($(el));
-            triggerChange();
+        ev.stopPropagation();
+        let el = $(ev.target).closest('.input-instance');
+        $(el).next().after($(el));
+        triggerChange();
         });
 
         $('#@id').on('uic-change', ()=>{
-            setButtonDirection();
+        setButtonDirection();
         });
         function setButtonDirection(){
-            $('#@id .input-instances > .input-instance').each((index, item)=>{
-            let buttons = $(item).find('> .instance-buttons');
-            @switch(Model.ButtonOrientation){
-                case UICInputList.ButtonOrientationEnum.Horizontal:
-                    <text>
-                        return;
-                    </text>
-                break;
-                case UICInputList.ButtonOrientationEnum.Vertical:
-                    <text>
-                        buttons.addClass('vertical');
-                        return;
-                    </text>
-                break;
-                case UICInputList.ButtonOrientationEnum.Auto:
-                    <text>
-                        buttons.removeClass('vertical');
-                        let buttonCount = buttons.children().length;
-                        let input = $($(item).children()[0])
-                        input.css('max-height', '1px');
-                        let buttonHeight = buttons.height();
-                        input.css('max-height', '');
+        $('#@id .input-instances > .input-instance').each((index, item)=>{
+        let buttons = $(item).find('> .instance-buttons');
+        @switch(Model.ButtonOrientation){
+    case UICInputList.ButtonOrientationEnum.Horizontal:
+        <text>
+            return;
+        </text>
+    break;
+    case UICInputList.ButtonOrientationEnum.Vertical:
+        <text>
+            buttons.addClass('vertical');
+            return;
+        </text>
+    break;
+    case UICInputList.ButtonOrientationEnum.Auto:
+        <text>
+            buttons.removeClass('vertical');
+            let buttonCount = buttons.children().length;
+            let input = $($(item).children()[0])
+            input.css('max-height', '1px');
+            let buttonHeight = buttons.height();
+            input.css('max-height', '');
 
-                        let inputHeight = input.height();
-                        if(inputHeight >= (buttonCount * buttonHeight))
-                        buttons.addClass('vertical');
-                    </text>
-                break;
-            }
+            let inputHeight = input.height();
+            if(inputHeight >= (buttonCount * buttonHeight))
+            buttons.addClass('vertical');
+        </text>
+    break;
+    }
         })
         }
-       
+
     </text>);
     }
     Model.AddScript(
-        @<text>
+    @<text>
 
         $('#@id').on('uic-help', ()=>{
-            console.log("ListInput $('#@id').triggerHandler('uic-getValue') => Get the value of all list items");
-            console.log("ListInput $('#@id').triggerHandler('uic-getValue-index, index') => Get the value of the item at this index");
+        console.log("ListInput $('#@id').triggerHandler('uic-getValue') => Get the value of all list items");
+        console.log("ListInput $('#@id').triggerHandler('uic-getValue-index, index') => Get the value of the item at this index");
         });
 
         let triggerChange = function(){
         $('#@id').trigger('uic-change');
         $('#@id').change();
         }
-        
-        $('#@id').on('uic-getValue', ()=>{
-            let results = [];
 
-            $('#@id > .input-instances [data-list-item="@indexRef"][name="@Model.PropertyName"]').each((index, item)=>{
-                let value = uic.getValue($(item));
-                results.push(value);
-            });
-            return results;
+        $('#@id').on('uic-getValue', ()=>{
+        let results = [];
+
+        $('#@id > .input-instances [data-list-item="@indexRef"][name="@Model.PropertyName"]').each((index, item)=>{
+        let value = uic.getValue($(item));
+        results.push(value);
+        });
+        return results;
         });
 
         $('#@id').on('uic-getValue-index', (ev, index)=>{
-            ev.stopPropagation();
-            return uic.getValue($('#@id .input-instances .input-instance')[index]);
+        ev.stopPropagation();
+        return uic.getValue($('#@id .input-instances .input-instance')[index]);
         });
 
         let counter = 0;
         let busyElements = 0;
         $('#@id').on('uic-add', async (ev, value)=>{
-            let instanceList = $('#@id > .input-instances');
-            let currentChildCount = instanceList.children().length;
-            @switch(Model.CreateNewInstanceMethod)
-            {
-                case UICInputList.CreateNewInstanceEnum.ReplaceIds:
-                <text>
-                    counter++;
-                    let clone = $('#@id > template').html()
-                    .replaceAll(@Html.Raw("/(?<=\\s)for=\"(.*?)\"/g"), `for=\"$1_${counter}\"`)    // Replace for="…" => for="…_1"
-                    .replaceAll(@Html.Raw("/(?<=\\s)id=\"(.*?)\"/g"), `id=\"$1_${counter}\"`)      // Replace id="…" => id="…_1"
-                    .replaceAll(@Html.Raw("/(\"|'|`)#(.*?)(?=\\1|\\s)/g"), `$&_${counter}`);       // Replace $('#…') => $('#…_1');
+        let instanceList = $('#@id > .input-instances');
+        let currentChildCount = instanceList.children().length;
+        @switch(Model.CreateNewInstanceMethod)
+    {
+    case UICInputList.CreateNewInstanceEnum.ReplaceIds:
+        <text>
+            counter++;
+            let clone = $('#@id > template').html()
+            .replaceAll(@Html.Raw("/(?<=\\s)for=\"(.*?)\"/g"), `for=\"$1_${counter}\"`)    // Replace for="…" => for="…_1"
+            .replaceAll(@Html.Raw("/(?<=\\s)id=\"(.*?)\"/g"), `id=\"$1_${counter}\"`)      // Replace id="…" => id="…_1"
+            .replaceAll(@Html.Raw("/(\"|'|`)#(.*?)(?=\\1|\\s)/g"), `$&_${counter}`);       // Replace $('#…') => $('#…_1');
 
-                    instanceList.append(clone);
-                </text>
-                break;
-                case UICInputList.CreateNewInstanceEnum.GetRequest:
-                var storedKey = storedComponents.StoreComponentForUsers(Model.SingleInstanceInput, null, false);
-                <text>
-                    var result = await uic.getpost.get('/uic/GetComponent', {key: '@storedKey'})
-                    if(result != false)
-                        instanceList.append(result);
-                </text>
-                break;
-                default:
-                    throw new NotImplementedException();
-            }
+            instanceList.append(clone);
+        </text>
+    break;
+    case UICInputList.CreateNewInstanceEnum.GetRequest:
+    var storedKey = storedComponents.StoreComponentForUsers(Model.SingleInstanceInput, null, false);
+        <text>
+            var result = await uic.getpost.get('/uic/GetComponent', {key: '@storedKey'})
+            if(result != false)
+            instanceList.append(result);
+        </text>
+    break;
+    default:
+    throw new NotImplementedException();
+    }
 
         //Let the document ready run before setting the value
-            if(value != undefined){
-                busyElements++;
-                setTimeout(()=>{
-                    $('#@id').trigger('uic-setValue-index', [value, currentChildCount]);
-                    busyElements--;
-                    if(busyElements <=0){
-                        $('#@id').removeClass('loading-data');
-                        $('#@id').trigger('uic-initialised');
-                    }
-                },1);
-            }
-                       
+        if(value != undefined){
+        busyElements++;
+        setTimeout(()=>{
+        $('#@id').trigger('uic-setValue-index', [value, currentChildCount]);
+        busyElements--;
+        if(busyElements <=0){
+        $('#@id').removeClass('loading-data');
+        $('#@id').trigger('uic-initialised');
+        }
+        },1);
+        }
+
         });
 
 
         $('#@id').on('uic-change', ()=>{
-            setButtonDirection();
+        setButtonDirection();
         });
         function setButtonDirection(){
-            $('#@id .input-instances > .input-instance').each((index, item)=>{
-                let buttons = $(item).find('> .instance-buttons');
-                @switch(Model.ButtonOrientation){
-                    case UICInputList.ButtonOrientationEnum.Horizontal:
-                        <text>
-                        return;
-                        </text>
-                    break;
-                    case UICInputList.ButtonOrientationEnum.Vertical:
-                        <text>
-                        buttons.addClass('vertical');
-                        return;
-                        </text>
-                    break;
-                    case UICInputList.ButtonOrientationEnum.Auto:
-                    <text>
-                        buttons.removeClass('vertical');
-                        let buttonCount = buttons.children().length;
-                        let input = $($(item).children()[0])
-                        input.css('max-height', '1px');
-                        let buttonHeight = buttons.height();
-                        input.css('max-height', '');
+        $('#@id .input-instances > .input-instance').each((index, item)=>{
+        let buttons = $(item).find('> .instance-buttons');
+        @switch(Model.ButtonOrientation){
+    case UICInputList.ButtonOrientationEnum.Horizontal:
+        <text>
+            return;
+        </text>
+    break;
+    case UICInputList.ButtonOrientationEnum.Vertical:
+        <text>
+            buttons.addClass('vertical');
+            return;
+        </text>
+    break;
+    case UICInputList.ButtonOrientationEnum.Auto:
+        <text>
+            buttons.removeClass('vertical');
+            let buttonCount = buttons.children().length;
+            let input = $($(item).children()[0])
+            input.css('max-height', '1px');
+            let buttonHeight = buttons.height();
+            input.css('max-height', '');
 
-                        let inputHeight = input.height();
-                        if(inputHeight >= (buttonCount * buttonHeight))
-                        buttons.addClass('vertical');
-                    </text>
-                    break;
-                }
-            })
+            let inputHeight = input.height();
+            if(inputHeight >= (buttonCount * buttonHeight))
+            buttons.addClass('vertical');
+        </text>
+    break;
+    }
+        })
         }
         @foreach(var value in Model.Value)
-        {
-            <text>
-                console.log('adding', @Json.Serialize(value));
-                $('#@id').trigger('uic-add', @Json.Serialize(value));
-            </text>
-        }
-        </text>);
+    {
+        <text>
+            console.log('adding', @Json.Serialize(value));
+            $('#@id').trigger('uic-add', @Json.Serialize(value));
+        </text>
+    }
+        @if(!Model.Value.Any())
+    {
+        <text>
+            setTimeout(()=>{
+            $('#@id').trigger('uic-initialised');
+
+            },1);
+        </text>
+    }
+    </text>);
 }
 
 <div @Html.Raw(Model.GetHtmlAttributes())>
     <div class="input-instances">
-
     </div>
     <template class="input-template">
         <div class="input-instance">
-            @await Model.SingleInstanceInput.InvokeAsync(Component)     
+            @await Model.SingleInstanceInput.InvokeAsync(Component)
             @if (!Model.Readonly)
             {
                 <div class="instance-buttons">
@@ -305,6 +313,6 @@
     {
         @await Model.AddButton.InvokeAsync(Component)
     }
-    
+
 </div>
 @await Model.RenderStylesAndScripts(Component)

@@ -342,11 +342,11 @@ public static class GeneratorHelper
                     var translatedProperty = UIComponents.Defaults.TranslationDefaults.TranslateProperty(args.PropertyInfo, args.UICPropertyType);
                     if (input is UICInputMultiSelect multiSelect)
                     {
-                        multiSelect.Placeholder = TranslatableSaver.Save("SelectList.SelectOneOrMore", "Select one or more {0}", translatedProperty);
+                        multiSelect.Placeholder = TranslatableSaver.Save("Select.SelectOneOrMore", "Select one or more {0}", translatedProperty);
                     }
                     else
                     {
-                        input.Placeholder = TranslatableSaver.Save("SelectList.Placeholder", "Select a {0}", translatedProperty);
+                        input.Placeholder = TranslatableSaver.Save("Select.Placeholder", "Select a {0}", translatedProperty);
                     }
                 }
             }

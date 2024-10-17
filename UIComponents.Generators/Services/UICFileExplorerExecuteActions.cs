@@ -61,8 +61,13 @@ namespace UIComponents.Generators.Services
         {
             return _logger.LogFunction("Moving {0}", true, async () =>
             {
-                await CopyFileAsync(sourceFile, destinationFile);
-                await DeleteFileAsync(sourceFile);
+                if (File.Exists(sourceFile))
+                {
+                    File.Move(sourceFile, destinationFile);
+                } else if(Directory.Exists(destinationFile))
+                {
+                    Directory.Move(destinationFile, sourceFile);
+                }
             }, LogLevel.Information);
         }
 

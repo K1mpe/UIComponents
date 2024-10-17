@@ -13,6 +13,7 @@ using UIComponents.Web.Tests.Factory;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using UIComponents.Abstractions.Interfaces.FileExplorer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +78,8 @@ builder.Services.AddSingleton<MainHub>();
 builder.Services.AddScoped<TestModelValidator>();
 builder.Services.AddScoped<TestComponentFactory>();
 builder.Services.AddSingleton<TestService>();
+builder.Services.AddScoped<IUICFileExplorerPermissionService, FilePermissionService>();
+builder.Services.AddSingleton<IUICGetCurrentUserId, GetCurrentUserService>();
 
 builder.Services.Configure<KestrelServerOptions>(options =>
 {

@@ -36,7 +36,7 @@ public class UICInputTime : UICInput<TimeOnly?>
     public TimeOnly? ValidationMinTime { get; set; }
     public TimeOnly? ValidationMaxTime { get; set; }
 
-    public InputTimeRenderer Renderer { get; set; } = InputTimeRenderer.SelectLists;
+    public InputTimeRenderer Renderer { get; set; } = InputTimeRenderer.Default;
     #endregion
 
     public enum InputTimeRenderer

@@ -15,8 +15,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Models.FileExplorer;
-using UIComponents.Abstractions.Models.FileExplorer.Exceptions;
 using UIComponents.Abstractions.Models.HtmlResponses;
+using UIComponents.Abstractions.Varia;
 using UIComponents.Models.Models.Actions;
 using UIComponents.Models.Models.Card;
 using UIComponents.Web.Components;
@@ -26,7 +26,7 @@ using UIComponents.Web.Models;
 
 namespace UIComponents.Web.Tests.Controllers;
 
-public class UICFileExplorerController : Controller
+public class UICFileExplorerController : Controller, IUICFileExplorerController
 {
     private readonly ILogger _logger;
     private readonly IUICLanguageService _languageService;
@@ -34,7 +34,7 @@ public class UICFileExplorerController : Controller
     private readonly IUICFileExplorerPathMapper _pathMapper;
     private readonly IUICFileExplorerPermissionService _permissionService;
 
-    public UICFileExplorerController(ILogger<UICFileExplorerController> logger, IUICFileExplorerService fileExplorerService, IUICFileExplorerPathMapper pathMapper, IUICLanguageService languageService, IUICFileExplorerPermissionService permissionService=null)
+    public UICFileExplorerController(ILogger<UICFileExplorerController> logger, IUICFileExplorerService fileExplorerService, IUICFileExplorerPathMapper pathMapper, IUICLanguageService languageService, IUICFileExplorerPermissionService permissionService = null)
     {
         _logger = logger;
         _fileExplorerService = fileExplorerService;
@@ -50,7 +50,7 @@ public class UICFileExplorerController : Controller
             await _fileExplorerService.CopyFilesAsync(FromPath.ToList(), ToPath);
             return Json(true);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return await Error(ex);
         }
@@ -87,7 +87,7 @@ public class UICFileExplorerController : Controller
         try
         {
             var files = pathModels.Select(x => _pathMapper.GetAbsolutePath(x));
-            return await FileExplorerHelper.DownloadFileOrZipStream(files, HttpContext, _logger);
+            return await UICFileExplorerHelper.DownloadFileOrZipStream(files, HttpContext, _logger);
         }
         catch (Exception ex)
         {
@@ -158,13 +158,12 @@ public class UICFileExplorerController : Controller
 
             var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
             if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
-                throw new UICFileExplorerCannotOpenException(pathModel.RelativePath);
+                return await Error(TranslatableSaver.Save("FileExplorer.OpenFile.AccessDenied", "You do not have access to open {0}", pathModel.RelativePath));
             var memstream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
-            
+
             return File(memstream, GetMimeType(absolutePath));
-            
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return await Error(ex);
         }
@@ -198,7 +197,7 @@ public class UICFileExplorerController : Controller
             var result = await _fileExplorerService.GetFilePreviewAsync(pathModel, HttpContext.RequestAborted);
             if (result == null)
                 return Json(false);
-            return ViewOrPartial(new UICViewModel("/UIComponents/ComponentViews/FileExplorer/FilePreview",result));
+            return ViewOrPartial(new UICViewModel("/UIComponents/ComponentViews/FileExplorer/FilePreview", result));
         }
         catch (OperationCanceledException)
         {
@@ -229,14 +228,15 @@ public class UICFileExplorerController : Controller
         {
             var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
             if (_permissionService != null && await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath))
-                throw new UICFileExplorerCannotCreateInDirectoryException(directoryPathModel.RelativePath);
+                return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFiles", "You do not have access to upload files in {0}", directoryPathModel.RelativePath));
 
             var modal = new UICModal(directoryPathModel.RelativePath);
-            modal.Add(new UICUpload(Url.Action(nameof(UploadFiles))), upload=>{
-                upload.AllowChunking = !true;
+            modal.Add(new UICUpload(Url.Action(nameof(UploadFiles))), upload =>
+            {
+                upload.AllowChunking = true;
                 upload.ParallelUploads = 5;
                 upload.MaxFileCount = 100;
-                upload.ChunkSizeMB = 50;
+                upload.ChunkSizeMB = 25;
                 upload.DisplayFileCountMessage = false;
                 upload.PostData["directoryPathModel"] = directoryPathModel;
                 upload.OnSuccessAll = new UICCustom()
@@ -257,7 +257,7 @@ public class UICFileExplorerController : Controller
             var files = Request.Form.Files;
             var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
             if (_permissionService != null && await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath))
-                throw new UICFileExplorerCannotCreateInDirectoryException(directoryPathModel.RelativePath);
+                return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFiles", "You do not have access to upload files in {0}", directoryPathModel.RelativePath));
 
             foreach (var file in files)
             {
@@ -267,20 +267,20 @@ public class UICFileExplorerController : Controller
                 if (_permissionService != null && !await _permissionService.CurrentUserCanCreateOrEditFile(filepath))
                 {
                     var relativePath = _pathMapper.GetRelativePath(filepath);
-                    throw new UICFileExplorerCannotCreateException(relativePath.RelativePath);
+                    return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFile", "You do not have access to upload file in {0}", directoryPathModel.RelativePath));
                 }
             }
-            await FileExplorerHelper.UploadFilesFromDropzoneStream(HttpContext, absolutePath, _logger);
+            await UICFileExplorerHelper.UploadFilesFromDropzoneStream(HttpContext, absolutePath, _logger);
 
             return Json(true);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return await Error(ex);
         }
     }
 
-    
+
 
 
     protected virtual IActionResult ViewOrPartial(IUIComponent component)
@@ -299,7 +299,7 @@ public class UICFileExplorerController : Controller
 
         return false;
     }
-    protected virtual Task<IActionResult> Error(Exception ex) 
+    protected virtual Task<IActionResult> Error(Exception ex)
     {
         if (ex is ArgumentStringException stringException)
         {
