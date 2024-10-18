@@ -20,7 +20,7 @@
 
 
 @inject IUICLanguageService L
-@model UICQuestionSelectList
+@model UICQuestionText
 @{
     string guid = "Question" + Guid.NewGuid().ToString("n");
     bool canCancel = Model.CanCancel;
@@ -45,40 +45,33 @@
                 title: @await Html.TranslateJs(L, Model.Title, "'"),
                 text: @await Html.TranslateJs(L, Model.Message, "'"),
                 showCloseButton: @Json.Serialize(canCancel && Model.ShowClosebutton),
-                input: "select",
-                icon: @Html.JsEncode(Model.Icon?.ToString().ToLower()??string.Empty, "'"),
+                input: 'text',
+                icon: @Html.JsEncode(Model.Icon?.ToString().ToLower() ?? string.Empty, "'"),
                 timer: '@(Model.RemoveAfterTimeout?.TotalMilliseconds)',
-                inputOptions: {
-                    'NULL': @await Html.TranslateJs(L, Model.EmptyText, "'"),
-                    @foreach(var option in Model.SelectListItems)
-                    {
-            <text>@Html.JsEncode(option.Value?.ToString() ?? string.Empty, "'"): @await Html.TranslateJs(L, option.Text, "'"), </text>
-                    }
-                },
                 reverseButtons: @Json.Serialize(Model.InvertButtons),
                 allowOutsideClick: @Json.Serialize(Model.CanClickOutSideModalToClose && canCancel),
                 allowEscapeKey: @Json.Serialize(canCancel),
                 showConfirmButton: @Json.Serialize(Model.ButtonSubmit.HasValue()),
                 showCancelButton: @Json.Serialize(canCancel && Model.ButtonCancel.HasValue()),
                 confirmButtonText: `@await Model.ButtonSubmit.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonSubmit.ButtonText, string.Empty) @await Model.ButtonSubmit.AppendButtonIcon.InvokeAsync(Component)`,
-            denyButtonText: `@await Model.ButtonCancel.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonCancel.ButtonText, string.Empty) @await Model.ButtonCancel.AppendButtonIcon.InvokeAsync(Component)`,
+                denyButtonText: `@await Model.ButtonCancel.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonCancel.ButtonText, string.Empty) @await Model.ButtonCancel.AppendButtonIcon.InvokeAsync(Component)`,
                 inputValidator: (value) => {
                     return new Promise((resolve) => {
-                    if (value === "NULL") {
+                        if (value === "NULL") {
                             resolve(@await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidationIsRequired(selection), "'"));
                         } else {
                             resolve();
                         }
                     });
                 }
-            }).then(async (result) => {
+                    }).then(async (result) => {
                 if (result.isConfirmed) {
-                    @await Model.ButtonSubmit.OnClick.InvokeAsync(Component)
-                    } else {
-                    @await Model.ButtonCancel.OnClick.InvokeAsync(Component)
-                    }
+        @await Model.ButtonSubmit.OnClick.InvokeAsync(Component)
+                            } else {
+        @await Model.ButtonCancel.OnClick.InvokeAsync(Component)
+                            }
             })
-        });
+                });
     </script>
 
 </div>

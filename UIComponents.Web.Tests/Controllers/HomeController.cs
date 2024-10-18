@@ -104,7 +104,7 @@ namespace UIComponents.Web.Tests.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(TestModel post)
+        public async Task<IActionResult> Post(TestModel post)
         {
             try
             {
@@ -119,15 +119,29 @@ namespace UIComponents.Web.Tests.Controllers
 
                 var yesNo = UICQuestionYesNo.Create("Test Ja / nee", "Wilt u deze vraag beantwoorden?", _uicQuestionService, question => question.Icon = QuestionIconType.Warning);
 
-                var answered = _uicQuestionService.TryAskQuestion(yesNo, TimeSpan.FromSeconds(10), 1, out bool boolean);
-                if (boolean)
+                var answered = await _uicQuestionService.TryAskQuestion(yesNo, TimeSpan.FromMinutes(10), 1);
+                if (answered.IsValid && answered.Result)
                 {
                     var dayOfWeek = UICQuestionSelectEnum<DayOfWeek>.Create("Favorite day", "What is your favorite day?", _uicQuestionService, question =>
                     {
                         question.Icon = QuestionIconType.Info;
                         question.CanCancel = false;
                     });
-                    answered = _uicQuestionService.TryAskQuestion(dayOfWeek, TimeSpan.FromMinutes(1),  1, out DayOfWeek favoriteDay);
+                    var answered2 =  await _uicQuestionService.TryAskQuestion(dayOfWeek, TimeSpan.FromMinutes(1),  1);
+                    if (answered2.IsValid)
+                    {
+                        if(answered2.Result == DayOfWeek.Saturday ||answered2.Result == DayOfWeek.Sunday)
+                        {
+                            Console.WriteLine("In weekend");
+                        }
+
+                        var question3 = UICQuestionText.Create("Test Texkt", "Type something", _uicQuestionService);
+                        var answered3 = await _uicQuestionService.TryAskQuestionToCurrentUser(question3, TimeSpan.FromMinutes(1));
+                        if (answered3.IsValid)
+                        {
+
+                        }
+                    }
                 }
 
 

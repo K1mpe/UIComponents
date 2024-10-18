@@ -2,11 +2,11 @@
 
 namespace UIComponents.Models.Models.Questions;
 
-public class UICQuestionYesNo : UICQuestionBase, IUIQuestionComponent<bool>
+public class UICQuestionYesNo : UICQuestionBase<bool>, IUIQuestionComponent<bool>
 {
 
     #region Ctor
-    public UICQuestionYesNo() : base()
+    public UICQuestionYesNo() : this(null, null)
     {
 
     }
@@ -58,7 +58,7 @@ public class UICQuestionYesNo : UICQuestionBase, IUIQuestionComponent<bool>
         return this;
     }
 
-    public bool MapResponse(string response)
+    public override bool MapResponse(string response)
     {
         return response.ToUpper() == "TRUE";
     }

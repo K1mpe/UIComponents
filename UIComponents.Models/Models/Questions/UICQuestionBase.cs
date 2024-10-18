@@ -67,6 +67,14 @@ public abstract class UICQuestionBase : IUIQuestionComponent, IUIComponent
     }
     #endregion
 }
+public abstract class UICQuestionBase<T> : UICQuestionBase, IUIQuestionComponent<T>
+{
+    public UICQuestionBase(Translatable title, Translatable message) : base(title,message)
+    {
+
+    }
+    public abstract T MapResponse(string response);
+}
 public enum QuestionIconType
 {
     Success,

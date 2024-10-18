@@ -30,7 +30,7 @@
 else
 {
     <text>
-        uic.delayedAction.run(@id, @Json.Serialize(Model.Miliseconds), async ()=>{
+        uic.delayedAction.run('@id', @Json.Serialize(Model.Miliseconds), async ()=>{
             @await Model.Action.InvokeAsync(Component)
         });
     </text>

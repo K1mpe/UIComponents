@@ -9,6 +9,11 @@ namespace UIComponents.Web.Tests.Services
 {
     public class GetCurrentUserService : IUICGetCurrentUserId
     {
-        public object? GetCurrentUserId() => 1;
+        public GetCurrentUserService()
+        {
+                
+        }
+
+        public Task<object> GetCurrentUserId() => Task.FromResult(1 as object);
     }
 }

@@ -192,11 +192,12 @@
         $('#@id').on('uic-add', async (ev, value)=>{
         let instanceList = $('#@id > .input-instances');
         let currentChildCount = instanceList.children().length;
+
+        counter++;
         @switch(Model.CreateNewInstanceMethod)
     {
     case UICInputList.CreateNewInstanceEnum.ReplaceIds:
         <text>
-            counter++;
             let clone = $('#@id > template').html()
             .replaceAll(@Html.Raw("/(?<=\\s)for=\"(.*?)\"/g"), `for=\"$1_${counter}\"`)    // Replace for="…" => for="…_1"
             .replaceAll(@Html.Raw("/(?<=\\s)id=\"(.*?)\"/g"), `id=\"$1_${counter}\"`)      // Replace id="…" => id="…_1"
@@ -217,6 +218,7 @@
     throw new NotImplementedException();
     }
 
+        instanceList.append(`<span class="field-validation-valid text-danger" data-valmsg-for="@(Model.PropertyName)[${counter-1}]"></span>`);
         //Let the document ready run before setting the value
         if(value != undefined){
         busyElements++;

@@ -27,30 +27,36 @@ public class UICQuestionService : IUICQuestionService
     #region Ask Question
 
 
-    public bool TryAskQuestionToCurrentUser<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, out TResponse response) where TQuestion : IUIQuestionComponent<TResponse>
+    public async Task<UICQuestionResult<TResponse>> TryAskQuestionToCurrentUser<TQuestion, TResponse>(TQuestion question, TimeSpan timeout) where TQuestion : IUIQuestionComponent<TResponse>
     {
         if (_uICGetCurrentUserId == null)
             throw new Exception($"There is no implementation for {nameof(IUICGetCurrentUserId)} registrated.");
-        var userId = _uICGetCurrentUserId.GetCurrentUserId();
+        var userId = await _uICGetCurrentUserId.GetCurrentUserId();
         if (userId == null)
         {
-            response = default;
-            return false;
+            return new()
+            {
+                IsValid = false,
+                TimeoutExpired = true,
+            };
         }
-        return TryAskQuestion(question, timeout, userId, out response);
+        return await TryAskQuestion<TQuestion, TResponse>(question, timeout, userId);
     }
 
-    public bool TryAskQuestionToCurrentUser(IUIQuestionComponent question, TimeSpan timeout, out string response)
+    public async Task<UICQuestionResult<string>> TryAskQuestionToCurrentUser(IUIQuestionComponent question, TimeSpan timeout)
     {
         if (_uICGetCurrentUserId == null)
             throw new Exception($"There is no implementation for {nameof(IUICGetCurrentUserId)} registrated.");
-        var userId = _uICGetCurrentUserId.GetCurrentUserId();
+        var userId = await _uICGetCurrentUserId.GetCurrentUserId();
         if (userId == null)
         {
-            response = default;
-            return false;
+            return new()
+            {
+                IsValid = false,
+                TimeoutExpired = true,
+            };
         }
-        return TryAskQuestion(question, timeout, userId, out response);
+        return await TryAskQuestion(question, timeout, userId);
     }
 
     /// <summary>
@@ -61,9 +67,9 @@ public class UICQuestionService : IUICQuestionService
     /// <param name="userId">The id of the user that should answer the message</param>
     /// <param name="response">The response from the user (if successfull)</param>
     /// <returns></returns>
-    public virtual bool TryAskQuestion<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, object userId, out TResponse response) where TQuestion : IUIQuestionComponent<TResponse>
+    public virtual Task<UICQuestionResult<TResponse>> TryAskQuestion<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, object userId) where TQuestion : IUIQuestionComponent<TResponse>
     {
-        return TryAskQuestion(question, timeout, new() { userId }, out response);
+        return TryAskQuestion<TQuestion, TResponse>(question, timeout, new() { userId });
     }
 
     /// <summary>
@@ -74,13 +80,29 @@ public class UICQuestionService : IUICQuestionService
     /// <param name="userIds">The ids of the users that should answer the message</param>
     /// <param name="response">The response from the user (if successfull)</param>
     /// <returns></returns>
-    public virtual bool TryAskQuestion<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, List<object> userIds, out TResponse response) where TQuestion : IUIQuestionComponent<TResponse>
+    public virtual async Task<UICQuestionResult<TResponse>> TryAskQuestion<TQuestion, TResponse>(TQuestion question, TimeSpan timeout, List<object> userIds) where TQuestion : IUIQuestionComponent<TResponse>
     {
-        response = default;
-        var result = TryAskQuestion(question, timeout, userIds, out var stringResponse);
-        if (result)
-            response = question.MapResponse(stringResponse);
-        return result;
+        var result = await TryAskQuestion(question, timeout, userIds);
+        if (!result.IsValid)
+        {
+            return new()
+            {
+                IsValid = false,
+                AnsweredByUserId = result.AnsweredByUserId,
+                IsCanceled = result.IsCanceled,
+                TimeoutExpired = result.TimeoutExpired
+            };
+        }
+
+        var converted = question.MapResponse(result.Result);
+        return new()
+        {
+            IsValid = true,
+            AnsweredByUserId = result.AnsweredByUserId,
+            IsCanceled = result.IsCanceled,
+            TimeoutExpired = result.TimeoutExpired,
+            Result = converted
+        };
     }
 
     /// <summary>
@@ -91,9 +113,9 @@ public class UICQuestionService : IUICQuestionService
     /// <param name="userId">The id of the user that should answer the message</param>
     /// <param name="response">The response from the user (if successfull)</param>
     /// <returns></returns>
-    public virtual bool TryAskQuestion(IUIQuestionComponent question, TimeSpan timeout, object userId, out string response)
+    public virtual Task<UICQuestionResult<string>> TryAskQuestion(IUIQuestionComponent question, TimeSpan timeout, object userId)
     {
-        return TryAskQuestion(question, timeout, new() { userId }, out response);
+        return TryAskQuestion(question, timeout, new List<object>() { userId });
     }
 
     /// <summary>
@@ -104,15 +126,15 @@ public class UICQuestionService : IUICQuestionService
     /// <param name="userIds">The ids of the users that should answer the message</param>
     /// <param name="response">The response from the user (if successfull)</param>
     /// <returns></returns>
-    public virtual bool TryAskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds, out string response)
+    public virtual Task<UICQuestionResult<string>> TryAskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds)
     {
-        return AskQuestion(question, timeout, userIds, out response);
+        return AskQuestion(question, timeout, userIds);
     }
-    protected virtual bool AskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds, out string result)
+    protected virtual async Task<UICQuestionResult<string>> AskQuestion(IUIQuestionComponent question, TimeSpan timeout, List<object> userIds)
     {
         if (_signalRService == null)
             throw new Exception($"There is no implementation for {nameof(IUICSignalRService)} registrated.");
-        result = string.Empty;
+        
         _logger.BeginScopeKvp(
             new("UICQuestionIdentifier", question.DebugIdentifier),
             new("UICQuestionUserIds", string.Join(", ", userIds))
@@ -131,8 +153,8 @@ public class UICQuestionService : IUICQuestionService
                 _questionPersistance[key] = new()
                 {
                     Id = key,
-                    AutoResetEvent = new(false),
-                    DebugIdentifier =  question.DebugIdentifier
+                    Done = new TaskCompletionSource<bool>(),
+                    DebugIdentifier = question.DebugIdentifier
                 };
             }
             _logger.LogInformation("Asking question {0} to users: {1}", question.DebugIdentifier, string.Join(", ", userIds));
@@ -141,27 +163,49 @@ public class UICQuestionService : IUICQuestionService
                 
                 if (userId == null)
                     continue;
-                _= _signalRService.SendUIComponentToUser(fetchComponent, userId.ToString());
+                await _signalRService.SendUIComponentToUser(fetchComponent, userId.ToString());
             }
-            _questionPersistance[key].AutoResetEvent.WaitOne(timeout);
-            result = _questionPersistance[key].Response;
-            if(result == null)
+            await Task.WhenAny(_questionPersistance[key].Done.Task, Task.Delay(timeout));
+            var response = _questionPersistance[key];
+            if (!response.Answered)
             {
-                _logger.LogError("No response was received for {0}", question.DebugIdentifier);
-                return false;
+                _logger.LogError("Timeout expired for question {0}", question.DebugIdentifier);
+                return new()
+                {
+                    IsValid = false,
+                    TimeoutExpired = true
+                };
             }
-            return _questionPersistance[key].Answered;
+            if (response.Canceled)
+            {
+                return new()
+                {
+                    IsValid = false,
+                    IsCanceled = true,
+                    AnsweredByUserId = response.AnsweredByUserId,
+                };
+            }
+            return new()
+            {
+                IsValid = true,
+                AnsweredByUserId = response.AnsweredByUserId,
+                Result = response.Response
+            };
         }
         catch(NullReferenceException)
         {
             //No response received within timespan
             _logger.LogError("No response was received for {0}", question.DebugIdentifier);
-            return false;
+            return new()
+            {
+                IsValid = false,
+                TimeoutExpired = true,
+            };
         }
         catch(Exception ex)
         {
             _logger.LogError(ex, "Error for question {0}", question.DebugIdentifier);
-            return false;
+            throw;
         }
         finally
         {
@@ -169,7 +213,7 @@ public class UICQuestionService : IUICQuestionService
             {
                 _questionPersistance.Remove(question.Id);
             }
-            RemoveQuestion(question.Id);
+            await RemoveQuestion(question.Id);
         }
 
     }
@@ -178,9 +222,12 @@ public class UICQuestionService : IUICQuestionService
 
     #region Answer Question
 
-    public virtual void AnswerQuestion(string key, string response)
+    public virtual async Task AnswerQuestion(string key, string response)
     {
-        lock(_questionPersistance)
+        object userId = null;
+        if (_uICGetCurrentUserId != null)
+            userId = await _uICGetCurrentUserId.GetCurrentUserId();
+        lock (_questionPersistance)
         {
             if (_questionPersistance.TryGetValue(key, out var question))
             {
@@ -188,7 +235,8 @@ public class UICQuestionService : IUICQuestionService
                 _logger.LogInformation("Answered question {0} with '{1}'", question.DebugIdentifier, response);
                 question.Response = response;
                 question.Answered = true;
-                question.AutoResetEvent.Set();
+                question.AnsweredByUserId = userId;
+                question.Done.SetResult(true);
             }
             else
             {
@@ -196,15 +244,21 @@ public class UICQuestionService : IUICQuestionService
             }
         }
     }
-    public virtual void CancelQuestion(string key)
+    public virtual async Task CancelQuestion(string key)
     {
+        object userId = null;
+        if (_uICGetCurrentUserId != null)
+            userId = await _uICGetCurrentUserId.GetCurrentUserId();
         lock (_questionPersistance)
         {
             if (_questionPersistance.TryGetValue(key, out var question))
             {
                 _logger.BeginScopeKvp("UICQuestionIdentifier", question.DebugIdentifier);
                 _logger.LogInformation("Question {0} was cancelled", question.DebugIdentifier);
-                question.AutoResetEvent.Set();
+                question.Answered = true;
+                question.Canceled = true;
+                question.AnsweredByUserId = userId;
+                question.Done.SetResult(false);
             }
         }
     }

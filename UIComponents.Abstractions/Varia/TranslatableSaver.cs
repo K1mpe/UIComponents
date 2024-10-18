@@ -275,7 +275,7 @@ public static class TranslatableSaver
 
     public static async Task<List<TranslatableXmlField>> LoadFromUICAsync() 
     {
-        var dir = $"{Directory.GetCurrentDirectory()}\\UIComponents\\Translations.xml";
+        var dir = $"{Directory.GetCurrentDirectory()}\\UIComponents\\Translations.json";
         if (!File.Exists(dir))
             throw new FileNotFoundException($"{dir} not found. Set UICConfigOptions.AddTranslationFile true to generate file");
 

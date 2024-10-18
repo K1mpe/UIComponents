@@ -1,3 +1,17 @@
+# 2024-10-17 (1.3.00)
+- Rename FetchComponent -> UICFetchComponent
+- Rename ValidationErrors -> UICValidationErrors
+- ValidationErrors supports checking the form Url
+- Setting event after UICInputList is ready loading data
+- JsGrid uses a full DelayAction instead of only a timer
+- DelayedAction Only works when miliseconds is over 0, else it executes the action instantly
+- Most default implementations have there methods now as Virtual
+- FileExplorer in usable state
+- Translations.xml changed to Translations.json
+- Fix Input list initialised without items
+- markchanges can now overwrite the clone function by using $('#id').on('uic-getClone', ()=>...)
+- IQuestionService async
+
 # 2024-10-10 (1.2.32)
 - Fix dependency IUICValidatorService <-> IUIComponentGenerator
 - Progress on fileExplorer
@@ -14,15 +28,6 @@
 - Fix for select2 Placeholder item
 - Css singleRow fix
 - Form has events on Editing / readonly toggle
-
-# 2024-10-.. (1.3.00)
-- Rename FetchComponent -> UICFetchComponent
-- Rename ValidationErrors -> UICValidationErrors
-- ValidationErrors supports checking the form Url
-- Setting event after UICInputList is ready loading data
-- JsGrid uses a full DelayAction instead of only a timer
-- DelayedAction Only works when miliseconds is over 0, else it executes the action instantly
-- Most default implementations have there methods now as Virtual
 
 # 2024-09-27 (1.2.30)
 - DelayedAction Changed

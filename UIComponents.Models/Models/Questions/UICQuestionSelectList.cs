@@ -3,7 +3,7 @@ using UIComponents.Abstractions.Interfaces.Services;
 
 namespace UIComponents.Models.Models.Questions;
 
-public class UICQuestionSelectList : UICQuestionBase
+public class UICQuestionSelectList : UICQuestionBase<string>
 {
     #region Fields
 
@@ -12,13 +12,14 @@ public class UICQuestionSelectList : UICQuestionBase
     #endregion
 
     #region Ctor
-    public UICQuestionSelectList() : base()
+    public UICQuestionSelectList() : this(null, null, null)
     {
 
     }
     public UICQuestionSelectList(Translatable title, Translatable message, List<SelectItem> items) : base(title, message)
     {
-        SelectListItems = items;
+        if(items != null)
+            SelectListItems = items;
     }
     #endregion
 
@@ -49,7 +50,7 @@ public class UICQuestionSelectList : UICQuestionBase
         
         return this;
     }
-
+    public override string MapResponse(string response) => response;
 
     #endregion
 

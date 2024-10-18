@@ -45,7 +45,7 @@
                 title: @await Html.TranslateJs(L, Model.Title, "'"),
                 text: @await Html.TranslateJs(L, Model.Message, "'"),
                 showCloseButton: @Json.Serialize(canCancel && Model.ShowClosebutton),
-                input:'select',
+                input: "select",
                 icon: @Html.JsEncode(Model.Icon?.ToString().ToLower()??string.Empty, "'"),
                 timer: '@(Model.RemoveAfterTimeout?.TotalMilliseconds)',
                 inputOptions: {

@@ -14,6 +14,11 @@ using UICFileInfo = UIComponents.Abstractions.Models.FileExplorer.UICFileInfo;
 
 namespace UIComponents.Generators.Services;
 
+public static class IUICQuestionServiceExtensions
+{
+    
+}
+
 public class UICFileExplorerService : IUICFileExplorerService
 {
     private readonly IUICFileExplorerPathMapper _pathMapper;
@@ -158,14 +163,15 @@ public class UICFileExplorerService : IUICFileExplorerService
             var question = UICQuestionYesNo.Create(title, message, _questionService);
             question.ButtonYes.ButtonText = TranslatableSaver.Save("FileExplorer.TargetExists.ReplaceButton", "Replace existing files");
             question.ButtonNo.ButtonText = TranslatableSaver.Save("FileExplorer.TargetExists.Keep both", "Keep both");
-            if (!_questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1), out bool replaceFiles))
+            var response = await _questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1));
+            if (!response.IsValid)
                 return;
 
             var copyText = await _languageService.Translate(TranslatableSaver.Save("FileExplorer.TargetExists.UniqueNameSuffix", " (1)"));
             foreach (var file in targetExists)
             {
                 var targetPath = file.targetPath;
-                if (!replaceFiles)
+                if (!response.Result)
                 {
                     var fileInfo = new FileInfo(targetPath);
                     targetPath = $"{fileInfo.DirectoryName}\\{fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length)}{copyText}{fileInfo.Extension}";
@@ -198,9 +204,9 @@ public class UICFileExplorerService : IUICFileExplorerService
 
             var question = UICQuestionYesNo.Create(title, message, _questionService);
             question.ButtonNo.Render = false;
-            if (!_questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1), out bool contin))
-                return;
-            if (!contin)
+            var response = await _questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1));
+
+            if (!response.IsValid || !response.Result)
                 return;
         }
 
@@ -382,14 +388,15 @@ public class UICFileExplorerService : IUICFileExplorerService
             var question = UICQuestionYesNo.Create(title, message, _questionService);
             question.ButtonYes.ButtonText = TranslatableSaver.Save("FileExplorer.TargetExists.ReplaceButton", "Replace existing files");
             question.ButtonNo.ButtonText = TranslatableSaver.Save("FileExplorer.TargetExists.Keep both", "Keep both");
-            if (!_questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1), out bool replaceFiles))
+            var response = await _questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1));
+            if(!response.IsValid)
                 return;
 
             var copyText = await _languageService.Translate(TranslatableSaver.Save("FileExplorer.TargetExists.UniqueNameSuffix", " (1)"));
             foreach (var file in targetExists)
             {
                 var targetPath = file.targetPath;
-                if (!replaceFiles)
+                if (!response.Result)
                 {
                     var fileInfo = new FileInfo(targetPath);
                     targetPath = $"{fileInfo.DirectoryName}\\{fileInfo.Name}{copyText}{fileInfo.Extension}";
@@ -418,7 +425,7 @@ public class UICFileExplorerService : IUICFileExplorerService
             var question = UICQuestionYesNo.Create(title, message, _questionService);
             question.ButtonNo.Render = false;
             question.ButtonCancel.Render = false;
-            _questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1), out bool contin);
+            var response = await _questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1));
             return;
         }
 

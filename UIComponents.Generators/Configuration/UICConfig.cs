@@ -227,8 +227,10 @@ public class UICConfig
         if (column.IgnoreGenerators)
             return column;
         string debugString = $"Table column {ClassAndPropertyString(column.PropertyInfo) ?? column.Title}";
-        var options = new UICOptions();
+        var options = new UICOptions() { SelectlistAddEmptyItem = true };
         var result = await GetGeneratedResultAsync<UICTableColumn, UICTableColumn>(debugString, column, options);
+        if (column.SelectListItems != null && column.SelectListItems.Any() && !column.SelectListItems.Where(x => string.IsNullOrWhiteSpace(x.Value)).Any())
+            column.SelectListItems.Insert(0, new());
         result.IgnoreGenerators = true;
         return result;
     }
