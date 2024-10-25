@@ -60,11 +60,11 @@
                     myVeryUniqueValidationProperty = function(@string.Join(", ", Model.SubscriptionArguments)){
                         @await Model.Condition.InvokeAsync(Component)
                     }
-                    myVeryUniqueValidationProperty = uic.getResultOrInvoke(myVeryUniqueValidationProperty, @string.Join(", ", Model.SubscriptionArguments));
+                    myVeryUniqueValidationProperty = await uic.getResultOrInvoke(myVeryUniqueValidationProperty, @string.Join(", ", Model.SubscriptionArguments));
                 </text>
             }
 
-            if (@Json.Serialize(Model.Debug) || uic.signalR.Debug) {
+            if (@Json.Serialize(Model.Debug) || uic.signalR.debug) {
                 let color = uic.signalR.color(myVeryUniqueValidationProperty);
                 console.groupCollapsed('%cSignalR', `color: ${color}`, '@Html.JsEncode(Model.SubscriptionName)', '@Html.JsEncode(Model.Group)');
                 console.log('this', this);
@@ -79,7 +79,7 @@
                     @await Model.Action.InvokeAsync(Component)
                 }
             } finally{
-                if (@Json.Serialize(Model.Debug) || uic.signalR.Debug) {
+                if (@Json.Serialize(Model.Debug) || uic.signalR.debug) {
                     console.groupEnd();
                 }
             }
@@ -87,7 +87,7 @@
 
         };
         uic.partial.onDispose('#@id', ()=>{
-            uic.signalR.leaveGroupAsync(@Model.Group);
+            uic.signalR.leaveGroupAsync(@Html.JsEncode(Model.Group, "'"));
             connection.off('@Model.SubscriptionName', aVeryUniqueParameterNameThatNobodyWillAccidentallyUse);
         });
 
@@ -95,7 +95,7 @@
         @if(Model.SubscriptionArguments.Any()){
             <text>
             uic.signalR.whenConnected(()=>{
-                uic.signalR.joinGroupAsync(@Model.Group);
+                uic.signalR.joinGroupAsync(@Html.JsEncode(Model.Group, "'"));
                 connection.on('@Model.SubscriptionName', (@(string.Join(", ", Model.SubscriptionArguments)))=>{ aVeryUniqueParameterNameThatNobodyWillAccidentallyUse.call($('#@id')[0], @(string.Join(", ", Model.SubscriptionArguments)));});
             });
                 
@@ -103,7 +103,7 @@
         } else{
             <text>
             uic.signalR.whenConnected(()=>{
-                uic.signalR.joinGroupAsync(@Model.Group);
+                uic.signalR.joinGroupAsync(@Html.JsEncode(Model.Group, "'"));
                 connection.on('@Model.SubscriptionName', () =>{aVeryUniqueParameterNameThatNobodyWillAccidentallyUse.call($('#@id')[0]);});
             });
                 

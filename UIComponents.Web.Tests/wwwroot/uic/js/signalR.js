@@ -9,7 +9,7 @@
             uic.signalR._joinedGroups[groupName]++;
         }
         else {
-            await connection.invoke("Join", groupName);
+            await connection.invoke("JoinGroup", groupName);
             uic.signalR._joinedGroups[groupName] = 1;
         }
     },
@@ -26,7 +26,7 @@
         if (uic.signalR._joinedGroups[groupName] !== 0)
             return;
 
-        await connection.invoke("Leave", groupName);
+        await connection.invoke("LeaveGroup", groupName);
     },
     //Method is called when connection with signalR or when already connected
     whenConnected: function (method) {
