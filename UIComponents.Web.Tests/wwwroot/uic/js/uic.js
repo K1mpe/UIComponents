@@ -255,18 +255,19 @@ uic.markChangesOptions = {
                 cloneRight = await element.parent().triggerHandler('uic-getClone');
             }
             let translations = [
-                { ResourceKey: "MarkChanges.CurrentValue" },
-                { ResourceKey: "MarkChanges.ServerValue" }];
+                TranslatableSaver.Save("MarkChanges.CurrentValue"),
+                TranslatableSaver.Save("MarkChanges.ServerValue")
+            ];
             let translationResults = await uic.translation.translateMany(translations);
             let colLeft = $('<div>', { class: "col old-val" }).append(cloneLeft)
-                .append($('<button>', { class: "btn btn-default" }).text(translationResults["MarkChanges.CurrentValue"]).on('click', (ev) => {
+                .append($('<button>', { class: "btn btn-default mt-2" }).text(translationResults["MarkChanges.CurrentValue"]).on('click', (ev) => {
                     let value = uic.getValue(colLeft);
                     uic.setValue(element, value[elName]);
                     uic.markChangesOptions.removeMark(element, visualElement, mark);
                     modal.modal('hide');
                 }));
             let colRight = $('<div>', { class: "col new-val" }).append(cloneRight)
-                .append($('<button>', { class: "btn btn-default" }).text(translationResults["MarkChanges.ServerValue"]).on('click', (ev) => {
+                .append($('<button>', { class: "btn btn-default mt-2" }).text(translationResults["MarkChanges.ServerValue"]).on('click', (ev) => {
                     let value = uic.getValue(colRight);
                     uic.setValue(element, value[elName]);
                     uic.markChangesOptions.removeMark(element, visualElement, mark);

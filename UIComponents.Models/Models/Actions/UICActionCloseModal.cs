@@ -12,13 +12,16 @@ public class UICActionCloseModal : UIComponent, IUICAction
     #endregion
 
     #region Ctor
-    public UICActionCloseModal() : base()
+    public UICActionCloseModal(string selector = null) : base()
     {
-
+        Selector = selector;
     }
     #endregion
 
     #region Properties
+
+    public string Selector { get; set; }
+
     /// <summary>
     /// This function is called where there is no modal available to close
     /// </summary>

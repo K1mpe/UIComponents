@@ -191,7 +191,7 @@
         let busyElements = 0;
         $('#@id').on('uic-add', async (ev, value)=>{
         let instanceList = $('#@id > .input-instances');
-        let currentChildCount = instanceList.children().length;
+        let currentChildCount = instanceList.children(':not(.field-validation-valid)').length;
 
         counter++;
         @switch(Model.CreateNewInstanceMethod)

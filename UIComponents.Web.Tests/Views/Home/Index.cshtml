@@ -2,6 +2,7 @@
 @using UIComponents.Abstractions.DataTypes.RecurringDates.Selectors
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Abstractions.Models
+@using UIComponents.Generators.Helpers
 @using UIComponents.Generators.Interfaces;
 @using UIComponents.Models.Models.Buttons
 @using UIComponents.Models.Models.Card;
@@ -52,7 +53,7 @@
                     Renderer = UICCardWithTabsRenderer.Vertical
                 }
         .Add(new UICCard(new Translatable("Card.Create"))
-            .Add(await UIC.CreateComponentAsync(testModel, new()
+            .Add(await UIC.CreateComponentAsync(testModel, new UICOptions()
                     {
                         ReplaceSaveButtonWithCreateButton = true,
                         ShowEditButton = false,

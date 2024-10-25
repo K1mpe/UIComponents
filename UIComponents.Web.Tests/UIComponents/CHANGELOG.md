@@ -1,3 +1,17 @@
+# 2024-10-25 (1.3.03)
+- Partial is disposable
+- preventing multiple signalR subscriptions
+- prevent empty scripts
+- bugfix delayed action
+
+
+# 2024-10-17 (1.3.02)
+- Bugfix Input list with array
+- GeneratorHelper.PropertyInputGenerator added
+- Renderconditions now take itself as argument
+- UICForm checks for conflicts before submitting form
+- TranslatableSaver included in javascript
+
 # 2024-10-17 (1.3.00)
 - Rename FetchComponent -> UICFetchComponent
 - Rename ValidationErrors -> UICValidationErrors

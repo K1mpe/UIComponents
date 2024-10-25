@@ -87,7 +87,10 @@
             $('#@id').on('awaitSubmit', async (ev) =>{
                 ev.preventDefault();
                 ev.stopPropagation();
-                
+
+                if(!await uic.form.warnUserForConflicts($('#@id')))
+                    return;
+
                 @await Model.Submit.InvokeAsync(Component)
 
                 let myResult = await $('#@id').triggerHandler('uic-afterSubmit', @Html.Raw(Model.Submit.ResultName));

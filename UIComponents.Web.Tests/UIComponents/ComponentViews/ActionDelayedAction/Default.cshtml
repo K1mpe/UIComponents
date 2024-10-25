@@ -16,6 +16,7 @@
 @using UIComponents.Models.Models.Inputs;
 @using UIComponents.Models.Models.Texts;
 @using UIComponents.Web.Extensions;
+@using static UIComponents.Models.Models.Actions.UICActionDelayedAction
 @model UICActionDelayedAction
 @{
     string id = Guid.NewGuid().ToString("n").Substring(0, 6);
@@ -29,9 +30,29 @@
 }
 else
 {
-    <text>
-        uic.delayedAction.run('@id', @Json.Serialize(Model.Miliseconds), async ()=>{
-            @await Model.Action.InvokeAsync(Component)
-        });
-    </text>
+    switch (Model.DelayType)
+    {
+        case DelayedActionType.Debounce:
+            <text>
+                uic.delayedAction.debounce('@id', async()=>{
+                    @await Model.Action.InvokeAsync(Component)
+                }, @Json.Serialize(Model.Miliseconds));
+            </text>
+            break;
+
+        case DelayedActionType.Delay:
+            <text>
+                uic.delayedAction.delayed('@id', async()=>{
+                    @await Model.Action.InvokeAsync(Component)
+                    }, @Json.Serialize(Model.Miliseconds));
+            </text>
+            break;
+        case DelayedActionType.Throttle:
+            <text>
+                uic.delayedAction.throttle('@id', async()=>{
+                    @await Model.Action.InvokeAsync(Component)
+                    }, @Json.Serialize(Model.Miliseconds));
+            </text>
+            break;
+    }
 }

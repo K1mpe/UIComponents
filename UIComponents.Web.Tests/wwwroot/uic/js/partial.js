@@ -10,6 +10,7 @@
         console.log(`$('#${id}').triggerHandler('uic-source') => returns the controller and action of this request`);
         console.log(`$('#${id}').on('uic-before-reload', () => {...}) => triggered before the reload starts`);
         console.log(`$('#${id}').on('uic-reloaded', () => {...}) => triggered after the reload has finished`);
+        console.log(`$('#${id}').on('uic-disposed', () => {...}) => triggered when reload request is started, used to dispose all child plugins`);
     },
 
     addReloadCondition: function (partialId, condition) {
@@ -28,6 +29,10 @@
                 return false;
         }
         return true;
+    },
+
+    onDispose: function(element, callback){
+      $(element).parents('.disposable').on('uic-dispose', callback);   
     },
 
     hideLoadingOverlay: function (element = null) {
@@ -73,7 +78,6 @@
         else
             uic.partial._partialData[id].tryReload = true;
     },
-
     _init: function (partial, initialLoad, reloadDelay) {
         let id = partial.attr('id');
         if (!id.length)
@@ -112,7 +116,6 @@
             }
         })
     },
- 
     _partialData: {},
     _reloadPartial: async function (partial, showOverlay, getDatafunc) {
         if (!partial.length)
@@ -122,7 +125,10 @@
         if (showOverlay)
             uic.partial.showLoadingOverlay(partial);
 
-        let result = await getDatafunc();
+        let resultPromise = getDatafunc();
+
+        partial.trigger('uic-dispose');
+        let result = await resultPromise;
 
         //Remove the Select2 container when reloading the partial containing the select source
         let select2Container = $('.select2-container');

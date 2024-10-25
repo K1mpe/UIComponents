@@ -290,7 +290,9 @@ public static class UICExtensions
 
         foreach (var style in styles)
         {
-            styleTag.InnerHtml.AppendHtml(await style.InvokeAsync(component));
+            var styleContent = await style.InvokeAsync(component);
+            if(!string.IsNullOrWhiteSpace(styleContent.RenderHtmlContent()))
+                styleTag.InnerHtml.AppendHtml(styleContent);
         }
         var styleString = styleTag.InnerHtml.RenderHtmlContent().Replace("<style>", "").Replace("</style>", "");
         styleTag.InnerHtml.Clear();
@@ -298,14 +300,26 @@ public static class UICExtensions
 
         if (scripts.Any())
         {
-            scriptTag.InnerHtml.Append("$(document).ready(function(){");
-            foreach (var script in scripts)
+            List<IHtmlContent> scriptContents = new();
+            foreach(var script in scripts)
             {
-                scriptTag.InnerHtml.Append("{");
-                scriptTag.InnerHtml.AppendHtml(await script.InvokeAsync(component));
-                scriptTag.InnerHtml.Append("}");
+                var scriptContent = await script.InvokeAsync(component);
+                if (!string.IsNullOrWhiteSpace(scriptContent.RenderHtmlContent().Replace("<script>", "").Replace("</script>", "")))
+                    scriptContents.Add(scriptContent);
             }
-            scriptTag.InnerHtml.Append("});");
+
+            if (scriptContents.Any())
+            {
+                scriptTag.InnerHtml.Append("$(document).ready(function(){");
+                foreach (var script in scriptContents)
+                {
+                    scriptTag.InnerHtml.Append("{");
+                    scriptTag.InnerHtml.AppendHtml(script);
+                    scriptTag.InnerHtml.Append("}");
+                }
+                scriptTag.InnerHtml.Append("});");
+            }
+            
 
             var scriptString = scriptTag.InnerHtml.RenderHtmlContent().Replace("<script>", "").Replace("</script>", "");
             scriptTag.InnerHtml.Clear();

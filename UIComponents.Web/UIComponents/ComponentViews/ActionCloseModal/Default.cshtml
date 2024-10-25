@@ -18,10 +18,12 @@
 @model UICActionCloseModal
 
 @{
-    string identifier = Model.GetAttribute("identifier");
+    string identifier = Model.Selector;
+    if(string.IsNullOrWhiteSpace(identifier))
+        identifier = Model.GetAttribute("identifier");
     if (string.IsNullOrEmpty(identifier))
         identifier = Model.GetAttribute("formidentifier");
-    if(string.IsNullOrEmpty(identifier))
+    if (string.IsNullOrEmpty(identifier))
         throw new Exception("Identifier for Actions not defined");
 }
 

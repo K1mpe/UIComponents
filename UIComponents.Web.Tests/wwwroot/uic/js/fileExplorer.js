@@ -301,14 +301,14 @@
     createDirectory: async function (container) {
         container = container.closest('.file-explorer-container');
         let translations = await uic.translation.translateMany([
-            { ResourceKey: "FileExplorer.CreateDirectory.Title", DefaultValue: "Create Directory" },
-            { ResourceKey: "FileExplorer.CreateDirectory.Message", DefaultValue: "Give a name for the new directory" },
-            { ResourceKey: "FileExplorer.CreateDirectory.Create", DefaultValue: "Create" },
-            { ResourceKey: "Button.Cancel", DefaultValue: "Cancel" },
-
+            TranslatableSaver.Save("FileExplorer.CreateDirectory.Title", "Create Directory"),
+            TranslatableSaver.Save("FileExplorer.CreateDirectory.Message", "Give a name for the new directory"),
+            TranslatableSaver.Save("FileExplorer.CreateDirectory.Create", "Create"),
+            TranslatableSaver.Save("Button.Cancel"),
         ]);
 
-        Swal.fire({
+        Swal.fire($.extend(true, {}, uic.defaults.swal,
+        {
             title: translations["FileExplorer.CreateDirectory.Title"],
             text: translations["FileExplorer.CreateDirectory.Message"],
             showCloseButton: true,
@@ -318,7 +318,7 @@
             allowEscapeKey: true,
             confirmButtonText: translations["FileExplorer.CreateDirectory.Create"],
             cancelButtonText: translations["Button.Cancel"],
-        }).then(async result => {
+        })).then(async result => {
             if (!result.isConfirmed)
                 return;
             let dirName = result.value;
@@ -351,11 +351,12 @@
         }
         if (files.length == 1) {
             let translations = await uic.translation.translateMany([
-                { ResourceKey: "FileExplorer.DeleteOneFile", DefaultValue: "Are you sure you want to delete this file?" },
-                { ResourceKey: "Button.Delete", DefaultValue: "Delete" },
-                { ResourceKey: "Button.Cancel", DefaultValue: "Cancel" },
-            ])
-            Swal.fire({
+                TranslatableSaver.Save("FileExplorer.DeleteOneFile", "Are you sure you want to delete this file?"),
+                TranslatableSaver.Save("Button.Delete", "Delete"),
+                TranslatableSaver.Save("Button.Cancel", "Cancel")
+            ]);
+            Swal.fire($.extend(true, {}, uic.defaults.swal, 
+            {
                 title: translations["FileExplorer.DeleteOneFile"],
                 text: files[0].RelativePath,
                 showCloseButton: true,
@@ -364,7 +365,7 @@
                 allowEscapeKey: true,
                 confirmButtonText: translations["Button.Delete"],
                 cancelButtonText: translations["Button.Cancel"],
-            }).then(async result => {
+            })).then(async result => {
                 if (!result.isConfirmed)
                     return;
                 await uic.getpost.post(`/${controller}/DeleteFiles`, { pathModel: files });
@@ -372,11 +373,12 @@
             });
         } else {
             let translations = await uic.translation.translateMany([
-                { ResourceKey: "FileExplorer.DeleteManyFile", DefaultValue: "Are you sure you want to delete {0} files?", Arguments:[files.length] },
-                { ResourceKey: "Button.Delete", DefaultValue: "Delete" },
-                { ResourceKey: "Button.Cancel", DefaultValue: "Cancel" },
+                TranslatableSaver.Save("FileExplorer.DeleteManyFile", "Are you sure you want to delete {0} files?", files.length),
+                TranslatableSaver.Save("Button.Delete", "Delete"),
+                TranslatableSaver.Save("Button.Cancel", "Cancel")
             ])
-            Swal.fire({
+            Swal.fire($.extend(true, {}, uic.defaults.swal, 
+{
                 title: translations["FileExplorer.DeleteManyFile"],
                 showCloseButton: true,
                 showCancelButton: true,
@@ -384,7 +386,7 @@
                 allowEscapeKey: true,
                 confirmButtonText: translations["Button.Delete"],
                 cancelButtonText: translations["Button.Cancel"],
-            }).then(async result => {
+            })).then(async result => {
                 if (!result.isConfirmed)
                     return;
                 await uic.getpost.post(`/${controller}/DeleteFiles`, { pathModel: files });
@@ -633,12 +635,13 @@
             RelativePath: item.attr('data-relativepath')
         };
         let translations = await uic.translation.translateMany([
-            { ResourceKey: "FileExplorer.Rename.Title", DefaultValue: "Rename file or directory" },
-            { ResourceKey: "Button.Rename", DefaultValue: "Rename" },
-            { ResourceKey: "Button.Cancel", DefaultValue: "Cancel" }
+            TranslatableSaver.Save("FileExplorer.Rename.Title", "Rename file or directory"),
+            TranslatableSaver.Save("Button.Rename", "Rename"),
+            TranslatableSaver.Save("Button.Cancel", "Cancel")
         ]);
 
-        Swal.fire({
+        Swal.fire($.extend(true, {}, uic.defaults.swal,
+        {
             title: translations["FileExplorer.Rename.Title"],
             text: file.RelativePath,
             showCloseButton: true,
@@ -648,7 +651,7 @@
             allowEscapeKey: true,
             confirmButtonText: translations["Button.Rename"],
             cancelButtonText: translations["Button.Cancel"],
-        }).then(async result => {
+        })).then(async result => {
             if (!result.isConfirmed)
                 return;
             let newFileName = result.value;

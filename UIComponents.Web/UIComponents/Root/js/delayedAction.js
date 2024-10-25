@@ -33,6 +33,7 @@
 
         uic.delayedAction._running[key] = existing;
     },
+    
     //This function will execute the first time and block following requests.
     //When the timer runs out and there are requests blocked, the function is called again
     throttle: function (key, action, timeout = 1000) {

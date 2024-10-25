@@ -41,7 +41,7 @@
                 buttonsStyling: false
             });
 
-        @(guid).fire({
+        @(guid).fire($.extend(true, {}, uic.defaults.swal, {
                 title: @await Html.TranslateJs(L, Model.Title, "'"),
                 text: @await Html.TranslateJs(L, Model.Message, "'"),
                 showCloseButton: @Json.Serialize(canCancel && Model.ShowClosebutton),
@@ -64,7 +64,7 @@
                         }
                     });
                 }
-                    }).then(async (result) => {
+            })).then(async (result) => {
                 if (result.isConfirmed) {
         @await Model.ButtonSubmit.OnClick.InvokeAsync(Component)
                             } else {

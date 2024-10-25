@@ -626,7 +626,7 @@ i.uic-value-changed {
     opacity: 0.25;
 }
 
-.uic .form-column > .custom-switch {
+.uic .form-column > .custom-switch, .uic [class^=col] > .form-group .custom-switch {
     margin-left: $input-padding-y;
     padding-top: add($input-padding-y, $input-border-width);
     padding-bottom: add($input-padding-y, $input-border-width);

@@ -88,5 +88,16 @@ namespace UIComponents.Generators.Services
             Directory.Move(sourceDirectory, targetFile);
             return Task.CompletedTask;
         }
+
+        public async Task AddFile(string filepath, Stream stream)
+        {
+            if(File.Exists(filepath))
+                await DeleteFileAsync(filepath);
+
+            using (var filestream = new FileStream(filepath, FileMode.Create, FileAccess.Write))
+            {
+                await stream.CopyToAsync(filestream);
+            }
+        }
     }
 }

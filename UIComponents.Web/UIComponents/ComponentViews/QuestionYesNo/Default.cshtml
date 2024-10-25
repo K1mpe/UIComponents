@@ -41,7 +41,7 @@
             buttonsStyling: false
         });
 
-        @(guid).fire({
+        @(guid).fire($.extend(true, {}, uic.defaults.swal, {
             title: @await Html.TranslateJs(L, Model.Title, "'"),
             text: @await Html.TranslateJs(L, Model.Message, "'"),
             icon: @Html.JsEncode(Model.Icon?.ToString().ToLower() ?? string.Empty, "'"),
@@ -55,7 +55,7 @@
             confirmButtonText: `@await Model.ButtonSubmit.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonSubmit.ButtonText, string.Empty) @await Model.ButtonSubmit.AppendButtonIcon.InvokeAsync(Component)`,
             denyButtonText: `@await Model.ButtonNo.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonNo.ButtonText, string.Empty) @await Model.ButtonNo.AppendButtonIcon.InvokeAsync(Component)`,
             cancelButtonText: `@await Model.ButtonCancel.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonCancel.ButtonText, string.Empty) @await Model.ButtonCancel.AppendButtonIcon.InvokeAsync(Component)`,
-        }).then(async (result)=>{
+        })).then(async (result)=>{
             if(result.isConfirmed){
                 @await Model.ButtonSubmit.OnClick.InvokeAsync(Component)
             } else if(result.isDenied){

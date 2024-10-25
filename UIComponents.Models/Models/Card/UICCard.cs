@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Extensions;
+﻿using System.ComponentModel;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
 using UIComponents.Models.Models.Buttons;
 
@@ -18,7 +19,7 @@ public class UICCard : UIComponent, IUICCardLike
     }
     public UICCard() : base()
     {
-        RenderConditions.Add(() => this.RenderWithoutBodyContent || this.Body.HasValue());
+        RenderConditions.Add((self) => ((UICCard)self).RenderWithoutBodyContent || ((UICCard)self).Body.HasValue());
     }
     #endregion
 

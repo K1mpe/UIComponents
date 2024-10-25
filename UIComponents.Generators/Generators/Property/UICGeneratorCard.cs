@@ -37,8 +37,6 @@ public class UICGeneratorCard : UICGeneratorProperty
             card.Body = new();
             card.Footer = InternalHelper.CloneObject(args.Options.SubClassesInCard.Footer, false);
             card.Header = InternalHelper.CloneObject(args.Options.SubClassesInCard.Header, false);
-            card.RenderConditions.Clear();
-            card.RenderConditions.Add(card.Body.HasValue);
 
             if (card.Header == null)
                 card.Header = new UICCardHeader();

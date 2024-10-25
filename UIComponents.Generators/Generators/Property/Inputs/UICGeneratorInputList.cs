@@ -39,7 +39,10 @@ public class UICGeneratorInputList : UICGeneratorProperty
                 Parent = args.CallCollection.Caller,
                 Value = values.ToArray()
             };
-            input.ItemType = args.PropertyType.GetGenericArguments()[0];
+            if (args.PropertyType.IsArray)
+                input.ItemType = args.PropertyType.GetElementType();
+            else
+                input.ItemType = args.PropertyType.GetGenericArguments()[0];
 
             var type = input.ItemType;
             object value = null;

@@ -34,7 +34,6 @@ window.connected = false;
 $(document).ready(async function () {
     "use strict";
 
-
     // SignalR
     window.connection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Warning)
@@ -57,7 +56,7 @@ $(document).ready(async function () {
         EventManager.publish('connected', connection);
     });
 
-    await connection.start().then(function () {
+    connection.start().then(function () {
         window.connected = true;
         EventManager.publish('connected', connection);
     }).catch(function (err) {

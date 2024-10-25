@@ -117,6 +117,7 @@ else
         }
     </div>
     Model.AddScript(@<text>
+        uic.partial.onDispose('#@id', ()=> $('#@id').carousel('dispose'));
         $('#@id').carousel();
     </text>);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -336,6 +337,18 @@ namespace UIComponents.Web.Tests.Controllers
         {
             var now = DateTime.Now;
             return Json(now.ToString("yyyyMMddHH"));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Translate()
+        {
+            var translations = await TranslatableSaver.LoadFromUICAsync();
+            await translations.AskCurrentUserToTranslate(_uicQuestionService, "NL");
+
+            var dir = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.FullName;
+            await TranslatableSaver.SaveToFileAsync(translations, $"{dir}\\UIComponents.Web\\UIComponents\\Translations.json", false, false);
+
+            return Json(true);
         }
     }
 }

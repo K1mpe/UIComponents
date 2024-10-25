@@ -33,14 +33,15 @@ public class UICFileExplorerController : Controller, IUICFileExplorerController
     private readonly IUICFileExplorerService _fileExplorerService;
     private readonly IUICFileExplorerPathMapper _pathMapper;
     private readonly IUICFileExplorerPermissionService _permissionService;
-
-    public UICFileExplorerController(ILogger<UICFileExplorerController> logger, IUICFileExplorerService fileExplorerService, IUICFileExplorerPathMapper pathMapper, IUICLanguageService languageService, IUICFileExplorerPermissionService permissionService = null)
+    private readonly IUICFileExplorerExecuteActions _actions;
+    public UICFileExplorerController(ILogger<UICFileExplorerController> logger, IUICFileExplorerService fileExplorerService, IUICFileExplorerPathMapper pathMapper, IUICLanguageService languageService, IUICFileExplorerExecuteActions actions, IUICFileExplorerPermissionService permissionService = null)
     {
         _logger = logger;
         _fileExplorerService = fileExplorerService;
         _pathMapper = pathMapper;
         _languageService = languageService;
         _permissionService = permissionService;
+        _actions = actions;
     }
 
     public virtual async Task<IActionResult> CopyFiles(RelativePathModel[] FromPath, RelativePathModel ToPath)
@@ -270,7 +271,7 @@ public class UICFileExplorerController : Controller, IUICFileExplorerController
                     return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFile", "You do not have access to upload file in {0}", directoryPathModel.RelativePath));
                 }
             }
-            await UICFileExplorerHelper.UploadFilesFromDropzoneStream(HttpContext, absolutePath, _logger);
+            await UICFileExplorerHelper.UploadFilesFromDropzoneStream(HttpContext, absolutePath, (target, stream) => _actions.AddFile(target, stream), _logger);
 
             return Json(true);
         }

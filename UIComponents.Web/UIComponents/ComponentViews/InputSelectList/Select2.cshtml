@@ -28,7 +28,7 @@
 
     string id = Model.GetId();
 
-    if (!string.IsNullOrEmpty(Model.Value))
+    if (!string.IsNullOrEmpty(Model.Value) ||true)
     {
         Model.SelectListItems.FirstOrDefault(x => (x.Value?.ToString() ?? string.Empty) == Model.Value, new()).Selected = true;
         Model.AddAttribute("value", Model.Value);
@@ -70,6 +70,8 @@
         return $('#@id').val() || $('#@id').attr('value');
         });
 
+        uic.partial.onDispose('#@id', ()=> $('#@id').select2('destroy'));
+
         $('#@id').select2({
         //theme: 'bootstrap4',
         minimumResultsForSearch: @Json.Serialize(Model.SearchableIfMinimimResults),
@@ -99,9 +101,11 @@
         uic.delayedAction.run('OpenDropdown-@id', 100, ()=>{$('#@id').triggerHandler('uic-open')});
         })
         $('#@id').on('uic-setValue', function (event, value) {
-        event.stopPropagation();
-        $(this).attr('value', '');
-        $(this).val(value).change();
+            event.stopPropagation();
+            $(this).attr('value', '');
+            $(this).val(value).change();
+            if(!$(this).find(`option[value="${value}"]`).length)
+                $(this).attr('value', value);
         });
 
         $('#@id').on('focus', ()=>{

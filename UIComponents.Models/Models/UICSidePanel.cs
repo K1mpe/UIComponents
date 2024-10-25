@@ -26,7 +26,7 @@ public class UICSidePanel : UIComponent
     public UICSidePanel()
     {
         //The side panel cannot render if the main content does not render
-        RenderConditions.Add(() => MainContent.HasValue());
+        RenderConditions.Add((self) => ((UICSidePanel)self).MainContent.HasValue());
     }
 
     #endregion

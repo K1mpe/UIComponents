@@ -112,14 +112,16 @@ public static class TranslationDefaults
 
     public static Func<PropertyInfo, UICPropertyType?, Translatable> TranslateProperty = (prop, uicPropType) =>
     {
-        var translateAttr = prop.GetCustomAttribute<DisplayNameAttribute>();
+        var translateAttr = prop.GetInheritAttribute<DisplayNameAttribute>();
         if (translateAttr != null)
             return translateAttr.DisplayName;
 
-        if (uicPropType != null && uicPropType == UICPropertyType.SelectList && prop.Name.EndsWith("Id") && prop.Name != "Id")
-            return new Translatable($"{prop.DeclaringType!.Name}.Field.{prop.Name.Substring(0, prop.Name.Length - 2)}");
+        UICInheritAttribute.TryGetInheritPropertyInfo(prop, out var inheritProp);
+        
+        if (uicPropType != null && uicPropType == UICPropertyType.SelectList && inheritProp.Name.EndsWith("Id") && inheritProp.Name != "Id")
+            return new Translatable($"{inheritProp.DeclaringType!.Name}.Field.{inheritProp.Name.Substring(0, inheritProp.Name.Length - 2)}");
 
-        return new Translatable($"{prop.DeclaringType!.Name}.Field.{prop.Name}");
+        return new Translatable($"{inheritProp.DeclaringType!.Name}.Field.{inheritProp.Name}");
     };
 
 

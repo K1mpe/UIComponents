@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UIComponents.Abstractions.Interfaces.Services;
+﻿using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Models.Models.Questions;
+using static UIComponents.Abstractions.Varia.TranslatableSaver;
 
-namespace UIComponents.Generators.Services
+namespace UIComponents.Models.Extensions
 {
     public static class UICQuestionServiceExtensions
     {
@@ -38,6 +33,21 @@ namespace UIComponents.Generators.Services
         public static async Task<UICQuestionResult<TResult>> TryAskQuestion<TResult>(this IUICQuestionService questionService, UICQuestionSelectEnum<TResult> question, TimeSpan timeout, List<object> userIds) where TResult : Enum
         {
             return await questionService.TryAskQuestion<UICQuestionSelectEnum<TResult>, TResult>(question, timeout, userIds);
+        }
+
+        /// <summary>
+        /// Ask the current user to translate the missing translations
+        /// </summary>
+        public static Task AskCurrentUserToTranslate(this List<TranslatableXmlField> translatables, IUICQuestionService questionService, string languageCode)
+        {
+            return translatables.TranslateMissing("NL", async (translatable) =>
+            {
+                var question = UICQuestionText.Create(translatable.Key, translatable.TranslationsList.FirstOrDefault()?.Translation ?? string.Empty, questionService);
+                var response = await questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1));
+                if (response.IsValid)
+                    return response.Result;
+                return null;
+            });
         }
     }
 }

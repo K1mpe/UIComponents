@@ -33,7 +33,7 @@ public abstract class UIComponent : IUIComponent, IUICConditionalRender, IUICHas
         {
             foreach (var condition in RenderConditions)
             {
-                if (condition() == false)
+                if (condition(this) == false)
                     return false;
             }
             return _render;
@@ -41,7 +41,14 @@ public abstract class UIComponent : IUIComponent, IUICConditionalRender, IUICHas
         set => _render = value;
     }
 
-    public List<Func<bool>> RenderConditions { get; set; } = new();
+    /// <summary>
+    /// If one of these functions returns false, the component cannot be rendered.
+    /// <br>This function takes itself as argument, this is safer than using <see href="this"/></br>
+    /// </summary>
+    /// <remarks>
+    /// If you use <see href="this"/> instead of the variable, and you create a deep copy from the component, these conditions still check on the original component and not the copied one.
+    /// </remarks>
+    public List<Func<UIComponent,bool>> RenderConditions { get; set; } = new();
 
     public virtual string RenderLocation { get => this.CreateDefaultIdentifier(); }
 

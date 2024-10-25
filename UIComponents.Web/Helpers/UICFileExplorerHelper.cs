@@ -160,7 +160,7 @@ namespace UIComponents.Web.Helpers
         /// <param name="httpContext"></param>
         /// <param name="targetDirectory"></param>
         /// <returns></returns>
-        public static async Task UploadFilesFromDropzoneStream(HttpContext httpContext, string targetDirectory, ILogger logger = null)
+        public static async Task UploadFilesFromDropzoneStream(HttpContext httpContext, string targetDirectory, Func<string, Stream, Task> saveUploadFunc, ILogger logger = null)
         {
             var form = httpContext.Request.Form;
             if (form.ContainsKey("dzchunkindex"))
@@ -201,10 +201,11 @@ namespace UIComponents.Web.Helpers
                         // Check if this is the last chunk, if so we can finalize the upload
                         if (chunkIndex == totalChunks-1)
                         {
-                            // Optional: Move the file to the final destination, or perform any processing needed
-                            if (File.Exists(finalFilePath))
-                                File.Delete(finalFilePath);
-                            System.IO.File.Move(filePath, finalFilePath);
+                            using(var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                            {
+                                await saveUploadFunc(finalFilePath, stream);
+                            }
+                            File.Delete(filePath);
 
                             if(StartUploadingFiles.TryGetValue(finalFilePath, out var dateTime))
                             {
@@ -233,7 +234,6 @@ namespace UIComponents.Web.Helpers
                         throw;
                     }
                 }
-
             }
             else
             {
@@ -247,9 +247,10 @@ namespace UIComponents.Web.Helpers
                     {
                         await logger.LogFunction("Uploading file", true, async () =>
                         {
-                            using (var fileStream = new FileStream(filepath, FileMode.Create, FileAccess.Write))
+                            using (var memoryStream = new MemoryStream())
                             {
-                                await file.CopyToAsync(fileStream);
+                                await file.CopyToAsync(memoryStream);
+                                await saveUploadFunc(filepath, memoryStream);
                             }
                         }, LogLevel.Information);
                     }

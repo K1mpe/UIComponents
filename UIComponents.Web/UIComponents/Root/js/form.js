@@ -1,5 +1,5 @@
 ﻿uic.form = uic.form || {
-    help: function(id){
+    help: function (id) {
         console.log(`$('#${id}').trigger('submit') => Submit this form`);
         console.log(`await $('#${id}').triggerHandler('awaitSubmit') => Submit this form and return the result`);
     },
@@ -138,6 +138,32 @@
         }
     },
 
+    //Alert the user that there are unsaved changes before enabling save
+    warnUserForConflicts: async function (form) {
+        //stop if no changes are found
+        let nrOfConflicts = form.find('.uic-value-changed').length;
+        if (!nrOfConflicts)
+            return true;
+
+        var translations = await uic.translation.translateMany([
+            TranslatableSaver.Save("UIC.Form.SaveFormWithConficts.Title", "There are still conflicts", nrOfConflicts),
+            TranslatableSaver.Save("UIC.Form.SaveFormWithConficts.Message", "Do you want to ignore these conflicts?"),
+            TranslatableSaver.Save("Button.Continue"),
+            TranslatableSaver.Save("Button.Cancel"),
+        ]);
+
+        let result = await Swal.fire($.extend(true, {}, uic.defaults.swal,
+            {
+                title: translations["UIC.Form.SaveFormWithConficts.Title"],
+                text: translations["UIC.Form.SaveFormWithConficts.Message"],
+                showCloseButton: true,
+                showCancelButton: true,
+                confirmButtonText: translations["Button.Continue"],
+                cancelButtonText: translations["Button.Cancel"],
+            }));
+        return result.isConfirmed;
+    },
+
     setPopoverOnClickTooltipIcon: function () {
         $('.tooltip-icon').each((index, item) => {
             let title = $(item).parent().attr('title');
@@ -148,6 +174,8 @@
                 });
                 $(item).attr('title', null);
             }
+            $(item).on('click', ev => ev.preventDefault());
+            uic.partial.onDispose(item, () => $(item).popover('dispose'));
         })
     },
     setThreestateToggles: function ($element) {
@@ -189,45 +217,45 @@
                     case 0:
                         break;
                     case 1: //text assending
-                        selectListItems = selectListItems.sort((a, b) =>{
+                        selectListItems = selectListItems.sort((a, b) => {
                             let textA = a.Text?.toUpperCase() || '';
                             let textB = b.Text?.toUpperCase() || '';
-                            if(textA > textB)
+                            if (textA > textB)
                                 return 1;
-                            else if(textB > textA)
+                            else if (textB > textA)
                                 return -1;
                             return 0;
                         });
                         break;
                     case 2:  //text desending
-                        selectListItems = selectListItems.sort((a, b) =>{
+                        selectListItems = selectListItems.sort((a, b) => {
                             let textA = a.Text?.toUpperCase() || '';
                             let textB = b.Text?.toUpperCase() || '';
-                            if(textA > textB)
+                            if (textA > textB)
                                 return -1;
-                            else if(textB > textA)
+                            else if (textB > textA)
                                 return 1;
                             return 0;
                         });
                         break;
                     case 3: //value assending
-                        selectListItems = selectListItems.sort((a, b) =>{
+                        selectListItems = selectListItems.sort((a, b) => {
                             let valueA = a.Value?.toUpperCase() || '';
                             let valueB = b.Value?.toUpperCase() || '';
-                            if(valueA > valueB)
+                            if (valueA > valueB)
                                 return 1;
-                            else if(valueB > valueA)
+                            else if (valueB > valueA)
                                 return -1;
                             return 0;
                         });
                         break;
                     case 4: //value descending
-                        selectListItems = selectListItems.sort((a, b) =>{
+                        selectListItems = selectListItems.sort((a, b) => {
                             let valueA = a.Value?.toUpperCase() || '';
                             let valueB = b.Value?.toUpperCase() || '';
-                            if(valueA > valueB)
+                            if (valueA > valueB)
                                 return -1;
-                            else if(valueB > valueA)
+                            else if (valueB > valueA)
                                 return 1;
                             return 0;
                         });
@@ -265,7 +293,7 @@
                     if (item.Group != undefined && item.Group != null) {
                         let group = item.Group;
                         let groupEl = results.find(x => x.attr('label') == group.Name);
-                        if (groupEl!= undefined && groupEl.length) {
+                        if (groupEl != undefined && groupEl.length) {
                             groupEl.append(option);
                         } else {
                             groupEl = $('<optgroup>', { label: group.Name });
@@ -295,7 +323,30 @@
     },
     select2: {
         //https://select2.org/searching
-        searchMethod: function (params, data) {
+        searchMethod: function (params, data, ...rest) {
+
+            // If you want to limit the search results, add the data-max-results attribute to the select
+            if (params.maxResultCount == undefined) {
+                try {
+                    let id = $(event.target).attr('aria-controls') || $(event.target).attr('aria-owns');
+                    let select = $(`#${id.split('-')[1]}`);
+                    let maxCount = select.attr('data-max-results');
+                    if (maxCount != null && maxCount != undefined)
+                        params.maxResultCount = Number(maxCount);
+                    else
+                        params.maxResultCount = -1;
+                } catch (error) {
+                    console.error(error);
+                    params.maxResultCount = -1;
+                }
+            }
+            params.currentResultCount = params.currentResultCount || 0;
+
+            if (params.maxResultCount != undefined && params.maxResultCount > 0) {
+                if (params.currentResultCount >= params.maxResultCount)
+                    return null;
+            }
+
             // If there are no search terms, return all of the data
             if ($.trim(params.term) === '') {
                 return data;
@@ -341,6 +392,7 @@
                         if (data.text.length)
                             child.text += `( ${data.text} )`;
 
+                        params.currentResultCount++;
                         childResults.push(child);
                     }
 
@@ -365,6 +417,7 @@
                 }
 
                 if (match) {
+                    params.currentResultCount++;
                     return data;
                 }
                 else {
@@ -471,6 +524,11 @@
     }
 };
 $(document).ready(() => {
+    $(document).on('click', ev => {
+        if ($(ev.target).closest('.tooltip-icon').length)
+            return;
+        $('.tooltip-icon').popover('hide');
+    })
     uic.form.setPopoverOnClickTooltipIcon();
     uic.form.setThreestateToggles($('.three-state-checkbox:not(.configured)'));
 });

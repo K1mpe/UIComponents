@@ -30,18 +30,7 @@
 
     Model.AddScript(@<text>
         let uicSignalRSubscription = async function(){
-        @if (!string.IsNullOrWhiteSpace(Model.Group))
-    {
-        <text>
-            if (connection.state == signalR.HubConnectionState.Connected) {
-            await connection.invoke("JoinGroup", '@Model.Group');
-            }
-            EventManager.subscribe('connected', async () => {
-            await connection.invoke("JoinGroup", '@Model.Group');
-
-            });
-        </text>
-    }
+        
         @if (string.IsNullOrWhiteSpace(Model.SubscriptionName))
     {
         <text>
@@ -94,14 +83,30 @@
                     console.groupEnd();
                 }
             }
+
+
         };
+        uic.partial.onDispose('#@id', ()=>{
+            uic.signalR.leaveGroupAsync(@Model.Group);
+            connection.off('@Model.SubscriptionName', aVeryUniqueParameterNameThatNobodyWillAccidentallyUse);
+        });
+
+
         @if(Model.SubscriptionArguments.Any()){
             <text>
+            uic.signalR.whenConnected(()=>{
+                uic.signalR.joinGroupAsync(@Model.Group);
                 connection.on('@Model.SubscriptionName', (@(string.Join(", ", Model.SubscriptionArguments)))=>{ aVeryUniqueParameterNameThatNobodyWillAccidentallyUse.call($('#@id')[0], @(string.Join(", ", Model.SubscriptionArguments)));});
+            });
+                
             </text>
         } else{
             <text>
+            uic.signalR.whenConnected(()=>{
+                uic.signalR.joinGroupAsync(@Model.Group);
                 connection.on('@Model.SubscriptionName', () =>{aVeryUniqueParameterNameThatNobodyWillAccidentallyUse.call($('#@id')[0]);});
+            });
+                
             </text>
         }
 
@@ -109,12 +114,12 @@
     }
     }
         
-        uicSignalRSubscription();
         $('#@id').on('uic-find-signalR', ()=>{
             if (!$('#@id').length)
                 return;
             console.log('Found SignalR', $('#@id'), '@Html.JsEncode(Model.SubscriptionName)', '@Html.JsEncode(Model.Group)')
         });
+
         $('#@id').on('uic-triggerSignalR', (ev, ...args)=>{
             aVeryUniqueParameterNameThatNobodyWillAccidentallyUse.call($('#@id')[0], args);
         });

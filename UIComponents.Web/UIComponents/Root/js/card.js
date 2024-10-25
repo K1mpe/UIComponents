@@ -36,7 +36,7 @@
             uic.card.toggleCard(card);
         });
 
-        if(window.location.hash.includes('@id'))
+        if(window.location.hash.includes(card.attr('id')))
             setTimeout(()=>{
                 card.trigger('uic-open');
             }, 10);

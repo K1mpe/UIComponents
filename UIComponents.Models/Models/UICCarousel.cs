@@ -14,7 +14,7 @@ namespace UIComponents.Models.Models
         #region Ctor
         public UICCarousel()
         {
-            RenderConditions.Add(() => this.RenderEmpty || Children.Where(x => x.HasValue()).Any());
+            RenderConditions.Add((self) =>((UICCarousel)self).RenderEmpty || ((UICCarousel)self).Children.Where(x => x.HasValue()).Any());
         }
         #endregion
 

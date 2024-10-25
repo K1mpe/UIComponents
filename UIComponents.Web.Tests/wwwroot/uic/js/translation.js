@@ -4,6 +4,10 @@
     //translatable.DefaultValue,
     //translatable.Arguments
     translate: async function (translatable) {
+        if (typeof translatable != 'object')
+            return translatable;
+
+        translatable = uic.translation.mapTranslatable(translatable);
 
         //If the input has no resourceKey, inputting strings will just return the string
         if (translatable == null || translatable.ResourceKey == undefined)
@@ -31,6 +35,11 @@
         let missingTranslations = [];
         for (let i = 0; i < translatables.length; i++) {
             let translatable = translatables[i];
+            if (typeof translatable != 'object')
+                continue;
+
+            translatable = uic.translation.mapTranslatable(translatable);
+
             if (translatable.ResourceKey == undefined)
                 continue;
 
@@ -96,8 +105,64 @@
             }
         }
     },
+
+    //Map alias propertynames to the correct property names.
+    //Valid alternative for 'ResourceKey' => Key, key, K, k
+    //Valid alternative for 'DefaultValue' => Default, default, D, d, Value, value, V, v
+    //Valid alternative for 'Arguments' => Args, args, A, a
+    mapTranslatable: function (translatable) {
+        if (translatable["ResourceKey"] == undefined) {
+            if (translatable["Key"] != undefined)
+                translatable["ResourceKey"] = translatable["Key"];
+            else if (translatable["key"] != undefined)
+                translatable["ResourceKey"] = translatable["key"];
+            else if (translatable["K"] != undefined)
+                translatable["ResourceKey"] = translatable["K"];
+            else if (translatable["k"] != undefined)
+                translatable["ResourceKey"] = translatable["k"];
+        } 
+        if (translatable["DefaultValue"] == undefined) {
+            if (translatable["Default"] != undefined)
+                translatable["DefaultValue"] = translatable["Default"];
+            else if (translatable["default"] != undefined)
+                translatable["DefaultValue"] = translatable["default"];
+            else if (translatable["D"] != undefined)
+                translatable["DefaultValue"] = translatable["D"];
+            else if (translatable["d"] != undefined)
+                translatable["DefaultValue"] = translatable["d"];
+            else if (translatable["Value"] != undefined)
+                translatable["DefaultValue"] = translatable["Value"];
+            else if (translatable["value"] != undefined)
+                translatable["DefaultValue"] = translatable["value"];
+            else if (translatable["V"] != undefined)
+                translatable["DefaultValue"] = translatable["V"];
+            else if (translatable["v"] != undefined)
+                translatable["DefaultValue"] = translatable["v"];
+        }
+        if (translatable["Arguments"] == undefined) {
+            if (translatable["Args"] != undefined)
+                translatable["Arguments"] = translatable["Args"];
+            else if (translatable["args"] != undefined)
+                translatable["Arguments"] = translatable["args"];
+            else if (translatable["A"] != undefined)
+                translatable["Arguments"] = translatable["A"];
+            else if (translatable["a"] != undefined)
+                translatable["Arguments"] = translatable["a"];
+        }
+        
+        return translatable;
+    },
     //The key that is used in the sessionStorage
     _cacheKey: function (resourceKey) {
         return `uic.Translations.${language}.${resourceKey}`
     }
 };
+var TranslatableSaver = TranslatableSaver || {
+    Save: function (key, defaultValue = null , ...args) {
+        return {
+            ResourceKey: key,
+            DefaultValue: defaultValue,
+            Arguments: args
+        };
+    }
+}

@@ -127,7 +127,7 @@
             };
             $('#@id').on('uic-reload', (ev)=>{
                 ev.stopPropagation();
-                @if(Model.DelayedAction != null){
+                @if(Model.DelayedAction != null && Model.DelayedAction.Miliseconds > 0){
                     @await Model.DelayedAction.InvokeAsync(Component)
                 } else{
                      <text>

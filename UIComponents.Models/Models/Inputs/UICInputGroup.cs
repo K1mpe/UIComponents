@@ -17,7 +17,7 @@ public class UICInputGroup : UIComponent, IUISingleRowSupport
     #region Ctor
     public UICInputGroup() : base()
     {
-        RenderConditions.Add(() => Input.HasValue());
+        RenderConditions.Add((self) => ((UICInputGroup)self).RenderWithoutInput || ((UICInputGroup)self).Input.HasValue());
     }
     public UICInputGroup(Translatable label, UICInput input) : this(new UICLabel(label), input)
     {
@@ -49,7 +49,10 @@ public class UICInputGroup : UIComponent, IUISingleRowSupport
     /// </summary>
     public UICSpan Span { get; set; }
 
-
+    /// <summary>
+    /// If the <see cref="Input"/> is not rendered, do you still want to render the inputgroup?
+    /// </summary>
+    public bool RenderWithoutInput { get; set; }
 
     /// <summary>
     /// This is the render page to process this object

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -118,6 +119,7 @@ public static class TranslatableSaver
         }
         foreach (var file in files)
         {
+            
             Console.WriteLine($"Checking file {file}");
             try
             {
