@@ -1,10 +1,10 @@
 ﻿uic.signalR = {
-    
+
     //Join a group if you have not joined already
-    joinGroupAsync: async function(groupName){
-        if(groupName == null || groupName.length == 0)
+    joinGroupAsync: async function (groupName) {
+        if (groupName == null || groupName.length == 0)
             return;
-         // Only join the group when this name does not yet exist in the groups object
+        // Only join the group when this name does not yet exist in the groups object
         if (uic.signalR._joinedGroups.hasOwnProperty(groupName) && uic.signalR._joinedGroups[groupName] > 0) {
             uic.signalR._joinedGroups[groupName]++;
         }
@@ -14,8 +14,8 @@
         }
     },
     //Leave a group if there are no remaining subscriptions
-    leaveGroupAsync: async function(){
-        if(groupName == null || groupName.length == 0)
+    leaveGroupAsync: async function () {
+        if (groupName == null || groupName.length == 0)
             return;
         if (!uic.signalR._joinedGroups.hasOwnProperty(groupName))
             return;
@@ -29,27 +29,27 @@
         await connection.invoke("Leave", groupName);
     },
     //Method is called when connection with signalR or when already connected
-    whenConnected: function (method){
-        if(window["connection"] != undefined){
-            if(connection["q"] === "Connected"){
+    whenConnected: function (method) {
+        if (window["connection"] != undefined) {
+            if (connection["q"] === "Connected") {
                 method();
             }
-            connection.on('connected', ()=>{
+            EventManager.subscribe('connected', () => {
                 method();
             })
-            connection.on('reconnected', ()=>{
+            EventManager.subscribe('reconnected', () => {
                 method();
             })
         }
-        else{
-            setTimeout(()=>{
+        else {
+            setTimeout(() => {
                 uic.signalR.whenConnected(method);
-            },1);
+            }, 1);
         }
-        
+
     },
     handleUIComponentFetch: async () => {
-        uic.signalR.whenConnected(()=>{
+        uic.signalR.whenConnected(() => {
             window.connection.on('SendUIComponentToUser', async (fetchComponent, userId) => {
                 if (uic.signalR.currentUserId == undefined) {
                     console.error("uic.signalR.currentUserId is not defined!")
@@ -67,10 +67,10 @@
                 appendTo.append(result);
             });
         })
-       
+
     },
     handleUIComponentRemove: async () => {
-        uic.signalR.whenConnected(()=>{
+        uic.signalR.whenConnected(() => {
             window.connection.on('RemoveUIComponentWithId', async (id) => {
                 $(`#${id}`).trigger('uic-remove');
             });
@@ -83,16 +83,16 @@
         });
     },
     debug: false,
-    color: function(conditionMatch){
+    color: function (conditionMatch) {
         let style = window.getComputedStyle(document.body);
-        if(conditionMatch){
+        if (conditionMatch) {
             return style.getPropertyValue('--success') || '#00FF00';
-        } else{
+        } else {
             return style.getPropertyValue('--default') || '#0000FF';
         }
     },
     currentUserId: undefined,
-    _joinedGroups:{},
+    _joinedGroups: {},
 }
 $(document).ready(() => {
     //Wait a small delay so the connection can exist

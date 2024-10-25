@@ -31,8 +31,8 @@
         return true;
     },
 
-    onDispose: function(element, callback){
-      $(element).parents('.disposable').on('uic-dispose', callback);   
+    onDispose: function (element, callback) {
+        $(element).parents('.disposable').on('uic-dispose', callback);
     },
 
     hideLoadingOverlay: function (element = null) {
@@ -125,10 +125,9 @@
         if (showOverlay)
             uic.partial.showLoadingOverlay(partial);
 
-        let resultPromise = getDatafunc();
+        partial.triggerHandler('uic-dispose');
+        let result = await getDatafunc();
 
-        partial.trigger('uic-dispose');
-        let result = await resultPromise;
 
         //Remove the Select2 container when reloading the partial containing the select source
         let select2Container = $('.select2-container');

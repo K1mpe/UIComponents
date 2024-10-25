@@ -328,7 +328,7 @@
             // If you want to limit the search results, add the data-max-results attribute to the select
             if (params.maxResultCount == undefined) {
                 try {
-                    let id = $(event.target).attr('aria-controls') || $(event.target).attr('aria-owns');
+                    let id = $(event.target).attr('aria-controls') || $(event.target).closest('.select2-selection').attr('aria-owns');
                     let select = $(`#${id.split('-')[1]}`);
                     let maxCount = select.attr('data-max-results');
                     if (maxCount != null && maxCount != undefined)
