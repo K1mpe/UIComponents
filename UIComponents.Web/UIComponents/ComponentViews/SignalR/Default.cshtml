@@ -29,7 +29,6 @@
     Model.AssignCollectionForChildren();
 
     Model.AddScript(@<text>
-        let uicSignalRSubscription = async function(){
         
         @if (string.IsNullOrWhiteSpace(Model.SubscriptionName))
     {
@@ -111,7 +110,6 @@
         }
 
         </text>
-    }
     }
         
         $('#@id').on('uic-find-signalR', ()=>{

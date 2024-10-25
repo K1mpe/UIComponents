@@ -14,7 +14,7 @@
         }
     },
     //Leave a group if there are no remaining subscriptions
-    leaveGroupAsync: async function () {
+    leaveGroupAsync: async function (groupName) {
         if (groupName == null || groupName.length == 0)
             return;
         if (!uic.signalR._joinedGroups.hasOwnProperty(groupName))
