@@ -71,7 +71,7 @@
             </text>
     );
 
-    if (Model.EnableTooltip)
+    if (Model.EnableHeaderAsTooltip)
         Model.AddScript(@<text>
             setTimeout(()=>{
                 $('#@id td').each(()=>{
@@ -176,6 +176,13 @@
             $('#@id').on('uic-currentData', ev=>{
                 ev.stopPropagation();
                 return $('#@id').jsGrid('option', 'data');
+            });
+
+            $('#@id').on('uic-getValue', ev=>{
+                return $('#@id').triggerHandler('uic-currentData');
+            });
+            $('#@id').on('uic-setValue', (ev, ...data)=>{
+                $('#@id').jsGrid('option', 'data', data);
             });
 
             $('#@id').jsGrid({

@@ -27,10 +27,10 @@
 
 
 
-    string step="";
+    string step=string.Empty;
 
-    string dateTimeFormat = "yyyy-MM-ddTHH:mm";
-    
+    string dateTimeFormat = string.Empty;
+
     switch (Model.Precision)
     {
         case UICDatetimeStep.Date:
@@ -41,8 +41,12 @@
             dateTimeFormat = "yyyy-MM-ddTHH:mm";
             break;
         case UICDatetimeStep.Second:
-            step = "any";
+            step = "1";
             dateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
+            break;
+        case UICDatetimeStep.Millisecond:
+            step = ".001";
+            dateTimeFormat = "yyyy-MM-ddTHH:mm:ss.sss";
             break;
     }
     Model.AddAttribute("step", step);

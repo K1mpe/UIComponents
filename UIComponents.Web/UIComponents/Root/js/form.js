@@ -166,7 +166,7 @@
 
     setPopoverOnClickTooltipIcon: function () {
         $('.tooltip-icon').each((index, item) => {
-            let title = $(item).parent().attr('title');
+            let title = $(item).closest('[title]').attr('title');
             if (title.length) {
                 $(item).popover({
                     content: title,
@@ -174,7 +174,9 @@
                 });
                 $(item).attr('title', null);
             }
-            $(item).on('click', ev => ev.preventDefault());
+            $(item).on('click', ev => {
+                ev.preventDefault();
+            });
             uic.partial.onDispose(item, () => $(item).popover('dispose'));
         })
     },

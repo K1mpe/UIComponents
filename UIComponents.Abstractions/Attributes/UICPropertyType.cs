@@ -70,7 +70,7 @@ public enum UICPropertyType
     /// <summary>
     /// A time duration
     /// </summary>
-    Timespan,
+    TimeSpan,
 
     /// <summary>
     /// A boolean field

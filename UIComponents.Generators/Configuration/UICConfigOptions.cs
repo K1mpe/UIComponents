@@ -25,13 +25,7 @@ public partial class UicConfigOptions
     #endregion
 
 
-    #region Events
-    public event EventHandler OnVersionChanged;
-    public async void TriggerOnVersionChanged()
-    {
-        OnVersionChanged?.Invoke(null, EventArgs.Empty);
-    }
-    #endregion
+    
 
     #region Properties
 

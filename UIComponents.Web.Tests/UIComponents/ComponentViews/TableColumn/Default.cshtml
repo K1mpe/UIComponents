@@ -59,6 +59,7 @@
     type: @Html.JsEncode(Model.Type, "'"),
     autosearch: @Json.Serialize(Model.AutoSearch),
     editing: @Json.Serialize(Model.Editing),
+    filtering : @Json.Serialize(Model.Filtering),
 @if (!string.IsNullOrEmpty(Model.Width))
 {
     <text>

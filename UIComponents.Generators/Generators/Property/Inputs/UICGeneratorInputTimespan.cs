@@ -12,7 +12,7 @@ public class UICGeneratorInputTimespan : UICGeneratorProperty
     public UICGeneratorInputTimespan(ILogger<UICGeneratorInputTimespan> logger, IUICValidationService validationService) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
-        UICPropertyType = Abstractions.Attributes.UICPropertyType.Timespan;
+        UICPropertyType = Abstractions.Attributes.UICPropertyType.TimeSpan;
         HasExistingResult = false;
         _validationService = validationService;
     }

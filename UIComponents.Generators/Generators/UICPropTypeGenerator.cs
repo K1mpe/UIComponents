@@ -45,9 +45,9 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
                     case DataType.Date:
                         return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.DateOnly, true);
                     case DataType.Time:
-                        break;
+                        return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.TimeOnly, true);
                     case DataType.Duration:
-                        return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.Timespan, true);
+                        return GeneratorHelper.Success<UICPropertyType?>(UICPropertyType.TimeSpan, true);
                     case DataType.PhoneNumber:
                         break;
                     case DataType.Currency:
@@ -101,50 +101,7 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
                     type = propertyInfo.PropertyType.GetGenericArguments()[0];
             }
 
-
-
-            switch (Type.GetTypeCode(type))
-            {
-                case TypeCode.Object:
-                    if(type == typeof(TimeSpan))
-                    {
-
-                    }
-
-                    break;
-                case TypeCode.Boolean:
-                    break;
-                case TypeCode.Char:
-                    break;
-                case TypeCode.SByte:
-                    break;
-                case TypeCode.Byte:
-                    break;
-                case TypeCode.Int16:
-                    break;
-                case TypeCode.UInt16:
-                    break;
-                case TypeCode.Int32:
-                    break;
-                case TypeCode.UInt32:
-                    break;
-                case TypeCode.Int64:
-                    break;
-                case TypeCode.UInt64:
-                    break;
-                case TypeCode.Single:
-                    break;
-                case TypeCode.Double:
-                    break;
-                case TypeCode.Decimal:
-                    break;
-                case TypeCode.DateTime:
-                    break;
-                case TypeCode.String:
-                    break;
-                default:
-                    break;
-            }
+            
            
             switch (type.Name.ToLower())
             {
@@ -166,7 +123,7 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
                     uicPropertyType = UICPropertyType.Decimal;
                     break;
                 case "timespan":
-                    uicPropertyType = UICPropertyType.Timespan;
+                    uicPropertyType = UICPropertyType.TimeSpan;
                     break;
                 case "datetime":
                     uicPropertyType = UICPropertyType.DateTime;

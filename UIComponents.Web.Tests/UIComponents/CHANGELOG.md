@@ -1,3 +1,14 @@
+# 2024-11-07 (1.3.07)
+- Adding readonly on edit permission
+- GroupGenerator can handle multiple tasks async
+- UICTooltipAttribute support for jsGrid table
+- Minor SignalR fix
+- Fix UICTable Editing Date
+- Some minor changes in UICTable
+
+# 2024-10-25 (1.3.04 -> 1.3.06)
+- SignalR Fixes
+
 # 2024-10-25 (1.3.03)
 - Partial is disposable
 - preventing multiple signalR subscriptions

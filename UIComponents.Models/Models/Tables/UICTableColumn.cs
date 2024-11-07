@@ -4,7 +4,7 @@ using UIComponents.Abstractions.Interfaces.Tables;
 
 namespace UIComponents.Models.Models.Tables
 {
-    public class UICTableColumn : IUIComponent, IUICTableColumn
+    public class UICTableColumn : IUIComponent, IUICTableColumn, IUICConditionalRender
     {
         #region Fields
         public virtual string RenderLocation => UIComponent.DefaultIdentifier(nameof(UICTableColumn));
@@ -18,6 +18,13 @@ namespace UIComponents.Models.Models.Tables
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// The table this column is set to, should not be set by the user
+        /// </summary>
+        [UICIgnoreGetChildrenFunction]
+        public UICTable ParentTable { get; set; }
+
         public PropertyInfo PropertyInfo{ get; set; }
         public Translatable Title { get; set; }
         public Translatable Tooltip { get; set; }
@@ -37,12 +44,32 @@ namespace UIComponents.Models.Models.Tables
         public bool AutoSearch { get; set; } = true;
         public UICIcon Icon { get; set; }
 
+        /// <summary>
+        /// this will ignore the <see cref="UICTooltipAttribute"/> and <see cref="UICSpanAttribute"/> as well as each custom generator for a tooltip or spantext
+        /// </summary>
+        public bool IgnoreTooltipAndSpanAttributes { get; set; }
+
+        /// <summary>
+        /// if <see cref="IgnoreTooltipAndSpanAttributes"/> is false and a tooltip exists, add the tooltip icon after the header text
+        /// </summary>
+        public bool AddTooltipIconInHeader { get; set; } = true;
+
         public string Width { get; set; }
         
-
+        /// <summary>
+        /// Add a css class to this cell
+        /// </summary>
         public string Css { get; set; }
 
+        /// <summary>
+        /// Enables this column the be changed if the row is edited
+        /// </summary>
         public bool Editing { get; set; } = true;
+
+        /// <summary>
+        /// Enables this cell to have a filter if the table enables filtering
+        /// </summary>
+        public bool Filtering { get; set; } = true;
 
         public bool Render { get; set; } = true;
 

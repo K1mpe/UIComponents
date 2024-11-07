@@ -160,6 +160,7 @@ public static class UICConfigure
     {
         configOptions.AddAndRegisterValidator<UICValidatorRequired>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorReadonlyAttribute>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorEditPermission>(serviceCollection);
 
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeInt>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeFloat>(serviceCollection);

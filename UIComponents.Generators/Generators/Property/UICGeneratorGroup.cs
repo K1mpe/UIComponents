@@ -56,12 +56,19 @@ public class UICGeneratorGroup : UICGeneratorProperty
                 includedProperties.Add(prop.Name.ToLower());
             }
         }
+        var tasks = new List<Task<IUIComponent>>();
         foreach (var propName in includedProperties)
         {
             var property = args.ClassObject.GetType().GetProperties().Where(x=>x.Name.ToLower() == propName).FirstOrDefault();
             if (property == null)
                 continue;
-            group.Components.Add(await args.Configuration.GetChildComponentAsync(args.ClassObject, property, args.Options, cc));
+            tasks.Add(args.Configuration.GetChildComponentAsync(args.ClassObject, property, args.Options, cc));
+        }
+        await Task.WhenAll(tasks);
+
+        foreach(var compenent in tasks)
+        {
+            group.Add(compenent.Result);
         }
 
         

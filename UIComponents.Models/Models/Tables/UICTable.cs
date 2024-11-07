@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Reflection;
 using UIComponents.Abstractions.Helpers;
@@ -28,6 +29,11 @@ namespace UIComponents.Models.Models.Tables
         #endregion
 
         #region Properties
+        /// <summary>
+        /// The name of the property as used in the C# class
+        /// <br>This can be used to post the table as part of a form, where the entire table is posted as a array</br>
+        /// </summary>
+        public string PropertyName { get; set; }
         public string Width { get; set; } = Defaults.Models.Table.UICTable.Width;
         public string Height { get; set; } = Defaults.Models.Table.UICTable.Height;
 
@@ -38,27 +44,54 @@ namespace UIComponents.Models.Models.Tables
 
         public List<IUICTableColumn> Columns { get; set; } = new();
 
+        /// <summary>
+        /// Allow the table to have filtering
+        /// </summary>
         public bool Filtering { get; set; } = Defaults.Models.Table.UICTable.Filtering;
+
+        /// <summary>
+        /// Allow a row to be selected, Also change the cursor to a pointer
+        /// </summary>
         public bool Selecting { get; set; } = Defaults.Models.Table.UICTable.Selecting;
+
+        /// <summary>
+        /// Allow to sort on a selected row, When using <see cref="LoadData"/>, the server should account for the sorting.
+        /// <br>Static data in <see cref="Data"/> can get sorted by the client</br>
+        /// </summary>
         public bool Sorting { get; set; } = Defaults.Models.Table.UICTable.Sorting;
 
         /// <summary>
         /// If <see cref="EnableInsert"/>, <see cref="EnableUpdate"/> or <see cref="EnableDelete"/> are true, add the <see cref="AddControlColumn(Action{UICTableColumnControl})"/> at the end of the columns
         /// </summary>
         public bool AutoAddControlColumn { get; set; } = Defaults.Models.Table.UICTable.AutoAddControlColumn;
+
+        /// <summary>
+        /// Display the + to add a new item
+        /// </summary>
         public bool EnableInsert { get; set; } = Defaults.Models.Table.UICTable.EnableInsert;
+
+        /// <summary>
+        /// Allow the row to be edited and show the editbutton in the controlColumn
+        /// </summary>
         public bool EnableUpdate { get; set; } = Defaults.Models.Table.UICTable.EnableUpdate;
+
+
+        /// <summary>
+        /// Allow the row to be deleted and show the deletebutton in the controlColumn
+        /// </summary>
         public bool EnableDelete { get; set; } = Defaults.Models.Table.UICTable.EnableDelete;
 
         /// <summary>
-        /// The input fields will have their value as tooltip.
-        /// </br>
+        /// The input fields will have their header value as tooltip.
+        /// <br></br>
         /// This is usefull for content that will likely be clipped.
         /// </summary>
-        public bool EnableTooltip { get; set; } = Defaults.Models.Table.UICTable.EnableTooltip;
+        public bool EnableHeaderAsTooltip { get; set; } = Defaults.Models.Table.UICTable.EnableHeaderAsTooltip;
+
+        public bool EnableSpansAndTooltips { get; set; } = Defaults.Models.Table.UICTable.EnableSpansAndTooltips;
 
         /// <summary>
-        /// If true, pages will be disabled and the data of the next page is automatically loaded and added when reaching the end of the table.
+        /// If true, pages will be disabled and the data of the next page is automatically loaded and added when reaching (near) the end of the table.
         /// </summary>
         public bool InfinitePaging { get; set; } = Defaults.Models.Table.UICTable.InfinitePaging;
 
@@ -104,7 +137,7 @@ namespace UIComponents.Models.Models.Tables
         public bool ReplaceLoadingIndicator { get; set; } = Defaults.Models.Table.UICTable.ReplaceLoadingIndicator;
 
         /// <summary>
-        /// Save the last filters in the localstorage from that browser. This requires the Id to be set.
+        /// Save the last filters in the localstorage from that browser. This requires the Id to be set to a constant value.
         /// </summary>
         public bool SaveFiltersInLocalStorage { get; set; } = Defaults.Models.Table.UICTable.SaveFiltersInLocalStorage;
 
@@ -135,6 +168,10 @@ namespace UIComponents.Models.Models.Tables
         /// </summary>
         public bool SaveOnEnter { get; set; } = Defaults.Models.Table.UICTable.SaveOnEnter;
 
+        /// <summary>
+        /// SignalR triggers that are assosiated with this table.
+        /// <br>When you do not have a <see cref="UICSignalR.Action"/> selected, this will automatically be set to reload the table</br>
+        /// </summary>
         public List<UICSignalR> SignalRRefreshTriggers { get; set; } = new();
 
         #region Events
@@ -149,6 +186,17 @@ namespace UIComponents.Models.Models.Tables
         /// <br>args.data</br>
         /// </remarks>
         public IUICAction OnDataLoaded { get; set; } = Defaults.Models.Table.UICTable.OnDataLoaded;
+
+        /// <summary>
+        /// This is called before editing a row
+        /// </summary>
+        /// <remarks>
+        /// Available args:
+        /// <br>args.grid</br>
+        /// <br>args.row</br>
+        /// <br>args.item</br>
+        /// <br>args.itemIndex</br>
+        /// </remarks>
         public IUICAction OnDataEditing { get; set; } = Defaults.Models.Table.UICTable.OnDataEditing;
 
         /// <summary>
@@ -242,7 +290,7 @@ namespace UIComponents.Models.Models.Tables
             UICTableColumn column = Columns.Where(x=> x is UICTableColumn).OfType<UICTableColumn>().Where(x=> x.PropertyInfo!= null && x.PropertyInfo.Name == propInfo.Name).FirstOrDefault();
             if (column == null)
             {
-                column = new UICTableColumn(propInfo);
+                column = new UICTableColumn(propInfo) { ParentTable = this };
                 Columns.Add(column);
             }
             if(config != null)
@@ -251,17 +299,21 @@ namespace UIComponents.Models.Models.Tables
             return this;                
         }
 
+        /// <summary>
+        /// Add a column for this propertyname if it does not already exists
+        /// </summary>
         public UICTable AddColumn(out UICTableColumn column, PropertyInfo propInfo)
         {
             column = Columns.Where(x => x is UICTableColumn).OfType<UICTableColumn>().Where(x => x.PropertyInfo != null && x.PropertyInfo.Name == propInfo.Name).FirstOrDefault();
             if (column == null)
             {
-                column = new UICTableColumn(propInfo);
+                column = new UICTableColumn(propInfo) { ParentTable = this };
                 Columns.Add(column);
             }
 
             return this;
         }
+        /// <see cref="AddColumn(PropertyInfo, Action{UICTableColumn})"/>
         public UICTable AddColumn<T>(T column, Action<T> config = null) where T: class, IUICTableColumn
         {
             Columns.Add(column);
@@ -276,16 +328,21 @@ namespace UIComponents.Models.Models.Tables
             return this;
         }
 
+        /// <summary>
+        /// Adding the control column containing the edit and delete buttons (if enabled)
+        /// <br>This column is automatically added if <see cref="AutoAddControlColumn"/> is enabled</br>
+        /// </summary>
         public UICTable AddControlColumn(out UICTableColumnControl controlColumn)
         {
             controlColumn = Columns.Where(x => x is UICTableColumnControl).OfType<UICTableColumnControl>().FirstOrDefault();
             if(controlColumn == null)
             {
-                controlColumn = new UICTableColumnControl();
+                controlColumn = new UICTableColumnControl() { ParentTable = this };
                 Columns.Add(controlColumn);
             }
             return this;
         }
+        /// <inheritdoc cref="AddControlColumn(out UICTableColumnControl)"/>
         public UICTable AddControlColumn(Action<UICTableColumnControl> config = null)
         {
             AddControlColumn(out var column);
@@ -296,14 +353,19 @@ namespace UIComponents.Models.Models.Tables
         #endregion
 
         #region InsertColumn
-
+        /// <summary>
+        /// Same as <see cref="AddColumn(PropertyInfo, Action{UICTableColumn})"/>, but inserting the column in a specific position.
+        /// </summary>
+        /// <remarks>
+        /// When there are less columns currently added than the index, this column is added at the end
+        /// </remarks>
         public UICTable InsertColumn(int index, PropertyInfo propInfo, Action<UICTableColumn> config = null)
         {
             
             var existingCol = Columns.Where(x => x is UICTableColumn tableColumn && tableColumn.PropertyInfo != null && tableColumn.PropertyInfo.Name == propInfo.Name).FirstOrDefault() as UICTableColumn;
             if(existingCol == null)
             {
-                existingCol = new UICTableColumn(propInfo);
+                existingCol = new UICTableColumn(propInfo) { ParentTable = this };
             }
             else
             {
@@ -317,12 +379,18 @@ namespace UIComponents.Models.Models.Tables
             return this;
         }
 
+        /// <summary>
+        /// Same as <see cref="AddColumn(out UICTableColumn, PropertyInfo)">, but inserting the column in a specific position.
+        /// </summary>
+        /// <remarks>
+        /// When there are less columns currently added than the index, this column is added at the end
+        /// </remarks>
         public UICTable InsertColumn(int index, out UICTableColumn addedColumn, PropertyInfo propInfo)
         {
             var existingCol = Columns.Where(x => x is UICTableColumn tableColumn && tableColumn.PropertyInfo != null && tableColumn.PropertyInfo.Name == propInfo.Name).FirstOrDefault() as UICTableColumn;
             if (existingCol == null)
             {
-                existingCol = new UICTableColumn(propInfo);
+                existingCol = new UICTableColumn(propInfo) { ParentTable = this };
             }
             else
             {
@@ -336,7 +404,12 @@ namespace UIComponents.Models.Models.Tables
 
             return this;
         }
-
+        /// <summary>
+        /// Same as <see cref="AddColumn(PropertyInfo, Action{UICTableColumn})"/>, but inserting the column in a specific position.
+        /// </summary>
+        /// <remarks>
+        /// When there are less columns currently added than the index, this column is added at the end
+        /// </remarks>
         public UICTable InsertColumn<T>(int index, T column, Action<T> config = null) where T : class, IUICTableColumn
         {
             var existingCol = Columns.Where(x => x == column).FirstOrDefault();
@@ -353,7 +426,12 @@ namespace UIComponents.Models.Models.Tables
             config(column);
             return this;
         }
-
+        /// <summary>
+        /// Same as <see cref="AddColumn(out UICTableColumn, PropertyInfo)">, but inserting the column in a specific position.
+        /// </summary>
+        /// <remarks>
+        /// When there are less columns currently added than the index, this column is added at the end
+        /// </remarks>
         public UICTable InsertColumn<T>(int index, out T addedColumn, T column) where T : class, IUICTableColumn
         {
             var existingCol = Columns.Where(x => x == column).FirstOrDefault();
@@ -373,6 +451,11 @@ namespace UIComponents.Models.Models.Tables
 
         #region RemoveColumn
 
+        /// <summary>
+        /// Marks a column to not render
+        /// </summary>
+        /// <param name="propInfo"></param>
+        /// <returns></returns>
         public UICTable RemoveColumn(PropertyInfo propInfo)
         {
             return AddColumn(propInfo, config => config.Render = false);
@@ -394,8 +477,6 @@ namespace UIComponents.Models.Models.Tables
         }
 
         #endregion
-
-
 
         #region ClientMethods
         public IUICAction TriggerReload()
@@ -536,7 +617,7 @@ namespace UIComponents.Models.Models.Tables
             var properties = typeof(T).GetProperties();
             foreach (var propertyInfo in properties)
             {
-                var ignoreAttr = propertyInfo.GetCustomAttribute<UICIgnoreAttribute>();
+                var ignoreAttr = propertyInfo.GetInheritAttribute<UICIgnoreAttribute>();
                 if (ignoreAttr != null)
                     continue;
 
@@ -555,13 +636,15 @@ namespace UIComponents.Models.Models.Tables
         #endregion
 
         #region Insert Column
-
+        /// <see cref="UICTable.InsertColumn(int, PropertyInfo, Action{UICTableColumn})"/>
         public UICTable<T> InsertColumn(int index, Expression<Func<T, object>> propExpression, Action<UICTableColumn> action = null)
         {
             var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(propExpression);
             InsertColumn(index, propertyInfo, action);
             return this;
         }
+
+        ///<see cref="UICTable.InsertColumn(int, out UICTableColumn, PropertyInfo)"/>
         public UICTable<T> InsertColumn(int index, out UICTableColumn column, Expression<Func<T, object>> propExpression)
         {
             var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(propExpression);
@@ -573,7 +656,7 @@ namespace UIComponents.Models.Models.Tables
         #endregion
 
         #region RemoveColumn
-
+        ///<inheritdoc cref="UICTable.RemoveColumn(PropertyInfo)"/>
         public UICTable<T> RemoveColumn(Expression<Func<T, object>> propExpression)
         {
             var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(propExpression);
@@ -656,7 +739,8 @@ namespace UIComponents.Defaults.Models.Table
         public static bool EnableInsert { get; set; }
         public static bool EnableUpdate { get; set; }
         public static bool EnableDelete { get; set; }
-        public static bool EnableTooltip { get; set; }
+        public static bool EnableHeaderAsTooltip { get; set; } = true;
+        public static bool EnableSpansAndTooltips { get; set; } = true;
         public static bool FilterClientSize { get; set; }
         public static bool InfinitePaging { get; set; }
         public static int PageSize { get; set; } = int.MaxValue;

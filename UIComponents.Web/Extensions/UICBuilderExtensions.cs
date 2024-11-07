@@ -379,7 +379,6 @@ public static class UICBuilderExtensions
         }
         #endregion
 
-        options.TriggerOnVersionChanged();
         return services;
     }
 

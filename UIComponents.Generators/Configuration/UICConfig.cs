@@ -99,15 +99,13 @@ public class UICConfig
     }
     public async Task<TConverted?> GetGeneratedResultAsync<TArgs, TResult, TConverted>(string debugString, TArgs args, UICOptions options) where TConverted : TResult
     {
-        using var scope = ServiceProvider.CreateScope();
-
         var (generators, types) = _options.FindGenerators<TArgs, TResult>(args);
 
         foreach (var type in types)
         {
             try
             {
-                var generator = (IUICGenerator<TArgs, TResult>)scope.ServiceProvider.GetRequiredService(type);
+                var generator = (IUICGenerator<TArgs, TResult>)ServiceProvider.GetRequiredService(type);
 
                 generators.Add(generator);
             }
@@ -126,54 +124,68 @@ public class UICConfig
         if(!generators.Any())
             _logger.LogDebug("{0} does not have any matching generators", debugString);
 
-        foreach (var generator in generators.OrderBy(x => x.Priority))
+        var tasks = new List<Task>();
+        foreach (var generator in generators.OrderBy(x => x.Priority))  //Loop through each generator based on priority and get the result
         {
             try
             {
-                var generatorResult = await generator.GetResult(args, result);
-                if (generatorResult.Success && generatorResult.Result != null)
+                using (_logger.BeginScopeKvp(
+                    new("UICGeneratorName", generator.Name),
+                    new("UICGeneratorPriority", generator.Priority)))
                 {
-                    _logger.LogTrace("{0} Successfull result from generator {1} {2}: {3}",debugString, generator.Priority, generator.Name, generatorResult.Result?.ToString() ?? "null");
-                    result = (TConverted?)generatorResult.Result;
-                }
-
-
-                if (!generatorResult.Continue)
-                {
-                    _logger.LogTrace("{0} Generating stopped after {1} {2}", debugString, generator.Priority, generator.Name);
-                    break;
-                }
-
-                if (result == null)
-                {
-                    if(args is UICPropertyArgs propArgs)
+                    if (args is UICPropertyArgs propArgs)
                     {
-                        switch (propArgs.CallCollection.CurrentCallType)
-                        {
-                            //Do not log any debug if these calltypes have no result
-                            case UICGeneratorPropertyCallType.PropertyGroupSpan:
-                            case UICGeneratorPropertyCallType.PropertyTooltip:
-                            case UICGeneratorPropertyCallType.PropertyInfoSpan:
-                                continue;
-                        }
-                        var ignoreAttr = propArgs.PropertyInfo?.GetCustomAttribute<UICIgnoreAttribute>()??null;
-                        if(ignoreAttr != null)
+                        var ignoreAttr = propArgs.PropertyInfo?.GetInheritAttribute<UICIgnoreAttribute>() ?? null;
+                        if (ignoreAttr != null)
                         {
                             _logger.LogTrace("{0} is ignored by UICIgnoreAttr", propArgs.PropertyName);
-                            continue;
+                            break;
                         }
                     }
 
-                    if (!generators.Where(x => x.Priority > generator.Priority).Any())
-                        _logger.LogDebug("{0} Generators did not find a result", debugString);
-                }
+                    var generatorResult = await generator.GetResult(args, result);
+                    if (generatorResult.Success && generatorResult.Result != null)      //If there is a successfull result, set the result as the 'existing result'
+                    {
+                        _logger.LogTrace(UICEventIds.GeneratorSuccessfullResult, "{0} Successfull result from generator {1} {2}: {3}", debugString, generator.Priority, generator.Name, generatorResult.Result?.ToString() ?? "null");
+                        result = (TConverted?)generatorResult.Result;
+                    }
 
+
+                    if (!generatorResult.Continue)                          // If not allowed to continue, stop the loop here
+                    {
+                        _logger.LogTrace(UICEventIds.GeneratorBreakGenerators, "{0} Generating stopped after {1} {2}", debugString, generator.Priority, generator.Name);
+                        break;
+                    }
+
+                    if (result == null)
+                    {
+                        if (args is UICPropertyArgs propArgs2)
+                        {
+                            switch (propArgs2.CallCollection.CurrentCallType)
+                            {
+                                //Do not log any debug if these calltypes have no result
+                                case UICGeneratorPropertyCallType.PropertyGroupSpan:
+                                case UICGeneratorPropertyCallType.PropertyTooltip:
+                                case UICGeneratorPropertyCallType.PropertyInfoSpan:
+                                    continue;
+                            }
+                        }
+
+                        if (!generators.Where(x => x.Priority > generator.Priority).Any())
+                            _logger.LogDebug(UICEventIds.GeneratorNoResultForGenerator, "{0} Generators did not find a result", debugString);
+                    }
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "{0} Error in generator {1} ", debugString, generator.Name);
             }
 
+        }
+
+        if (result == null)
+        {
+            _logger.LogDebug(UICEventIds.GeneratorNoResultForRequest, "{0} did not get any result from one of the generators", debugString);
         }
         return result;
     }

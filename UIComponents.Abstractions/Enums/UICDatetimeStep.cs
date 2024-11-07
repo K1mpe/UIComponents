@@ -4,5 +4,6 @@ public enum UICDatetimeStep
 {
     Date,
     Minute,
-    Second
+    Second,
+    Millisecond,
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection.Emit;
+using UIComponents.Abstractions.Extensions;
+using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Generators.Configuration;
 using UIComponents.Generators.Helpers;
 using UIComponents.Models.Models.Tables;
@@ -11,10 +13,12 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
 {
     private readonly ILogger _logger;
     private readonly UICConfig _config;
-    public UICGridColumnGenerator(ILogger<UICGridColumnGenerator> logger, UICConfig config)
+    private readonly IUICLanguageService _languageService;
+    public UICGridColumnGenerator(ILogger<UICGridColumnGenerator> logger, UICConfig config, IUICLanguageService languageService)
     {
         _logger = logger;
         _config = config;
+        _languageService = languageService;
     }
 
     public override double Priority { get; set; } = 1000;
@@ -37,7 +41,12 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
 
         var propType = await _config.GetPropertyTypeAsync(args.PropertyInfo, new())??UICPropertyType.String;
 
+        UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inheritPropInfo);
+        if (args.Title == null)
+            args.Title = UIComponents.Defaults.TranslationDefaults.TranslateProperty(inheritPropInfo, propType);
+
         UICInput input = null;
+        
         try
         {
             var propertyArgs = new UICPropertyArgs(
@@ -49,38 +58,6 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
                 _config
             );
              input = await _config.GetGeneratedResultAsync<IUIComponent, UICInput>(UICGeneratorPropertyCallType.PropertyInput, null, propertyArgs);
-
-
-            if(args.Tooltip == null)
-            {
-
-                var tooltipArgs = new UICPropertyArgs(
-                    Activator.CreateInstance(args.PropertyInfo.ReflectedType),
-                    args.PropertyInfo,
-                    propType,
-                    new(),
-                    new(UICGeneratorPropertyCallType.PropertyTooltip, args, null),
-                    _config
-                );
-
-                args.Tooltip = await _config.GetToolTipAsync(tooltipArgs, args);
-            }
-            if(args.Tooltip == null)
-            {
-                var tooltipArgs2 = new UICPropertyArgs(
-                    Activator.CreateInstance(args.PropertyInfo.ReflectedType),
-                    args.PropertyInfo,
-                    propType,
-                    new(),
-                    new(UICGeneratorPropertyCallType.PropertyTooltip, args, null),
-                    _config
-                );
-
-                var span = await _config.GetPropertyGroupSpanAsync(tooltipArgs2, args);
-                if(span != null)
-                    args.Tooltip = span.Text;
-            }
-
         } catch(Exception ex)
         {
             _logger.LogError(ex, "Failed to get input for property {0}=>{1} \r\n{2}",
@@ -89,10 +66,64 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
                 ex.Message
                 );
         }
-        
-        UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inheritPropInfo);
-        if(args.Title == null)
-            args.Title = UIComponents.Defaults.TranslationDefaults.TranslateProperty(inheritPropInfo, propType);
+
+        if (args.ParentTable?.EnableSpansAndTooltips ?? Defaults.Models.Table.UICTable.EnableSpansAndTooltips)
+        {
+            try
+            {
+                if (args.Tooltip == null)
+                {
+                    var tooltipArgs = new UICPropertyArgs(
+                        Activator.CreateInstance(args.PropertyInfo.ReflectedType),
+                        args.PropertyInfo,
+                        propType,
+                        new(),
+                        new(UICGeneratorPropertyCallType.PropertyTooltip, args, null),
+                        _config
+                    );
+
+                    var tooltip = await _config.GetToolTipAsync(tooltipArgs, args);
+                    if (tooltip != null)
+                    {
+                        args.Tooltip = tooltip;
+                        SetTooltipIcon();
+
+                    }
+                }
+                if (args.Tooltip == null)
+                {
+                    var tooltipArgs2 = new UICPropertyArgs(
+                        Activator.CreateInstance(args.PropertyInfo.ReflectedType),
+                        args.PropertyInfo,
+                        propType,
+                        new(),
+                        new(UICGeneratorPropertyCallType.PropertyTooltip, args, null),
+                        _config
+                    );
+
+                    var span = await _config.GetPropertyGroupSpanAsync(tooltipArgs2, args);
+                    if (span != null)
+                    {
+                        args.Tooltip = span.Text;
+                        SetTooltipIcon();
+                    }
+                }
+                if (args.Tooltip == null && (args.ParentTable?.EnableHeaderAsTooltip??Defaults.Models.Table.UICTable.EnableHeaderAsTooltip))
+                {
+                    args.Tooltip = args.Title;
+                }
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Failed to get Tooltip for property {0}=>{1} \r\n{2}",
+                    args.PropertyInfo.ReflectedType?.Name,
+                    args.PropertyInfo.Name,
+                    ex.Message
+                    );
+            }
+            
+        }
+
 
 
 
@@ -151,17 +182,19 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
                         switch (dateTime.Precision)
                         {
                             case UICDatetimeStep.Date:
-                                args.Format = "L";
+                                args.Format ??= "L";
                                 break;
                             case UICDatetimeStep.Minute:
-                                args.Format = "L LT";
-                                if (args.Step == null)
-                                    args.Step = "60";
+                                args.Format ??=  "L LT";
+                                args.Step ??= "60";
                                 break;
                             case UICDatetimeStep.Second:
-                                args.Format = "L LTS";
-                                if (args.Step == null)
-                                    args.Step = "any";
+                                args.Format ??= "L LTS";
+                                args.Step ??= "1";
+                                break;
+                            case UICDatetimeStep.Millisecond:
+                                args.Format ??= "L HH:mm:ss.SSS";
+                                args.Step ??= ".001";
                                 break;
                         }
                     }
@@ -172,27 +205,21 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
                         switch (time.Precision)
                         {
                             case UICTimeonlyEnum.Minute:
-                                if(args.Step == null)
-                                    args.Step = (time.Step*60).ToString();
-                                if (args.Format == null)
-                                    args.Format = "LT";
+                                args.Step ??= (time.Step*60).ToString();
+                                args.Format ??= "LT";
                                 break;
                             case UICTimeonlyEnum.Second:
-                                if (args.Step == null)
-                                    args.Step = (time.Step).ToString();
-                                if (args.Format == null)
-                                    args.Format = "LTS";
+                                args.Step ??= (time.Step).ToString();
+                                args.Format ??= "LTS";
                                 break;
                             case UICTimeonlyEnum.Milliseconds:
-                                if (args.Step == null)
-                                    args.Step = $".{time.Step}";
-                                if (args.Format == null)
-                                    args.Format = "HH:mm:ss.SSS";
+                                args.Step ??= $".{time.Step}";
+                                args.Format ??= "HH:mm:ss.SSS";
                                 break;
                         }
                     }
                     break;
-                case UICPropertyType.Timespan:
+                case UICPropertyType.TimeSpan:
                     break;
                 case UICPropertyType.Boolean:
                     args.Type = "toggle";
@@ -207,5 +234,18 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
             }
         }
         return GeneratorHelper.Success(args, true);
+
+        async Task SetTooltipIcon()
+        {
+            if (!args.AddTooltipIconInHeader)
+                return;
+            var icon = new UICIcon(IconDefaults.TooltipIcon.Icon);
+            var tooltipClass = args.PropertyInfo.GetInheritAttribute<UICTooltipIconAttribute>();
+            if (tooltipClass != null)
+                icon = new(tooltipClass.IconClass);
+            icon.AddClass("tooltip-icon");
+            var headerText = await _languageService.Translate(args.Title);
+            args.Title = $"{headerText} <i class=\"{icon.Icon} {icon.GetAttribute("class")}\"></i>";
+        }
     }
 }

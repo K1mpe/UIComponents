@@ -6,6 +6,9 @@ namespace UIComponents.Abstractions.Interfaces.ValidationRules;
 
 public interface IUICPropertyValidationRule
 {
+    /// <summary>
+    /// Only properties that are assignable to this type will use this validator. You can use Null or typeof(Object) if you want to use all properties
+    /// </summary>
     public Type? PropertyType { get; }
 }
 public interface IUICPropertyValidationValidationResultsImplementation

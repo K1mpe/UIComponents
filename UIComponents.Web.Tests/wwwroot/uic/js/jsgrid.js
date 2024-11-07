@@ -67,11 +67,10 @@
             }, 1);
             
         }, 1);
-
     },
 
 
-    //filterSelectFilters = bool => if true will only show filters that are available in results.
+    
     //this option will not work when using a paged list!
     filterSelectListFilters: async function (args, id) {
 
@@ -204,7 +203,7 @@
     },
 
     defaultHeaderTemplate: function (title, titleVisibiltiy, icon, iconvisibility, tooltip) {
-        let el = $('<span>', { title: tooltip || title });
+        let el = $('<span>', { title: tooltip });
 
         if (icon != null)
             el.append(icon.addClass(iconvisibility));
@@ -269,7 +268,7 @@
                 return this.itemTemplate.apply(this, arguments);
 
             var $result = this.editControl = this._createTextBox();
-            $result.val(value);
+            $result.val(moment(value).format('yyyy-MM-DD'));
             return $result;
         },
 

@@ -33,10 +33,10 @@ namespace UIComponents.Generators.Validators
                 
                 if (!readOnly && UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inherit))
                 {
-                    var inheritInstance = Activator.CreateInstance(inherit.DeclaringType);
+                    var inheritInstance = Activator.CreateInstance(inherit.ReflectedType);
                     foreach (var property in propertyInfo.ReflectedType.GetProperties())
                     {
-                        if (UICInheritAttribute.TryGetInheritPropertyInfo(property, out var x) && x.ReflectedType == inherit.DeclaringType)
+                        if (UICInheritAttribute.TryGetInheritPropertyInfo(property, out var x) && x.ReflectedType.IsAssignableTo(inherit.ReflectedType) && x.CanWrite)
                             x.SetValue(inheritInstance, property.GetValue(obj));
                     }
 

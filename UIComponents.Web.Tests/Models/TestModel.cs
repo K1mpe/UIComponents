@@ -50,9 +50,9 @@ namespace UIComponents.Web.Tests.Models
         public List<TestModel2> ObjectList { get; set; }
 
 
-        [UICPropertyType(UICPropertyType.DateTime)]
-        [UICPrecisionDate(UICDatetimeStep.Second)]
-        public DateTime? DateTime { get; set; }
+        
+        [UICPrecisionDate(UICDatetimeStep.Minute)]
+        public DateTime? MyDateTime { get; set; } = DateTime.Now;
 
         [UICPropertyType(UICPropertyType.DateOnly)]
         public DateTime Date { get; set; }
