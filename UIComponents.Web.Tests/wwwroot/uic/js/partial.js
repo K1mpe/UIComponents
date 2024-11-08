@@ -32,7 +32,15 @@
     },
 
     onDispose: function (element, callback) {
-        $(element).parents('.disposable').on('uic-dispose', callback);
+        $(element).parents('.disposable').on('uic-dispose', (ev) => {
+            if (!$(element).length)
+                return;
+            try {
+                callback(ev)
+            } catch (ex) {
+                console.error(ex);
+            }
+        });
     },
 
     hideLoadingOverlay: function (element = null) {

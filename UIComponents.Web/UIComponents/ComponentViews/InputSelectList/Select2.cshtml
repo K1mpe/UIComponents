@@ -70,7 +70,10 @@
         return $('#@id').val() || $('#@id').attr('value');
         });
 
-        uic.partial.onDispose('#@id', ()=> $('#@id').select2('destroy'));
+        uic.partial.onDispose('#@id', ()=> {
+            if( $('#@id').hasClass('select2-hidden-accessible'))
+                $('#@id').select2('destroy');
+        });
 
         $('#@id').select2({
         //theme: 'bootstrap4',

@@ -61,8 +61,11 @@
             let parseSelectItems = async function(getItemsFunc){
                 let element = $('#@id');
                 element.triggerHandler('uic-before-load');
-                let selectListItems = await getItemsFunc();
-                selectListItems = JSON.parse(selectListItems);
+                let selectListItemsJson = await getItemsFunc();
+                let selectListItems = [];
+                if(selectListItemsJson != null && selectListItemsJson.length)
+                    selectListItems = JSON.parse(selectListItemsJson);
+
                 let currentValue = uic.getValue(element) || @Html.JsEncode(Model.InputSelectList.Value?.ToString() ?? string.Empty, "'");
                 @if (Model.MapToSelectListItems != null)
                 {
@@ -70,7 +73,7 @@
                         selectListItems = await Model.MapToSelectListItems.InvokeAsync(Component);
                     </text>
                 }
-
+                
                 element.children().remove();
                 element.append(uic.form.selectlistItems.convertJsonToSelectOptions(selectListItems, @((int)Model.Sorting), @await Html.TranslateJs(L, Model.InputSelectList.NoItemsText)));
 

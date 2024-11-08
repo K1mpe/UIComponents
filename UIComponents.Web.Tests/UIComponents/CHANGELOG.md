@@ -1,3 +1,8 @@
+# 2024-11-08 (1.3.08)
+- Minor fix selectlistitems from htmlstorage
+- Minor fix on disposing partial
+
+
 # 2024-11-07 (1.3.07)
 - Adding readonly on edit permission
 - GroupGenerator can handle multiple tasks async
