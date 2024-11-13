@@ -485,13 +485,54 @@ uic.disableUsedListItems = function (...selects) {
 
 
 }
+//Load a script on the page using javascript.
+//The readyCallback is executed after the script has finished loading.
+//if reloadExisting is true, the script will be reloaded even if the page already contains the script
+uic.loadScript = function (source, readyCallback = null, reloadExisting = false) {
+    if (!reloadExisting) {
+        let existing = $(`script[src="${source}"]`);
+        if (existing.length) {
+            if (readyCallback != null)
+                readyCallback();
+            return;
+        }
+    }
+    let s, r;
+    s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.src = source;
 
-uic.loadScript = function (source) {
-    let scriptEl = document.createElement("script");
-    scriptEl.setAttribute("src", source);
+    if (readyCallback != null) {
+        s.onload = s.onreadystatechange = function () {
+            console.log(this.readyState); //uncomment this line to see which ready states are called.
+            if (!r && (!this.readyState || this.readyState == 'complete')) {
+                r = true;
+                readyCallback();
+            }
+        };
+    }
+
     if (document.body == null)
         document.body = document.createElement("body");
-    document.body.append(scriptEl);
+    document.body.append(s);
+};
+//Load a stylesheet on the page using javascript.
+//if reloadExisting is true, the script will be reloaded even if the page already contains the script
+uic.loadScript = function (source, reloadExisting = false) {
+    if (!reloadExisting) {
+        let existing = $(`link[href="${source}"]`);
+        if (existing.length) {
+            return;
+        }
+    }
+    let s, r;
+    s = document.createElement('link');
+    s.rel = 'stylesheet';
+    s.href = source;
+
+    if (document.body == null)
+        document.body = document.createElement("body");
+    document.body.append(s);
 };
 
 uic.getResultOrInvoke = async function (result, ...args) {

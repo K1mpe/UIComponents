@@ -1,0 +1,22 @@
+﻿.input-group {
+    // margin-left: -1px;
+    // border-top-left-radius: 0;
+    // border-bottom-left-radius: 0;
+
+    > :not(:first-child):not(.input-group-prepend) {
+        margin-left: -1px;
+        @include border-left-radius(0);
+    }
+
+    > :not(:last-child):not(.input-group-append) {
+        @include border-right-radius(0);
+    }
+
+    > .input-group-button:not(:first-child) button {
+        @include border-left-radius(0);
+    }
+
+    > .input-group-button:not(:last-child) button {
+        @include border-right-radius(0);
+    }
+}

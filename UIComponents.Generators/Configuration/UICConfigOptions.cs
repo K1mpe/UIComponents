@@ -69,6 +69,9 @@ public partial class UicConfigOptions
     public bool CheckPermissionServiceType { get; set; } = true;
 
     public bool CheckPropertyValidatorReadonly { get; set; }
+
+    public Action<string, Stream, Action> UpdateMonitorAction { get; set; }
+
     #endregion
 
     #region Add Generators
@@ -316,6 +319,20 @@ public partial class UicConfigOptions
 
     #endregion
 
+    #region UpdateMonitor
+  
+    /// <summary>
+    /// Register a custom <see cref="IUICUpdateMonitor"/>.
+    /// </summary>
+    /// <param name="action"></param>
+    /// <remarks>
+    /// This action will not do anything if another <see cref="IUICUpdateMonitor"/> is registrated</remarks>
+    public UicConfigOptions AddUpdateMonitor(Action<string, Stream, Action> action)
+    {
+        UpdateMonitorAction = action;
+        return this;
+    }
+    #endregion
 
     #region Get methods
 

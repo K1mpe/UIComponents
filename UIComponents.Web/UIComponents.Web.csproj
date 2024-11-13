@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.3.08</Version>
+	<Version>1.3.09</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -71,6 +71,32 @@
     <None Remove="UIComponents\ChangeLog\2024-10-25.md" />
     <None Remove="UIComponents\ChangeLog\2024-11-07.md" />
     <None Remove="UIComponents\ChangeLog\2024-11-08.md" />
+    <None Remove="UIComponents\ChangeLog\2024-11-13.md" />
+    <None Remove="UIComponents\Root\css\inputs\_recurring-date.scss" />
+    <None Remove="UIComponents\Root\css\inputs\_select2.scss" />
+    <None Remove="UIComponents\Root\css\inputs\_timespan.scss" />
+    <None Remove="UIComponents\Root\css\inputs\_toggle-switch.scss" />
+    <None Remove="UIComponents\Root\css\_accordion.scss" />
+    <None Remove="UIComponents\Root\css\_buttons.scss" />
+    <None Remove="UIComponents\Root\css\_buttontoolbar.scss" />
+    <None Remove="UIComponents\Root\css\_card.scss" />
+    <None Remove="UIComponents\Root\css\_carousel.scss" />
+    <None Remove="UIComponents\Root\css\_color.scss" />
+    <None Remove="UIComponents\Root\css\_contextmenu.scss" />
+    <None Remove="UIComponents\Root\css\_dropzone.scss" />
+    <None Remove="UIComponents\Root\css\_file-explorer.scss" />
+    <None Remove="UIComponents\Root\css\_form.scss" />
+    <None Remove="UIComponents\Root\css\_input-group.scss" />
+    <None Remove="UIComponents\Root\css\_js-grid.scss" />
+    <None Remove="UIComponents\Root\css\_list.scss" />
+    <None Remove="UIComponents\Root\css\_modal.scss" />
+    <None Remove="UIComponents\Root\css\_outside-depenencies.scss" />
+    <None Remove="UIComponents\Root\css\_partial.scss" />
+    <None Remove="UIComponents\Root\css\_side-panel.scss" />
+    <None Remove="UIComponents\Root\css\_single-row.scss" />
+    <None Remove="UIComponents\Root\css\_tabs.scss" />
+    <None Remove="UIComponents\Root\css\_time-only.scss" />
+    <None Remove="UIComponents\Root\css\_variables.scss" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\7z.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\bak.png" />
     <None Remove="UIComponents\Root\img\file-explorer\extensions\db.png" />

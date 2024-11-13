@@ -41,7 +41,7 @@ public static class UICConfigure
         services.TryAddSingleton<IUICStoredEvents, StoredEvents>();
         services.TryAddSingleton<IUICStoredComponents, StoredComponents>();
         services.TryAddScoped<IUICValidationService, UICValidationService>();
-
+        services.TryAddScoped<IUICUpdateMonitor, UICUpdateMonitor>();
         config(configuration);
 
         if (!services.Where(x => x is IUICLanguageService).Any())

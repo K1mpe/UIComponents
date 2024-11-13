@@ -32,6 +32,7 @@
                                 },
                                 children: true,
                                 li_attr: {
+                                    'class': 'explorer-item explorer-folder',
                                     'data-absolutePath': absoluteRef,
                                     'data-relativePath': relativeDir
                                 }
@@ -48,10 +49,23 @@
                         
                         try {
                             result.Files.forEach((item, index) => {
+                                let classes = 'explorer-item';
+                                if (item.IsFolder)
+                                    classes += ' explorer-folder';
+                                if (!item.CanOpen)
+                                    classes += ' cannot-open';
+                                if (item.CanMove)
+                                    classes += ' can-move';
+                                if (item.CanDelete)
+                                    classes += ' can-delete';
+                                if (item.CanRename)
+                                    classes += ' can-rename';
+
                                 treeItems.push({
                                     text: item.FileName,
                                     children: item.DirectoryHasSubdirectories,
-                                    li_attr:{
+                                    li_attr: {
+                                        'class': classes,
                                         'data-absolutePath': item.AbsolutePathReference,
                                         'data-relativePath': item.RelativePath
                                     }
@@ -80,9 +94,38 @@
                     return;
 
                 target = $(ev.target).closest('li');
-                let directory = target.attr('data-relativePath');
-                if(directory != undefined && directory.length > 0)
-                    uic.fileExplorer.loadRelativeDir(container, directory);
+
+                if (ev.shiftKey == true) {
+                    let currentItem = target;
+                    let parent = currentItem.parent();
+                    let previous = currentItem.prevAll('.explorer-item.selected')[0] || currentItem.nextAll('.explorer-item.selected')[0] || currentItem[0];
+                    let currentIndex = currentItem.index();
+                    let prevIndex = $(previous).index();
+                    if (prevIndex > currentIndex) {
+                        for (let i = prevIndex; i <= currentIndex; i++) {
+                            $(parent.children()[i]).addClass('selected');
+                        }
+                    } else {
+                        for (let i = currentIndex; i >= prevIndex; i--) {
+                            $(parent.children()[i]).addClass('selected');
+                        }
+                    }
+                } else if (ev.ctrlKey == true) {
+                    $(ev.target).closest('.explorer-item').toggleClass('selected');
+                } else {
+                    tree.find('.selected').removeClass('selected');
+                    target.addClass('selected');
+                    let directory = target.attr('data-relativePath');
+                    if (directory != undefined && directory.length > 0)
+                        uic.fileExplorer.loadRelativeDir(container, directory);
+                }
+            });
+            tree.on('contextmenu', (ev) => {
+                let currentItem = $(ev.target).closest('.explorer-item');
+                if (!currentItem.hasClass('selected')) {
+                    container.find('.explorer-item').removeClass('selected');
+                    $(ev.target).closest('.explorer-item').addClass('selected');
+                }
             });
 
             container.on('uic-after-fetch', (ev, ...data) => {
@@ -101,6 +144,9 @@
                 tree.jstree('deselect_all');
                 tree.jstree('select_node', lastNode);
             });
+            container.on('uic-reload', (ev) => {
+                tree.jstree(true).refresh();
+            })
         },
 
         //input.explorer-path
@@ -267,7 +313,7 @@
         })
         
         container.find('.explorer-item').on('dblclick', (ev) => {
-            this.openItem(ev);
+            this.openItem(ev.closest('.explorer-item'));
         })
         this.addCuttingClass(container);
     },
@@ -533,8 +579,8 @@
             }
         }
     ],
-    openItem: async function (ev) {
-        let explorerItem = $(ev.target).closest('.explorer-item:not(.cannot-open)');
+    openItem: async function (explorerItem) {
+        explorerItem = $(explorerItem).closest('.explorer-item:not(.cannot-open)');
         let container = explorerItem.closest('.file-explorer-container');
         await container.triggerHandler('uic-before-open', explorerItem);
         let extension = explorerItem.attr('data-Extension');

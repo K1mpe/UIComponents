@@ -1,0 +1,17 @@
+﻿// Variables and mixins
+// ---------------------------------------------------
+@import '../../lib/bootstrap/scss/functions';
+@import '../../lib/admin-lte/build/scss/bootstrap-variables';
+@import '../../lib/admin-lte/build/scss/variables';
+@import '../../lib/admin-lte/build/scss/variables-alt';
+@import '../../lib/admin-lte/build/scss/mixins';
+@import '../../lib/bootstrap/scss/mixins';
+@import '../../lib/bootstrap/scss/_variables.scss';
+
+$uic-carousel-inactive-opacity: 0.5 !default;
+$uic-carousel-indicator-opacity: 0.5 !default;
+$uic-carousel-indicator-background-opacity: 0.3 !default;
+
+$uic-file-explorer-selected-background-color: #92e4fc50;
+$uic-file-explorer-hover-background-color: #92e4fc10;
+$uic-file-explorer-cut-opacity: 0.4;

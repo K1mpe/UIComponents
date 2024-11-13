@@ -52,7 +52,7 @@
     Model.Css += $" {UICTableColumn.VisibilityClass(Model.ColumnVisibility)}";
 }
 {
-    name:@Html.JsEncode(Model.PropertyInfo?.Name,"'"),
+    name:@Html.JsEncode(Model.ColumnName,"'"),
     title: @await Html.TranslateJs(L, Model.Title, "'"),
     tooltip: @await Html.TranslateJs(L, Model.Tooltip, "'"),
     css: @Html.JsEncode(Model.Css, "'"),

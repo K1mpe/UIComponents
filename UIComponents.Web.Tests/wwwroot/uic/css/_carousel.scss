@@ -1,0 +1,82 @@
+﻿.uic.carousel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 100%;
+    max-width: 100%;
+
+    .carousel-inner {
+        height: 100%;
+        width: 100%;
+
+        .carousel-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%; /* Ensure items don't exceed carousel width */
+            height: 100%; /* Ensure items don't exceed carousel height */
+
+            &:not(.active, .carousel-item-next, .carousel-item-prev) {
+                display: none;
+            }
+        }
+    }
+
+
+    .carousel-indicators {
+        &:not(.active) {
+            opacity: $uic-carousel-inactive-opacity;
+        }
+
+        .indicator-background {
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+            background-color: var(--dark);
+        }
+
+        @each $name, $color in $colors {
+            .indicator-#{$name} {
+                &.active {
+                    background-color: $color;
+                }
+
+                &:not(.active) {
+                    background-color: lighten($color,10%);
+                }
+            }
+        }
+    }
+
+    .carousel-control-prev, .carousel-control-next {
+        width: 2rem;
+
+        i {
+            position: absolute;
+        }
+
+        .control-dark {
+            color: var(--dark);
+            opacity: $uic-carousel-indicator-background-opacity;
+            font-size: 1.5rem;
+        }
+
+        .control-light {
+            color: var(--light);
+            opacity: $uic-carousel-indicator-opacity;
+        }
+    }
+
+
+    &.hover-arrow:not(:hover) {
+        .carousel-control-prev, .carousel-control-next {
+            display: none;
+        }
+    }
+
+    &.hover-indicators:not(:hover) {
+        .carousel-indicators {
+            display: none;
+        }
+    }
+}

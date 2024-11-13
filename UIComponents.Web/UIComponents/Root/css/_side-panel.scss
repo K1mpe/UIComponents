@@ -1,0 +1,49 @@
+﻿.uic.side-panel-container {
+    &.horizontal {
+        > .side-panel {
+            //transition: width $transition-speed ease-in-out;
+
+            min-width: fit-content;
+            padding: 0;
+
+
+            > .card {
+                height: 100%;
+                overflow: auto;
+            }
+
+            &.collapsed {
+                width: 0px;
+                display: none;
+            }
+
+            &.overlay {
+            }
+
+            &.fixed {
+            }
+        }
+    }
+
+    > .side-panel {
+        &.overlay {
+            position: absolute;
+            opacity: 0.95;
+            z-index: 50;
+        }
+
+        &.fixed {
+            height: 100%;
+        }
+
+        > .side-panel-content {
+            height: fit-content;
+        }
+    }
+
+    .btn-sidebar-open.position-absolute {
+        position: absolute;
+        z-index: 49;
+        margin-left: -5px;
+    }
+}

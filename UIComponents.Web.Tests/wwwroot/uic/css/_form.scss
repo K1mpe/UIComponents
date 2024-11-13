@@ -1,0 +1,103 @@
+﻿form {
+    &.readonly-form {
+        > :not(.ignore-readonly) {
+            .hidden-readonly {
+                display: none;
+            }
+
+            .btn-save {
+                display: none;
+            }
+
+            .btn-readonly {
+                display: none;
+            }
+
+            .form-control, .select2-selection {
+                background: none !important;
+                border: none;
+            }
+
+            .select2-selection__arrow {
+                display: none;
+            }
+
+            .input-group {
+                .form-control:not(textarea) {
+                    max-width: max-content;
+                }
+            }
+
+            .input-group-text {
+                background: none;
+                border: none;
+            }
+        }
+
+        &.hide-empty .input-no-value {
+            display: none;
+        }
+
+        .singlerow-groups label:has(+.form-column .custom-switch) {
+            padding-top: add($input-padding-y, $input-border-width);
+            padding-bottom: add($input-padding-y, $input-border-width);
+            margin-bottom: 0;
+            @include font-size(inherit);
+            line-height: $input-line-height;
+        }
+    }
+
+    &:not(.readonly-form) {
+        .hidden-edit {
+            display: none;
+        }
+
+        .btn-edit {
+            display: none;
+        }
+
+        .input-group > [class*="coloris-"] {
+            flex-grow: 1;
+        }
+    }
+}
+
+i.uic-value-changed {
+    color: var(--warning);
+
+    &:not(:hover) {
+        animation: pulseIcon 2s infinite;
+    }
+}
+
+.uic-value-changed:not(i) {
+    animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseIcon {
+    0% {
+        transform: initial;
+    }
+
+    70% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: initial;
+    }
+}
+
+@keyframes pulseBorder {
+    0% {
+        box-shadow: 0 0 0 0rem var(--warning);
+    }
+
+    70% {
+        box-shadow: 0 0 0 0.2rem var(--warning);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0rem;
+    }
+}

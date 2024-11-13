@@ -1,0 +1,61 @@
+﻿.uic > .input-instances > .input-instance {
+    display: flex;
+
+    > :first-child {
+        width: 100%;
+        border-top-right-radius: 0;
+
+        &:has(~.instance-buttons:not(.vertical)) {
+            border-bottom-right-radius: 0;
+        }
+    }
+
+    &:first-child .uic-btn-move-up {
+        //display: none;
+        @extend .disabled
+    }
+
+    &:last-child .uic-btn-move-down {
+        //display: none;
+        @extend .disabled
+    }
+
+    > .instance-buttons {
+        display: flex;
+        align-items: center;
+
+
+        button, .btn {
+            margin-left: -1px;
+        }
+
+        &.vertical {
+            flex-direction: column;
+            align-items: stretch;
+
+            button:not(:last-child), .btn:not(:last-child) {
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+
+            button:not(:first-child), .btn:not(:first-child) {
+                border-top-right-radius: 0;
+                border-top-right-radius: 0;
+                margin-top: -1px;
+            }
+        }
+
+        &:not(.vertical) {
+            button:not(:last-child), .btn:not(:last-child) {
+                border-bottom-right-radius: 0;
+                border-top-right-radius: 0;
+            }
+
+            button:not(:first-child), .btn:not(:first-child) {
+                border-bottom-left-radius: 0;
+                border-top-left-radius: 0;
+                margin-left: -1px;
+            }
+        }
+    }
+}

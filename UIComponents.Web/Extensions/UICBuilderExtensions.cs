@@ -33,6 +33,10 @@ public static class UICBuilderExtensions
             mvc.ModelBinderProviders.Insert(0, new RecurringDateModelBinderProvider());
         });
 
+        var provider = services.BuildServiceProvider();
+        var updatedFileReplacer = provider.GetService<IUICUpdateMonitor>();
+        bool hasUpdatedFileReplacer = updatedFileReplacer != null;
+
         var executingAssembly = Assembly.GetCallingAssembly();
         var currentAssembly = Assembly.GetExecutingAssembly();
         var currentVersion = currentAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
@@ -71,21 +75,15 @@ public static class UICBuilderExtensions
                 string scriptDir = FixFilePath(script.Replace(sourceRoute, targetRoote));
                 var fileInfo = new FileInfo(scriptDir);
                 Directory.CreateDirectory(fileInfo.DirectoryName);
-                if (File.Exists(scriptDir))
-                    File.Delete(scriptDir);
 
                 if (script.EndsWith(".js"))
                 {
-                    using (var scriptFile = File.Create(scriptDir))
-                    {
-                        using (var resourceStream = currentAssembly.GetManifestResourceStream(script))
-                        {
-                            resourceStream!.CopyTo(scriptFile);
-
-                        }
-                    }
+                    WriteNewFile(scriptDir, script);
+                    
                 } else if (script.EndsWith(".cshtml"))
                 {
+                    if (File.Exists(scriptDir))
+                        File.Delete(scriptDir);
                     scriptDir = scriptDir.Substring(0, scriptDir.Length - 6) + "js";
                     using (var scriptFile = File.Create(scriptDir))
                     {
@@ -154,29 +152,18 @@ public static class UICBuilderExtensions
         {
 
             string targetRoote = $"{dir}\\wwwroot\\uic\\css";
-            string sourceRoute = $"{currentAssemblyName}.UIComponents.Root.";
-            if (!Directory.Exists(targetRoote))
-            {
-                Directory.CreateDirectory(targetRoote);
-            }
+            string sourceRoute = $"{currentAssemblyName}.UIComponents.Root.css";
+            
 
             var styles = manifestNames.Where(x => x.EndsWith(".css") || x.EndsWith(".scss"));
 
 
-            var cssDestination = $"{targetRoote}\\uic.scss";
-            if (File.Exists(cssDestination))
-                File.Delete(cssDestination);
-
-            using (var cssFile = File.Create(cssDestination))
+            foreach (var style in styles)
             {
-
-                foreach (var style in styles)
-                {
-                    using (var resourceStream = currentAssembly.GetManifestResourceStream(style))
-                    {
-                        resourceStream!.CopyTo(cssFile);
-                    }
-                }
+                var cssDestination = FixFilePath(style.Replace(sourceRoute, targetRoote));
+                if (cssDestination.EndsWith("_outside-dependencies.scss") && File.Exists(cssDestination))
+                    continue;
+                WriteNewFile(cssDestination, style);
             }
         }
         if (options.ReplaceComponents)
@@ -196,16 +183,7 @@ public static class UICBuilderExtensions
                 string componentDir = FixFilePath(component.Replace(sourceRoute, targetRoote));
                 var fileInfo = new FileInfo(componentDir);
                 Directory.CreateDirectory(fileInfo.DirectoryName);
-                if (File.Exists(componentDir))
-                    File.Delete(componentDir);
-
-                using (var componentFile = File.Create(componentDir))
-                {
-                    using (var resourceStream = currentAssembly.GetManifestResourceStream(component))
-                    {
-                        resourceStream!.CopyTo(componentFile);
-                    }
-                }
+                WriteNewFile(componentDir, component);
             }
 
             
@@ -227,16 +205,7 @@ public static class UICBuilderExtensions
                 string componentDir = FixFilePath(component.Replace(sourceRoute, targetRoote));
                 var fileInfo = new FileInfo(componentDir);
                 Directory.CreateDirectory(fileInfo.DirectoryName);
-                if (File.Exists(componentDir))
-                    File.Delete(componentDir);
-
-                using (var componentFile = File.Create(componentDir))
-                {
-                    using (var resourceStream = currentAssembly.GetManifestResourceStream(component))
-                    {
-                        resourceStream!.CopyTo(componentFile);
-                    }
-                }
+                WriteNewFile(componentDir, component);
             }
         }
         if (options.AddReadMe)
@@ -345,16 +314,8 @@ public static class UICBuilderExtensions
                 var dest = $"{targetRoote}\\Translations.json";
                 if (File.Exists($"{targetRoote}\\Translations.xml"))
                     File.Delete(dest);
-                if (File.Exists(dest))
-                    File.Delete(dest);
 
-                using (var readMeFile = File.Create(dest))
-                {
-                    using (var resourceStream = currentAssembly.GetManifestResourceStream(translations))
-                    {
-                        resourceStream!.CopyTo(readMeFile);
-                    }
-                }
+                WriteNewFile(dest, translations);
             }
         }
 
@@ -380,8 +341,74 @@ public static class UICBuilderExtensions
         #endregion
 
         return services;
+
+        void WriteNewFile(string destination, string manifestFile)
+        {
+            var fileInfo = new FileInfo(destination);
+            if (!Directory.Exists(fileInfo.DirectoryName))
+                Directory.CreateDirectory(fileInfo.DirectoryName);
+            using (var resourceStream = currentAssembly.GetManifestResourceStream(manifestFile))
+            {
+                if (File.Exists(destination) && hasUpdatedFileReplacer)
+                {
+                    bool streamsAreEqual = false;
+                    using(var filestream = File.Open(destination, FileMode.Open, FileAccess.Read))
+                    {
+                        streamsAreEqual = StreamsAreEqual(filestream, resourceStream);
+                        
+                    }
+                    if(!streamsAreEqual)
+                        updatedFileReplacer.FileWillBeUpdated(destination, resourceStream, () => ExecuteWriteFile(resourceStream));
+                }
+                else
+                {
+                    ExecuteWriteFile(resourceStream);
+                }
+            }
+
+            void ExecuteWriteFile(Stream resourceStream)
+            {
+                if (File.Exists(destination))
+                    File.Delete(destination);
+
+
+                using (var cssFile = File.Create(destination))
+                {
+                    resourceStream!.CopyTo(cssFile);
+                }
+            }
+        }
     }
 
+    public static bool StreamsAreEqual(Stream stream1, Stream stream2)
+    {
+        if (stream1.Length != stream2.Length)
+            return false;
+
+        const int bufferSize = 1024 * 8; // 8KB buffer
+        byte[] buffer1 = new byte[bufferSize];
+        byte[] buffer2 = new byte[bufferSize];
+
+        while (true)
+        {
+            int bytesRead1 = stream1.Read(buffer1, 0, bufferSize);
+            int bytesRead2 = stream2.Read(buffer2, 0, bufferSize);
+
+            if (bytesRead1 != bytesRead2)
+                return false;
+
+            if (bytesRead1 == 0) // End of stream reached for both
+                return true;
+
+            // Compare buffers
+            for (int i = 0; i < bytesRead1; i++)
+            {
+                if (buffer1[i] != buffer2[i])
+                    return false;
+            }
+        }
+        throw new NotImplementedException();
+    }
     private static string FixFilePath(string targetPath)
     {
         string currentDirectory = Directory.GetCurrentDirectory();

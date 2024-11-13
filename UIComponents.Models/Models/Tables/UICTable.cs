@@ -719,11 +719,7 @@ namespace UIComponents.Models.Models.Tables
             return $"{{field: '{Column}', order: '{SortOrder.ToString().ToLower()}'}}";
         }
     }
-    public enum SortOrder
-    {
-        Asc = 0,
-        Desc = 1,
-    }
+    
 }
 namespace UIComponents.Defaults.Models.Table
 {

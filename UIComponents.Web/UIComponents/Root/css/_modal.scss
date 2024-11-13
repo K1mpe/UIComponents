@@ -1,0 +1,10 @@
+﻿.uic.modal-footer:has(.btn-toolbar-left, .btn-toolbar-center) {
+    display: block;
+}
+
+
+body .modal-dialog.auto { /* Width */
+    max-width: 98%;
+    width: auto !important;
+    display: table;
+}

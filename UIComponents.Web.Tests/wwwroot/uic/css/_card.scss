@@ -1,0 +1,15 @@
+﻿.uic.card {
+    min-width: fit-content;
+}
+
+> .card-body {
+    min-width: fit-content;
+}
+
+.uic.card:last-child {
+    margin-bottom: 0;
+}
+
+.col:has(>.uic.card:last-child) {
+    margin-bottom: map-get($spacers, 3);
+}

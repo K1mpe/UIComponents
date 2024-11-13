@@ -1,0 +1,96 @@
+﻿.uic.card-tabs {
+    .card-header-tabs.nav-pills {
+        margin-bottom: 0;
+    }
+
+    a.nav-link {
+        margin: -$nav-tabs-border-width;
+        display: inline-flex;
+
+        > .tab-tools {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+    }
+
+    &:not(.card-outline) > .card-header {
+        border-bottom: inherit;
+    }
+
+    .card-header-tabs {
+
+        .tab-title {
+            margin-left: auto;
+
+            &:last-child {
+                margin-right: auto;
+            }
+        }
+    }
+
+    .card-header:has(.nav-pills) {
+        border-bottom: 0;
+    }
+
+    > .row {
+        margin-left: 0px;
+        margin-right: 0px;
+
+        .col-tab-headers {
+            flex-grow: 0;
+            min-width: fit-content;
+            /*padding-left: 0px;*/
+            margin-left: -2px;
+            padding-right: 0px;
+
+            .nav-pills .nav-link:first-child {
+                margin-top: $card-spacer-y;
+            }
+        }
+
+        .col-tab-content {
+            padding-left: $card-spacer-x;
+            padding-right: $card-spacer-x;
+            padding-top: $card-spacer-y;
+            padding-bottom: $card-spacer-y;
+        }
+
+        &:has(>.col-tab-headers .nav-tabs) {
+            .col-tab-content {
+                border-top: $nav-tabs-border-width solid $gray-300;
+                margin-top: -$nav-tabs-border-width;
+            }
+        }
+    }
+
+
+    .tab-pane > .uic.card-tabs:only-child, .tab-pane > div:only-child > .uic.card-tabs:only-child, .sub-tabs {
+        margin: -$card-spacer-x;
+        border-width: 0;
+        box-shadow: none;
+
+        > .card-header {
+            border-radius: 0;
+            padding-top: 0;
+        }
+
+        .col-tab-headers :not(.nav-pills) .nav-link.active:first-child {
+            border-top-left-radius: 0;
+        }
+    }
+
+    &:has(>.card-header .nav-pills) {
+        .tab-pane > .uic.card-tabs:only-child, .tab-pane > div:only-child > .uic.card-tabs:only-child, .sub-tabs {
+            &:has(>.row>.col-tab-headers .nav-pills) {
+                margin-top: -1rem;
+            }
+        }
+    }
+
+
+
+    .tab-pane > .card:only-child {
+        box-shadow: none;
+    }
+}

@@ -3,6 +3,7 @@
 @using UIComponents.Abstractions.Enums
 @using UIComponents.Abstractions.Interfaces;
 @using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Interfaces.Tables
 @using UIComponents.Abstractions.Models;
 @using UIComponents.Abstractions.Extensions;
 @using UIComponents.Defaults;
@@ -24,7 +25,7 @@
 @{
 
     bool hasId = !String.IsNullOrEmpty(Model.GetAttribute("id"));
-    if (!hasId)
+    if (!hasId || Model.GetId().StartsWith("uic"))
         Model.SaveFiltersInLocalStorage = false;
 
     if (Model.Selecting)
@@ -47,6 +48,14 @@
             uic.jsgrid.pager_generate(@Html.JsEncode(id, "'"), @Html.JsEncode(Model.PagingSelector,"'"));
         </text>
     );
+    if (Model.Sorter == null && Model.Sorting)
+    {
+        var sortColumn = Model.Columns.Where(x => x is IUICSortableTableColumn column && !string.IsNullOrEmpty(column.ColumnName) && column.SortOrder != null).FirstOrDefault() as IUICSortableTableColumn;
+        if (sortColumn != null)
+        {
+            Model.Sorter = new GridSorter(sortColumn.ColumnName, sortColumn.SortOrder.Value);
+        }
+    }
 
     if(Model.DelayedAction != null)
     {

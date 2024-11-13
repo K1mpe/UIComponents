@@ -4,7 +4,7 @@ using UIComponents.Abstractions.Interfaces.Tables;
 
 namespace UIComponents.Models.Models.Tables
 {
-    public class UICTableColumn : IUIComponent, IUICTableColumn, IUICConditionalRender
+    public class UICTableColumn : IUIComponent, IUICTableColumn, IUICConditionalRender, IUICSortableTableColumn
     {
         #region Fields
         public virtual string RenderLocation => UIComponent.DefaultIdentifier(nameof(UICTableColumn));
@@ -26,6 +26,15 @@ namespace UIComponents.Models.Models.Tables
         public UICTable ParentTable { get; set; }
 
         public PropertyInfo PropertyInfo{ get; set; }
+        private string _columnName;
+        public string ColumnName { get
+            {
+                return _columnName?? PropertyInfo?.Name??null;
+            } set
+            {
+                _columnName = value;
+            }
+        }
         public Translatable Title { get; set; }
         public Translatable Tooltip { get; set; }
         public SortOrder? SortOrder { get; set; }
@@ -151,6 +160,7 @@ namespace UIComponents.Models.Models.Tables
         public UICTableColumnVisibility ColumnVisibility { get; set; } = UICTableColumnVisibility.VisibleOnAll;
         public UICTableColumnVisibility TextVisibility { get; set; } = UICTableColumnVisibility.VisibleOnAll;
         public UICTableColumnVisibility IconVisibility { get; set; } = UICTableColumnVisibility.VisibleOnAll;
+
 
         #endregion
 

@@ -1,0 +1,29 @@
+﻿.select2-container {
+    flex-grow: 1;
+}
+
+.select2-container .select2-results__option {
+    min-height: 1.8rem; //if Value is null, this height will be set
+    &[aria-disabled] {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+}
+
+.input-group .select2-hidden-accessible {
+    &:not(.has-select-elements):not(:first-child) {
+        + .select2-container .select2-selection {
+            @include border-left-radius(0);
+        }
+    }
+
+    &:not(:nth-child(1)) {
+        + .select2-container .select2-selection {
+            @include border-left-radius(0);
+        }
+    }
+}
+
+.select2-results__option:has(ul:empty) {
+    display: none;
+}

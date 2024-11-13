@@ -1,0 +1,19 @@
+﻿.custom-control-input.indeterminate ~ .custom-control-label {
+    &::before {
+        background-color: var(--secondary, $custom-control-indicator-bg);
+    }
+
+    &::after {
+        transform: translateX(($custom-switch-width - $custom-control-indicator-size)/2);
+    }
+}
+
+.custom-control-input[disabled] ~ .custom-control-label ::after, .custom-control-input:disabled ~ .custom-control-label::after {
+    opacity: 0.25;
+}
+
+.uic .form-column > .custom-switch, .uic [class^=col] > .form-group .custom-switch {
+    margin-left: $input-padding-y;
+    padding-top: add($input-padding-y, $input-border-width);
+    padding-bottom: add($input-padding-y, $input-border-width);
+}

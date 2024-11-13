@@ -14,6 +14,7 @@ using UIComponents.Abstractions.Interfaces.ValidationRules;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,11 @@ builder.Services.AddUIComponentWeb(config =>
     config.AddFileExplorerImgs = true;
     UIComponents.Defaults.Models.UICUpload.DropzoneCss = "~/lib/dropzone/dropzone.min.css";
     UIComponents.Defaults.Models.UICUpload.DropzoneScript = "/lib/dropzone/dropzone.min.js";
+    config.AddUpdateMonitor((filepath, newFileStream, overwriteFile) =>
+    {
+        //Debugger.Break();
+        overwriteFile();
+    });
     config.AddDefaultGenerators(builder.Services);
     config.AddDefaultValidators(builder.Services);
     config.AddValidatorPropertyMinLength((propinfo, obj) =>
