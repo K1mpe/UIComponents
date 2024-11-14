@@ -22,7 +22,7 @@
 
                         let treeItems = [];
                         if (object.id === '#') {
-                            relativeDir = container.attr('data-rootDirectory'); 
+                            relativeDir = container.attr('data-rootDirectory');
                             treeItems.push({
                                 text: relativeDir.slice(0, -1),// remove the '/' at the end
                                 state: {
@@ -46,7 +46,7 @@
                             FoldersOnly: true
                         };
                         let result = await uic.getpost.post(`/${controller}/GetFilesForDirectoryJson`, filterModel);
-                        
+
                         try {
                             result.Files.forEach((item, index) => {
                                 let classes = 'explorer-item';
@@ -163,7 +163,7 @@
                     uic.fileExplorer.loadRelativeDir(container, value);
                 })
             });
-            
+
         },
         //.explorer-preview
         previewWindow: function (container) {
@@ -180,7 +180,7 @@
                 let canContinue = true;
                 item.one('dblclick', () => { canContinue = false });
                 setTimeout(async () => {
-                    if (!canContinue) 
+                    if (!canContinue)
                         return;
                     let controller = container.attr('data-controller');
                     let absolutePath = item.attr('data-absolutepath');
@@ -197,7 +197,7 @@
                     if (preview != false)
                         window.html(preview);
                 }, 300);
-                
+
             };
             container.on('click', '.explorer-item', eventFunction);
         }
@@ -241,7 +241,7 @@
         filterModel.RelativePath = directory;
         await this.loadMainWindow(container, controller, filterModel);
     },
-    
+
     SetRenderer: async function (container, renderer) {
         let controller = container.data('controller');
         let filterModel = container.triggerHandler('uic-getFilterModel');
@@ -311,9 +311,9 @@
                 $(ev.target).closest('.explorer-item').addClass('selected');
             }
         })
-        
+
         container.find('.explorer-item').on('dblclick', (ev) => {
-            this.openItem(ev.closest('.explorer-item'));
+            this.openItem($(ev.target).closest('.explorer-item'));
         })
         this.addCuttingClass(container);
     },
@@ -354,34 +354,34 @@
         ]);
 
         Swal.fire($.extend(true, {}, uic.defaults.swal,
-        {
-            title: translations["FileExplorer.CreateDirectory.Title"],
-            text: translations["FileExplorer.CreateDirectory.Message"],
-            showCloseButton: true,
-            showCancelButton: true,
-            input: "text",
-            allowOutsideClick: true,
-            allowEscapeKey: true,
-            confirmButtonText: translations["FileExplorer.CreateDirectory.Create"],
-            cancelButtonText: translations["Button.Cancel"],
-        })).then(async result => {
-            if (!result.isConfirmed)
-                return;
-            let dirName = result.value;
+            {
+                title: translations["FileExplorer.CreateDirectory.Title"],
+                text: translations["FileExplorer.CreateDirectory.Message"],
+                showCloseButton: true,
+                showCancelButton: true,
+                input: "text",
+                allowOutsideClick: true,
+                allowEscapeKey: true,
+                confirmButtonText: translations["FileExplorer.CreateDirectory.Create"],
+                cancelButtonText: translations["Button.Cancel"],
+            })).then(async result => {
+                if (!result.isConfirmed)
+                    return;
+                let dirName = result.value;
 
-            let filterModel = container.triggerHandler('uic-getFilterModel');
-            let absolutePath = container.attr('data-rootabsolutepath');
-            let controller = container.data('controller');
-            let relativePath = filterModel.RelativePath;
-            if (!relativePath.endsWith("/"))
-                relativePath = relativePath + "/";
-            relativePath = relativePath + dirName;
-            await uic.getpost.post(`/${controller}/CreateDirectory`, {
-                AbsolutePathReference: absolutePath,
-                RelativePath: relativePath
-            });
-            container.trigger('uic-reload');
-        })
+                let filterModel = container.triggerHandler('uic-getFilterModel');
+                let absolutePath = container.attr('data-rootabsolutepath');
+                let controller = container.data('controller');
+                let relativePath = filterModel.RelativePath;
+                if (!relativePath.endsWith("/"))
+                    relativePath = relativePath + "/";
+                relativePath = relativePath + dirName;
+                await uic.getpost.post(`/${controller}/CreateDirectory`, {
+                    AbsolutePathReference: absolutePath,
+                    RelativePath: relativePath
+                });
+                container.trigger('uic-reload');
+            })
     },
     deleteSelected: async function (container) {
         container = container.closest('.file-explorer-container');
@@ -401,43 +401,43 @@
                 TranslatableSaver.Save("Button.Delete", "Delete"),
                 TranslatableSaver.Save("Button.Cancel", "Cancel")
             ]);
-            Swal.fire($.extend(true, {}, uic.defaults.swal, 
-            {
-                title: translations["FileExplorer.DeleteOneFile"],
-                text: files[0].RelativePath,
-                showCloseButton: true,
-                showCancelButton: true,
-                allowOutsideClick: true,
-                allowEscapeKey: true,
-                confirmButtonText: translations["Button.Delete"],
-                cancelButtonText: translations["Button.Cancel"],
-            })).then(async result => {
-                if (!result.isConfirmed)
-                    return;
-                await uic.getpost.post(`/${controller}/DeleteFiles`, { pathModel: files });
-                container.trigger('uic-reload');
-            });
+            Swal.fire($.extend(true, {}, uic.defaults.swal,
+                {
+                    title: translations["FileExplorer.DeleteOneFile"],
+                    text: files[0].RelativePath,
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    allowOutsideClick: true,
+                    allowEscapeKey: true,
+                    confirmButtonText: translations["Button.Delete"],
+                    cancelButtonText: translations["Button.Cancel"],
+                })).then(async result => {
+                    if (!result.isConfirmed)
+                        return;
+                    await uic.getpost.post(`/${controller}/DeleteFiles`, { pathModel: files });
+                    container.trigger('uic-reload');
+                });
         } else {
             let translations = await uic.translation.translateMany([
                 TranslatableSaver.Save("FileExplorer.DeleteManyFile", "Are you sure you want to delete {0} files?", files.length),
                 TranslatableSaver.Save("Button.Delete", "Delete"),
                 TranslatableSaver.Save("Button.Cancel", "Cancel")
             ])
-            Swal.fire($.extend(true, {}, uic.defaults.swal, 
-{
-                title: translations["FileExplorer.DeleteManyFile"],
-                showCloseButton: true,
-                showCancelButton: true,
-                allowOutsideClick: true,
-                allowEscapeKey: true,
-                confirmButtonText: translations["Button.Delete"],
-                cancelButtonText: translations["Button.Cancel"],
-            })).then(async result => {
-                if (!result.isConfirmed)
-                    return;
-                await uic.getpost.post(`/${controller}/DeleteFiles`, { pathModel: files });
-                container.trigger('uic-reload');
-            });
+            Swal.fire($.extend(true, {}, uic.defaults.swal,
+                {
+                    title: translations["FileExplorer.DeleteManyFile"],
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    allowOutsideClick: true,
+                    allowEscapeKey: true,
+                    confirmButtonText: translations["Button.Delete"],
+                    cancelButtonText: translations["Button.Cancel"],
+                })).then(async result => {
+                    if (!result.isConfirmed)
+                        return;
+                    await uic.getpost.post(`/${controller}/DeleteFiles`, { pathModel: files });
+                    container.trigger('uic-reload');
+                });
         }
     },
     directoryGoUp: async function (container) {
@@ -574,8 +574,8 @@
         },
         async function (explorerItem, extension, relativePath) {
             if (explorerItem.hasClass('explorer-img')) {
-                    uic.fileExplorer.openImageViewer(explorerItem);
-                    return true;
+                uic.fileExplorer.openImageViewer(explorerItem);
+                return true;
             }
         }
     ],
@@ -595,7 +595,7 @@
             if (await handler(explorerItem, extension, relativePath))
                 return;
         }
-        
+
 
         await container.triggerHandler('uic-after-open', explorerItem);
 
@@ -608,7 +608,7 @@
         let absolutePathReference = explorerItem.attr('data-absolutepath');
         let relativePath = explorerItem.attr('data-relativepath');
         let data = {
-            AbsolutePathReference:  absolutePathReference,
+            AbsolutePathReference: absolutePathReference,
             RelativePath: relativePath
         };
         let json = JSON.stringify(data);
@@ -664,7 +664,7 @@
                 }
             });
         }
-        
+
 
         if (this._copyMode == "cut") {
             this._copiedFiles = [];
@@ -687,27 +687,27 @@
         ]);
 
         Swal.fire($.extend(true, {}, uic.defaults.swal,
-        {
-            title: translations["FileExplorer.Rename.Title"],
-            text: file.RelativePath,
-            showCloseButton: true,
-            showCancelButton: true,
-            input: "text",
-            allowOutsideClick: true,
-            allowEscapeKey: true,
-            confirmButtonText: translations["Button.Rename"],
-            cancelButtonText: translations["Button.Cancel"],
-        })).then(async result => {
-            if (!result.isConfirmed)
-                return;
-            let newFileName = result.value;
+            {
+                title: translations["FileExplorer.Rename.Title"],
+                text: file.RelativePath,
+                showCloseButton: true,
+                showCancelButton: true,
+                input: "text",
+                allowOutsideClick: true,
+                allowEscapeKey: true,
+                confirmButtonText: translations["Button.Rename"],
+                cancelButtonText: translations["Button.Cancel"],
+            })).then(async result => {
+                if (!result.isConfirmed)
+                    return;
+                let newFileName = result.value;
 
-            await uic.getpost.post(`/${controller}/Rename`, {
-                pathModel: file,
-                newName: newFileName
-            });
-            container.trigger('uic-reload');
-        })
+                await uic.getpost.post(`/${controller}/Rename`, {
+                    pathModel: file,
+                    newName: newFileName
+                });
+                container.trigger('uic-reload');
+            })
     },
     uploadPage: async function (item) {
         let container = item.closest('.file-explorer-container');
@@ -723,9 +723,9 @@
             $('body').append(result);
         }
     },
-    
+
     //The files that are selected to copy or move
     _copiedFiles: [],
     //Should be copy or cut
-    _copyMode:"",
+    _copyMode: "",
 };

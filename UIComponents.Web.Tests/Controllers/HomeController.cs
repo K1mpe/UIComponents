@@ -12,6 +12,7 @@ using UIComponents.Abstractions.Interfaces;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
 using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Models;
+using UIComponents.Abstractions.Models.HtmlResponses;
 using UIComponents.Abstractions.Varia;
 using UIComponents.Defaults;
 using UIComponents.Defaults.Models.Graphs;
@@ -87,6 +88,7 @@ namespace UIComponents.Web.Tests.Controllers
             //var component = await _uic.CreateComponentAsync(new TestModel());
             //return ViewOrPartial(component);
             await Task.Delay(500);
+            return Json(new UICToastResponse(IUICToastNotification.ToastType.Warning, "test")); 
             if(IsAjaxRequest(Request))
                 return PartialView();
             return View();

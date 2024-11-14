@@ -17,20 +17,21 @@
         post : [],
         both : [
             (response) => {
-                if (response.Type == "ValidationErrors") {
+                let jsonResponse = uic.parse(response);
+                if (jsonResponse.Type == "ValidationErrors") {
                     $('span.text-danger').each(function () {
                         if ($(this).text() != "*")
                             $(this).text("");
                     });
                     let errors = [];
-                    response.Errors.forEach((item) => {
+                    jsonResponse.Errors.forEach((item) => {
                         let propertyName = item.PropertyName;
                         let error = item.Error;
                         let spanElement = $();
 
                         //If there is a Url in the response, first try to find a matching validation inside a form with the same url as action
-                        if (response.Url != undefined && response.Url != null && response.Url.length) 
-                            spanElement = $(`form[action="${response.Url}"] span.field-validation-valid[data-valmsg-for="${propertyName}"]`)
+                        if (jsonResponse.Url != undefined && jsonResponse.Url != null && jsonResponse.Url.length) 
+                            spanElement = $(`form[action="${jsonResponse.Url}"] span.field-validation-valid[data-valmsg-for="${propertyName}"]`)
 
                         // Get a validation span without the form
                         if(!spanElement.length)
@@ -56,10 +57,11 @@
                     return false;
                 }
             },
-            async(response) => {
-                if (response.Type == "ToastResponse") {
+            async (response) => {
+                let jsonResponse = uic.parse(response);
+                if (jsonResponse.Type == "ToastResponse") {
                     let level;
-                    switch (response.Notification.Type) {
+                    switch (jsonResponse.Notification.Type) {
                         case 1:
                             level = "Success";
                             break;
@@ -71,36 +73,38 @@
                             break;
                         case 4:
                             level = "Error";
-                            if(response.Data != null && response.Data != undefined)
-                                console.error(response.Data);
+                            if (jsonResponse.Data != null && jsonResponse.Data != undefined)
+                                console.error(jsonResponse.Data);
                             break;
                     }
-                    let message = await uic.translation.translate(response.Notification.Message);
+                    let message = await uic.translation.translate(jsonResponse.Notification.Message);
                     if (message == "null")
                         message = "";
-                    let title = await uic.translation.translate(response.Notification.Title);
+                    let title = await uic.translation.translate(jsonResponse.Notification.Title);
                     if (title == "null")
                         title = "";
 
-                    makeToast(level, message, title, { timeOut: response.Duration * 1000, closeButton: true, progressBar: true, preventDuplicates: true, }); //TOASTR
+                    makeToast(level, message, title, { timeOut: jsonResponse.Duration * 1000, closeButton: true, progressBar: true, preventDuplicates: true, }); //TOASTR
                     if (level === 'Success') {
-                        if (response.Data != null)
-                            return response.Data;
+                        if (jsonResponse.Data != null)
+                            return jsonResponse.Data;
                         return true;
                     }
                     return false;
                 }
             },
-            async(response) => {
-                if (response.Type == "AccessDenied") {
-                    let message = await uic.translation.translate(response.Message);
+            async (response) => {
+                let jsonResponse = uic.parse(response);
+                if (jsonResponse.Type == "AccessDenied") {
+                    let message = await uic.translation.translate(jsonResponse.Message);
                     makeToast("Error", "", message)
                     return false;
                 }
             },
             (response) => {
-                if (response.type == "Exception") {
-                    let text = response.exception[0].responseText;
+                let jsonResponse = uic.parse(response);
+                if (jsonResponse.type == "Exception") {
+                    let text = jsonResponse.exception[0].responseText;
                     if (text.length > 255 || !text.length)
                         text = "A error occured";
                     //makeToast("Error", "", text);
@@ -108,12 +112,13 @@
                 }
             }, 
             (response) => {
-                if (response.Type == "Redirect") {
+                let jsonResponse = uic.parse(response);
+                if (jsonResponse.Type == "Redirect") {
 
-                    if (!response.Url.length)
+                    if (!jsonResponse.Url.length)
                         location.reload();
                     else
-                        location.href = response.Url;
+                        location.href = jsonResponse.Url;
                     return true;
                 }
             }

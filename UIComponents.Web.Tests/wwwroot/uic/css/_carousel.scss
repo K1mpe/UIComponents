@@ -25,7 +25,7 @@
 
     .carousel-indicators {
         &:not(.active) {
-            opacity: $uic-carousel-inactive-opacity;
+            opacity: $uic-carousel-indicator-inactive-opacity;
         }
 
         .indicator-background {

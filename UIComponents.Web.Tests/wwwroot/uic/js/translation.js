@@ -4,6 +4,8 @@
     //translatable.DefaultValue,
     //translatable.Arguments
     translate: async function (translatable) {
+        if (translatable == null || translatable == undefined)
+            return null;
         if (typeof translatable != 'object')
             return translatable;
 

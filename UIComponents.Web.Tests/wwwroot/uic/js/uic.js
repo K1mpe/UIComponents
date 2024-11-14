@@ -518,7 +518,7 @@ uic.loadScript = function (source, readyCallback = null, reloadExisting = false)
 };
 //Load a stylesheet on the page using javascript.
 //if reloadExisting is true, the script will be reloaded even if the page already contains the script
-uic.loadScript = function (source, reloadExisting = false) {
+uic.loadStyle = function (source, reloadExisting = false) {
     if (!reloadExisting) {
         let existing = $(`link[href="${source}"]`);
         if (existing.length) {
@@ -546,5 +546,19 @@ uic.stringify = function (input) {
     if (typeof input == 'string')
         return input;
     return JSON.stringify(input);
+}
+
+//If the input is a stringified json, parse it to object. Else, return the input
+uic.parse = function (input) {
+    try {
+        if (typeof input != 'string')
+            return input;
+        if (input.startsWith('{') && input.endsWith('}'))
+            return JSON.parse(input);
+        return input;
+    } catch {
+        return input;
+    }
+    
 }
 

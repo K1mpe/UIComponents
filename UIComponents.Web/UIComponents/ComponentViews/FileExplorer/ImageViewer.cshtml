@@ -51,8 +51,8 @@
             let base64 = btoa(`{"AbsolutePathReference": "${absoluteRef}", "RelativePath": "${relativePath}" }`);
             $('#@modal.GetId() .image-viewer').attr('src', `/@(Model.ControllerName)/openfile/?base64=${base64}`);
             let currentItem = $(`#@Model.ExplorerContainerId .explorer-item[data-RelativePath="${relativePath}"]`);
-            let prevItem = currentItem.prev('.explorer-item.explorer-img:not(.cannot-open)');
-            let nextItem = currentItem.next('.explorer-item.explorer-img:not(.cannot-open)');
+            let prevItem = currentItem.prevAll('.explorer-item.explorer-img:not(.cannot-open)');
+            let nextItem = currentItem.nextAll('.explorer-item.explorer-img:not(.cannot-open)');
             if(prevItem.length)
                 $('.carousel-control-prev[href="#@modal.GetId()"]').removeClass('d-none');
             else 
@@ -64,28 +64,39 @@
                 $('.carousel-control-next[href="#@modal.GetId()"]').addClass('d-none');
         }
         updatePath();
-        $('.carousel-control-prev[href="#@modal.GetId()"]').on('click', (ev)=>{
-            ev.preventDefault();
-            ev.stopPropagation();
-
+        function nextImage(){
             let currentItem = $(`#@Model.ExplorerContainerId .explorer-item[data-RelativePath="${relativePath}"]`);
-            let prevItem = currentItem.prev('.explorer-item.explorer-img:not(.cannot-open)');
+            let nextItem = currentItem.nextAll('.explorer-item.explorer-img:not(.cannot-open)');
+            if(nextItem.length){
+                relativePath = nextItem.attr('data-RelativePath');
+                updatePath();
+            }
+        };
+        function prevImage(){
+            let currentItem = $(`#@Model.ExplorerContainerId .explorer-item[data-RelativePath="${relativePath}"]`);
+            let prevItem = currentItem.prevAll('.explorer-item.explorer-img:not(.cannot-open)');
             if(prevItem.length){
                 relativePath = prevItem.attr('data-RelativePath');
                 updatePath();
             } 
+        };
+        $('.carousel-control-prev[href="#@modal.GetId()"]').on('click', (ev)=>{
+            ev.preventDefault();
+            ev.stopPropagation();
+            prevImage();
         })
         $('.carousel-control-next[href="#@modal.GetId()"]').on('click', (ev)=>{
             ev.preventDefault();
             ev.stopPropagation();
-
-            let currentItem = $(`#@Model.ExplorerContainerId .explorer-item[data-RelativePath="${relativePath}"]`);
-            let nextItem = currentItem.next('.explorer-item.explorer-img:not(.cannot-open)');
-            if(nextItem.length){
-                relativePath = nextItem.attr('data-RelativePath');
-                updatePath();
-            } 
+            nextImage();
         })
+        $('body').on('keyup', (ev)=>{
+            if (event.key === "ArrowLeft") {
+                prevImage();
+            } else if (event.key === "ArrowRight") {
+                nextImage();
+            }
+        });
              </text>));
 }
 

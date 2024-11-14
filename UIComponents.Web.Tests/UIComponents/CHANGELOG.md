@@ -1,8 +1,14 @@
+# 2024-11-14 (1.3.10)
+- Fix responses in partial
+- Minor fix in file-explorer
+- File-explorer img-viewer now supports skipping files & arrow buttons
+
 # 2024-11-13 (1.3.09)
 - Minor fix sorting jsgrid
 - loading script from javascript
 - loading style from javascript
 - Css rework
+- File-Explorer contextmenu support in jstree
 
 
 # 2024-11-08 (1.3.08)

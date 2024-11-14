@@ -62,7 +62,8 @@
 
     handlers: [
         (response) => {
-            if (response.Type == "AccessDenied") {
+            let jsonResponse = uic.parse(response);
+            if (jsonResponse.Type == "AccessDenied") {
                 return $('<div>', {
                     class: 'alert alert-danger',
                     role: 'alert'
@@ -70,13 +71,51 @@
             }
         },
         (response) => {
-            if (response.type == "Exception") {
+            let jsonResponse = uic.parse(response);
+            if (jsonResponse.type == "Exception") {
                 return $('<div>', {
                     class: 'alert alert-danger',
                     role: 'alert'
                 }).append('Error receiving data');
             }
         },
+        async (response) => {
+            try {
+                let jsonResponse = uic.parse(response);
+                if (jsonResponse.Type == "ToastResponse") {
+                    let level = '';
+                    switch (jsonResponse.Notification.Type) {
+                        case 1:
+                            level = "Success";
+                            break;
+                        case 2:
+                            level = "Info";
+                            break;
+                        case 3:
+                            level = "Warning";
+                            break;
+                        case 4:
+                            level = "Danger";
+                            if (jsonResponse.Data != null && jsonResponse.Data != undefined)
+                                console.error(jsonResponse.Data);
+                            break;
+                    }
+                    let message = await uic.translation.translate(jsonResponse.Notification.Message);
+                    if (message == "null")
+                        message = "";
+                    let title = await uic.translation.translate(jsonResponse.Notification.Title);
+                    if (title == "null")
+                        title = "";
+                    return $('<div>', {
+                        class: `alert alert-${level.toLowerCase()}`,
+                        role: 'alert'
+                    }).append($('<h3>').append(title))
+                        .append($('<h5>').append(message));
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
     ],
 
     reloadPartial: async function (partial) {
