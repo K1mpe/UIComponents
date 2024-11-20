@@ -10,6 +10,17 @@ public class UICCustomTaghelper : TagHelper
     [HtmlAttributeName("uic")]
     public IUIComponent UIC { get; set; }
 
+    /// <summary>
+    /// a short alias for <see cref="UIC"/>
+    /// <inheritdoc cref="UIC"/>
+    /// </summary>
+    [HtmlAttributeName("c")]
+    public IUIComponent C
+    {
+        get => UIC;
+        set => UIC = value;
+    }
+
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         if (UIC == null)

@@ -339,6 +339,8 @@ public static class UICExtensions
             id = id.Substring(1);
 
         string existingId = element.GetAttribute("id");
+        if (existingId == id)
+            return element;
         if (!string.IsNullOrEmpty(existingId))
             throw new Exception($"Element already contains a Id. {element}, {id}, {existingId}");
 

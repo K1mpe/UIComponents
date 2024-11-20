@@ -11,7 +11,7 @@ namespace UIComponents.Models.Models
     /// <remarks>
     /// To make this work for custom <see cref="IUIComponent"/>, implement the <see cref="IUISingleRowSupport"/> interface 
     /// </remarks>
-    public class UICSingleRow : UIComponent, IUICHasChildren<IUIComponent>, IUICHasAttributesAndChildren
+    public class UICSingleRow : UIComponent, IUICHasChildren<IUIComponent>, IUICHasAttributesAndChildren, IUICSupportsTaghelperContent
     {
         #region Ctor
         public UICSingleRow()
@@ -79,6 +79,16 @@ namespace UIComponents.Models.Models
         }
         #endregion
 
+        bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+        /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+        protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+        {
+            var child = new UICCustom(taghelperContent);
+            this.Add(child);
+            return Task.CompletedTask;
+        }
+        Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
+
     }
 }
 
@@ -107,7 +117,7 @@ namespace UIComponents.Defaults.Models
         /// <summary>
         /// The margin between diffrent property rows (SingleRow Only)
         /// </summary>
-        public static string MarginBetweenRows { get; set; }
+        public static string MarginBetweenRows { get; set; } = "0.5rem";
 
         /// <summary>
         /// The margin between diffrent label and input

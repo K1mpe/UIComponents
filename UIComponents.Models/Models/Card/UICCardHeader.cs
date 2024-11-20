@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Models.Models.Card;
 
-public class UICCardHeader : UIComponent, IHeader
+public class UICCardHeader : UIComponent, IUICHeader, IUICSupportsTaghelperContent
 {
     #region Fields
     public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
@@ -30,7 +30,7 @@ public class UICCardHeader : UIComponent, IHeader
     /// <br>Can be disabled with ev.stopPropagation()</br>
     /// </summary>
     public bool CollapseCardOnClick { get; set; } = true;
-    public Func<object, IHeader, Task> Transformer { get; set; } = DefaultTransformer;
+    public Func<object, IUICHeader, Task> Transformer { get; set; } = DefaultTransformer;
 
     public CardHeaderRenderer Renderer { get; set; } = CardHeaderRenderer.CardHeader;
 
@@ -79,7 +79,7 @@ public class UICCardHeader : UIComponent, IHeader
     }
 
 
-    public static Task DefaultTransformer(object sender, IHeader iheader)
+    public static Task DefaultTransformer(object sender, IUICHeader iheader)
     {
         var header = iheader as UICCardHeader;
         if(sender is UICCard card)
@@ -118,6 +118,16 @@ public class UICCardHeader : UIComponent, IHeader
         return Task.CompletedTask;
     }
     #endregion
+
+    bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+    /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+    protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+    {
+        var child = new UICCustom(taghelperContent);
+        AppendTitle.Add(child);
+        return Task.CompletedTask;
+    }
+    Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
 
     public enum CardHeaderRenderer
     {

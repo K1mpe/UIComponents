@@ -4,7 +4,7 @@ using UIComponents.Models.Models.Card;
 
 namespace UIComponents.Models.Models.Card
 {
-    public class UICTabs : UIComponent, IUICHasChildren<IUICTab>, IUICTab
+    public class UICTabs : UIComponent, IUICHasChildren<IUICTab>, IUICTab, IUICSupportsTaghelperContent
     {
         #region Fields
         public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
@@ -104,11 +104,19 @@ namespace UIComponents.Models.Models.Card
         /// <summary>
         /// Only required if you use this tab as subtab
         /// </summary>
-        public IHeader Header { get; set; } = new UICCardHeader(TranslatableSaver.Save("Tab.NoHeader")) { Color = Defaults.Models.Card.UICTabs.HeaderColor };
+        public IUICHeader Header { get; set; } = new UICCardHeader(TranslatableSaver.Save("Tab.NoHeader")) { Color = Defaults.Models.Card.UICTabs.HeaderColor };
 
         IUICHasAttributes IUICTab.Content => this;
 
+        bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
 
+        /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+        protected virtual async Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+        {
+            var card = await UICCard.CreateFromContentAndAttributes(taghelperContent, attributes);
+            this.Add(card);
+        }
+        Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
         #endregion
     }
     public enum UICCardWithTabsRenderer

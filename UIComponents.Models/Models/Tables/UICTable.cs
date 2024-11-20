@@ -11,7 +11,7 @@ using static UIComponents.Models.Models.Actions.UICActionGetPost;
 
 namespace UIComponents.Models.Models.Tables
 {
-    public class UICTable : UIComponent
+    public class UICTable : UIComponent, IUICSupportsTaghelperContent
     {
         #region Fields
         public override string RenderLocation => UIComponent.DefaultIdentifier(nameof(UICTable));
@@ -475,6 +475,25 @@ namespace UIComponents.Models.Models.Tables
             SignalRRefreshTriggers.Add(signalR);
             return this;
         }
+
+
+
+        bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+        /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+        protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+        {
+            if (AdditionalConfig is IUICSupportsTaghelperContent supportsTaghelperContent)
+                supportsTaghelperContent.SetTaghelperContent(taghelperContent, attributes);
+            else
+            {
+                var group = new UICGroup() { Renderer = UICGroupRenderer.ContentOnly };
+                group.Add(AdditionalConfig);
+                group.Add(new UICCustom(taghelperContent));
+                AdditionalConfig = group;
+            }
+            return Task.CompletedTask;
+        }
+        Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
 
         #endregion
 

@@ -5,7 +5,7 @@ public static class UICChildExtensions
     /// <summary>
     /// Add a child element to the parent. If possible, assign the parent to this item using <see cref="IUICHasParent"/>
     /// </summary>
-    public static T Add<T, TChildItem>(this T parent, TChildItem child) where T : class, IUIComponent, IUICHasChildren<TChildItem>
+    public static T Add<T, TChildItem>(this T parent, TChildItem child) where T : IUIComponent, IUICHasChildren<TChildItem>
     {
         if (child is IUIComponent component)
             component.AssignParent(parent);

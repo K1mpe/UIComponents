@@ -3,7 +3,7 @@
 namespace UIComponents.Models.Models.Buttons;
 
 [PrependAppendInputGroupClass("input-group-button")]
-public class UICButton : UIComponent
+public class UICButton : UIComponent, IUICSupportsTaghelperContent
 {
     #region Fields
     public override string RenderLocation => UIComponent.DefaultIdentifier("Button", Renderer);
@@ -60,6 +60,15 @@ public class UICButton : UIComponent
         return dropdownItem;
     }
     #endregion
+    bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+
+    /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+    protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+    {
+        ButtonText = taghelperContent;
+        return Task.CompletedTask;
+    }
+    Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
 
 
     public enum ButtonRenderer

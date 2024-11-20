@@ -6,7 +6,7 @@ namespace UIComponents.Models.Models
     /// <summary>
     /// This is a signalR listener that will trigger Action when it receives something from signalR
     /// </summary>
-    public class UICSignalR : UIComponent
+    public class UICSignalR : UIComponent, IUICSupportsTaghelperContent
     {
         public override string RenderLocation => DefaultIdentifier(nameof(UICSignalR));
 
@@ -65,6 +65,15 @@ namespace UIComponents.Models.Models
         public bool Debug { get; set; } = UIComponents.Defaults.Models.UICSignalR.Debug;
         #endregion
 
+        bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+        /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+        protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+        {
+            var child = new UICCustom(taghelperContent);
+            Action = child;
+            return Task.CompletedTask;
+        }
+        Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
     }
 }
 namespace UIComponents.Defaults.Models

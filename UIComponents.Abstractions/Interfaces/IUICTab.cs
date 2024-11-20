@@ -2,7 +2,7 @@
 
 public interface IUICTab : IUIComponent, IUICHasColor
 {
-    public IHeader Header { get; }
+    public IUICHeader Header { get; }
     public IUICHasAttributes Content { get;}
 
     IColor IUICHasColor.Color => Header?.Color ?? null;

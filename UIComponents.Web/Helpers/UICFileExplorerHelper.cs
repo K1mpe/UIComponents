@@ -210,7 +210,7 @@ namespace UIComponents.Web.Helpers
                             if(StartUploadingFiles.TryGetValue(finalFilePath, out var dateTime))
                             {
                                 var timePassed = DateTime.Now - dateTime;
-                                var formatted = UIComponents.Defaults.FormatDefaults.FormatTimespan(timePassed);
+                                var formatted = FormatDefaults.FormatTimespan(timePassed);
                                 logger?.LogInformation("Finished uploading file stream in {0}", formatted);
                             }
                         }

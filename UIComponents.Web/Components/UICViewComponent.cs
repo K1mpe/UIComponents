@@ -2,6 +2,7 @@
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Models;
 using UIComponents.Generators.Configuration;
+using UIComponents.Defaults;
 
 namespace UIComponents.Web.Components;
 
@@ -54,7 +55,7 @@ public class UICViewComponent : ViewComponent
             }
         }
         string renderLocation = element.RenderLocation;
-        if(UIComponents.Defaults.RenderDefaults.OverwriteRenderLocation != null)
+        if(RenderDefaults.OverwriteRenderLocation != null)
         {
             string newRenderLocation = RenderDefaults.OverwriteRenderLocation(element)?? element.RenderLocation;
             if(newRenderLocation != renderLocation)

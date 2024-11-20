@@ -4,7 +4,7 @@
     /// <summary>
     /// A form that can be posted. This is required to use the <see cref="UICActionSubmit"/>
     /// </summary>
-    public class UICForm : UIComponent, IUICHasChildren<IUIComponent>, IUICHasAttributesAndChildren
+    public class UICForm : UIComponent, IUICHasChildren<IUIComponent>, IUICHasAttributesAndChildren, IUICSupportsTaghelperContent
     {
 
         #region Ctor
@@ -52,6 +52,16 @@
         /// <returns></returns>
         public IUICAction TriggerGetValue() => new UICActionGetValue(this);
         #endregion
+
+        bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+        /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+        protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+        {
+            var child = new UICCustom(taghelperContent);
+            this.Add(child);
+            return Task.CompletedTask;
+        }
+        Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
 
 
     }

@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Abstractions.Interfaces;
 
-public interface IHeader : IUIComponent, IUICHasAttributes
+public interface IUICHeader : IUIComponent, IUICHasAttributes
 {
     public Translatable Title { get; set; }
     public IColor? Color { get; set; }
@@ -14,5 +14,5 @@ public interface IHeader : IUIComponent, IUICHasAttributes
     /// <br>UICCard</br>
     /// <br>UICTabs</br>
     /// </remarks>
-    public Func<object, IHeader,Task> Transformer { get; set; }
+    public Func<object, IUICHeader,Task> Transformer { get; set; }
 }

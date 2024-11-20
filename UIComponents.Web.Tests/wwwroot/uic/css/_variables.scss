@@ -8,6 +8,8 @@
 @import '../../lib/bootstrap/scss/mixins';
 @import '../../lib/bootstrap/scss/_variables.scss';
 
+$uic-btn-toolbar-padding: map-get($spacers, 3);
+
 $uic-carousel-indicator-inactive-opacity: 0.5 !default;
 $uic-carousel-indicator-opacity: 0.5 !default;
 $uic-carousel-indicator-background-opacity: 0.3 !default;

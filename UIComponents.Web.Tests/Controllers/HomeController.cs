@@ -87,8 +87,7 @@ namespace UIComponents.Web.Tests.Controllers
         {
             //var component = await _uic.CreateComponentAsync(new TestModel());
             //return ViewOrPartial(component);
-            await Task.Delay(500);
-            return Json(new UICToastResponse(IUICToastNotification.ToastType.Warning, "test")); 
+            await Task.Delay(500); 
             if(IsAjaxRequest(Request))
                 return PartialView();
             return View();

@@ -5,7 +5,7 @@ namespace UIComponents.Abstractions.Models;
 /// <summary>
 /// A custom component, requires <see cref="Content"/> to render. 
 /// </summary>
-public class UICCustom : UIComponent, IUICAction, IDropdownItem
+public class UICCustom : UIComponent, IUICAction, IDropdownItem, IUICSupportsTaghelperContent
 {
     #region Fields
     protected bool _render = true;
@@ -101,6 +101,14 @@ public class UICCustom : UIComponent, IUICAction, IDropdownItem
         _renderLocation = location;
         return this;
     }
+
+    bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+    protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+    {
+        Content += "\r\n" + taghelperContent;
+        return Task.CompletedTask;
+    }
+    Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
 
     #endregion
 

@@ -139,7 +139,7 @@
         ));
     #endregion
 
-    
+
 
     #region Taghelper
     accordion.Add(new UICCard("CustomTaghelper").Add(out var taghelper, new UICCustom()));
@@ -162,12 +162,22 @@
             carousel.Add(tree);
         }));
     #endregion
+
+
+    var header = new UICCardHeader("test")
+    {
+        Color = new UICColor("Orange")
+    };
 }
 <uic-custom uic="taghelper">
     <h1>Taghelper</h1>
 </uic-custom>
 
-<form asp-action="Test" asp-controller="Home">
-    <h1>Here is the form</h1>
-</form>
-@await accordion.InvokeAsync(Component)
+<uic c="accordion" header="header">
+    blub
+</uic>
+
+<uic c="new UICCard()">
+    abc
+</uic>
+@* @await accordion.InvokeAsync(Component) *@

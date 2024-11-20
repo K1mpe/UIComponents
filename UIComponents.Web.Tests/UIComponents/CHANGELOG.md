@@ -1,3 +1,7 @@
+# 2024-11-15 (V1.3.11)
+- UICTabs Singletab now accounts for unrendered tabs
+
+
 # 2024-11-14 (1.3.10)
 - Fix responses in partial
 - Minor fix in file-explorer

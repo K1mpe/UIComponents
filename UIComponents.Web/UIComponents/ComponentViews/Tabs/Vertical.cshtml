@@ -57,7 +57,7 @@
     }
 }
 
-@if (Model.Tabs.Count == 1 && Model.OnlyRenderSingleContent && Model.Tabs.First() is IUIComponent firstTab)
+@if (Model.OnlyRenderSingleContent && Model.Tabs.Where(x => x.HasValue()).Count() == 1 && Model.Tabs.Where(x => x.HasValue()).First() is IUIComponent firstTab)
 {
     @await firstTab.InvokeAsync(Component)
 }

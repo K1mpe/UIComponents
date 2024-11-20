@@ -5,7 +5,7 @@ using UIComponents.Models.Models.Buttons;
 
 namespace UIComponents.Models.Models.Card;
 
-public class UICCard : UIComponent, IUICCardLike
+public class UICCard : UIComponent, IUICCardLike, IUICSupportsTaghelperContent
 {
 
     #region Ctor
@@ -13,7 +13,7 @@ public class UICCard : UIComponent, IUICCardLike
     {
     }
 
-    public UICCard(IHeader header) : this()
+    public UICCard(IUICHeader header) : this()
     {
         Header = header;
     }
@@ -27,7 +27,7 @@ public class UICCard : UIComponent, IUICCardLike
     /// <summary>
     /// The header of the card, <see cref="UICCardHeader"/> is most used for this.
     /// </summary>
-    public IHeader Header { get; set; }
+    public IUICHeader Header { get; set; }
 
     /// <summary>
     /// These are all the elements displayed in this card
@@ -103,9 +103,42 @@ public class UICCard : UIComponent, IUICCardLike
         Body.Add(component, configure);
         return this;
     }
+    bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+
+    /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+    protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+    {
+        var child = new UICCustom(taghelperContent);
+        this.Add(child);
+        if (attributes.TryGetValue("header", out var header))
+        {
+            if (header is IUICHeader uicHeader)
+            {
+                AddHeader(uicHeader);
+            }
+            else if (header is Translatable translatable)
+            {
+                AddHeader(h => h.Title = translatable);
+            }
+            else
+            {
+                AddHeader(h => h.Title = header.ToString());
+            }
+            attributes.Remove("header");
+        }
+        return Task.CompletedTask;
+    }
+    Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
+
+    public static async Task<UICCard> CreateFromContentAndAttributes(string content, Dictionary<string, object> attributes)
+    {
+        var card = new UICCard();
+        await card.SetTaghelperContent(content, attributes);
+        return card;
+    }
 
     #region AddHeader
-    private T CreateHeader<T>(T header = null) where T: class, IHeader
+    private T CreateHeader<T>(T header = null) where T: class, IUICHeader
     {
         if (Header != null)
         {
@@ -119,10 +152,15 @@ public class UICCard : UIComponent, IUICCardLike
         return header;
     }
 
+    public UICCard AddHeader<T>(T header) where T: class, IUICHeader
+    {
+        CreateHeader(header);
+        return this;
+    }
     /// <summary>
     /// Get the current header or create a new header, ouput this header
     /// </summary>
-    public UICCard AddHeader<T>(out T addedHeader, T header = null) where T : class, IHeader
+    public UICCard AddHeader<T>(out T addedHeader, T header = null) where T : class, IUICHeader
     {
         addedHeader = CreateHeader(header);
         return this;
@@ -132,7 +170,7 @@ public class UICCard : UIComponent, IUICCardLike
     /// <summary>
     /// If the header does not exist yet, create this header. also configure the header
     /// </summary>
-    public UICCard AddHeader<T>(T header, Action<T> configure) where T : class, IHeader
+    public UICCard AddHeader<T>(T header, Action<T> configure) where T : class, IUICHeader
     {
         var created = CreateHeader(header);
         configure(created);

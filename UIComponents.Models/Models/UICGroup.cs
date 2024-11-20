@@ -8,7 +8,7 @@ namespace UIComponents.Models.Models;
 /// <summary>
 /// This is just a list of multiple components
 /// </summary>
-public class UICGroup : UIComponent, IUICAction, IUICHasChildren<IUIComponent>, IUICHasAttributesAndChildren
+public class UICGroup : UIComponent, IUICAction, IUICHasChildren<IUIComponent>, IUICHasAttributesAndChildren, IUICSupportsTaghelperContent
 {
     #region Fields
     public override string RenderLocation => this.CreateDefaultIdentifier(Renderer);
@@ -73,6 +73,16 @@ public class UICGroup : UIComponent, IUICAction, IUICHasChildren<IUIComponent>, 
 
 
     #region Methods
+
+    bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+    /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+    protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+    {
+        var child = new UICCustom(taghelperContent);
+        this.Add(child);
+        return Task.CompletedTask;
+    }
+    Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
     #endregion
 
 }

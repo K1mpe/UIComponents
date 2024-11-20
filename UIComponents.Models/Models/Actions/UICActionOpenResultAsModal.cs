@@ -2,8 +2,9 @@
 
 namespace UIComponents.Models.Models.Actions;
 
-public class UICActionOpenResultAsModal : UIComponent, IUICAction
+public class UICActionOpenResultAsModal : IUICAction
 {
+    public string RenderLocation => UIComponent.DefaultIdentifier(nameof(UICActionOpenResultAsModal));
     #region Ctor
     public UICActionOpenResultAsModal()
     {
@@ -13,4 +14,5 @@ public class UICActionOpenResultAsModal : UIComponent, IUICAction
 
     public string ResultPropertyName = "result";
 
+    
 }

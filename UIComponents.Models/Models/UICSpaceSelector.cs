@@ -9,7 +9,7 @@ namespace UIComponents.Models.Models;
 /// <remarks>
 /// UI can change automatically when content resizes 
 /// </remarks>
-public class UICSpaceSelector : UIComponent
+public class UICSpaceSelector : UIComponent, IUICSupportsTaghelperContent
 {
     #region Ctor
     public UICSpaceSelector()
@@ -72,4 +72,14 @@ public class UICSpaceSelector : UIComponent
     public Func<string> WatcherSelector { get; set; } = () => ".card, .card-body, .modal, .content";
 
     #endregion
+
+    bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+    /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+    protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+    {
+        var child = new UICCustom(taghelperContent);
+        Elements.Add(child);
+        return Task.CompletedTask;
+    }
+    Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
 }

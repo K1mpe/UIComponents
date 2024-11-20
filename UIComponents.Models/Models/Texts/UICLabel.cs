@@ -1,9 +1,10 @@
-﻿namespace UIComponents.Models.Models.Texts;
+﻿
+namespace UIComponents.Models.Models.Texts;
 
 /// <summary>
 /// A label, used in a <see cref="UICInputGroup"/>
 /// </summary>
-public class UICLabel : UIComponent
+public class UICLabel : UIComponent , IUICSupportsTaghelperContent
 {
     #region Ctor
     public UICLabel() : base()
@@ -33,4 +34,14 @@ public class UICLabel : UIComponent
     /// Adding a required marker behind this label
     /// </summary>
     public bool Required { get; set; }
+
+    bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+
+    /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+    protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+    {
+        LabelText = taghelperContent;
+        return Task.CompletedTask;
+    }
+    Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
 }

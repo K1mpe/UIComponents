@@ -11,7 +11,7 @@ public class UICCached : IUIComponent
     #endregion
 
     #region Ctor
-    public UICCached(IUIComponent component)
+    public UICCached(Func<Task<IUIComponent>> component)
     {
         Component = component;
     }
@@ -22,7 +22,7 @@ public class UICCached : IUIComponent
     #endregion
 
     #region Properties
-    public IUIComponent Component { get; set; }
+    public Func<Task<IUIComponent>> Component { get; set; }
 
     public bool HasCachedValue { get; protected set; }
 
@@ -40,6 +40,10 @@ public class UICCached : IUIComponent
     public void SetCachedValue(RazerBlock block)
     {
         CachedHtml = block.GetContent();
+    }
+    public void SetCachedValue(string value)
+    {
+        CachedHtml = value;
     }
     #endregion
 }

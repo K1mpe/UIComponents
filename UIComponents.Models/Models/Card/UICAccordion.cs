@@ -1,6 +1,6 @@
 ﻿namespace UIComponents.Models.Models.Card;
 
-public class UICAccordion : UIComponent, IUICHasChildren<UICCard>
+public class UICAccordion : UIComponent, IUICHasChildren<UICCard>, IUICSupportsTaghelperContent
 {
     #region Properties
 
@@ -34,5 +34,17 @@ public class UICAccordion : UIComponent, IUICHasChildren<UICCard>
         return this.Add<UICAccordion, UICCard, UICCard>(card, configure);
     }
     #endregion
+
+
+    bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+
+    /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+    protected virtual async Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+    {
+        var card = await UICCard.CreateFromContentAndAttributes(taghelperContent, attributes);
+        
+        this.Add(card);
+    }
+    Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
 
 }

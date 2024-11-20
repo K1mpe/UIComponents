@@ -3,14 +3,14 @@ using static UIComponents.Models.Models.Card.UICModal;
 
 namespace UIComponents.Models.Models.Card
 {
-    public class UICModal : UIComponent, IUICCardLike
+    public class UICModal : UIComponent, IUICCardLike, IUICSupportsTaghelperContent
     {
         #region Ctor
         public UICModal(Translatable title) : this(new UICCardHeader() { Title = title })
         {
         }
 
-        public UICModal(IHeader header) : this()
+        public UICModal(IUICHeader header) : this()
         {
             Header = header;
         }
@@ -21,7 +21,7 @@ namespace UIComponents.Models.Models.Card
         #endregion
 
         #region Properties
-        public IHeader Header { get; set; }
+        public IUICHeader Header { get; set; }
 
         public UICGroup Body { get; set; } = new();
 
@@ -82,7 +82,7 @@ namespace UIComponents.Models.Models.Card
         }
 
         #region AddHeader
-        private T CreateHeader<T>(T header = null) where T : class, IHeader
+        private T CreateHeader<T>(T header = null) where T : class, IUICHeader
         {
             if (Header != null)
             {
@@ -99,7 +99,7 @@ namespace UIComponents.Models.Models.Card
         /// <summary>
         /// Get the current header or create a new header, ouput this header
         /// </summary>
-        public UICModal AddHeader<T>(out T addedHeader, T header = null) where T : class, IHeader
+        public UICModal AddHeader<T>(out T addedHeader, T header = null) where T : class, IUICHeader
         {
             addedHeader = CreateHeader(header);
             return this;
@@ -109,7 +109,7 @@ namespace UIComponents.Models.Models.Card
         /// <summary>
         /// If the header does not exist yet, create this header. also configure the header
         /// </summary>
-        public UICModal AddHeader<T>(T header, Action<T> configure) where T : class, IHeader
+        public UICModal AddHeader<T>(T header, Action<T> configure) where T : class, IUICHeader
         {
             var created = CreateHeader(header);
             configure(created);
@@ -219,6 +219,16 @@ namespace UIComponents.Models.Models.Card
         }
         #endregion
 
+
+        bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+
+        /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+        protected virtual async Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+        {
+            var card = await UICCard.CreateFromContentAndAttributes(taghelperContent, attributes);
+            this.Add(card);
+        }
+        Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
         public enum ModalSize
         {
             /// <summary>

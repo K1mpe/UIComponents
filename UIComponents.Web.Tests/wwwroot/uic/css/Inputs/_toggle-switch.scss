@@ -13,7 +13,7 @@
 }
 
 .uic .form-column > .custom-switch, .uic [class^=col] > .form-group .custom-switch {
-    margin-left: $input-padding-y;
+    margin-left: $input-padding-x;
     padding-top: add($input-padding-y, $input-border-width);
     padding-bottom: add($input-padding-y, $input-border-width);
 }

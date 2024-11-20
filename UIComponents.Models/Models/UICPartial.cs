@@ -2,7 +2,7 @@
 
 namespace UIComponents.Models.Models;
 
-public class UICPartial : UIComponent, IUICHasChildren<IUIComponent>
+public class UICPartial : UIComponent, IUICHasChildren<IUIComponent>, IUICSupportsTaghelperContent
 {
 
     #region Ctor
@@ -85,4 +85,15 @@ public class UICPartial : UIComponent, IUICHasChildren<IUIComponent>
     #region Triggers
     public IUICAction TriggerReload() => new UICActionRefreshPartial(this);
     #endregion
+
+
+    bool IUICSupportsTaghelperContent.CallWithEmptyContent => false;
+    /// <inheritdoc cref="IUICSupportsTaghelperContent.SetTaghelperContent(string)"/>>
+    protected virtual Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+    {
+        var child = new UICCustom(taghelperContent);
+        this.Add(child);
+        return Task.CompletedTask;
+    }
+    Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes) => SetTaghelperContent(taghelperContent, attributes);
 }

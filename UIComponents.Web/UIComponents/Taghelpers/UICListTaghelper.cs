@@ -2,42 +2,34 @@
 namespace UIComponents.Web.Taghelpers;
 
 /// <summary>
-/// A custom block of html or javascript that is converted to a UIComponent
+/// Add custom content to a list of components
 /// </summary>
-[HtmlTargetElement("uic-custom")]
-public class UICCustomTaghelper : TagHelper
+[HtmlTargetElement("uic-list")]
+public class UICListTaghelper : TagHelper
 {
     [HtmlAttributeName("uic")]
-    public IUIComponent UIC { get; set; }
+    public List<IUIComponent> UIC { get; set; }
 
     /// <summary>
     /// a short alias for <see cref="UIC"/>
     /// <inheritdoc cref="UIC"/>
     /// </summary>
     [HtmlAttributeName("c")]
-    public IUIComponent C
+    public List<IUIComponent> C
     {
         get => UIC;
         set => UIC = value;
     }
-
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        if (UIC == null)
-            return;
-
         output.TagName = "";
         output.TagMode = TagMode.StartTagAndEndTag;
         var content = await output.GetChildContentAsync();
         var contentString = content.GetContent().Trim();
         output.Content.Clear();
-        if (UIC == null || !UIC.GetType().IsAssignableTo(typeof(UICCustom)))
+        if(contentString.Length > 0)
         {
-            throw new Exception("Before using a UIC in the UIComponentTaghelper, first assign it as a new UICCustom()");
-        }
-        if (UIC is UICCustom custom)
-        {
-            custom.Content = contentString;
+            UIC.Add(new UICCustom(contentString));
         }
 
         await base.ProcessAsync(context, output);
