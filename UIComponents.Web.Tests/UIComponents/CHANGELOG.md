@@ -1,5 +1,8 @@
-# 2024-11-15 (V1.3.11)
+# 2024-11-21 (V1.3.11)
 - UICTabs Singletab now accounts for unrendered tabs
+- Css fix for .btn-toolbar
+- UICTaghelper
+- Minor css fix for tabs in tabs
 
 
 # 2024-11-14 (1.3.10)

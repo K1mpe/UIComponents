@@ -1,83 +1,126 @@
 # UICComponents Documentation
-# Table of contents
+
+
 - [Implementation](#implementation)
 - [Creating Components](#creating-components)
 - [ClientSide methods](#clientside-methods)
 - [Component Models](#component-models)
-    - [Extension Methods](#extension-methods)
-        - [Add Methods](#add-methods)
-        - [Find... Methods](#find-methods)
-        - [Get or Set Attributes](#get-or-set-attributes)
-    - [Interfaces](#interfaces)
-        - [IUIComponent](#iuicomponent)
-        - [IUIAction](#IUIAction)
-        - [UIComponentViewModel](#uicomponentviewmodel)
-    - [Models](#models)
-        - [UICCustom](#uiccustom)
-            - [UICCustomTaghelper](#uiccustomtaghelper)
-        - [Translatable](#translatable)
-        - [IUIComponentViewMode](#iuicomponentviewmodel)
-        - [Actions](#actions)
-            - [UICActionCloseModal](#uicactionclosemodal)
-            - [UICActionDelayedAction](#uicactiondelayedaction)
-            - [UICActionDisableSaveButtonOnValidationErrors](#uicactiondisablesavebuttononvalidationerrors)
-            - [UICActionGetPost](#uicactiongetpost)
-                - [UICActionGet](#uicactiongetpost)
-                - [UICActionPost](#uicactiongetpost)
-            - [UICActionGetValue](#uicactiongetvalue)
-            - [UICActionGoBack](#uicactiongoback)
-            - [UICActionMarkChanges](#uicactionmarkchanges)
-            - [UICActionNavigate](#uicactionnavigate)
-            - [UICActionOpenResultAsModal](#uicactionopenresultasmodal)
-            - [UICActionRefreshPartial](#uicactionrefreshpartial)
-            - [UICActionServerResponse](#uicactionserverresponse)
-            - [UICActionSetEdit](#uicactionsetedit)
-            - [UICActionSetReadonly](#uicactionsetreadonly)
-            - [UICActionSetValue](#uicactionsetvalue)
-            - [UICActionTriggerSubmit](#uicactiontriggersubmit)
-            - [UICActionValidateObject](#uicactionvalidateobject)
-        - [Buttons](#buttons)
-            - [UICButton](#uicbutton)
-            - [UICButtonCancel](#uicbuttoncancel)
-            - [UICButtonCollapseCard](#uicbuttoncollapsecard)
-            - [UICButtonCreate](#uicbuttoncreate)
-            - [UICButtonDelete](#uicbuttondelete)
-            - [UICButtonEdit](#uicbuttonedit)
-            - [UICButtonGroup](#uicbuttongroup)
-            - [UICButtonRefreshPartial](#uicbuttonrefreshpartial)
-            - [UICButtonSave](#uicbuttonsave)
-            - [UICButtonToolbar](#uicbuttontoolbar)
-            - [UICToggleButton](#uictogglebutton)
-        - [Card](#card)
-            - [UICCard](#uiccard)
-            - [UICCardHeader](#uiccardheader)
-            - [UICTabs](#uictabs)
-            - [UICModal](#uicmodal)
-            - [UICAccordion](#uicaccordion)
+  <details>
+    <summary>Extension Methods</summary>
+
+    - [Add Methods](#add-methods)
+    - [Find... Methods](#find-methods)
+    - [Get or Set Attributes](#get-or-set-attributes)
+
+  </details>
+  <details>
+    <summary>Interfaces</summary>
+
+    - [IUIComponent](#iuicomponent)
+    - [IUIAction](#IUIAction)
+    - [UIComponentViewModel](#uicomponentviewmodel)
+
+  </details>
+  <details>
+    <summary>Models</summary>
+
+    - [UICCustom](#uiccustom)
+    - [Translatable](#translatable)
+    - [IUIComponentViewMode](#iuicomponentviewmodel)
+    - [Actions](#actions)
+      <details>
+        <summary>Action Types</summary>
+
+        - [UICActionCloseModal](#uicactionclosemodal)
+        - [UICActionDelayedAction](#uicactiondelayedaction)
+        - [UICActionDisableSaveButtonOnValidationErrors](#uicactiondisablesavebuttononvalidationerrors)
+        - [UICActionGetPost](#uicactiongetpost)
+            - [UICActionGet](#uicactiongetpost)
+            - [UICActionPost](#uicactiongetpost)
+        - [UICActionGetValue](#uicactiongetvalue)
+        - [UICActionGoBack](#uicactiongoback)
+        - [UICActionMarkChanges](#uicactionmarkchanges)
+        - [UICActionNavigate](#uicactionnavigate)
+        - [UICActionOpenResultAsModal](#uicactionopenresultasmodal)
+        - [UICActionRefreshPartial](#uicactionrefreshpartial)
+        - [UICActionServerResponse](#uicactionserverresponse)
+        - [UICActionSetEdit](#uicactionsetedit)
+        - [UICActionSetReadonly](#uicactionsetreadonly)
+        - [UICActionSetValue](#uicactionsetvalue)
+        - [UICActionTriggerSubmit](#uicactiontriggersubmit)
+        - [UICActionValidateObject](#uicactionvalidateobject)
+
+      </details>
+    - [Buttons](#buttons)
+      <details>
+        <summary>Button Types</summary>
+
+        - [UICButton](#uicbutton)
+        - [UICButtonCancel](#uicbuttoncancel)
+        - [UICButtonCollapseCard](#uicbuttoncollapsecard)
+        - [UICButtonCreate](#uicbuttoncreate)
+        - [UICButtonDelete](#uicbuttondelete)
+        - [UICButtonEdit](#uicbuttonedit)
+        - [UICButtonGroup](#uicbuttongroup)
+        - [UICButtonRefreshPartial](#uicbuttonrefreshpartial)
+        - [UICButtonSave](#uicbuttonsave)
+        - [UICButtonToolbar](#uicbuttontoolbar)
+        - [UICToggleButton](#uictogglebutton)
+
+      </details>
+    - [Card](#card)
+      <details>
+        <summary>Card Types</summary>
+
+        - [UICCard](#uiccard)
+        - [UICCardHeader](#uiccardheader)
+        - [UICTabs](#uictabs)
+        - [UICModal](#uicmodal)
+        - [UICAccordion](#uicaccordion)
+
+      </details>
+
+  </details>
+  <details>
+	<summary>Taghelpers</summary>
+		
+	- [UICCustomTaghelper](#uiccustomtaghelper)
+  </details>
+
 - [Custom Generators](#custom-generators)
 - [Database entities (IDbEntity)](#database-entities-idbentity)
 - [ClientSide responseHandling](#clientside-responsehandling)
 - [Services](#services)
-    - [Available services](#available-services)
-        - [IUIComponentGenerator](#IUIComponentGenerator)
-        - [IUICValidationService](#iuicvalidationservice)
-        - [IUICStoredComponents](#iuicstoredcomponents)
-        - [IUICQuestionService](#iuicquestionservice)
-    - [Implementable service-interfaces](#register-services-by-implementer)
-        - [IUICILanguageService](#iuiclanguageservice)
-        - [IUICPermissionService](#iuicpermissionservice)
-        - [IUICDefaultCheckValidationErrors&lt;IUICPropertyValidationRuleReadonly&gt;](#iuicdefaultcheckvalidationerrors)
-        - [IUICSignalRService](#iuicsignalrservice)
+  <details>
+    <summary>Available Services</summary>
+
+    - [IUIComponentGenerator](#IUIComponentGenerator)
+    - [IUICValidationService](#iuicvalidationservice)
+    - [IUICStoredComponents](#iuicstoredcomponents)
+    - [IUICQuestionService](#iuicquestionservice)
+
+  </details>
+  <details>
+    <summary>Implementable Service-Interfaces</summary>
+
+    - [IUICILanguageService](#iuiclanguageservice)
+    - [IUICPermissionService](#iuicpermissionservice)
+    - [IUICDefaultCheckValidationErrors&lt;IUICPropertyValidationRuleReadonly&gt;](#iuicdefaultcheckvalidationerrors)
+    - [IUICSignalRService](#iuicsignalrservice)
+
+  </details>
 - [Attributes](#attributes)
 - [Logging](#logging)
 
 # Implementation
+
 ## C#
 In program.cs, add the this to the builder.
 ```c#
 builder.Services.AddUIComponentWeb(config =>
 {
-    config.AddDefaultGenerators(builder.Services);
+	config.AddDefaultGenerators(builder.Services);
+	config.AddDefaultValidators(builder.Services);
 });
 ```
 
@@ -91,7 +134,7 @@ This partial is automatically generated in /views/shared/_UicScripts.cshtml
 
 ## scss
 ```css
-@import '../uic/css/uic.scss';
+<link rel="stylesheet" href="~/uic/css/uic.scss" asp-append-version="true" />
 ```
 ## ViewImports
 These usings can also be added to GlobalUsings 
@@ -136,12 +179,21 @@ Rendering a Task< IUIComponent > is also supported
 ```c#
 @await _uic.CreateComponentAsync(testModel).InvokeAsync(Component)
 ```
+There is also a taghelper for rendering components. If your component supports [IUICHasAttributes](#IUICHasAttributes), attributes assigned to the component are applied to the component
+```cshtml
+<uic c="myComponent" class="my-custom-class"></uic>
+```
+If this component implements the [IUICSupportsTaghelperContent](#IUICSupportsTaghelperContent), you can also write content within the tags.
+> For mor info, see [UICTaghelper](#uictaghelper)
+
+
+
 ## Rendering components from controller
 ```c#
 public IActionResult RenderMyComponent()
 {
-    var myComponent = …
-    return View("/UIComponents/ComponentViews/Render.cshtml", myComponent);
+	var myComponent = …
+	return View("/UIComponents/ComponentViews/Render.cshtml", myComponent);
 }
 ```
 
@@ -190,9 +242,9 @@ Normal Add method:
 ```c#
 var myGroup = new UICGroup();
 myGroup
-    .Add(component1)
-    .Add(component2)
-    .Add(component3);
+	.Add(component1)
+	.Add(component2)
+	.Add(component3);
 ```
 
 Add method with out parameter:
@@ -213,10 +265,10 @@ var myGroup = new UICGroup();
 
 //Add a new card to the group and provide a action to configure the card further.
 myGroup.Add(new UICCard("TestCard"), card =>{
-    
-    card.Add(new UICButton(), button =>{
-        button.OnClick = ...;
-    })
+	
+	card.Add(new UICButton(), button =>{
+		button.OnClick = ...;
+	})
 });
 ```
 
@@ -224,13 +276,13 @@ Mix And Match Add methods:
 ```c#
 var myGroup = new UICGroup();
 myGroup
-    .Add(component1)
-    .Add(out var card1, new UICCard("FirstCard"))
-    .Add(new UICCard("SecondCard"), card2 =>{
+	.Add(component1)
+	.Add(out var card1, new UICCard("FirstCard"))
+	.Add(new UICCard("SecondCard"), card2 =>{
 
-    });
-    //In this example, all 3 items are added to the group, but card1 is still available as variable and can still be edited before rendering.
-    //The card2 is not available as variable, and only used in its own function
+	});
+	//In this example, all 3 items are added to the group, but card1 is still available as variable and can still be edited before rendering.
+	//The card2 is not available as variable, and only used in its own function
 ```
 
 
@@ -261,7 +313,7 @@ var result = myComponent.FindFirstOfType<UICButtonToolbar>();
 myComponent.FindFirstOfType<UICButtonToolbar>().ButtonDistance= Long;
 
 myComponent.FindFirstChildOfType<UIButtonToolbar>(toolbar =>{
-    //Run code here, only runs if there is a toolbar found
+	//Run code here, only runs if there is a toolbar found
 });
 ```
 ```c#
@@ -269,7 +321,7 @@ myComponent.FindFirstChildOfType<UIButtonToolbar>(toolbar =>{
 bool result = myComponent.TryFindFirstOfType<UICButtonToolbar>();
 
 myComponent.TryFindFirstOfType<UIButtonToolbar>(toolbar =>{
-    //Run code here, only runs if there is a toolbar found
+	//Run code here, only runs if there is a toolbar found
 });
 ```
 
@@ -294,9 +346,9 @@ myComponent.SetId("MyCustomId");
 Add Html Attributes:
 ```c#
 myComponent
-    .AddAttribute("data-value", "stringValue")
-    .AddClass("my-testclass")
-    .AddStyle("max-height:100%;");
+	.AddAttribute("data-value", "stringValue")
+	.AddClass("my-testclass")
+	.AddStyle("max-height:100%;");
 ```
 
 
@@ -314,7 +366,7 @@ You can also place this interface on any model or viewmodel, and this object wil
 ```c#
 public interface IUIComponent
 {
-    public string RenderLocation { get; }
+	public string RenderLocation { get; }
 }
 ```
 > :warning: If the RenderLocation does not have a '.' in the last 7 characters, .cshtml is automatically added to the RenderLocation
@@ -347,76 +399,43 @@ button.OnClick = new UICCustom("console.log('I have clicked the testButton');");
 You can use the AddLine method on a UICCustom to keep adding a additional line to the string
 ```c#
 var customOnClick = new UICCustom()
-    .AddLine("let a = 2;")
-    .AddLine("let b = 5;")
-    .AddLine("let c = a * b;")
-    .AddLine("alert(`The result is ${c}`)");
+	.AddLine("let a = 2;")
+	.AddLine("let b = 5;")
+	.AddLine("let c = a * b;")
+	.AddLine("alert(`The result is ${c}`)");
 ```
 ```c#
 var customHtml = new UICCustom()
-    .AddLine("<div class=\"row\">")
-    .AddLine("  <div class=\"col\">")
-    .AddLine("  </div>")
-    .AddLine("  <div class=\"col\">")
-    .AddLine("  </div>")
-    .AddLine("</div>");
+	.AddLine("<div class=\"row\">")
+	.AddLine("  <div class=\"col\">")
+	.AddLine("  </div>")
+	.AddLine("  <div class=\"col\">")
+	.AddLine("  </div>")
+	.AddLine("</div>");
 ```
 
 While in a csHtml page, you can also add razor code.
 ```javascript
 var customOnClick = new UICCustom(@<text>
-    let a = 2;
-    let b = 5;
-    let c = a * b;
-    alert(`The result is ${c}`);
+	let a = 2;
+	let b = 5;
+	let c = a * b;
+	alert(`The result is ${c}`);
 </text>);
 ```
 ```html
 var customHtml = new UICCustom(@<text>
-    <div class="row">
-        <div class="col">
-        </div>
-        <div class="col">
-        </div>
-    </div>
+	<div class="row">
+		<div class="col">
+		</div>
+		<div class="col">
+		</div>
+	</div>
 </text>);
 ```
 
 A UICCustom component without any content will always be ignored.
 
-#### UICCustomTaghelper
-Using the razorCode inside the UICCustom will result in loss of intellisence. You can also use the **\<uic-custom\>** taghelper instead.
-
-Before you can use the taghelper, you first need to add this to _ViewImports.cshtml:
-```
-@addTagHelper *, UIComponents.Web.Tests
-```
-Usage examples for html:
-```html
-@{
-    var card = new UICCard("My Card");
-    card.Add(out var customContent, new UICCustom())
-}
-<uic-custom uic="customContent">
-    <h1>This is my custom card content</h1>
-</uic-custom>
-
-@await card.InvokeAsync(Component)
-```
-Usage examples for javascript:
-```html
-@{
-    var button = new UICButton("Test");
-}
-<uic-custom uic="button.OnClick">
-    alert('I have clicked on the button');
-</uic-custom>
-
-@await button.InvokeAsync(Component)
-```
-> :warning: The taghelper needs to be placed **before** the component is invoked.
-
-> :warning: the taghelper accept all [IUIComponent](#iuicomponent) in compilation, but will throw a exception if the component is null or not a [UICCustom](#uiccustom)
 
 ### Translatable
 Translatable is a object that can be assigned and will translated just before sending to the client, This means you can create these keys without language context or send it to multiple users in diffrent languages.
@@ -475,16 +494,16 @@ This has the same result as returning a View or Partial view, but can be used as
 ```c#
 public class UIComponentViewModel<T> : IUIComponentViewModel
 {
-    public UIComponentViewModel(string renderlocation, T viewModel)
-    {
-        RenderLocation = renderlocation;
-        ViewModel = viewModel;
-    }
+	public UIComponentViewModel(string renderlocation, T viewModel)
+	{
+		RenderLocation = renderlocation;
+		ViewModel = viewModel;
+	}
 
-    public T ViewModel { get; set; }
+	public T ViewModel { get; set; }
 
-    public string RenderLocation { get; set; }
-    object IUIComponentViewModel.ViewModel => ViewModel;
+	public string RenderLocation { get; set; }
+	object IUIComponentViewModel.ViewModel => ViewModel;
 }
 ```
 
@@ -493,7 +512,7 @@ Example:
 var vm = await _factory.CreateViewModelAsync();
 
 var modal = new UICModal("TestCard")
-                .Add(new UIComponentViewModel("/Views/Shared/MyViewLocation", vm));
+				.Add(new UIComponentViewModel("/Views/Shared/MyViewLocation", vm));
 
 return ViewOrPartial(modal);
 ```
@@ -513,13 +532,13 @@ public IUIAction OnFailed { get; set; } = new UICCustom();
 ```c#
 public UICActionDelayedAction()
 {
-            
+			
 }
 public UICActionDelayedAction(int miliseconds, DelayedActionType delayType, IUICAction action)
 {
-    Miliseconds = miliseconds;
-    Action = action;
-    DelayType = delayType;
+	Miliseconds = miliseconds;
+	Action = action;
+	DelayType = delayType;
 }
 
 
@@ -540,20 +559,20 @@ public IUICAction Action { get; set; } = new UICCustom();
 
 public enum DelayedActionType
 {
-    /// <summary>
-    /// Waits for a period of inactivity, then execute the action
-    /// </summary>
-    Debounce,
+	/// <summary>
+	/// Waits for a period of inactivity, then execute the action
+	/// </summary>
+	Debounce,
 
-    /// <summary>
-    /// Waits for the delay, then execute once. All other triggers while waiting are ignored
-    /// </summary>
-    Delay,
+	/// <summary>
+	/// Waits for the delay, then execute once. All other triggers while waiting are ignored
+	/// </summary>
+	Delay,
 
-    /// <summary>
-    /// Trigger instantly, then block all triggers in the delay. After the delay is completed and one or more triggers are blocked, execute the action again one time
-    /// </summary>
-    Throttle
+	/// <summary>
+	/// Trigger instantly, then block all triggers in the delay. After the delay is completed and one or more triggers are blocked, execute the action again one time
+	/// </summary>
+	Throttle
 }
 ```
 
@@ -649,29 +668,29 @@ public IUIAction OnFailed { get; set; }
 
 public UICActionGetPost AddDefaultData(string key, object value)
 {
-    DefaultData[key] = value;
-    return this;
+	DefaultData[key] = value;
+	return this;
 }
 public UICActionGetPost AddDefaultData(object data)
 {
-    foreach(var kvp in new RouteValueDictionary(data))
-    {
-        AddDefaultData(kvp.Key, kvp.Value);
-    }
-    return this;
+	foreach(var kvp in new RouteValueDictionary(data))
+	{
+		AddDefaultData(kvp.Key, kvp.Value);
+	}
+	return this;
 }
 public UICActionGetPost AddFixedData(string key, object value)
 {
-    FixedData[key] = value;
-    return this;
+	FixedData[key] = value;
+	return this;
 }
 public UICActionGetPost AddFixedData(object data)
 {
-    foreach (var kvp in new RouteValueDictionary(data))
-    {
-        AddFixedData(kvp.Key, kvp.Value);
-    }
-    return this;
+	foreach (var kvp in new RouteValueDictionary(data))
+	{
+		AddFixedData(kvp.Key, kvp.Value);
+	}
+	return this;
 }
 
 #endregion
@@ -695,7 +714,7 @@ When can also overwrite the **uic.getValue** method clientside for a specific se
 ```javascript
 //The selected element will always return value '1'
 $($0).on('uic-getValue', ()=>{
-    return 1;
+	return 1;
 });
 ```
 
@@ -703,28 +722,28 @@ When calling the **uic.getValue** method on a element that is not a input, this 
 
 ```html
 <div id="myObject">
-    <input type="text" name="String" value="foo"/>
-    <div name="Group">
-        <input type="number" name="Count" value="5"/>
-        <checkbox name="Available" checked/>
-        <input type="number" name="AlwaysOne" value="100">
-    </div>
+	<input type="text" name="String" value="foo"/>
+	<div name="Group">
+		<input type="number" name="Count" value="5"/>
+		<checkbox name="Available" checked/>
+		<input type="number" name="AlwaysOne" value="100">
+	</div>
 </div>
 ```
 ```javascript
 
 $('#myObject input[name="AlwaysOne"]').on('uic-getValue', ()=>{
-    return 1;
+	return 1;
 });
 var x = uic.getValue('#myObject');
 
 x = {
-    String: "foo",
-    Group: {
-        Count: 5,
-        Available: true,
-        AlwaysOne: 1
-    }
+	String: "foo",
+	Group: {
+		Count: 5,
+		Available: true,
+		AlwaysOne: 1
+	}
 }
 ```
 
@@ -732,7 +751,7 @@ x = {
 ```c#
 public UICActionGoBack()
 {
-    Content = "history.back();";
+	Content = "history.back();";
 }
 ```
 
@@ -785,29 +804,29 @@ public IUICHasAttributes? SpinElement { get; set; } = null;
 This action takes a function that is triggered serverside each time the action is triggered
 ```c#
 
-    public Func<Dictionary<string, string>, Task> Function { get; set; }
-    public bool SingleUse { get; set; }
+	public Func<Dictionary<string, string>, Task> Function { get; set; }
+	public bool SingleUse { get; set; }
 
-    /// <summary>
-    /// This is the maximum time this connection can exist. Cleaning up the connection after this time.
-    /// </summary>
-    public TimeSpan Timeout { get; set; } = TimeSpan.FromHours(1);
+	/// <summary>
+	/// This is the maximum time this connection can exist. Cleaning up the connection after this time.
+	/// </summary>
+	public TimeSpan Timeout { get; set; } = TimeSpan.FromHours(1);
 
-    public object Data { get; set; }
+	public object Data { get; set; }
 
-    /// <summary>
-    /// Before sending the request, this action is called client side to get additional properties.
-    /// </summary>
-    /// If this result has the same properties as <see cref="Data"/>, the <see cref="Data"/> takes priority.
-    public IUIAction? GetVariableData { get; set; } = null;
+	/// <summary>
+	/// Before sending the request, this action is called client side to get additional properties.
+	/// </summary>
+	/// If this result has the same properties as <see cref="Data"/>, the <see cref="Data"/> takes priority.
+	public IUIAction? GetVariableData { get; set; } = null;
 ```
 Example:
 ```c#
 var counter = 0;
 var button = new UICButton("Test");
 button.OnClick = new UICActionServerResponse(false, (data) => {
-    counter ++;
-    Console.WriteLine(counter);
+	counter ++;
+	Console.WriteLine(counter);
 });
 ```
 
@@ -846,7 +865,7 @@ When can also overwrite the **uic.getValue** method clientside for a specific se
 ```javascript
 //The selected element will always return value '1'
 $($0).on('uic-setValue', (ev, value)=>{
-    ...
+	...
 });
 ```
 
@@ -854,20 +873,20 @@ When calling the **uic.getValue** method on a element that is not a input, this 
 
 ```html
 <div id="myObject">
-    <input type="text" name="String" value="foo"/>
-    <div name="Group">
-        <input type="number" name="Count" value="5"/>
-        <checkbox name="Available" checked/>
-    </div>
+	<input type="text" name="String" value="foo"/>
+	<div name="Group">
+		<input type="number" name="Count" value="5"/>
+		<checkbox name="Available" checked/>
+	</div>
 </div>
 ```
 ```javascript
 uic.setValue('#myObject', {
-    String: "blub",
-    Group: {
-        Count: 15,
-        Available: false,
-    }
+	String: "blub",
+	Group: {
+		Count: 15,
+		Available: false,
+	}
 });
 ```
 
@@ -915,37 +934,37 @@ Many buttons are just a override of [UICButton](#uicbutton) and have just the co
 
 #### UICButton
 ```c#
-    public Translatable ButtonText { get; set; }
+	public Translatable ButtonText { get; set; }
 
-    public Translatable Tooltip { get; set; }
+	public Translatable Tooltip { get; set; }
 
-    public IColor? Color { get; set; } = ColorDefaults.ButtonDefault;
+	public IColor? Color { get; set; } = ColorDefaults.ButtonDefault;
 
-    /// <summary>
-    /// Function triggered when clicking the button
-    /// </summary>
-    /// <remarks>
-    /// ev => ClickEventArgs
-    /// </remarks>
-    public IUICAction OnClick { get; set; } = new UICCustom();
+	/// <summary>
+	/// Function triggered when clicking the button
+	/// </summary>
+	/// <remarks>
+	/// ev => ClickEventArgs
+	/// </remarks>
+	public IUICAction OnClick { get; set; } = new UICCustom();
 
-    public UICIcon PrependButtonIcon { get; set; }
-    public UICIcon AppendButtonIcon { get; set; }
+	public UICIcon PrependButtonIcon { get; set; }
+	public UICIcon AppendButtonIcon { get; set; }
 
-    public ButtonRenderer Renderer { get; set; } = ButtonRenderer.Default;
-    public bool Disabled { get; set; }
+	public ButtonRenderer Renderer { get; set; } = ButtonRenderer.Default;
+	public bool Disabled { get; set; }
 ```
 
 #### UICButtonCancel
 ```c#
 public UICButtonCancel() : base(TranslationDefaults.ButtonCancel)
 {
-    OnClick = new UICActionCloseModal()
-    {
-        OnFailed = new UICActionGoBack()
-    };
+	OnClick = new UICActionCloseModal()
+	{
+		OnFailed = new UICActionGoBack()
+	};
 
-    AddAttributeToDictionary("type", "reset", Attributes);
+	AddAttributeToDictionary("type", "reset", Attributes);
 }
 ```
 #### UICButtonCollapseCard
@@ -961,24 +980,24 @@ public UICCard? Card { get; set; }
 ```c#
 public UICButtonCreate(Type type, bool modal = false)
 {
-    ButtonText = TranslationDefaults.ButtonCreate;
+	ButtonText = TranslationDefaults.ButtonCreate;
 
-    if (type == null)
-        return;
+	if (type == null)
+		return;
 
-    Tooltip = TranslationDefaults.ButtonCreateTooltip(type);
+	Tooltip = TranslationDefaults.ButtonCreateTooltip(type);
 
-    if (modal)
-    {
-        OnClick = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Get, type.Name, "Create", new { modalTitle = "" })
-        {
-            OnSuccess = new UICActionOpenResultAsModal()
-        };
-    }
-    else
-    {
-        OnClick = new UICActionNavigate($"/{type.Name}/Create");
-    }
+	if (modal)
+	{
+		OnClick = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Get, type.Name, "Create", new { modalTitle = "" })
+		{
+			OnSuccess = new UICActionOpenResultAsModal()
+		};
+	}
+	else
+	{
+		OnClick = new UICActionNavigate($"/{type.Name}/Create");
+	}
 }
 ```
 
@@ -986,10 +1005,10 @@ public UICButtonCreate(Type type, bool modal = false)
 ```c#
 public UICButtonDelete()
 {
-    ButtonText = TranslationDefaults.ButtonDelete;
-    Color = ColorDefaults.ButtonDelete;
-    PrependButtonIcon = new UICIcon(UIComponents.Defaults.IconDefaults.Delete?.Icon ?? string.Empty);
-    this.AddAttribute("class", "btn-delete");
+	ButtonText = TranslationDefaults.ButtonDelete;
+	Color = ColorDefaults.ButtonDelete;
+	PrependButtonIcon = new UICIcon(UIComponents.Defaults.IconDefaults.Delete?.Icon ?? string.Empty);
+	this.AddAttribute("class", "btn-delete");
 }
 
 public UICButtonDelete(Type type, object id) : this($"/{type.Name}/Delete", new { id = id })
@@ -997,7 +1016,7 @@ public UICButtonDelete(Type type, object id) : this($"/{type.Name}/Delete", new 
 }
 public UICButtonDelete(string url, object data) : this()
 {
-    OnClick = new UICCustom($"await uic.form.delete('{url}', {JsonSerializer.Serialize(data)});");
+	OnClick = new UICCustom($"await uic.form.delete('{url}', {JsonSerializer.Serialize(data)});");
 }
 ```
 
@@ -1005,16 +1024,16 @@ public UICButtonDelete(string url, object data) : this()
 ```c#
 public UICButtonEdit() : base()
 {
-    ButtonSetEdit = new()
-    {
-        ButtonText = TranslationDefaults.ButtonEdit,
-        OnClick = new UICActionSetEdit(),
-    };
-    ButtonSetReadonly = new()
-    {
-        ButtonText = TranslationDefaults.ButtonReadonly,
-        OnClick = new UICActionSetReadonly(),
-    };
+	ButtonSetEdit = new()
+	{
+		ButtonText = TranslationDefaults.ButtonEdit,
+		OnClick = new UICActionSetEdit(),
+	};
+	ButtonSetReadonly = new()
+	{
+		ButtonText = TranslationDefaults.ButtonReadonly,
+		OnClick = new UICActionSetReadonly(),
+	};
 }
 ```
 ```c#
@@ -1049,9 +1068,9 @@ public UICButtonRefreshPartial(UICPartial partial)
 ```c#
 public UICButtonSave()
 {
-    ButtonText = TranslationDefaults.ButtonSave;
-    Color = ColorDefaults.ButtonSubmit?? ColorDefaults.ButtonDefault;
-    this.AddAttribute("class", "btn-save");
+	ButtonText = TranslationDefaults.ButtonSave;
+	Color = ColorDefaults.ButtonSubmit?? ColorDefaults.ButtonDefault;
+	this.AddAttribute("class", "btn-save");
 }
 ```
 
@@ -1145,7 +1164,7 @@ The AddHeader will create a new header of the requested type, but will trow a ex
 var card = new UICCard();
 card.AddHeader(out var header); //This header is UICCardHeader
 card.AddHeader(header =>{
-    //This header is also UICCardHeader.
+	//This header is also UICCardHeader.
 })
 card.AddHeader<MyCustomHeader>(out var header2) //This header is MyCustomHeader
 ```
@@ -1255,6 +1274,44 @@ public bool AllowOneCardOpen { get; set; }
 public bool RemoveMarginBetweenCards { get; set; }
 ```
 
+## Taghelpers
+
+### UICTaghelper
+
+### UICCustomTaghelper
+Using the razorCode inside the UICCustom will result in loss of intellisence. You can also use the **\<uic-custom\>** taghelper instead.
+
+Before you can use the taghelper, you first need to add this to _ViewImports.cshtml:
+```
+@addTagHelper *, UIComponents.Web.Tests
+```
+Usage examples for html:
+```html
+@{
+	var card = new UICCard("My Card");
+	card.Add(out var customContent, new UICCustom())
+}
+<uic-custom uic="customContent">
+	<h1>This is my custom card content</h1>
+</uic-custom>
+
+@await card.InvokeAsync(Component)
+```
+Usage examples for javascript:
+```html
+@{
+	var button = new UICButton("Test");
+}
+<uic-custom uic="button.OnClick">
+	alert('I have clicked on the button');
+</uic-custom>
+
+@await button.InvokeAsync(Component)
+```
+> :warning: The taghelper needs to be placed **before** the component is invoked.
+
+> :warning: the taghelper accept all [IUIComponent](#iuicomponent) in compilation, but will throw a exception if the component is null or not a [UICCustom](#uiccustom)
+
 
 
 # Custom Generators
@@ -1266,15 +1323,15 @@ Each generator needs a Name, orderNumber and a function.
 ```c#
 config.AddGenerator(GeneratorHelper.SelectListItems("DataBase SelectList", 1000, async (args, existing) =>
 {
-    //If there is a existing result, do not change anything
-    if (existing != null)
-        return GeneratorHelper.Next<List<SelectListItem>>();
+	//If there is a existing result, do not change anything
+	if (existing != null)
+		return GeneratorHelper.Next<List<SelectListItem>>();
 
-    var selectlistItems = await  GetSelectListItemsAsync()
+	var selectlistItems = await  GetSelectListItemsAsync()
 
-    //After the function get the required results, return with GeneratorHelper.Success(results, true/false)
-    //the true value indicates that the other generators may change this result. False disables this.
-    return GeneratorHelper.Success(selectListItems, true);
+	//After the function get the required results, return with GeneratorHelper.Success(results, true/false)
+	//the true value indicates that the other generators may change this result. False disables this.
+	return GeneratorHelper.Success(selectListItems, true);
 
 }));
 ```
@@ -1282,28 +1339,28 @@ config.AddGenerator(GeneratorHelper.SelectListItems("DataBase SelectList", 1000,
 ```c#
 config.AddGenerator(GeneratorHelper.ObjectGenerator(typeof(IDbEntity), "AddingSignalRRefresh", 2000, async (args, existing) =>
 {
-    await Task.Delay(0);
-    //If no result is available, don't do anything
-    if(existing == null)
-        return GeneratorHelper.Next();
+	await Task.Delay(0);
+	//If no result is available, don't do anything
+	if(existing == null)
+		return GeneratorHelper.Next();
 
-    if(existing is IUICHasChildren<IUIComponent> canHaveChildren)
-    {
-        //If the object can have child elements, create a signalR method that will be added to this object
-        var signalR = new UICSignalR(nameof(IMainHub.ReceiveEntity), "entity", "type", "dbAction")
-        {
-            Group = args.PropertyType.Name,
-            Action = new UICActionValidateObject()
-            {
-                ReferenceObjectName = "entity",
-                MatchObject = new { Id = (args.PropertyValue as IDbEntity).Id },
-                OnMatch = new UICActionMarkChanges(existing, "entity")
-            }
-        };
-        canHaveChildren.Children.Add(signalR);
-        return GeneratorHelper.Success(existing, true);
-    }
-    return GeneratorHelper.Next();
+	if(existing is IUICHasChildren<IUIComponent> canHaveChildren)
+	{
+		//If the object can have child elements, create a signalR method that will be added to this object
+		var signalR = new UICSignalR(nameof(IMainHub.ReceiveEntity), "entity", "type", "dbAction")
+		{
+			Group = args.PropertyType.Name,
+			Action = new UICActionValidateObject()
+			{
+				ReferenceObjectName = "entity",
+				MatchObject = new { Id = (args.PropertyValue as IDbEntity).Id },
+				OnMatch = new UICActionMarkChanges(existing, "entity")
+			}
+		};
+		canHaveChildren.Children.Add(signalR);
+		return GeneratorHelper.Success(existing, true);
+	}
+	return GeneratorHelper.Next();
 }));
 ```
 
@@ -1312,15 +1369,15 @@ Set the IDbEntity on your database classes, so these are recognised as database 
 ```c#
 public class BaseEntity: IDbEntity<long>
 {
-    public long Id { get; set; }
+	public long Id { get; set; }
 }
 
 public class BaseEntity : IDbEntity<Guid>
 {
-    public Guid Guid { get; set; }
+	public Guid Guid { get; set; }
 
-    // If the Id of the object is something else then 'Id', you can map it privately like this
-    string IDbEntity.Id => Guid;
+	// If the Id of the object is something else then 'Id', you can map it privately like this
+	string IDbEntity.Id => Guid;
 }
 ```
 
@@ -1339,14 +1396,14 @@ If no handlers return a value, the entire response will be returned
 
 <script>
 uic.getpost.defaultHandlers.push( (response) => {
-    if (response.type == "Redirect") {
+	if (response.type == "Redirect") {
 
-        if (!response.data.length)
-            location.reload();
-        else
-            location.href = response.url;
-        return true;
-    }
+		if (!response.data.length)
+			location.reload();
+		else
+			location.href = response.url;
+		return true;
+	}
 });
 </script>
 ```
@@ -1373,8 +1430,8 @@ You can change the options of the generators by providing a **UICOptions** objec
 //Create
 var componentWithOptions = await _uic.CreateComponentAsync(testModel, new UICOptions()
 {
-    ExcludedProperties = "Id, IsDeleted",
-    ShowEditButton = false,
+	ExcludedProperties = "Id, IsDeleted",
+	ShowEditButton = false,
 };
 
 ```
@@ -1387,14 +1444,14 @@ You can also Inherit the UICOptions object and set default values in the constru
 ```c#
 public class UICCreateOptions : UICOptions
 {
-    public UICCreateOptions(){
-        ReplaceSaveButtonWithCreateButton = true;
-        InputGroupSingleRow = true;
-        ShowEditButton = false;
-        ShowDeleteButton = false;
-        ShowCancelButton = true;
-        IdHidden = true;
-    }
+	public UICCreateOptions(){
+		ReplaceSaveButtonWithCreateButton = true;
+		InputGroupSingleRow = true;
+		ShowEditButton = false;
+		ShowDeleteButton = false;
+		ShowCancelButton = true;
+		IdHidden = true;
+	}
 }
 ```
 
@@ -1403,7 +1460,7 @@ You can create a single input field from a object
 ```c#
 var dateInput = await _uic.CreateComponentAsync(testModel, x => x.Date);
 var dateInputWithOptions = await _uic.CreateComponentAsync(testModel, x => x.Date, new(){
-    InputGroupSingleRow = false;
+	InputGroupSingleRow = false;
 });
 ```
 
@@ -1423,17 +1480,17 @@ This service can also be used inside a **AbstractValidator< T >**. This will che
 ```c#
 public class TestModelValidator : AbstractValidator<TestModel>
 {
-    private readonly IUICValidationService _validationService;
-    private readonly IUICILanguageService _languageService;
+	private readonly IUICValidationService _validationService;
+	private readonly IUICILanguageService _languageService;
 
-    public TestModelValidator(IUICValidationService validationService, IUICILanguageService languageService)
-    {
-        _validationService = validationService;
-        _languageService = languageService;
+	public TestModelValidator(IUICValidationService validationService, IUICILanguageService languageService)
+	{
+		_validationService = validationService;
+		_languageService = languageService;
 
-        //This method requires a AbstractValidator (this) and a implementations of the IUICILanguageService
-        _validationService.ValidateModel(this, _languageService);
-    }
+		//This method requires a AbstractValidator (this) and a implementations of the IUICILanguageService
+		_validationService.ValidateModel(this, _languageService);
+	}
 }
 ```
 
@@ -1451,8 +1508,8 @@ To include the predefined validators to the implementation, add the following li
 ```c#
 builder.Services.AddUIComponentWeb(config =>
 {
-    ...
-    config.AddDefaultValidators(builder.Services);
+	...
+	config.AddDefaultValidators(builder.Services);
 });
 ```
 
@@ -1495,30 +1552,30 @@ Only these specific interfaces can check these options.
 ```c#
 public class MyValidationRuleRequired : IUICPropertyValidationRuleRequired
 {
-    //The type this validation rule is used for, set as typeof(object) if used for any propertyType
-    public Type? PropertyType => typeof(object);
+	//The type this validation rule is used for, set as typeof(object) if used for any propertyType
+	public Type? PropertyType => typeof(object);
 
-    public async Task<bool> IsRequired(PropertyInfo propertyInfo, object obj)
-    {
-        //This function is used to mark a property with the validationrule when requesting the form
-    }
+	public async Task<bool> IsRequired(PropertyInfo propertyInfo, object obj)
+	{
+		//This function is used to mark a property with the validationrule when requesting the form
+	}
 ```
 If you want to return custom messages or handling of the response, add the **IUICPropertyValidationValidationResultsImplementation** interface
 
 ```c#
 public class MyValidationRuleRequired : IUICPropertyValidationRuleRequired, IUICPropertyValidationValidationResultsImplementation
 {
-    //The type this validation rule is used for, set as typeof(object) if used for any propertyType
-    public Type? PropertyType => typeof(object);
+	//The type this validation rule is used for, set as typeof(object) if used for any propertyType
+	public Type? PropertyType => typeof(object);
 
-    public async Task<bool> IsRequired(PropertyInfo propertyInfo, object obj)
-    {
-        //This function is used to mark a property with the validationrule when requesting the form
-    }
-    public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj)
-    {
-        ...
-    }
+	public async Task<bool> IsRequired(PropertyInfo propertyInfo, object obj)
+	{
+		//This function is used to mark a property with the validationrule when requesting the form
+	}
+	public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj)
+	{
+		...
+	}
 ```
 
 In the configuration, assign this validator
@@ -1537,19 +1594,19 @@ This way DOES NOT have support for dependency injection and always uses the defa
 ```c#
 config.AddValidatorPropertyRequired((propertyInfo, obj) =>
 {
-    ...
+	...
 });
 ```
 
 #### Example for implementing custom attributes for validation
 ```c#
 config.AddValidatorPropertyMinLength((propinfo, obj) =>
-    {
-        var minLengthAttr = propinfo.GetInheritAttribute<MinLengthAttribute>();
-        if (minLengthAttr == null)
-            return Task.FromResult<int?>(null);
-        return Task.FromResult<int?>(minLengthAttr.Length);
-    });
+	{
+		var minLengthAttr = propinfo.GetInheritAttribute<MinLengthAttribute>();
+		if (minLengthAttr == null)
+			return Task.FromResult<int?>(null);
+		return Task.FromResult<int?>(minLengthAttr.Length);
+	});
 ```
 
 
@@ -1590,8 +1647,8 @@ Without a languageService, all [Translatables](#translatable) will take the last
 ```c#
 builder.Services.AddUIComponentWeb(config =>
 {
-    config.CheckILanguageServiceType = false;
-    ...
+	config.CheckILanguageServiceType = false;
+	...
 });
 ```
 #### Clientside translation
@@ -1600,38 +1657,38 @@ To get clientside translations, create a controller method that gets the transla
 The entire clientside javascript can also be overwritten:
 ```Javascript
 uic.translation = {
-    translate: async function (translatable) {
-        //If the input has to resourceKey, inputting strings will just return the string
-        if (translatable.ResourceKey == undefined)
-            return translatable;
+	translate: async function (translatable) {
+		//If the input has to resourceKey, inputting strings will just return the string
+		if (translatable.ResourceKey == undefined)
+			return translatable;
 
-        //If the key is untranslatedKey, return the first argument without translations
-        if (translatable.ResourceKey == "UntranslatedKey")
-            return translatable.Arguments[0];
+		//If the key is untranslatedKey, return the first argument without translations
+		if (translatable.ResourceKey == "UntranslatedKey")
+			return translatable.Arguments[0];
 
-        //Check if the translation is already requested, call the fetchTranslationText on first request
-        let cachedValue = uic.translation._defaultValues[translatable.ResourceKey];
-        if (cachedValue == undefined) {
-            cachedValue = await fetchTranslationText(translatable);
-            uic.translation._defaultValues[translatable.ResourceKey] = cachedValue;
-        }
+		//Check if the translation is already requested, call the fetchTranslationText on first request
+		let cachedValue = uic.translation._defaultValues[translatable.ResourceKey];
+		if (cachedValue == undefined) {
+			cachedValue = await fetchTranslationText(translatable);
+			uic.translation._defaultValues[translatable.ResourceKey] = cachedValue;
+		}
 
-        //Format the arguments in the text
-        return cachedValue.format(translatable.Arguments);
+		//Format the arguments in the text
+		return cachedValue.format(translatable.Arguments);
 
-        
-    },
-    //The function that requests the service to give the translation
-    fetchTranslationText: async function (translatable) {
-        let defaultValue = translatable.DefaultValue || translatable.ResourceKey.split('.').last();
-        return defaultValue.format(translatable.Arguments);
-    },
+		
+	},
+	//The function that requests the service to give the translation
+	fetchTranslationText: async function (translatable) {
+		let defaultValue = translatable.DefaultValue || translatable.ResourceKey.split('.').last();
+		return defaultValue.format(translatable.Arguments);
+	},
 
-    //Local dictionary that store translation keys with value texts. these values do not have their variables replaced yet.
-    //Content of this object remains until the page reloads.
-    _defaultValues: {
+	//Local dictionary that store translation keys with value texts. these values do not have their variables replaced yet.
+	//Content of this object remains until the page reloads.
+	_defaultValues: {
 
-    }
+	}
 }
 ```
 
@@ -1646,8 +1703,8 @@ Without the permissionservice, all permissionchecks will result in true.
 ```c#
 builder.Services.AddUIComponentWeb(config =>
 {
-    config.CheckPermissionServiceType = false;
-    ...
+	config.CheckPermissionServiceType = false;
+	...
 });
 ```
 
@@ -1660,8 +1717,8 @@ You can disable this errormessage in the config, or create a implementation of t
 ```c#
 builder.Services.AddUIComponentWeb(config =>
 {
-    config.CheckPropertyValidatorReadonly = false;
-    ...
+	config.CheckPropertyValidatorReadonly = false;
+	...
 });
 ```
 
@@ -1671,67 +1728,67 @@ This is not required for the UICSignalR model.
 ```c#
 public class SignalRService : IUICSignalRService
 {
-    #region Ctor
+	#region Ctor
 
-    public SignalRService(MainHub signalRHub)
-    {
-        SignalRHub = signalRHub;
-    }
+	public SignalRService(MainHub signalRHub)
+	{
+		SignalRHub = signalRHub;
+	}
 
-    #endregion
+	#endregion
 
-    #region Properties
+	#region Properties
 
-    public MainHub SignalRHub { get; set; }
+	public MainHub SignalRHub { get; set; }
 
-    #endregion
+	#endregion
 
-    public async Task RemoveUIComponentWithId(string id)
-    {
-        await SignalRHub.Clients.All.RemoveUIComponentWithId(id);
-    }
+	public async Task RemoveUIComponentWithId(string id)
+	{
+		await SignalRHub.Clients.All.RemoveUIComponentWithId(id);
+	}
 
-    public async Task SendUIComponentToUser(FetchComponent fetchComponent, string userId)
-    {
-        await SignalRHub.Clients.All.SendUIComponentToUser(fetchComponent, userId);
-    }
+	public async Task SendUIComponentToUser(FetchComponent fetchComponent, string userId)
+	{
+		await SignalRHub.Clients.All.SendUIComponentToUser(fetchComponent, userId);
+	}
 }
 ```
 After implementing the implementation of the scripts, you also need to assign the userId clientSide.
 ```c#
 <script src="~/uic/js/uic.js" asp-append-version="true"></script>
 <script>
-    uic.signalR.currentUserId = @UserId;
+	uic.signalR.currentUserId = @UserId;
 </script>
 ```
 
 If you want to use a diffrent implementation of this interface than this example, you also need to change the javascript methods that receive these events.
 ```Javascript
 uic.signalR = {
-    handleUIComponentFetch: async ()=>{
-        await window.connection.on('SendUIComponentToUser', async (fetchComponent, userId) => {
-            if (uic.signalR.currentUserId == undefined) {
-                console.error("uic.signalR.currentUserId is not defined!")
-                return;
-            }
+	handleUIComponentFetch: async ()=>{
+		await window.connection.on('SendUIComponentToUser', async (fetchComponent, userId) => {
+			if (uic.signalR.currentUserId == undefined) {
+				console.error("uic.signalR.currentUserId is not defined!")
+				return;
+			}
 
-            if (uic.signalR.currentUserId != userId)
-                return;
+			if (uic.signalR.currentUserId != userId)
+				return;
 
-            let appendTo = $(fetchComponent.AppendTo);
-            if (!appendTo.length)
-                return;
+			let appendTo = $(fetchComponent.AppendTo);
+			if (!appendTo.length)
+				return;
 
-            let result = await uic.getpost.get('/uic/getComponent', { key: fetchComponent.ComponentKey });
-            appendTo.append(result);
-        });
-    },
-    handleUIComponentRemove: async () => {
-        await window.connection.on('RemoveUIComponentWithId', async (id) => {
-            $(`#${id}`).trigger('uic-remove');
-        });
-    },
-    currentUserId: undefined
+			let result = await uic.getpost.get('/uic/getComponent', { key: fetchComponent.ComponentKey });
+			appendTo.append(result);
+		});
+	},
+	handleUIComponentRemove: async () => {
+		await window.connection.on('RemoveUIComponentWithId', async (id) => {
+			$(`#${id}`).trigger('uic-remove');
+		});
+	},
+	currentUserId: undefined
 }
 ```
 
@@ -1786,24 +1843,24 @@ In this example, the LastName will not be rendered, and the GroupName will have 
 [UICInheritAttribute(typeof(User), typeof(UserGroup)]
 public class UserViewModel
 {
-    public string EmailAddress { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+	public string EmailAddress { get; set; }
+	public string FirstName { get; set; }
+	public string LastName { get; set; }
 
-    public string GroupName { get; set; }
+	public string GroupName { get; set; }
 }
 public class User
 {
-    public string EmailAddress { get; set; }
-    public string FirstName { get; set; }
+	public string EmailAddress { get; set; }
+	public string FirstName { get; set; }
 
-    [UICIgnoreAttribute]
-    public string LastName { get; set; }
+	[UICIgnoreAttribute]
+	public string LastName { get; set; }
 }
 public class UserGroup
 {
-    [UICSpan('This is the name of the group')]
-    public string GroupName { get; set; }
+	[UICSpan('This is the name of the group')]
+	public string GroupName { get; set; }
 }
 ```
 
@@ -1814,11 +1871,11 @@ Normally the generators will automatically detect what type of PropertyType to u
 ```c#
 public class TestModel
 {
-    [UICPropertyType(UICPropertyType.String)]
-    public string MySkinColor { get; set; }
+	[UICPropertyType(UICPropertyType.String)]
+	public string MySkinColor { get; set; }
 
-    [UICPropertyType(UICPropertyType.MultilineText)]
-    public string Description { get; set; }
+	[UICPropertyType(UICPropertyType.MultilineText)]
+	public string Description { get; set; }
 }
 ```
 
@@ -1850,10 +1907,10 @@ Used logLevels:
 - Error : All errors and exceptions that may occur. Recommend to always see these errors
 ```json
 "Logging": {
-    "LogLevel": {
-      "UIComponents" : "Information",
-      "UIComponents.Generators.Generators": "Information",
-      "UIComponents.Generators.Services": "Information",
-    }
+	"LogLevel": {
+	  "UIComponents" : "Information",
+	  "UIComponents.Generators.Generators": "Information",
+	  "UIComponents.Generators.Services": "Information",
+	}
   },
 ```

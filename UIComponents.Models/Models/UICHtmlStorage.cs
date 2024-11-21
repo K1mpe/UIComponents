@@ -29,8 +29,12 @@ namespace UIComponents.Models.Models
         public string Id { get; set; }
 
         /// <summary>
-        /// This function has value that must be checked with the service to validate if the data may still be used
+        /// The result of this function will be checked with the stored value to validate changes.
+        /// <br>This can be a async function that returns a value</br>
         /// </summary>
+        /// <remarks>
+        /// new Custom($"return {CachedTimestamp.Ticks") is a easy way to provide a value each time the page is loaded. when the value is diffrent, the <see cref="GetValue"/> is called
+        /// </remarks>
         public IUICAction ValidateTimestamp { get; set; } = new UICCustom();
 
         /// <summary>

@@ -23,7 +23,7 @@
     if (!Model.HasCachedValue)
     {
         Model.SetCachedValue(@<text>
-            @await Model.Component.InvokeAsync(Component)
+            @await Model.Component().InvokeAsync(Component)
         </text>);
     }
 }

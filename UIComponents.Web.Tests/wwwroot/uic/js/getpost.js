@@ -115,7 +115,7 @@
                 let jsonResponse = uic.parse(response);
                 if (jsonResponse.Type == "Redirect") {
 
-                    if (!jsonResponse.Url.length)
+                    if (jsonResponse.Url == undefined || jsonResponse.Url == null || jsonResponse.Url.length)
                         location.reload();
                     else
                         location.href = jsonResponse.Url;

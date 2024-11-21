@@ -65,7 +65,10 @@ public class UICTaghelper : TagHelper
 
         output.TagName = "";
         output.TagMode = TagMode.StartTagAndEndTag;
+        if(UIC is UICCached cached)
+        {
 
+        }
         var content = await output.GetChildContentAsync();
         var contentString = content.GetContent().Trim();
 
