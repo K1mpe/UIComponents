@@ -42,6 +42,7 @@ public static class UICConfigure
         services.TryAddSingleton<IUICStoredComponents, StoredComponents>();
         services.TryAddScoped<IUICValidationService, UICValidationService>();
         services.TryAddScoped<IUICUpdateMonitor, UICUpdateMonitor>();
+        services.TryAddScoped<IUICAskUserToTranslate, UICAskUserToTranslate>();
         config(configuration);
 
         if (!services.Where(x => x is IUICLanguageService).Any())
@@ -110,6 +111,8 @@ public static class UICConfigure
         configOptions.AddAndRegisterGenerator<UICGeneratorInputRecurringDate>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputClassObject>(serviceCollection);
         configOptions.AddAndRegisterGenerator<UICGeneratorInputList>(serviceCollection);
+
+        configOptions.AddAndRegisterGenerator<UICGeneratorHtmlAttributes>(serviceCollection);
 
         return configOptions;
     }

@@ -37,21 +37,25 @@ namespace UIComponents.Models.Models
         /// The minimum width of labels
         /// </summary>
         public string MinLabelWidth { get; set; } = Defaults.Models.UICSingleRow.MinLabelWidth;
+        public string MaxLabelWidth { get; set; } = Defaults.Models.UICSingleRow.MaxLabelWidth;
 
         /// <summary>
         /// The minimum width of inputs
         /// </summary>
         public string MinInputWidth { get; set; } = Defaults.Models.UICSingleRow.MinInputWidth;
+        public string MaxInputWidth { get; set; } = Defaults.Models.UICSingleRow.MaxInputWidth;
 
         /// <summary>
-        /// The margin between diffrent property rows (SingleRow Only)
+        /// The margin between rows (SingleRow Only)
         /// </summary>
         public string MarginBetweenRows { get; set; } = Defaults.Models.UICSingleRow.MarginBetweenRows;
 
         /// <summary>
-        /// The margin between diffrent label and input
+        /// The margin between label and input
         /// </summary>
         public string MarginBetweenColumns { get; set; } = Defaults.Models.UICSingleRow.MarginBetweenColumns;
+
+        public int? Columns { get; set; } = Defaults.Models.UICSingleRow.Columns;
 
         public List<IUIComponent> Children => Components;
         #endregion
@@ -108,11 +112,15 @@ namespace UIComponents.Defaults.Models
         /// The minimum width of labels
         /// </summary>
         public static string MinLabelWidth { get; set; }
+        public static string MaxLabelWidth { get; set; }
 
         /// <summary>
         /// The minimum width of inputs
         /// </summary>
         public static string MinInputWidth { get; set; }
+        public static string MaxInputWidth { get; set; }
+
+        public static int? Columns { get; set; }
 
         /// <summary>
         /// The margin between diffrent property rows (SingleRow Only)

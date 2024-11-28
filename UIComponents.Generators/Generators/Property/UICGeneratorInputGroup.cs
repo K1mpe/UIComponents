@@ -44,6 +44,8 @@ namespace UIComponents.Generators.Generators.Property
             if (!inputGroup.Input.HasValue())
                 inputGroup.Render = false;
 
+
+
             inputGroup.Span = await args.Configuration.GetPropertyGroupSpanAsync(args, inputGroup);
 
             return new UICGeneratorResponseSuccess<IUIComponent>(inputGroup, true);

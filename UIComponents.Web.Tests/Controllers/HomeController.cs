@@ -47,7 +47,8 @@ namespace UIComponents.Web.Tests.Controllers
         private readonly TestModelValidator _validator;
         private readonly TestService _testService;
         private readonly IUICFileExplorerPathMapper _pathMapper;
-        public HomeController(ILogger<HomeController> logger, IUIComponentGenerator uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator, TestService testService, IUICFileExplorerPathMapper pathMapper)
+        private readonly IUICAskUserToTranslate _uICAskUserToTranslate;
+        public HomeController(ILogger<HomeController> logger, IUIComponentGenerator uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator, TestService testService, IUICFileExplorerPathMapper pathMapper, IUICAskUserToTranslate uICAskUserToTranslate)
         {
             _logger = logger;
             _uic = uic;
@@ -57,6 +58,7 @@ namespace UIComponents.Web.Tests.Controllers
             _validator = validator;
             _testService = testService;
             _pathMapper = pathMapper;
+            _uICAskUserToTranslate = uICAskUserToTranslate;
         }
 
         public static int Counter { get; set; } = 0;
@@ -343,11 +345,12 @@ namespace UIComponents.Web.Tests.Controllers
         [HttpGet]
         public async Task<IActionResult> Translate()
         {
-            var translations = await TranslatableSaver.LoadFromUICAsync();
-            await translations.AskCurrentUserToTranslate(_uicQuestionService, "NL");
+            await _uICAskUserToTranslate.AskCurrentUserToTranslate(TranslatableSaver.UICTranslationFilePath);
+            //var translations = await TranslatableSaver.LoadFromUICAsync();
+            //await translations.AskCurrentUserToTranslate(_uicQuestionService, "NL");
 
-            var dir = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.FullName;
-            await TranslatableSaver.SaveToFileAsync(translations, $"{dir}\\UIComponents.Web\\UIComponents\\Translations.json", false, false);
+            //var dir = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.FullName;
+            //await TranslatableSaver.SaveToFileAsync(translations, $"{dir}\\UIComponents.Web\\UIComponents\\Translations.json", false, false);
 
             return Json(true);
         }

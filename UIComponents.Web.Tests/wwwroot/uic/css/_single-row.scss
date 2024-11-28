@@ -1,5 +1,37 @@
-﻿.singlerow-groups label {
-    padding-top: add($input-padding-y, $input-border-width);
-    padding-bottom: add($input-padding-y, $input-border-width);
-    margin-bottom: 0;
+﻿.uic .singlerow-groups {
+    display: grid;
+    grid-template-columns: repeat( var(--columns, 1), minmax( var(--min-label-width, $uic-singlerow-min-label-width), var(--max-label-width, $uic-singlerow-max-label-width)) minmax( var(--min-input-width, $uic-singlerow-min-input-width), var(--max-input-width, $uic-singlerow-max-input-width)));
+    grid-template-rows: 1fr;
+    grid-row-gap: var(--margin-between-rows, $uic-singlerow-margin-between-rows);
+    grid-column-gap: var(--margin-between-cols, $uic-singlerow-margin-between-cols);
+    margin-bottom: var(--margin-between-rows, $uic-singlerow-margin-between-rows);
+
+    label {
+        padding-top: add($input-padding-y, $input-border-width);
+        padding-bottom: add($input-padding-y, $input-border-width);
+        margin-bottom: 0;
+    }
+
+    .full-width {
+        .form-column:first-child {
+            grid-column: 1;
+        }
+
+        .form-column:not(:first-child) {
+            grid-column: 2 / -1;
+        }
+    }
+
+    .singlerow-input-group {
+        display: contents;
+    }
+
+    @for $i from 1 through 20 {
+        .input-row-#{$i} {
+            .form-column {
+                grid-row: #{$i};
+            }
+        }
+
+    }
 }

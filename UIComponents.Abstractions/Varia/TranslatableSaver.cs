@@ -5,11 +5,17 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using UIComponents.Abstractions.Interfaces.Services;
 
 namespace UIComponents.Abstractions.Varia;
 
-public static class TranslatableSaver
+public static partial class TranslatableSaver
 {
+    /// <summary>
+    /// This is the path the tranlations from UIC are located
+    /// </summary>
+    public static string UICTranslationFilePath => $"{Directory.GetCurrentDirectory()}\\UIComponents\\Translations.json";
+
     /// <summary>
     /// Using this method returns the Translatable key. But also enables <see cref="ScanSolution(string, string[])"/> to find this key.
     /// </summary>
@@ -267,7 +273,7 @@ public static class TranslatableSaver
         return LoadFromXmlString(fileContent);
     }
 
-    public static List<TranslatableXmlField> LoadFromXmlString(string content)
+    private static List<TranslatableXmlField> LoadFromXmlString(string content)
     {
         XmlSerializer serializer = new(typeof(TranslatableXmlModel));
         using TextReader reader = new StringReader(content);
@@ -277,13 +283,14 @@ public static class TranslatableSaver
 
     public static async Task<List<TranslatableXmlField>> LoadFromUICAsync() 
     {
-        var dir = $"{Directory.GetCurrentDirectory()}\\UIComponents\\Translations.json";
+        var dir = UICTranslationFilePath;
         if (!File.Exists(dir))
             throw new FileNotFoundException($"{dir} not found. Set UICConfigOptions.AddTranslationFile true to generate file");
 
         return await LoadFromFileAsync(dir);
-
     }
+
+    
 
     public class TranslatableXmlField
     {

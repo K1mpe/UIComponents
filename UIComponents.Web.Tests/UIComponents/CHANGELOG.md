@@ -1,3 +1,8 @@
+# 2024-11-28 (V1.3.12)
+- Single-row now has css variables
+- IUICAskUserToTranslate
+
+
 # 2024-11-21 (V1.3.11)
 - UICTabs Singletab now accounts for unrendered tabs
 - Css fix for .btn-toolbar

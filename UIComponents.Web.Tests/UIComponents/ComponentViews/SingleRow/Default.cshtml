@@ -19,13 +19,28 @@
 @{
     string id = Model.GetId();
     Model.AssignCollectionForChildren();
+    Model.AddClass("single-row");
+    if(Model.Columns.HasValue)
+        Model.AddCss("--columns", Model.Columns.ToString());
+    if (!string.IsNullOrWhiteSpace(Model.MinLabelWidth))
+        Model.AddCss("--min-label-width", Model.MinLabelWidth);
+    if (!string.IsNullOrWhiteSpace(Model.MaxLabelWidth))
+        Model.AddCss("--max-label-width", Model.MaxLabelWidth);
+    if (!string.IsNullOrWhiteSpace(Model.MinInputWidth))
+        Model.AddCss("--min-input-width", Model.MinInputWidth);
+    if (!string.IsNullOrWhiteSpace(Model.MaxInputWidth))
+        Model.AddCss("--max-input-width", Model.MaxInputWidth);
+    if (!string.IsNullOrWhiteSpace(Model.MarginBetweenRows))
+        Model.AddCss("--margin-between-rows", Model.MarginBetweenRows);
+    if (!string.IsNullOrWhiteSpace(Model.MarginBetweenColumns))
+        Model.AddCss("--margin-between-cols", Model.MarginBetweenColumns);
 
     List<Type> SupportedTypes = new() { typeof(UICInputGroup) };
 
 
-    foreach(var child in Model.Components)
+    foreach (var child in Model.Components)
     {
-        if(child is IUISingleRowSupport singleRowSupport)
+        if (child is IUISingleRowSupport singleRowSupport)
         {
             singleRowSupport.TransformToSingleRow();
         }
@@ -33,46 +48,38 @@
 
 
     bool lastHadSupport = false;
-    Model.AddStyle(
-    @<text>
-        #@id .singlerow-groups{
-            display: grid;
-            grid-template-columns: minmax(@(Model.MinLabelWidth ?? "50px"), auto) minmax(@(Model.MinInputWidth ?? "auto"), 1fr);
-            grid-template-rows: 1fr;
-            grid-row-gap: @(Model.MarginBetweenRows ?? "0.25rem");
-            grid-column-gap: @(Model.MarginBetweenColumns ?? "0.25rem");
-            padding-bottom: @(Model.MarginBetweenRows ?? "0.25rem");
-        }
-    </text>);
+
 }
 
 
 
 <div @Html.Raw(Model.GetHtmlAttributes())>
-@foreach(var element in Model.Components)
-{
-    if (element == null)
-        continue;
-    if(element is UIComponent component)
+    @foreach (var element in Model.Components)
     {
-        if (!component.Render)
+        if (element == null)
             continue;
-    }
-    bool hasSingleRowSupport = (element is IUISingleRowSupport supportsSingleRow && supportsSingleRow.RendersInSingleRow());
+        if (element is UIComponent component)
+        {
+            if (!component.Render)
+                continue;
+        }
+        bool hasSingleRowSupport = (element is IUISingleRowSupport supportsSingleRow && supportsSingleRow.RendersInSingleRow());
 
-    if(!lastHadSupport && hasSingleRowSupport)
-    {
-        @Html.Raw("<div class=\"singlerow-groups\">")
-    } else if(lastHadSupport && !hasSingleRowSupport)
-    {
-        @Html.Raw("</div>")
+        if (!lastHadSupport && hasSingleRowSupport)
+        {
+            @Html.Raw("<div class=\"singlerow-groups\">")
+        }
+        else if (lastHadSupport && !hasSingleRowSupport)
+        {
+            @Html.Raw("</div>")
+        }
+        lastHadSupport = hasSingleRowSupport;
+        @await element.InvokeAsync(Component)
     }
-    lastHadSupport = hasSingleRowSupport;
-    @await element.InvokeAsync(Component)
-}
-@if(lastHadSupport)
-    @Html.Raw("</div>")
-    
+    @if (lastHadSupport)
+        @Html.Raw("</div>")
+
+
 </div>
-    
+
 @await Model.RenderStylesAndScripts(Component)

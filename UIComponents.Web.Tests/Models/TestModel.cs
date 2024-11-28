@@ -24,6 +24,7 @@ namespace UIComponents.Web.Tests.Models
         [DisplayName("<i class='fas fa-user'></i><strong class='text-danger'>Description</strong>")]
         public string Description { get; set; }
 
+        [UICHtmlInput("id", "myId"), UICHtmlInput("class", "blub"), UICHtmlInputGroup("data-abc", 2), UICHtmlLabel("class", "my-label")]
         public bool Checkbox { get; set; }
 
         public bool? ThreeStateBool { get; set; }
