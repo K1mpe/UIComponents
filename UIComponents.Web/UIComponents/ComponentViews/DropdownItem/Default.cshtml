@@ -86,7 +86,7 @@ else
         .RemoveClass("btn-*");
     string itemId = Model.GetId();
     Model.AddAttribute("href", "#");
-    Model.AddScript(
+    Model.AddScriptDocReady(
         @<text>
             $('#@itemId').click(async function(e){
             e.preventDefault();

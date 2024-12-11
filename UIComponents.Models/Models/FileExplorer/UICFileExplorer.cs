@@ -121,7 +121,7 @@ namespace UIComponents.Models.Models.FileExplorer
                 },
                 Value = true
             };
-            fileExplorer.AddScript(new UICCustom()
+            fileExplorer.AddScriptDocReady(new UICCustom()
                 .AddLine($"$('#{fileExplorer.GetId()}').on('uic-showhide-jstree', (ev, visible)=>{{")
                 .AddLine($"     uic.setValue('#{toggle.GetId()}', visible);")
                 .AddLine($"}});"));
@@ -146,7 +146,7 @@ namespace UIComponents.Models.Models.FileExplorer
                 },
                 Value = true
             };
-            fileExplorer.AddScript(new UICCustom()
+            fileExplorer.AddScriptDocReady(new UICCustom()
                 .AddLine($"$('#{fileExplorer.GetId()}').on('uic-showhide-preview', (ev, visible)=>{{")
                 .AddLine($"     uic.setValue('#{toggle.GetId()}', visible);")
                 .AddLine($"}});"));

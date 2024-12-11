@@ -115,7 +115,7 @@ public class UICValidationService : IUICValidationService
             {
                 var propValidatorResult = await ValidateObjectProperty(property, obj);
                 foreach (var error in propValidatorResult.ValidationErrors)
-                    result.AddError(error.ErrorMessage, property ?? property);
+                    result.AddError(error.ErrorMessage, error.Property ?? property, error.Arguments);
 
             }
             catch (Exception ex)
@@ -304,7 +304,7 @@ public class UICValidationService : IUICValidationService
                     foreach (var error in validatorResult.ValidationErrors)
                     {
                         _logger.LogDebug($"ValidationError for {propertyInfo.DeclaringType.Name} => {propertyInfo.Name}: {error.ErrorMessage}");
-                        result.AddError(error.ErrorMessage, error.Property ?? propertyInfo);
+                        result.AddError(error.ErrorMessage, error.Property ?? propertyInfo, error.Arguments);
                     }
 
                 }

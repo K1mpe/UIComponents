@@ -37,7 +37,9 @@ public class UICGeneratorInputSelectList : UICGeneratorProperty
         if(args.PropertyType.GetNullableType().IsEnum && args.PropertyValue != null)
             input.Value = ((int)args.PropertyValue).ToString();
 
-        input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
+        if (args.Options.CheckClientSideValidation)
+            input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
+
         input.SelectListItems = (await args.Configuration.GetSelectListItems(args, input))?? new();
 
         if((args.Options.SelectlistAddEmptyItem ||!input.ValidationRequired) && !input.SelectListItems.Where(x => string.IsNullOrEmpty(x.Value?.ToString()??null)).Any())

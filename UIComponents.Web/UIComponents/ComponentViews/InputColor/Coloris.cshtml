@@ -40,8 +40,11 @@
         Model.AddAttribute("class", "allow-alpha");
     }
 
+    if (Model.ValidationValidColor)
+        Model.AddAttribute("data-validation-valid-color", "true");
 
-
+    if (Model.ValidationRequired)
+        Model.AddAttribute("required", "");
 
 }
 
@@ -53,55 +56,12 @@
 
 
 @{
-
-    string propertyName = Model.PropertyName;
-    if (Model.DisplayName != null)
-        propertyName = await L.Translate(Model.DisplayName);
-
-    Model.AddScript(
-@<text>
-    let isColor = (strColor) => {
-    const s = new Option().style;
-    s.color = strColor;
-    return s.color !== '';
-    }
-    function validateInput(element) {
-    let currentValue = element.val();
-    let span = element.parent().parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
-    span.text("");
-
-    @if (Model.ValidationValidColor)
-    {
-
-    <text>
-        if (!CSS.supports('color', currentValue)) {
-            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateColor(propertyName)));
-        }
-
-
-    </text>
-    }
-
-    @if (Model.ValidationRequired)
-                {
-    <text>
-        if (currentValue.length == 0)
-            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
-    </text>
-                }
-
-
-    }
-
-    $('#@id').keyup(function () {
-        validateInput($(this));
-    });
-    $('#@id').blur(function () {
-        validateInput($(this));
-    });
-
+    if(Model.HasClientSideValidation){
+        Model.AddScript(false,
+    @<text>
+        uic.validation.init.validateColor($('#@id'));
     </text>);
-
+    }
 }
 
 @await Model.Actions.InvokeAsync(Component)

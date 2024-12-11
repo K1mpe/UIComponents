@@ -1,3 +1,17 @@
+# 2024-12-11 (V1.3.13)
+- TranslationDefaults Support FluendProperties
+- TranslateProperty support MemberInfo
+- Fix Validation Required
+- ScriptCollection Outside doc ready
+- TranslatableSaver does not save in a single line anymore
+- Option to ignore clientside validation
+- Table has CanInsert, CanUpdate, CanDelete
+- ToastR
+
+# 2024-11-28 (V1.3.12)
+- Option to enable clientside validation in generators
+- Adding scripts without $(document).ready(()=> ...)
+
 # 2024-11-28 (V1.3.12)
 - Single-row now has css variables
 - IUICAskUserToTranslate

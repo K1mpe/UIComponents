@@ -40,6 +40,7 @@ namespace UIComponents.Web.Tests.Models
 
         public TestEnum Enum { get; set; } = TestEnum.Two;
 
+        [Required]
         public string Color { get; set; }
 
         public RecurringDate RecurringDate { get; set; }

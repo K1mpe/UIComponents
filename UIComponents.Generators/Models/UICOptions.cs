@@ -1,4 +1,5 @@
-﻿using UIComponents.Defaults;
+﻿using UIComponents.Abstractions.Interfaces;
+using UIComponents.Defaults;
 using UIComponents.Models.Models.Card;
 using UIComponents.Models.Models.Inputs;
 
@@ -134,20 +135,48 @@ public class UICOptions
     public ToolbarPosition ToolbarPosition { get; set; } = OptionDefaults.ToolbarPosition;
 
     /// <summary>
-    /// Where in the toolbar are the generated buttons placed?
+    /// A string split by ", " to define the order of the buttons.
+    /// <br>The buttons are defined by <see cref="ButtonGenerators"/></br>
+    /// <br>All buttons not defined are added at the end</br>
     /// </summary>
-    public ButtonPosition ButtonPosition { get; set; } = OptionDefaults.ButtonPosition;
-    public ButtonDistance ButtonDistance { get; set; } = OptionDefaults.ButtonDistance;
+    /// <remarks>
+    /// delete, cancel, edit, save
+    /// </remarks>
+    public string ButtonOrder { get; set; }
 
     /// <summary>
-    /// reverse the order of the buttons in the toolbar
+    /// Define a button by name, not case sensitive, and add it to the <see cref="UICButtonToolbar"/>
     /// </summary>
-    public bool ReverseButtonOrder { get; set; } = OptionDefaults.ReverseButtonOrder;
+    /// <remarks>
+    /// Buttons added by default:
+    /// <br>Delete</br>
+    /// <br>Edit</br>
+    /// <br>Cancel</br>
+    /// <br>Save</br>
+    /// </remarks>
+    public Dictionary<string, Func<UICButtonToolbar, UICPropertyArgs, Task>> ButtonGenerators { get; set; } = OptionDefaults.ButtonGenerators;
 
+    /// <summary>
+    /// Where in the toolbar are the generated buttons placed?
+    /// </summary>
+    /// <remarks>
+    /// This only overrides the <see cref="Defaults.Models.Buttons.UICButtonToolbar.DefaultPosition"/> for the generator! and not globally
+    /// </remarks>
+    public ButtonPosition? ButtonPosition { get; set; } = OptionDefaults.ButtonPosition;
+    public ButtonPosition? EditButtonPosition { get; set; } = OptionDefaults.EditButtonPosition;
+    public ButtonPosition? DeleteButtonPosition { get; set; } = OptionDefaults.DeleteButtonPosition;
+    public ButtonPosition? CancelButtonPosition { get; set; } = OptionDefaults.CancelButtonPosition;
+    public ButtonPosition? SaveButtonPosition { get; set; } = OptionDefaults.SaveButtonPosition;
+
+    public ButtonDistance ButtonDistance { get; set; } = OptionDefaults.ButtonDistance;
+
+
+    
     /// <summary>
     /// This button makes the form readonly at first, when clicking the edit button it transforms to a editable version.
     /// </summary>
     public bool ShowEditButton { get; set; } = OptionDefaults.ShowEditButton;
+
 
     /// <summary>
     /// Show the delete button in the toolbar.
@@ -156,6 +185,17 @@ public class UICOptions
     /// The default button only available for <see cref="IDbEntity"/>
     /// </remarks>
     public bool ShowDeleteButton { get; set; } = OptionDefaults.ShowDeleteButton;
+
+    /// <summary>
+    /// The deletebutton posts the full model and not only the Id.
+    /// <br>This also enables the deletebutton to exist outside a <see cref="IDbEntity"/></br>
+    /// </summary>
+    /// <remarks>
+    /// This does not work if the uic.form.delete redirects to a get request!
+    /// </remarks>
+    public bool PostFullModelOnDelete { get; set; } = OptionDefaults.PostFullModelOnDelete;
+
+
 
     /// <summary>
     /// The cancel button tries to close a modal, if this does not work it will go back to the previous page
@@ -229,18 +269,17 @@ public class UICOptions
     public bool CheckReadPermissions { get; set; } = OptionDefaults.CheckReadPermissions;
     public bool CheckWritePermissions { get; set; } = OptionDefaults.CheckWritePermissions;
 
+    /// <summary>
+    /// If true, the generators will auto set the validation properties of inputs
+    /// </summary>
+    public bool CheckClientSideValidation { get; set; } = OptionDefaults.CheckClientSideValidation;
+
     public UICOptions AddDictionaryOption(string key, object value)
     {
         OptionsDictionary.Add(key, value);
         return this;
     }
 
-}
-public enum ButtonPosition
-{
-    Left,
-    Center,
-    Right,
 }
 public enum ToolbarPosition
 {

@@ -162,14 +162,22 @@ public class StoredComponents : IUICStoredComponents
 
     public virtual Task SendComponentToUserSignalR(IUIComponent component, object userId)
     {
+        if (userId == null)
+            throw new ArgumentNullException(nameof(userId));
+        return SendComponentToUsersSignalR(component, new object[] { userId });
+    }
+    public virtual async Task SendComponentToUsersSignalR(IUIComponent component, IEnumerable<object> userIds)
+    {
         if (_signalRService == null)
             throw new Exception($"There is no implementation for {nameof(IUICSignalRService)} registrated.");
 
-        if (userId == null)
-            throw new ArgumentNullException(nameof(userId));
-
-        var key = StoreComponentForUsers(component, new object[]{ userId }, true);
-        return _signalRService.SendUIComponentToUser(new(key), userId.ToString());
+        var key = StoreComponentForUsers(component, userIds, userIds.Count() == 1);
+        var tasks = new List<Task>();
+        foreach (var userId in userIds)
+        {
+            tasks.Add(_signalRService.SendUIComponentToUser(new(key), userId.ToString()));
+        }
+        await Task.WhenAll(tasks);
     }
 
     #endregion

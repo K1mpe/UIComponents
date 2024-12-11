@@ -21,6 +21,7 @@
 @model UICInputMultiline
 
 @{
+    Model.AssignCollectionForChildren();
     Model.AddAttribute("class", "form-control");
 
     string id = Model.GetId();
@@ -31,82 +32,24 @@
 
     var rows = Math.Clamp(Model.Value?.Split("\n").Count() ?? 1, Model.MinRows??1, Model.MaxRows??int.MaxValue);
     Model.AddAttribute("rows", rows.ToString());
+    if (Model.MinRows != null)
+        Model.AddAttribute("min-rows", Model.MinRows.ToString());
+
+    if (Model.MaxRows != null)
+        Model.AddAttribute("max-rows", Model.MaxRows.ToString());
+
+    if (Model.ValidationRequired)
+        Model.AddAttribute("required", string.Empty);
+    if (Model.ValidationMinLength != null)
+        Model.AddAttribute("minlength", Model.ValidationMinLength.ToString());
+    if (Model.ValidationMaxLength != null)
+        Model.AddAttribute("maxlength", Model.ValidationMaxLength.ToString());
+    if (Model.HasClientSideValidation)
+        Model.AddScript(false,@<text>uic.validation.init.validateText($('#@id'));</text>);
+
 }
 
 <textarea value="@Model.Value" @Html.Raw(Model.GetHtmlAttributes())>@Model.Value</textarea>
-    
-<script>
-    
-    $(document).ready(function(){
-        //add a new line on enter in a textarea
-        $('#@id').keydown(function (e) {
-            if (e.keyCode == '13') { //enter
-                var currentRows = $(this).val().split('\n').length;
-                currentRows = +currentRows + 1;
-                if (currentRows < @Json.Serialize(Model.MinRows ?? 1))
-                    currentRows = @Json.Serialize(Model.MinRows ?? 1);
-                if(currentRows <= @Json.Serialize(Model.MaxRows??int.MaxValue))
-                    $(this).attr('rows', currentRows);
-            }
-        });
-        $('#@id').on('change', () => {
-                var currentRows = $(this).val().split('\n').length;
-                currentRows = +currentRows + 1;
-                if (currentRows < @Json.Serialize(Model.MinRows ?? 1))
-                    currentRows = @Json.Serialize(Model.MinRows ?? 1);
-                if (currentRows <= @Json.Serialize(Model.MaxRows ?? int.MaxValue))
-                    $(this).attr('rows', currentRows);
-        });
-        
-        @{
-
-    string propertyName = Model.PropertyName;
-    if (Model.DisplayName != null)
-        propertyName = await L.Translate(Model.DisplayName);
-
-        <text>
-            function validateInput(element){
-                var currentValue = element.val();
-                var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
-                span.text("");
-                @if (Model.ValidationMaxLength != null)
-            {
-                    <text>
-                        if (currentValue.length > @Model.ValidationMaxLength.Value)
-                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMaxLength(propertyName, Model.ValidationMaxLength.Value)));
-                    </text>
-            }
-
-                @if (Model.ValidationMinLength != null)
-            {
-                    <text>
-                        if (@(Model.ValidationMinLength.Value) > currentValue.length && currentValue.length > 0)
-                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMinLength(propertyName, Model.ValidationMinLength.Value)));
-                    </text>
-            }
-
-                @if (Model.ValidationRequired)
-            {
-                    <text>
-                        if (currentValue.length == 0)
-                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
-                    </text>
-            }
-
-            }
-            $('#@id').keyup(function(){
-                validateInput($(this));
-            });
-
-            $('#@id').blur(function () {
-                validateInput($(this));
-            });
-        </text>
-
-           
-}
-    });
-
-</script>
 
 @await Model.Actions.InvokeAsync(Component)
+@await Model.RenderStylesAndScripts(Component)

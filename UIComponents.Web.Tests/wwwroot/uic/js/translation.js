@@ -154,6 +154,19 @@
         
         return translatable;
     },
+
+    //Take a string and a object, if the string contains any of the objects properties, it replaces the value.
+    //Example:
+    //  str => "Hello, {Name}! You have {Count} new messages.";
+    //  obj => { Name: "Alice", Count: 5 };
+    //  result => "Hello, Alice! You have 5 new messages.";
+    replacePlaceholders: function(str, obj) {
+        // Use a regular expression to find placeholders in the string
+        return str.replace(/{(\w+)}/g, (match, propName) => {
+            // Replace with the value from the object or keep the placeholder if not found
+            return propName in obj ? obj[propName] : match;
+        });
+    },
     //The key that is used in the sessionStorage
     _cacheKey: function (resourceKey) {
         return `uic.Translations.${language}.${resourceKey}`

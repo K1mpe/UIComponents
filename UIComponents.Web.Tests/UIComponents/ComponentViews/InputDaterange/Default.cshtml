@@ -29,7 +29,7 @@
 <input @Html.Raw(Model.GetHtmlAttributes())/>
 
 @{
-    Model.AddScript(@<text>
+    Model.AddScriptDocReady(@<text>
         //https://www.daterangepicker.com/
         $('#@id').daterangepicker({
         linkedCalendars: @Json.Serialize(!Model.DisconnectCalendars),

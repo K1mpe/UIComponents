@@ -44,7 +44,7 @@
         Model.AddClass("no-scroll");
 
     if (Model.PageSize != int.MaxValue && Model.PageSize > 0 && !Model.InfinitePaging)
-        Model.AddScript(@<text>
+        Model.AddScriptDocReady(@<text>
             uic.jsgrid.pager_generate(@Html.JsEncode(id, "'"), @Html.JsEncode(Model.PagingSelector,"'"));
         </text>
     );
@@ -70,7 +70,7 @@
     }
 
     if (Model.OnInsertButtonClick.HasValue())
-        Model.AddScript(@<text>
+        Model.AddScriptDocReady(@<text>
             setTimeout(()=>{
                 $('#@id .jsgrid-insert-mode-button').off('click');
                 $('#@id .jsgrid-insert-mode-button').on('click', async(args)=>{
@@ -81,7 +81,7 @@
     );
 
     if (Model.EnableHeaderAsTooltip)
-        Model.AddScript(@<text>
+        Model.AddScriptDocReady(@<text>
             setTimeout(()=>{
                 $('#@id td').each(()=>{
                     if($(this).attr('title'))
@@ -113,7 +113,7 @@
     }
 
 
-    Model.AddScript(@<text>
+    Model.AddScriptDocReady(@<text>
             @Html.UICHelp(Model, "uic.jsgrid.help")
 
             let canReload = true; //Can the JsGrid Reload

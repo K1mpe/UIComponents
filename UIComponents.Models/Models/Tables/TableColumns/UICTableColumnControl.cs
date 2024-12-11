@@ -8,6 +8,7 @@ namespace UIComponents.Models.Models.Tables.TableColumns
         {
             Type = UIComponents.Defaults.Models.Table.TableColumns.UICTableColumnControl.Type;
             HeaderTemplate = null;
+            Css += " control-column ";
         }
 
         /// <summary>

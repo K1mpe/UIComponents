@@ -61,7 +61,7 @@
     </text>
         );
     }
-    Model.AddScript(
+    Model.AddScript(false, 
     @<text>
         $('#@id').on('uic-help', ()=>{
         console.log("$('#@id').on('uic-open', ()=>{...}) Triggered when opening the selectlist");
@@ -112,40 +112,18 @@
         });
 
         $('#@id').on('focus', ()=>{
-        $('#@id').trigger('uic-open');
+            $('#@id').trigger('uic-open');
         });
 
         $('#@id').on('uic-open', (ev)=> ev.stopPropagation());
-
-        @{
-    string propertyName = Model.PropertyName;
-    if (Model.DisplayName != null)
-    propertyName = await L.Translate(Model.DisplayName);
+        
+        @if(Model.HasClientSideValidation)
+        {
+            <text>
+            uic.validation.init.validateSelect($('#@id'));
+            </text>
         }
-
-
-        function validateInput(element) {
-        var currentValue = element.val();
-        var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
-        span.text("");
-
-
-        @if (Model.ValidationRequired)
-    {
-        <text>
-            if (currentValue == null || currentValue =='')
-            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
         </text>
-    }
-        }
-
-        $('#@id').change(function () {
-        validateInput($(this));
-        });
-        $('#@id').blur(function () {
-        validateInput($(this));
-        });
-    </text>
     );
 
 

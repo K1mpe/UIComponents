@@ -18,13 +18,14 @@ public class DefaultCheckValidationErrorsRequired : IUICDefaultCheckValidationEr
         if (propertyInfo.PropertyType.IsValueType)
             defaultValue = Activator.CreateInstance(propertyInfo.PropertyType);
 
-        if (value != defaultValue)
+        if (!Equals(value, defaultValue))
             return ValidationRuleResult.IsValid();
 
         var translatedProp = TranslationDefaults.TranslateProperty(propertyInfo, null);
         var message = TranslationDefaults.ValidationIsRequired(translatedProp);
-
-        return ValidationRuleResult.HasError(message, propertyInfo);
+        var dict = new Dictionary<string, object>();
+        dict.Add("PropertyName", translatedProp);
+        return ValidationRuleResult.HasError(message, propertyInfo, dict);
     }
 }
 
@@ -50,7 +51,11 @@ public class DefaultCheckValidationErrorsMinValue<TValue> : IUICDefaultCheckVali
 
         var property = TranslationDefaults.TranslateProperty(propertyInfo, null);
         var message = TranslationDefaults.ValidateMinValue(property, value.Value);
-        return ValidationRuleResult.HasError(message, propertyInfo);
+
+        var dict = new Dictionary<string, object>();
+        dict.Add("PropertyName", property);
+        dict.Add("ComparisonValue", value);
+        return ValidationRuleResult.HasError(message, propertyInfo, dict);
     }
 }
 
@@ -76,7 +81,10 @@ public class DefaultCheckValidationErrorsMaxValue<TValue> : IUICDefaultCheckVali
 
         var property = TranslationDefaults.TranslateProperty(propertyInfo, null);
         var message = TranslationDefaults.ValidateMaxValue(property, value.Value);
-        return ValidationRuleResult.HasError(message, propertyInfo);
+        var dict = new Dictionary<string, object>();
+        dict.Add("PropertyName", property);
+        dict.Add("ComparisonValue", value);
+        return ValidationRuleResult.HasError(message, propertyInfo, dict);
     }
 }
 
@@ -94,7 +102,10 @@ public class DefaultCheckValidationErrorsMinLength : IUICDefaultCheckValidationE
 
         var translatedProp = TranslationDefaults.TranslateProperty(propertyInfo, null);
         var message = TranslationDefaults.ValidateMinLength(translatedProp, minLength.Value);
-        return ValidationRuleResult.HasError(message, propertyInfo);
+        var dict = new Dictionary<string, object>();
+        dict.Add("PropertyName", translatedProp);
+        dict.Add("ComparisonValue", value);
+        return ValidationRuleResult.HasError(message, propertyInfo, dict);
     }
 }
 public class DefaultCheckValidationErrorsMaxLength : IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxLength>
@@ -110,8 +121,11 @@ public class DefaultCheckValidationErrorsMaxLength : IUICDefaultCheckValidationE
             return ValidationRuleResult.IsValid();
 
         var translatedProp = TranslationDefaults.TranslateProperty(propertyInfo, null);
-        var message = TranslationDefaults.ValidateMaxLength(translatedProp, maxLength.Value);
-        return ValidationRuleResult.HasError(message, propertyInfo);
+        var message = TranslationDefaults.ValidateMaxLength(translatedProp, maxLength.Value); 
+        var dict = new Dictionary<string, object>();
+        dict.Add("PropertyName", translatedProp);
+        dict.Add("ComparisonValue", value);
+        return ValidationRuleResult.HasError(message, propertyInfo, dict);
     }
 }
 

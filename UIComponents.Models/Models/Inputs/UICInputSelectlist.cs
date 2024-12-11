@@ -96,7 +96,7 @@ namespace UIComponents.Models.Models.Inputs
         public UICInputSelectList AddSource(UICInputSelectListHtmlStorage storedSource)
         {
             storedSource.InputSelectList = this;
-            ScriptCollection.AddToScripts(storedSource);
+            ScriptCollection.AddToScriptsDocReady(storedSource);
             return this;
         }
 
@@ -119,7 +119,7 @@ namespace UIComponents.Models.Models.Inputs
         public UICInputSelectList AddSource(UICInputSelectListSource source)
         {
             source.InputSelectList = this;
-            ScriptCollection.AddToScripts(source);
+            ScriptCollection.AddToScriptsDocReady(source);
             return this;
         }
         public UICInputSelectList AddSource(out UICInputSelectListSource outSource, UICInputSelectListSource source)

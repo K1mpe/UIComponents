@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using UIComponents.Abstractions;
+using UIComponents.Abstractions.Interfaces.Services;
 using UIComponents.Abstractions.Varia;
 
 namespace UIComponents.Defaults;
@@ -110,33 +112,68 @@ public static class TranslationDefaults
         return translatedType;
     };
 
-    public static Func<PropertyInfo, UICPropertyType?, Translatable> TranslateProperty = (prop, uicPropType) =>
+    public static Func<MemberInfo, UICPropertyType?, Translatable> TranslateProperty = (memberInfo, uicPropType) =>
     {
-        var translateAttr = prop.GetInheritAttribute<DisplayNameAttribute>();
-        if (translateAttr != null)
-            return translateAttr.DisplayName;
+        if(memberInfo is PropertyInfo propertyInfo)
+        {
+            var translateAttr = propertyInfo.GetInheritAttribute<DisplayNameAttribute>();
+            if (translateAttr != null)
+                return translateAttr.DisplayName;
 
-        UICInheritAttribute.TryGetInheritPropertyInfo(prop, out var inheritProp);
-        
-        if (uicPropType != null && uicPropType == UICPropertyType.SelectList && inheritProp.Name.EndsWith("Id") && inheritProp.Name != "Id")
-            return new Translatable($"{inheritProp.DeclaringType!.Name}.Field.{inheritProp.Name.Substring(0, inheritProp.Name.Length - 2)}");
+            UICInheritAttribute.TryGetInheritPropertyInfo(propertyInfo, out var inheritProp);
 
-        return new Translatable($"{inheritProp.DeclaringType!.Name}.Field.{inheritProp.Name}");
+            if (uicPropType != null && uicPropType == UICPropertyType.SelectList && inheritProp.Name.EndsWith("Id") && inheritProp.Name != "Id")
+                return new Translatable($"{inheritProp.DeclaringType!.Name}.Field.{inheritProp.Name.Substring(0, inheritProp.Name.Length - 2)}");
+
+            return new Translatable($"{inheritProp.DeclaringType!.Name}.Field.{inheritProp.Name}");
+        }
+
+        var translateField = memberInfo.GetCustomAttribute<DisplayNameAttribute>();
+        if (translateField != null)
+            return translateField.DisplayName;
+        return new Translatable($"{memberInfo.DeclaringType!.Name}.Field.{memberInfo.Name}");
     };
 
 
+    /// <summary>
+    /// This method returns a string where all placeholders are replaced with their value from the dictionary
+    /// </summary>
+    /// <remarks>
+    /// {PropertyName} is required => MijnProp is required
+    /// </remarks>
+    public static Func<Translatable, Dictionary<string, object>, IUICLanguageService, Task<string>> TranslateWithPlaceholders = async (source, dict, L) =>
+    {
+        var translated = await L.Translate(source);
+        if(dict == null || !dict.Any())
+            return translated;
+
+        return Regex.Replace(translated, @"{(\w+)}", match =>
+        {
+            var propName = match.Groups[1].Value; // Extract the property name
+            if(dict.TryGetValue(propName, out var value))
+            {
+                if (value is Translatable translatable)
+                    value = L.Translate(translatable).Result;
+                return value.ToString();
+            }
+            return match.Value;
+        });
+    };
 
 
     /// <summary>
     /// Function takes a already translated propertyName and creates a validation message
     /// </summary>
+    /// <remarks>
+    /// FluidProperties:
+    /// <br> {PropertyName}, {PropertyValue}</br></remarks>
     public static Func<Translatable, Translatable> ValidationIsRequired = (translatedPropertyName) => TranslatableSaver.Save("Validation.Required", "{0} is required", translatedPropertyName);
 
-    public static Func<Translatable, int, Translatable> ValidateMinLength = (translatedPropertyName, minLenght) => TranslatableSaver.Save("Validation.MinLength", "The length of {0} must be longer or equal to {1}", translatedPropertyName, minLenght);
-    public static Func<Translatable, int, Translatable> ValidateMaxLength = (translatedPropertyName, maxLength) => TranslatableSaver.Save("Validation.MaxLength", "The length of {0} must be shorter or equal to {1}", translatedPropertyName, maxLength);
+    public static Func<Translatable, object, Translatable> ValidateMinLength = (translatedPropertyName, minLenght) => TranslatableSaver.Save("Validation.MinLength", "The length of {0} must be longer or equal to {1}", translatedPropertyName, minLenght);
+    public static Func<Translatable, object, Translatable> ValidateMaxLength = (translatedPropertyName, maxLength) => TranslatableSaver.Save("Validation.MaxLength", "The length of {0} must be shorter or equal to {1}", translatedPropertyName, maxLength);
     public static Func<Translatable, object, Translatable> ValidateMinValue = (translatedPropertyName, minValue) => TranslatableSaver.Save("Validation.MinValue", "The value of {0} must be higher than or equal to {1}", translatedPropertyName, minValue);
     public static Func<Translatable, object, Translatable> ValidateMaxValue = (translatedPropertyName, maxValue) => TranslatableSaver.Save("Validation.MaxValue", "The value of {0} must be lower or equal to {1}", translatedPropertyName, maxValue);
-    public static Func<Translatable, Translatable> ValidateColor = (translatedPropertyName) => TranslatableSaver.Save("Validation.Color.Invalid", "{0} has a invalid color", translatedPropertyName);
+    public static Func<Translatable, Translatable> ValidateInvalidColor = (translatedPropertyName) => TranslatableSaver.Save("Validation.Color.Invalid", "{0} has a invalid color", translatedPropertyName);
 
     public static Func<int, Translatable> FileUploadMaxFiles = (fileCount) =>
     {

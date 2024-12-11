@@ -22,69 +22,113 @@ public class UICGeneratorButtonToolbar : UICGeneratorProperty
             return GeneratorHelper.Next();
 
         var toolbar = new UICButtonToolbar() { Distance = args.Options.ButtonDistance };
+        using (_logger.BeginScopeKvp($"{nameof(UICOptions)}.{nameof(UICOptions.ButtonOrder)}", args.Options.ButtonOrder?.ToLower()))
+        {
+            var buttons = (args.Options.ButtonOrder??string.Empty).ToLower().Split(",").Select(x => x.Trim()).ToList();
+            if (!buttons.Contains("delete"))
+                buttons.Add("delete");
+            if (!buttons.Contains("cancel"))
+                buttons.Add("cancel");
+            if (!buttons.Contains("edit"))
+                buttons.Add("edit");
+            if (!buttons.Contains("save"))
+                buttons.Add("save");
 
-        List<IUIComponent?> buttons = new();
-        if (args.Options.ReplaceSaveButtonWithCreateButton)
-        {
-            var createButton = await args.Configuration.ButtonGenerators.GenerateCreateButton(args, toolbar);
-            buttons.Add(createButton);
-            if (args.Options.DisableSaveButtonOnValidationErrors && createButton is UIComponent createButton2)
-                form.AddScript(new UICActionDisableSaveButtonOnValidationErrors(createButton2, form));
-        }
-        else
-        {
-            var saveButton = await args.Configuration.ButtonGenerators.GenerateSaveButton(args, toolbar);
-            buttons.Add(saveButton);
-            if (args.Options.DisableSaveButtonOnValidationErrors && saveButton is UIComponent saveButton2)
-                form.AddScript(new UICActionDisableSaveButtonOnValidationErrors(saveButton2, form));
-        }
+            var dict = args.Options.ButtonGenerators ?? new();
 
-        if (args.Options.ShowEditButton)
-        {
-            var editButton = await args.Configuration.ButtonGenerators.GenerateEditButton(args, toolbar);
-            buttons.Add(editButton);
-            if (editButton is UICButtonEdit editButton2 && editButton2.ButtonSetReadonly.OnClick != null)
+            foreach(var key in dict.Select(x => x.Key))
             {
-                buttons.SelectMany(button => button.FindAllChildrenOfType<UICActionCloseModal>()).ToList().ForEach(x =>
-                {
-                    if (x.OnFailed == null)
-                        x.OnFailed = editButton2.ButtonSetReadonly.OnClick;
-                });
+                if(!buttons.Contains(key.ToLower()))
+                    buttons.Add(key.ToLower());
             }
+            AddFuncToKey(dict, "delete", async (toolbar, args) =>
+            {
+                if (!args.Options.ShowDeleteButton)
+                    return;
+                var deleteButton = await args.Configuration.ButtonGenerators.GenerateDeleteButton(args, toolbar);
+                if (deleteButton == null)
+                    return;
+                var position = args.Options.DeleteButtonPosition ?? args.Options.ButtonPosition ?? toolbar.DefaultPosition;
+                toolbar.Add(deleteButton, position);
+            });
 
+            AddFuncToKey(dict, "cancel", async (toolbar, args) =>
+            {
+
+                if (!args.Options.ShowCancelButton)
+                    return;
+
+                var cancelButton = await args.Configuration.ButtonGenerators.GenerateCancelButton(args, toolbar);
+                if (cancelButton == null)
+                    return;
+                var position = args.Options.CancelButtonPosition ?? args.Options.ButtonPosition ?? toolbar.DefaultPosition;
+                toolbar.Add(cancelButton, position);
+            });
+
+            AddFuncToKey(dict, "edit", async (toolbar, args) =>
+            {
+                if (!args.Options.ShowEditButton)
+                    return;
+
+                var editButton = await args.Configuration.ButtonGenerators.GenerateEditButton(args, toolbar);
+                if (editButton == null)
+                    return;
+                var position = args.Options.EditButtonPosition ?? args.Options.ButtonPosition ?? toolbar.DefaultPosition;
+                toolbar.Add(editButton, position);
+
+                if (editButton is UICButtonEdit editButton2 && editButton2.ButtonSetReadonly.OnClick != null)
+                {
+                    var form = args.CallCollection.Components.Where(x => x.GetType().IsAssignableTo(typeof(UICForm))).OfType<UICForm>().FirstOrDefault();
+                    if (form == null)
+                        return;
+                    form.AddScript(true, new UICCustom($"$('#{form.GetId()}').on('uic-afterSubmit', (ev, result) => {{ if(result == false)return; uic.form.readonly('#{form.GetId()}');}});"));
+                }
+            });
+
+            AddFuncToKey(dict, "save", async (toolbar, args) =>
+            {
+                IUIComponent saveButton = null;
+                if (args.Options.ReplaceSaveButtonWithCreateButton)
+                    saveButton = await args.Configuration.ButtonGenerators.GenerateCreateButton(args, toolbar);
+                else
+                    saveButton = await args.Configuration.ButtonGenerators.GenerateSaveButton(args, toolbar);
+
+                var position = args.Options.SaveButtonPosition ?? args.Options.ButtonPosition ?? toolbar.DefaultPosition;
+                toolbar.Add(saveButton, position);
+
+                if (args.Options.DisableSaveButtonOnValidationErrors && saveButton is UIComponent saveButton2)
+                    form.AddScriptDocReady(new UICActionDisableSaveButtonOnValidationErrors(saveButton2, form));
+            });
+
+            foreach (var button in buttons)
+            {
+                if (string.IsNullOrWhiteSpace(button))
+                    continue;
+                using (_logger.BeginScopeKvp($"{nameof(UICOptions)}.{nameof(UICOptions.ButtonOrder)}.part", button))
+                {
+                    try
+                    {
+                        if (dict.TryGetValue(button, out var func))
+                            await func(toolbar, args);
+                        else
+                            throw new Exception($"No Generator found in {nameof(UICOptions)}.{nameof(UICOptions.ButtonGenerators)} that matches this key: {button}");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, ex.Message);
+                    }
+                }
+            }
         }
 
-        if (args.Options.ShowDeleteButton)
-            buttons.Add(await args.Configuration.ButtonGenerators.GenerateDeleteButton(args, toolbar));
-
-        if (args.Options.ShowCancelButton)
-            buttons.Add(await args.Configuration.ButtonGenerators.GenerateCancelButton(args, toolbar));
-
-
-        
-        if (args.Options.ReverseButtonOrder)
-            buttons.Reverse();
-
-
-
-        switch (args.Options.ButtonPosition)
-        {
-            case ButtonPosition.Left:
-                foreach (var button in buttons)
-                    toolbar.AddLeft(button);
-                break;
-            case ButtonPosition.Center:
-                foreach (var button in buttons)
-                    toolbar.AddCenter(button);
-                break;
-            case ButtonPosition.Right:
-                foreach (var button in buttons)
-                    toolbar.AddRight(button);
-                break;
-            default:
-                throw new NotImplementedException();
-        }
 
         return GeneratorHelper.Success(toolbar, true);
+
+        void AddFuncToKey<T>(Dictionary<string, T> dict, string key, T func)
+        {
+            if (dict.Select(x => x.Key.ToLower()).Contains(key.ToLower()))
+                return;
+            dict.Add(key, func);
+        }
     }
 }

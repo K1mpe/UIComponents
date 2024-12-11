@@ -130,7 +130,7 @@
 
     delete: async function (url, data) {
         try {
-            var content = await uic.getpost.get(url, data);
+            var content = await uic.getpost.post(url, data);
             $('body').append(content);
 
         } catch (ex) {
@@ -523,6 +523,24 @@
 
             return result;
         }
+    },
+    textarea: {
+        addRow: function (textArea) {
+            let currentRows = $(textArea).attr('rows') || $(textArea).val().split('\n').length;
+            $(textArea).attr('rows', +currentRows + 1);
+            this.setRowHeight(textArea);
+        },
+        setRowHeight: function (textArea) {
+            let currentRows = $(textArea).attr('rows') || $(textArea).val().split('\n').length;
+            let minRows = $(textArea).attr('min-rows')||1;
+            let maxRows = $(textArea).attr('max-rows');
+
+            if (currentRows < minRows)
+                currentRows = minRows;
+            if (maxRows != undefined && currentRows > maxRows)
+                currentRows = maxRows;
+            $(textArea).attr('rows', currentRows);
+        }
     }
 };
 $(document).ready(() => {
@@ -531,6 +549,11 @@ $(document).ready(() => {
             return;
         $('.tooltip-icon').popover('hide');
     })
+    $(document).on('keydown', 'textarea', (ev) => {
+        if (ev.keyCode == '13') {
+            uic.form.textarea.addRow(ev.target);
+        }
+    });
     uic.form.setPopoverOnClickTooltipIcon();
     uic.form.setThreestateToggles($('.three-state-checkbox:not(.configured)'));
 });

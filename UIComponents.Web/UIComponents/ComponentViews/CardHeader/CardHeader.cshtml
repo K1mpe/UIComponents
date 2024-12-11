@@ -26,7 +26,7 @@
     if (Model.Color != null)
         Model.AddClass($"bg-{Model.Color.ToLower()}");
     if (Model.CollapseCardOnClick)
-        Model.AddScript(
+        Model.AddScriptDocReady(
     @<text>
     $('#@id').on('click', ()=>{
         $('#@id').closest('.card').trigger('uic-toggle');

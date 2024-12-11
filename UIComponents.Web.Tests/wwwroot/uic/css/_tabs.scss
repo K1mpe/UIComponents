@@ -66,8 +66,8 @@
 
 
     .tab-pane > .uic.card-tabs:only-child, .tab-pane > div:only-child > .uic.card-tabs:only-child, .sub-tabs {
-        margin: calc(-#{$card-spacer-x} + 1px); //1px for $card-border-width but not used by AdminLTE
-        margin-bottom: calc(-#{$card-spacer-x} + 1px + 1px); //1px for card border and 1px for box-shadow
+        margin: calc(-#{$card-spacer-x} + 2px); //1px for $card-border-width but not used by AdminLTE
+        //margin-bottom: calc(-#{$card-spacer-x} + 1px + 1px); //1px for card border and 1px for box-shadow
         border-width: 0;
         box-shadow: none;
 

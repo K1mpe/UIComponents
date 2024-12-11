@@ -48,7 +48,8 @@ namespace UIComponents.Web.Tests.Controllers
         private readonly TestService _testService;
         private readonly IUICFileExplorerPathMapper _pathMapper;
         private readonly IUICAskUserToTranslate _uICAskUserToTranslate;
-        public HomeController(ILogger<HomeController> logger, IUIComponentGenerator uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator, TestService testService, IUICFileExplorerPathMapper pathMapper, IUICAskUserToTranslate uICAskUserToTranslate)
+        private readonly IUICStoredComponents _storedComponents;
+        public HomeController(ILogger<HomeController> logger, IUIComponentGenerator uic, IUICLanguageService languageService, SignalRService signalRService, IUICQuestionService uicQuestionService, TestModelValidator validator, TestService testService, IUICFileExplorerPathMapper pathMapper, IUICAskUserToTranslate uICAskUserToTranslate, IUICStoredComponents storedComponents)
         {
             _logger = logger;
             _uic = uic;
@@ -59,6 +60,7 @@ namespace UIComponents.Web.Tests.Controllers
             _testService = testService;
             _pathMapper = pathMapper;
             _uICAskUserToTranslate = uICAskUserToTranslate;
+            _storedComponents = storedComponents;
         }
 
         public static int Counter { get; set; } = 0;
@@ -89,7 +91,11 @@ namespace UIComponents.Web.Tests.Controllers
         {
             //var component = await _uic.CreateComponentAsync(new TestModel());
             //return ViewOrPartial(component);
-            await Task.Delay(500); 
+            await Task.Delay(500);
+            await new UICToastr(IUICToastNotification.ToastType.Success, "message", "title")
+            {
+                Position = UICToastr.ToastPosition.BottomFullWidth
+            }.SendToUser(_storedComponents, 1);
             if(IsAjaxRequest(Request))
                 return PartialView();
             return View();
@@ -303,9 +309,20 @@ namespace UIComponents.Web.Tests.Controllers
                 SubClassesInCard = new(),
                 ShowEditButton = false,
                 StartInCard = new UICCard("blub"),
-                PostForm= new UICActionPost("/home/Post")
+                PostForm= new UICActionPost("/home/Post"),
             });
-
+            component.TryFindInputByPropertyName<UICInputDatetime>(nameof(TestModel.MyDateTime), input =>
+            {
+                input.ValidationMinimumDate = new DateTime(2024, 12, 1);
+                input.ValidationMaximumDate = new DateTime(2024, 12, 31);
+                input.ValidationRequired = true;
+            });
+            component.TryFindInputByPropertyName<UICInputMultiline>(nameof(TestModel.Description), input =>
+            {
+                input.ValidationMinLength = 3;
+                input.ValidationMaxLength = 8;
+                input.ValidationRequired = true;
+            });
             return ViewOrPartial(component);
         }
 

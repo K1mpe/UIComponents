@@ -237,7 +237,10 @@ public static partial class TranslatableSaver
                     Mode = FileMode.Create,
                 }))
                 {
-                    var serialised = JsonSerializer.Serialize(model);
+                    var serialised = JsonSerializer.Serialize(model, new JsonSerializerOptions()
+                    {
+                        WriteIndented = true,
+                    });
                     await streamWriter.WriteAsync(serialised);
                 }
                 break;

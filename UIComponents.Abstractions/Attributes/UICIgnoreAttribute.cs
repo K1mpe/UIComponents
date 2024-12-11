@@ -6,5 +6,4 @@
 /// </summary>
 public class UICIgnoreAttribute : Attribute
 {
-
 }

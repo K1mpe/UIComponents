@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using UIComponents.Abstractions.Interfaces;
 using UIComponents.Generators.Helpers;
 
 namespace UIComponents.Generators.Generators.FormButtons;
@@ -20,11 +21,20 @@ public class UICGeneratorButtonDelete : UICGeneratorProperty
             if (!await permissionService!.CanDeleteObject(args.ClassObject))
                 return GeneratorHelper.Success<IUIComponent>(null, false);
         }
-        if(args.ClassObject is IDbEntity dbEntity)
+        if (args.Options.PostFullModelOnDelete)
         {
-            var button = new UICButtonDelete(args.ClassObject.GetType(), dbEntity.Id);
+            var button = new UICButtonDelete(args.ClassObject.GetType(), args.ClassObject);
 
             return GeneratorHelper.Success<IUIComponent>(button, true);
+        }
+        else
+        {
+            if (args.ClassObject is IDbEntity dbEntity)
+            {
+                var button = new UICButtonDelete(args.ClassObject.GetType(), dbEntity.Id);
+
+                return GeneratorHelper.Success<IUIComponent>(button, true);
+            }
         }
         return GeneratorHelper.Next<IUIComponent>();
     }

@@ -30,10 +30,13 @@ public class UICGeneratorInputMultiline : UICGeneratorProperty
             input.Readonly = !(await permissionService!.CanEditObject(args.ClassObject!) && await permissionService.CanEditProperty(args.ClassObject, args.PropertyName));
 
 
-
-        input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
-        input.ValidationMinLength = await _validationService.ValidatePropertyMinLength(args.PropertyInfo, args.ClassObject);
-        input.ValidationMaxLength = await _validationService.ValidatePropertyMaxLength(args.PropertyInfo, args.ClassObject);
+        if (args.Options.CheckClientSideValidation)
+        {
+            input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
+            input.ValidationMinLength = await _validationService.ValidatePropertyMinLength(args.PropertyInfo, args.ClassObject);
+            input.ValidationMaxLength = await _validationService.ValidatePropertyMaxLength(args.PropertyInfo, args.ClassObject);
+        }
+            
 
         return GeneratorHelper.Success<IUIComponent>(input, true);
 

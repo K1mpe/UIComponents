@@ -26,11 +26,13 @@ public class UICGeneratorDataAnnotationValidators : UICGeneratorProperty
         if (args.PropertyInfo == null)
             return GeneratorHelper.Next<IUIComponent>();
 
-        if(existingResult is UICInputText inputText)
+        if(!args.Options.CheckClientSideValidation)
+            return GeneratorHelper.Next<IUIComponent>();
+
+        if (existingResult is UICInputText inputText)
         {
             if(inputText.ValidationMinLength == null)
             {
-
                 var minLengthAttr = args.PropertyInfo.GetCustomAttribute<MinLengthAttribute>();
                 if (minLengthAttr != null)
                     inputText.ValidationMinLength = minLengthAttr.Length;
@@ -60,12 +62,6 @@ public class UICGeneratorDataAnnotationValidators : UICGeneratorProperty
                     inputMultiline.ValidationMaxLength = maxLengthAttr.Length;
             }
         }
-
-
-
-
-
-
 
         return GeneratorHelper.Next<IUIComponent>();
     }

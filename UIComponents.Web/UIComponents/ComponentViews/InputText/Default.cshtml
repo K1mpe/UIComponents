@@ -48,6 +48,17 @@
             break;
     }
 
+    if (Model.ValidationRequired)
+        Model.AddAttribute("required", string.Empty);
+
+    if (Model.ValidationMinLength != null)
+        Model.AddAttribute("minlength", Model.ValidationMinLength.ToString());
+
+    if (Model.ValidationMaxLength != null)
+        Model.AddAttribute("maxlength", Model.ValidationMaxLength.ToString());
+
+    if (Model.HasClientSideValidation)
+        Model.AddScript(false,@<text>uic.validation.init.validateText($('#@id'));</text>);
 }
 
 

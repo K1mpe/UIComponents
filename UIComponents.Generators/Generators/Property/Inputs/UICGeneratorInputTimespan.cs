@@ -25,10 +25,13 @@ public class UICGeneratorInputTimespan : UICGeneratorProperty
             Parent = args.CallCollection.Caller
         };
         input.Value = args.PropertyValue==null?null: (TimeSpan)args.PropertyValue;
-
-        input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
-        input.ValidationMinValue = await _validationService.ValidatePropertyMinValue<TimeSpan>(args.PropertyInfo, args.ClassObject);
-        input.ValidationMaxValue = await _validationService.ValidatePropertyMaxValue<TimeSpan>(args.PropertyInfo, args.ClassObject);
+        if (args.Options.CheckClientSideValidation)
+        {
+            input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
+            input.ValidationMinValue = await _validationService.ValidatePropertyMinValue<TimeSpan>(args.PropertyInfo, args.ClassObject);
+            input.ValidationMaxValue = await _validationService.ValidatePropertyMaxValue<TimeSpan>(args.PropertyInfo, args.ClassObject);
+        }
+            
 
 
         return GeneratorHelper.Success<IUIComponent>(input, true);

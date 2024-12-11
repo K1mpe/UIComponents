@@ -89,6 +89,12 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
                 return fakeForeignKey2.IsRequired;
             }
         }
-        return !propertyInfo.PropertyType.IsClass;
+        if(propertyInfo.PropertyType.IsClass)
+        {
+            _logger.LogDebug($"{{0}} is required because it is a class and not nullable", $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}");
+            return true;
+        }
+
+        return false;
     }
 }

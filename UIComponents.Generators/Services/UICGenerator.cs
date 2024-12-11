@@ -65,7 +65,6 @@ public class UICGenerator : IUIComponentGenerator
         }
     }
 
-
     public async Task<Translatable> GetPropertyTranslatable(PropertyInfo propertyInfo, UICOptions? options = null)
     {
         options = GetOptions(options);
@@ -120,6 +119,8 @@ public class UICGenerator : IUIComponentGenerator
             options = new();
         return options;
     }
+
+   
 
 
     #endregion

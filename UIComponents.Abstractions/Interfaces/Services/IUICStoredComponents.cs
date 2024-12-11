@@ -51,7 +51,7 @@ public interface IUICStoredComponents
     #region SignalR
 
     public Task SendComponentToUserSignalR(IUIComponent component, object userId);
-
+    public Task SendComponentToUsersSignalR(IUIComponent component, IEnumerable<object> userIds);
     #endregion
 
 }

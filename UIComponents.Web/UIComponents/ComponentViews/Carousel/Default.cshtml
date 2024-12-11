@@ -116,14 +116,14 @@ else
             </a>
         }
     </div>
-    Model.AddScript(@<text>
+    Model.AddScriptDocReady(@<text>
         uic.partial.onDispose('#@id', ()=> $('#@id').carousel('dispose'));
         $('#@id').carousel();
     </text>);
 
     if (Model.OnSlideStart.HasValue())
     {
-        Model.AddScript(@<text>
+        Model.AddScriptDocReady(@<text>
             $('#@id').on('slide.bs.carousel', function (args) {
                 @await Model.OnSlideStart.InvokeAsync(Component)
             });
@@ -131,7 +131,7 @@ else
     }
     if (Model.OnSlideFinished.HasValue())
     {
-        Model.AddScript(@<text>
+        Model.AddScriptDocReady(@<text>
             $('#@id').on('slid.bs.carousel', function (args) {
                 @await Model.OnSlideFinished.InvokeAsync(Component)
             });
