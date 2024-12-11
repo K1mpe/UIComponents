@@ -13,3 +13,4 @@ public interface IUIComponent
     /// </remarks>
     public string RenderLocation { get; }
 }
+

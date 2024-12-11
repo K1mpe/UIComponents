@@ -30,36 +30,40 @@ public class UICGeneratorInputNumber : UICGeneratorProperty
         input.Value = args.PropertyValue==null?null: double.Parse(args.PropertyValue!.ToString());
 
         input.AllowDecimalValues = args.UICPropertyType == Abstractions.Attributes.UICPropertyType.Decimal;
-        input.ValidationRequired = await _uicValidationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
-
-        var propType = Nullable.GetUnderlyingType(args.PropertyType) ?? args.PropertyType;
-        switch (propType.Name)
+        if (args.Options.CheckClientSideValidation)
         {
-            case nameof(Int16):
-                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<short>(args.PropertyInfo, args.ClassObject));
-                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<short>(args.PropertyInfo, args.ClassObject));
-                break;
-            case nameof(Int32):
-                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<int>(args.PropertyInfo, args.ClassObject));
-                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<int>(args.PropertyInfo, args.ClassObject));
-                break;
-            case nameof(Int64):
-                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<long>(args.PropertyInfo, args.ClassObject));
-                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<long>(args.PropertyInfo, args.ClassObject));
-                break;
-            case nameof(Single):
-                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<float>(args.PropertyInfo, args.ClassObject));
-                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<float>(args.PropertyInfo, args.ClassObject));
-                break;
-            case nameof(Double):
-                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<double>(args.PropertyInfo, args.ClassObject));
-                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<double>(args.PropertyInfo, args.ClassObject));
-                break;
-            case nameof(Decimal):
-                input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<decimal>(args.PropertyInfo, args.ClassObject));
-                input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<decimal>(args.PropertyInfo, args.ClassObject));
-                break;
+            input.ValidationRequired = await _uicValidationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
+
+            var propType = Nullable.GetUnderlyingType(args.PropertyType) ?? args.PropertyType;
+            switch (propType.Name)
+            {
+                case nameof(Int16):
+                    input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<short>(args.PropertyInfo, args.ClassObject));
+                    input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<short>(args.PropertyInfo, args.ClassObject));
+                    break;
+                case nameof(Int32):
+                    input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<int>(args.PropertyInfo, args.ClassObject));
+                    input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<int>(args.PropertyInfo, args.ClassObject));
+                    break;
+                case nameof(Int64):
+                    input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<long>(args.PropertyInfo, args.ClassObject));
+                    input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<long>(args.PropertyInfo, args.ClassObject));
+                    break;
+                case nameof(Single):
+                    input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<float>(args.PropertyInfo, args.ClassObject));
+                    input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<float>(args.PropertyInfo, args.ClassObject));
+                    break;
+                case nameof(Double):
+                    input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<double>(args.PropertyInfo, args.ClassObject));
+                    input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<double>(args.PropertyInfo, args.ClassObject));
+                    break;
+                case nameof(Decimal):
+                    input.ValidationMinValue = ParseValue(await _uicValidationService.ValidatePropertyMinValue<decimal>(args.PropertyInfo, args.ClassObject));
+                    input.ValidationMaxValue = ParseValue(await _uicValidationService.ValidatePropertyMaxValue<decimal>(args.PropertyInfo, args.ClassObject));
+                    break;
+            }
         }
+            
         int? ParseValue(object value)
         {
             if (value == null)

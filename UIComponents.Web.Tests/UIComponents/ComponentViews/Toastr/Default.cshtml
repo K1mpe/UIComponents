@@ -1,0 +1,67 @@
+﻿@using UIComponents.Abstractions;
+@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Tables;
+@using UIComponents.Models.Models.Tables.TableColumns;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+@using static UIComponents.Models.Models.UICToastr
+@inject IUICLanguageService L
+@model UICToastr
+@{
+    string position(){
+        switch (Model.Position)
+        {
+            case ToastPosition.TopRight:
+                return "toast-top-right";
+            case ToastPosition.TopLeft:
+                return "toast-top-left";
+            case ToastPosition.BottomRight:
+                return "toast-bottom-right";
+            case ToastPosition.BottomLeft:
+                return "toast-bottom-left";
+            case ToastPosition.TopCenter:
+                return "toast-top-center";
+            case ToastPosition.BottomCenter:
+                return "toast-bottom-center";
+            case ToastPosition.TopFullWidth:
+                return "toast-top-full-width";
+            case ToastPosition.BottomFullWidth:
+                return "toast-bottom-full-width";
+            default:
+                throw new NotImplementedException();
+        }
+    }
+}
+<script>
+    $(document).ready(()=>{
+        debugger;
+        toastr['@Model.Type.ToString().ToLower()'](
+            @await Html.TranslateJs(L, Model.Message),
+            @await Html.TranslateJs(L, Model.Title),
+            {
+                positionClass: '@position()',
+                timeOut: @Json.Serialize(Model.Duration.TotalMilliseconds),
+                extendedTimeOut: @Json.Serialize(Model.ExtendDuration.TotalMilliseconds),
+                closeButton: @Json.Serialize(Model.CloseButton),
+                progressBar: @Json.Serialize(Model.ProgressBar),
+                preventDuplicates: @Json.Serialize(Model.PreventDuplicates),
+                newestOnTop: @Json.Serialize(Model.NewestOnTop),
+                @await Model.Options.ConvertToJavascript(L, Html, Json, Component)
+            }
+        )
+    });
+</script>

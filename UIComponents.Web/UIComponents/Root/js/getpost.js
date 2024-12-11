@@ -27,28 +27,7 @@
                     jsonResponse.Errors.forEach((item) => {
                         let propertyName = item.PropertyName;
                         let error = item.Error;
-                        let spanElement = $();
-
-                        //If there is a Url in the response, first try to find a matching validation inside a form with the same url as action
-                        if (jsonResponse.Url != undefined && jsonResponse.Url != null && jsonResponse.Url.length) 
-                            spanElement = $(`form[action="${jsonResponse.Url}"] span.field-validation-valid[data-valmsg-for="${propertyName}"]`)
-
-                        // Get a validation span without the form
-                        if(!spanElement.length)
-                            spanElement = $(`span.field-validation-valid[data-valmsg-for="${propertyName}"]`);
-                        if (!spanElement.length)
-                            spanElement = $(`span.field-validation-valid[data-valmsg-for$=".${propertyName}"]`);
-                        if (!spanElement.length) {
-                            try {
-                                //Find any span for this element and add the class text-danger
-                                let spanElement = $(`span[for=${propertyName}]`);
-                                spanElement.removeClass();
-                                spanElement.addClass("text-danger");
-                            } catch {
-                                //May crash silently if propertyName contains []
-                            }
-                            
-                        }
+                        let spanElement = uic.validation._getValidationSpan(propertyName, $(`form[action="${jsonResponse.Url}"]`));
                         spanElement.text(error);
                         errors.push(error)
                     })

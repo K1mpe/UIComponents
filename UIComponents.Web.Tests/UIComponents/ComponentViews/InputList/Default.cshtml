@@ -39,7 +39,7 @@
         Model.AddClass("loading-data"); //this class is removed when the data is finished loading
     if (!Model.Readonly || true)
     {
-        Model.AddScript(
+        Model.AddScriptDocReady(
     @<text>
 
         $('#@id').on('uic-help', ()=>{
@@ -159,7 +159,7 @@
 
     </text>);
     }
-    Model.AddScript(
+    Model.AddScriptDocReady(
     @<text>
 
         $('#@id').on('uic-help', ()=>{

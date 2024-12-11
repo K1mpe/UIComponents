@@ -24,7 +24,8 @@ public class UICGeneratorInputColor : UICGeneratorProperty
             Parent = args.CallCollection.Caller
         };
         input.Value = args.PropertyValue == null ? null : args.PropertyValue!.ToString();
-        input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
+        if(args.Options.CheckClientSideValidation) 
+            input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
 
         await Task.Delay(0);
         return GeneratorHelper.Success<IUIComponent>(input, true);

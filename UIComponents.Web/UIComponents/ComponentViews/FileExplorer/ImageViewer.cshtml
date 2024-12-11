@@ -44,7 +44,7 @@
         </div>
         
         </text>));
-    modal.AddScript(new UICCustom(@<text>
+    modal.AddScriptDocReady(new UICCustom(@<text>
         let relativePath = @Html.JsEncode(Model.FilePath.RelativePath, "'");
         let absoluteRef = @Html.JsEncode(Model.FilePath.AbsolutePathReference, "'");
         function updatePath(){

@@ -26,14 +26,14 @@ public static class IUICValidatorExtensions
         foreach(var property in properties)
         {
             var expression = DynamicExpressionParser.ParseLambda<T, object>(null, false, "@" + property.Name);
-            Translatable message = "IUICValidator";
+            ValidationRuleResultError errorResult = null;
             validator.RuleFor(expression)
                 .Must((model, value) => 
                 {
                     var result = validationService.ValidateObjectProperty(property, model).Result;
-                    message = result.ValidationErrors.Select(x=>x.ErrorMessage).FirstOrDefault();
+                    errorResult = result.ValidationErrors.FirstOrDefault();
                     return !result.HasValidationErrors;
-                }).WithMessage((model)=> languageService.Translate(message).Result);
+                }).WithMessage((model)=> TranslationDefaults.TranslateWithPlaceholders(errorResult.ErrorMessage, errorResult.Arguments, languageService).Result);
         }
     }
 

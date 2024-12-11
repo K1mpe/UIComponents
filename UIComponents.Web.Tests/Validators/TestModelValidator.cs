@@ -19,6 +19,7 @@ public class TestModelValidator : AbstractValidator<TestModel>
     {
         _validationService = validationService;
         _languageService = languageService;
+        
 
 
         _validationService.ValidateModel(this, _languageService);

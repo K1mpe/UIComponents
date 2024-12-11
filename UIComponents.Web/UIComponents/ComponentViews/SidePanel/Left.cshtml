@@ -34,7 +34,7 @@
 
 @if (Model.SidePanelContent.HasValue())
 {
-    Model.AddScript(
+    Model.AddScriptDocReady(
     @<text>
     uic.sidePanel.initialize($('#@id'), @((int)Model.DefaultState));
 </text>);

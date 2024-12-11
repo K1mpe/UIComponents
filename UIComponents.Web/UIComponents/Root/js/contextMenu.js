@@ -351,7 +351,7 @@
 
     //A function that can be configured to use or disable the contextMenu. F.E. if "ALT" is pressed while right clicking
     altKeyEnabled: function (ev) {
-        return false;
+        return ev.altKey;
     },
 
     rightClick: async function (ev) {
@@ -364,11 +364,9 @@
             uic.contextMenu.enabled = true;
 
         uic.contextMenu.target = ev.target;
-        //console.log('rightClickEvent', e);
 
         if ($('.context-menu').length) {
             uic.contextMenu.hideMenu();
-            ev.preventDefault();
         }
         else {
             var menu = uic.contextMenu.default.menu();

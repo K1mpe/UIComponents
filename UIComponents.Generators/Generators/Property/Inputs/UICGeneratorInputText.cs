@@ -45,10 +45,13 @@ public class UICGeneratorInputText : UICGeneratorProperty
             if (dataTypeAttribute != null)
                 input.Type = dataTypeAttribute.DataType;
         }
-
-        input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
-        input.ValidationMinLength = await _validationService.ValidatePropertyMinLength(args.PropertyInfo, args.ClassObject);
-        input.ValidationMaxLength = await _validationService.ValidatePropertyMaxLength(args.PropertyInfo, args.ClassObject);
+        if (args.Options.CheckClientSideValidation)
+        {
+            input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
+            input.ValidationMinLength = await _validationService.ValidatePropertyMinLength(args.PropertyInfo, args.ClassObject);
+            input.ValidationMaxLength = await _validationService.ValidatePropertyMaxLength(args.PropertyInfo, args.ClassObject);
+        }
+            
 
         return GeneratorHelper.Success<IUIComponent>(input, true);
     }

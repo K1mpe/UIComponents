@@ -66,7 +66,7 @@ namespace UIComponents.Models.Models.Inputs
         public UICInputMultiSelect AddSource(UICInputSelectListHtmlStorage storedSource)
         {
             storedSource.InputSelectList = this;
-            ScriptCollection.AddToScripts(storedSource);
+            ScriptCollection.AddToScriptsDocReady(storedSource);
             return this;
         }
         public UICInputMultiSelect AddSource(UICActionGetPost source)
@@ -88,7 +88,7 @@ namespace UIComponents.Models.Models.Inputs
         public UICInputMultiSelect AddSource(UICInputSelectListSource source)
         {
             source.InputSelectList = this;
-            ScriptCollection.AddToScripts(source);
+            ScriptCollection.AddToScriptsDocReady(source);
             return this;
         }
         public UICInputMultiSelect AddSource(out UICInputSelectListSource outSource, UICInputSelectListSource source)

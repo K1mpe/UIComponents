@@ -30,7 +30,7 @@
     
     if(Model.Readonly)
     {
-        Model.AddScript(
+        Model.AddScriptDocReady(
         @<text>
             uic.form.readonly($('#@id'));
         </text>);
@@ -38,7 +38,7 @@
 
     if(Model.SetFocusOnFirstInput)
     {
-        Model.AddScript(
+        Model.AddScriptDocReady(
             @<text>
                 setTimeout(() => {
                     $('#@id input, #@id select')[0].focus();
@@ -49,7 +49,7 @@
 
     if (Model.DisablePostOnEnterClick)
     {
-        Model.AddScript(@<text>
+        Model.AddScriptDocReady(@<text>
             $('#@id').keydown(ev => {
                 if(ev.target.type == 'textarea')
                     return;
@@ -73,7 +73,7 @@
         }
 
             
-        Model.AddScript(
+        Model.AddScriptDocReady(
             @<text>
 
             @Html.UICHelp(Model, "uic.form.help")
@@ -91,9 +91,12 @@
                 if(!await uic.form.warnUserForConflicts($('#@id')))
                     return;
 
+                $('#@id').triggerHandler('uic-beforeSubmit');
+
                 @await Model.Submit.InvokeAsync(Component)
 
                 let myResult = await $('#@id').triggerHandler('uic-afterSubmit', @Html.Raw(Model.Submit.ResultName));
+
                 if(myResult != undefined)
                     return myResult;
                 return @Html.Raw(Model.Submit.ResultName);

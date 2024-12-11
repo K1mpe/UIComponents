@@ -75,11 +75,25 @@ namespace UIComponents.Models.Models.Tables
         /// </summary>
         public bool EnableUpdate { get; set; } = Defaults.Models.Table.UICTable.EnableUpdate;
 
-
         /// <summary>
         /// Allow the row to be deleted and show the deletebutton in the controlColumn
         /// </summary>
         public bool EnableDelete { get; set; } = Defaults.Models.Table.UICTable.EnableDelete;
+
+        /// <summary>
+        /// Check if both the <see cref="EnableInsert"/> is true and there is a <see cref="OnInsertItem"/> function provided or <see cref="OnInsertButtonClick"/> has a function
+        /// </summary>
+        public bool CanInsert => EnableInsert && (OnInsertItem.HasValue() || OnInsertButtonClick.HasValue());
+
+        /// <summary>
+        /// Check if both the <see cref="EnableUpdate"/> is true and there is a <see cref="OnUpdateItem"/> function provided
+        /// </summary>
+        public bool CanUpdate => EnableUpdate && OnUpdateItem.HasValue();
+
+        /// <summary>
+        /// Check if both the <see cref="EnableDelete"/> is true and there is a <see cref="OnDeleteItem"/> function provided
+        /// </summary>
+        public bool CanDelete => EnableDelete && OnDeleteItem.HasValue();
 
         /// <summary>
         /// The input fields will have their header value as tooltip.

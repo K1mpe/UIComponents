@@ -22,7 +22,7 @@
 
     string guid = "cmi" + Guid.NewGuid().ToString("N").Substring(0, 4);
     Model.AssignCollectionForChildren(guid);
-    Model.AddScript(
+    Model.AddScriptDocReady(
     @<text>
         uic.contextMenu.addCategory({
             categoryId: @Html.JsEncode(Model.CategoryId,"'"),

@@ -29,7 +29,7 @@
 
     if (Model.AllowOneCardOpen)
     {
-        Model.AddScript(
+        Model.AddScriptDocReady(
             @<text>
                 $('#@id > .uic.card').on('uic-before-open', (ev)=>{
                     $(`#@id > .uic.card:not(#${$(ev.target).attr('id')})`).trigger('uic-close');
@@ -49,7 +49,7 @@
     }
     if (Model.AllCardsClosedByDefault)
     {
-        Model.AddScript(
+        Model.AddScriptDocReady(
             @<text>
                 $('#@id > .uic.card').trigger('uic-close');
             </text>);

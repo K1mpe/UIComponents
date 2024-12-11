@@ -41,7 +41,7 @@
 
     Model.Body.AddClass("modal-body");
 
-    Model.AddScript(@<text>
+    Model.AddScriptDocReady(@<text>
         @Html.UICHelp(Model, "uic.modal.help")
         uic.modal._init($('#@id'));
         @if(Model.MoveModalToBody){

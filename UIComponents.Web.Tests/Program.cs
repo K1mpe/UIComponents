@@ -58,13 +58,6 @@ builder.Services.AddUIComponentWeb(config =>
     });
     config.AddDefaultGenerators(builder.Services);
     config.AddDefaultValidators(builder.Services);
-    config.AddValidatorPropertyMinLength((propinfo, obj) =>
-    {
-        var minLengthAttr = propinfo.GetInheritAttribute<MinLengthAttribute>();
-        if (minLengthAttr == null)
-            return Task.FromResult<int?>(null);
-        return Task.FromResult<int?>(minLengthAttr.Length);
-    });
 });
 Console.WriteLine("");
 Console.WriteLine("-- Components are generated --");

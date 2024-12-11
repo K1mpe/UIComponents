@@ -40,7 +40,7 @@ namespace UIComponents.Models.Extensions
         /// </summary>
         public static Task AskCurrentUserToTranslate(this List<TranslatableXmlField> translatables, IUICQuestionService questionService, string languageCode)
         {
-            return translatables.TranslateMissing("NL", async (translatable) =>
+            return translatables.TranslateMissing(languageCode, async (translatable) =>
             {
                 var question = UICQuestionText.Create(translatable.Key, translatable.TranslationsList.FirstOrDefault()?.Translation ?? string.Empty, questionService);
                 var response = await questionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1));

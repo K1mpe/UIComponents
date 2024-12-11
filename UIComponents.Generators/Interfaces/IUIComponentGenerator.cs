@@ -3,6 +3,7 @@ using System.Reflection;
 using UIComponents.Generators.Models;
 using UIComponents.Abstractions.Helpers;
 using UIComponents.Models.Models.Tables;
+using static UIComponents.Generators.Configuration.UICConfig;
 
 namespace UIComponents.Generators.Interfaces;
 
@@ -67,4 +68,5 @@ public interface IUIComponentGenerator
         var propInfo= InternalHelper.GetPropertyInfoFromExpression(expression);
         return CreateTableColumnFromProperty(propInfo);
     }
+
 }

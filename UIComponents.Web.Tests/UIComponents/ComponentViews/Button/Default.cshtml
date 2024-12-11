@@ -34,7 +34,7 @@
             type = "reset";
 
             //when clicking the reset button, remove all validation fields from the current form
-            Model.AddScript(
+            Model.AddScriptDocReady(
             @<text>
             
                 $('#@id').click(function(){
@@ -79,7 +79,7 @@ else
 
         @if (Model.OnClick != null)
         {
-            Model.AddScript(
+            Model.AddScriptDocReady(
             @<text>
             
                 $('#@id').click(async function (ev) {

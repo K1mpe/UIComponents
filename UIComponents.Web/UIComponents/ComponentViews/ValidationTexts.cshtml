@@ -1,0 +1,10 @@
+﻿@inject IUICLanguageService L
+
+<script>
+    uic.validation._validationMessages.invalidColor = @await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateInvalidColor("{PropertyName}"));
+    uic.validation._validationMessages.maxLength = @await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateMaxLength("{PropertyName}", "{ComparisonValue}"));
+    uic.validation._validationMessages.maxValue = @await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateMaxValue("{PropertyName}", "{ComparisonValue}"));
+    uic.validation._validationMessages.minLength = @await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateMinLength("{PropertyName}", "{ComparisonValue}"));
+    uic.validation._validationMessages.minValue = @await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateMinValue("{PropertyName}", "{ComparisonValue}"));
+    uic.validation._validationMessages.required = @await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidationIsRequired("{PropertyName}"));
+</script>

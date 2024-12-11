@@ -39,7 +39,7 @@
         .AddAttribute("data-rootAbsolutePath", relPath.AbsolutePathReference)
         .AddAttribute("data-rootDirectory", relPath.RelativePath)
         .AddAttribute("for-explorer", id);
-    Model.AddScript(@<text>
+    Model.AddScriptDocReady(@<text>
 
         let filterModel = @Json.Serialize(new GetFilesForDirectoryFilterModel(){
             AbsolutePathReference = relPath.AbsolutePathReference,

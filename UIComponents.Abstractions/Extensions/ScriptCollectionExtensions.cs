@@ -4,26 +4,52 @@ namespace UIComponents.Abstractions.Extensions;
 
 public static class ScriptCollectionExtensions
 {
+    /// <summary>
+    /// Add a script that will be rendered by the script collection. 
+    /// </summary>
+    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, bool inDocReady, RazerBlock razerCode)
+    {
+        hasScriptCollection.AddScript(inDocReady, new UICCustom(razerCode));
+    }
+
+    ///<inheritdoc cref="AddScript(IUICHasScriptCollection, RazerBlock)"/>
+    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, bool inDocReady, IUICAction scriptComponent)
+    {
+        if(inDocReady) 
+            hasScriptCollection.ScriptCollection.AddToScriptsDocReady(scriptComponent);
+        else
+            hasScriptCollection.ScriptCollection.AddToScripts(scriptComponent);
+    }
+
+    ///<inheritdoc cref="AddScript(IUICHasScriptCollection, RazerBlock)"/>
+    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, bool inDocReady, out UICCustom customForTaghelper)
+    {
+        customForTaghelper = new UICCustom();
+        hasScriptCollection.AddScript(inDocReady, customForTaghelper);
+    }
+
 
     /// <summary>
     /// Add a script that will be rendered by the script collection. This scriptcollection is rendered inside a $(document).ready
     /// </summary>
     /// <param name="hasScriptCollection"></param>
     /// <param name="razerCode"></param>
-    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, RazerBlock razerCode)
+    public static void AddScriptDocReady(this IUICHasScriptCollection hasScriptCollection, RazerBlock razerCode)
     {
-        hasScriptCollection.ScriptCollection.AddToScripts(new UICCustom(razerCode));
+        hasScriptCollection.ScriptCollection.AddToScriptsDocReady(new UICCustom(razerCode));
     }
 
-    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, IUICAction scriptComponent)
+    ///<inheritdoc cref="AddScriptDocReady(IUICHasScriptCollection, RazerBlock)"/>
+    public static void AddScriptDocReady(this IUICHasScriptCollection hasScriptCollection, IUICAction scriptComponent)
     {
-        hasScriptCollection.ScriptCollection.AddToScripts(scriptComponent);
+        hasScriptCollection.ScriptCollection.AddToScriptsDocReady(scriptComponent);
     }
 
-    public static void AddScript(this IUICHasScriptCollection hasScriptCollection, out UICCustom customForTaghelper)
+    ///<inheritdoc cref="AddScriptDocReady(IUICHasScriptCollection, RazerBlock)"/>
+    public static void AddScriptDocReady(this IUICHasScriptCollection hasScriptCollection, out UICCustom customForTaghelper)
     {
         customForTaghelper = new UICCustom();
-        hasScriptCollection.AddScript(customForTaghelper);
+        hasScriptCollection.AddScriptDocReady(customForTaghelper);
     }
 
     public static void AddStyle(this IUICHasScriptCollection hasScriptCollection, IUIComponent styleComponent)

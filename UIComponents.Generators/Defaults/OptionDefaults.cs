@@ -11,6 +11,9 @@ public static class OptionDefaults
     /// <inheritdoc cref="UICOptions.CheckWritePermissions" />
     public static bool CheckWritePermissions = true;
 
+    /// <inheritdoc cref="UICOptions.CheckClientSideValidation" />
+    public static bool CheckClientSideValidation = true;
+
     /// <inheritdoc cref="UICOptions.DisableSaveButtonOnValidationErrors" />
     public static bool DisableSaveButtonOnValidationErrors = true;
 
@@ -53,9 +56,6 @@ public static class OptionDefaults
     ///<inheritdoc cref="UICOptions.ReplaceSaveButtonWithCreateButton" />
     public static bool ReplaceSaveButtonWithCreateButton = false;
 
-    ///<inheritdoc cref="UICOptions.ReverseButtonOrder" />
-    public static bool ReverseButtonOrder = true;
-
     ///<inheritdoc cref="UICOptions.SelectlistAddEmptyItem" />
     public static bool SelectlistAddEmptyItem = false;
 
@@ -80,9 +80,15 @@ public static class OptionDefaults
     ///<inheritdoc cref="UICOptions.ButtonDistance" />
     public static ButtonDistance ButtonDistance = ButtonDistance.Medium;
 
+    public static Dictionary<string, Func<UICButtonToolbar, UICPropertyArgs, Task>> ButtonGenerators = new();
     ///<inheritdoc cref="UICOptions.ButtonPosition" />
-    public static ButtonPosition ButtonPosition = ButtonPosition.Right;
+    public static ButtonPosition? ButtonPosition = null;
+    public static ButtonPosition? EditButtonPosition = null;
+    public static ButtonPosition? DeleteButtonPosition = null;
+    public static ButtonPosition? CancelButtonPosition = null;
+    public static ButtonPosition? SaveButtonPosition = null;
 
+    public static bool PostFullModelOnDelete = false;
     ///<inheritdoc cref="UICOptions.ToolbarPosition" />
     public static ToolbarPosition ToolbarPosition = ToolbarPosition.BelowForm;
 

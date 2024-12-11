@@ -141,23 +141,25 @@
 
 
 @{
-    Model.AddScript(@<text>
+    Model.AddScript(false,@<text>
+        $('#@id').on('uic-setValue', function(event, ...values){
+            $('#@id').val(values).change();
+        });
+        </text>);
+    Model.AddScript(true, @<text>
         $('#@id').select2({
-        multiple: true,
-        closeOnSelect: @Json.Serialize(Model.CloseOnSelect),
-        matcher: uic.form.select2.searchMethod,
-        templateResult: uic.form.select2.resultRenderer,
-        tags: @Json.Serialize(Model.AllowDynamicOptions),
-        allowClear: true,
-        placeholder: @Html.JsEncode(placeholder, "'"),
-        dropdownParent: $('#@id').closest('form, .card, body')
+            multiple: true,
+            closeOnSelect: @Json.Serialize(Model.CloseOnSelect),
+            matcher: uic.form.select2.searchMethod,
+            templateResult: uic.form.select2.resultRenderer,
+            tags: @Json.Serialize(Model.AllowDynamicOptions),
+            allowClear: true,
+            placeholder: @Html.JsEncode(placeholder, "'"),
+            dropdownParent: $('#@id').closest('form, .card, body')
         });
 
         $('#@id').data('select2').$dropdown.attr('data-for', '@id').addClass('include-items');
-        $('#@id').on('uic-setValue', function(event, ...values){
-
-        $('#@id').val(values).change();
-        });
+        
         @if(Model.ClearInputAfterSelecting)
     {
         <text>

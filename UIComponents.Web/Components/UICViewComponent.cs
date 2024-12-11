@@ -21,12 +21,9 @@ public class UICViewComponent : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync(IUIComponent element)
     {
-        await Task.Delay(0);
+        if (element is IUICGetComponent getComponent)
+            element = await getComponent.GetComponentAsync(_serviceProvider);
 
-        if (element is UICFactory factoryUser)
-            element = await factoryUser.CreateComponentFromFactoryAsync(_serviceProvider);
-
-        var renderProperty = element.GetType().GetProperties().Where(x => x.Name == nameof(UIComponent.Render)).FirstOrDefault();
         if (element is IUICConditionalRender conditionalRender && !conditionalRender.Render)
         {
             return View($"/UIComponents/ComponentViews/NoRender.cshtml", element);

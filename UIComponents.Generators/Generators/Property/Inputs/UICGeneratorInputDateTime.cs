@@ -34,21 +34,24 @@ public class UICGeneratorInputDateTime : UICGeneratorProperty
             input.Precision = UICDatetimeStep.Date;
 
         input.Value = args.PropertyValue == null ? null : DateTime.Parse(args.PropertyValue.ToString());
-
-        input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
-
-        var propType = Nullable.GetUnderlyingType(args.PropertyType) ?? args.PropertyType;
-        switch (propType.Name)
+        if (args.Options.CheckClientSideValidation)
         {
-            case nameof(DateTime):
-                input.ValidationMinimumDate = await _validationService.ValidatePropertyMinValue<DateTime>(args.PropertyInfo, args.ClassObject);
-                input.ValidationMaximumDate = await _validationService.ValidatePropertyMaxValue<DateTime>(args.PropertyInfo, args.ClassObject);
-                break;
-            case nameof(DateOnly):
-                input.ValidationMinimumDate = (await _validationService.ValidatePropertyMinValue<DateOnly>(args.PropertyInfo, args.ClassObject))?.ToDateTime(new())??null;
-                input.ValidationMaximumDate = (await _validationService.ValidatePropertyMaxValue<DateOnly>(args.PropertyInfo, args.ClassObject))?.ToDateTime(new()) ?? null;
-                break;
+            input.ValidationRequired = await _validationService.ValidatePropertyRequired(args.PropertyInfo, args.ClassObject);
+
+            var propType = Nullable.GetUnderlyingType(args.PropertyType) ?? args.PropertyType;
+            switch (propType.Name)
+            {
+                case nameof(DateTime):
+                    input.ValidationMinimumDate = await _validationService.ValidatePropertyMinValue<DateTime>(args.PropertyInfo, args.ClassObject);
+                    input.ValidationMaximumDate = await _validationService.ValidatePropertyMaxValue<DateTime>(args.PropertyInfo, args.ClassObject);
+                    break;
+                case nameof(DateOnly):
+                    input.ValidationMinimumDate = (await _validationService.ValidatePropertyMinValue<DateOnly>(args.PropertyInfo, args.ClassObject))?.ToDateTime(new()) ?? null;
+                    input.ValidationMaximumDate = (await _validationService.ValidatePropertyMaxValue<DateOnly>(args.PropertyInfo, args.ClassObject))?.ToDateTime(new()) ?? null;
+                    break;
+            }
         }
+            
         var precisionAttr = args.PropertyInfo.GetInheritAttribute<UICPrecisionDateAttribute>();
         if (precisionAttr != null)
         {

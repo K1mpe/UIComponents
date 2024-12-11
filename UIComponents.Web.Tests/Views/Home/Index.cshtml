@@ -59,10 +59,17 @@
                         ShowEditButton = false,
                         //IncludedProperties = "teststring, number, decimal, checkbox, enum, recurringDate,SubClass",
                         PostForm = new UICActionPost("home", "post"),
-                        SelectlistAddEmptyItem = false
+                        SelectlistAddEmptyItem = false,
+                        ToolbarPosition = ToolbarPosition.BelowForm,
                     })).Add(await UIC.CreateComponentAsync(testModel, x => x.TestString)))
         .Add(new UICCard(new Translatable("Card.Edit"))
-            .Add(new UICSidePanel(await UIC.CreateComponentAsync(new TestModel(), new(){ToolbarPosition = ToolbarPosition.AboveForm}), new UICGroup()
+            .Add(new UICSidePanel(await UIC.CreateComponentAsync(new TestModel(), new(){
+                ToolbarPosition = ToolbarPosition.AboveForm,
+                ShowDeleteButton = true,
+                PostFullModelOnDelete = true,
+                ButtonOrder = "edit, delete, cancel",
+                DeleteButtonPosition = ButtonPosition.Left
+            }), new UICGroup()
                     .AddAttribute("width", "300px")
                     .AddAttribute("height", "100%"))), sidePanel =>
                     {

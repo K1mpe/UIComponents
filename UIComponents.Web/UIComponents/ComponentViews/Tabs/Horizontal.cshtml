@@ -35,7 +35,7 @@
 
     if (Model.RememberTabState)
     {
-        Model.AddScript(
+        Model.AddScriptDocReady(
     @<text>
         $('#@id').on('uic-tab-change', (ev, tab)=>{
         localStorage.setItem('tabs-lastState-@id', $(tab).attr('href'));
@@ -67,7 +67,7 @@
 }
 else
 {
-    Model.AddScript(
+    Model.AddScriptDocReady(
         @<text>
     uic.tabs.openFirstTab($('#@id'));
     window.addEventListener("hashchange", ()=> uic.tabs.openFirstTab($('#@id')));

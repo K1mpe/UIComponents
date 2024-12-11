@@ -121,6 +121,8 @@ public static class UICBuilderExtensions
 
                     AddScript(scriptName);
                 }
+                collectionContent += Environment.NewLine;
+                collectionContent += "<partial name=\"/UIComponents/ComponentViews/ValidationTexts.cshtml\" />";
                 if (File.Exists(collection))
                     File.Delete(collection);
                 using (var collectionFile = File.Create(collection))

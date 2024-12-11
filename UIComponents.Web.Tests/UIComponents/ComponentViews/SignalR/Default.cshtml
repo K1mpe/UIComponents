@@ -19,6 +19,7 @@
 @{
     string id = Model.GetId();
     Model.AddClass("uic-signalR");
+    Model.AddAttribute("hidden", "");
     foreach (var child in Model.GetAllChildren().Select(x => x.Component))
     {
         if (child is UIComponent component)
@@ -28,7 +29,7 @@
     }
     Model.AssignCollectionForChildren();
 
-    Model.AddScript(@<text>
+    Model.AddScriptDocReady(@<text>
         
         @if (string.IsNullOrWhiteSpace(Model.SubscriptionName))
     {
@@ -46,7 +47,7 @@
             @if (Model.DisableOnHidden)
             {
                 <text>
-                    if (uic.form.isHidden($('#@id'))){
+                    if (uic.form.isHidden($('#@id').parent())){
                     return;
                     }
                 </text>

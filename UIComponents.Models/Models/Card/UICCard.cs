@@ -60,7 +60,7 @@ public class UICCard : UIComponent, IUICCardLike, IUICSupportsTaghelperContent
     /// <summary>
     /// If not empty, set this as the minimum width of the card
     /// </summary>
-    public string MinWidth { get; set; } = "fit-content";
+    public string MinWidth { get; set; }
 
     /// <summary>
     /// If not empty, set this as the maximum width of the card
