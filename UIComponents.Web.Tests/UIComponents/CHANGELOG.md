@@ -1,3 +1,8 @@
+# 2024-12-12 (V1.3.15)
+- UICInputList does not have a setTimeout anymore
+- Remaining inputs do not require DocReady
+
+
 # 2024-12-12 (V1.3.14)
 - Fix required
 

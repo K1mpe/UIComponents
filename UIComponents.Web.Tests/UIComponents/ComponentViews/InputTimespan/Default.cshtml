@@ -33,7 +33,7 @@
         htmlAttr += "readonly disabled";
     Model.AssignCollectionForChildren();
     Model.AddAttribute("class", "d-flex");
-    Model.AddScriptDocReady(
+    Model.AddScript(false,
     @<text>
     $('#@id').on('uic-getValue', function() {
         console.log('check Timespan', @Json.Serialize(new TimeSpan(1, 2, 3,4,567)));

@@ -76,10 +76,7 @@
     string propertyName = Model.PropertyName;
     if (Model.DisplayName != null)
         propertyName = await L.Translate(Model.DisplayName);
-
-    <script>
-
-        $(document).ready(function () {
+    Model.AddScript(false,@<text>
             function validateInput(element) {
                 var currentValue = new moment(element.val(), @Html.JsEncode(timeFormat, "'"));
                 var span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
@@ -119,8 +116,7 @@
                 validateInput($(this));
             });
 
-        });
-    </script>
+    </text>);
 }
 
 

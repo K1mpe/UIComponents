@@ -1,0 +1,220 @@
+﻿@using UIComponents.Abstractions;
+@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@model UICInputTime
+
+@inject IUICLanguageService L
+
+@{
+
+    UICInputSelectList hours = null;
+    UICInputSelectList minutes = null;
+    UICInputSelectList seconds = null;
+    UICInputSelectList milliseconds = null;
+
+    double step =0;
+
+    string timeFormat = "HH:mm:ss.fff";
+
+    Model.AssignCollectionForChildren();
+    switch (Model.Precision)
+    {
+        case UICTimeonlyEnum.Minute:
+            step = (Model.Step * 60);
+            break;
+        case UICTimeonlyEnum.Second:
+            step = Model.Step;
+            break;
+        case UICTimeonlyEnum.Milliseconds:
+            step = Model.Step/1000;
+            break;
+    }
+
+    void SetHours()
+    {
+        int startHour = Model.ValidationMinTime?.Hour ?? 0;
+        int endHour = Model.ValidationMaxTime?.Hour ?? 23;
+        List<SelectListItem> items = new();
+        for (int i = startHour; i <= endHour; i++)
+        {
+            items.Add(new SelectListItem(i.ToString(), i.ToString()));
+        }
+        hours = new($"{Model.PropertyName}.Hours", items)
+        {
+            Readonly = Model.Readonly
+        };
+    }
+    void SetMinutes()
+    {
+        int stepInMinutes = (int)step / 60;
+        if (stepInMinutes < 1)
+            stepInMinutes = 1;
+
+        int startMinute = 0;
+        int endMinute = 59;
+        List<SelectListItem> items = new();
+        for (int i = startMinute; i <= endMinute; i += stepInMinutes)
+        {
+            items.Add(new SelectListItem(i.ToString(), i.ToString()));
+        }
+        minutes = new($"{Model.PropertyName}.Minutes", items)
+        {
+            Readonly = Model.Readonly
+        };
+
+    }
+    void SetSeconds()
+    {
+        int stepInSeconds = (int)step;
+        if (stepInSeconds < 1)
+            stepInSeconds = 1;
+
+        int startSecond = 0;
+        int endSecond = 59;
+        List<SelectListItem> items = new();
+        for (int i = startSecond; i <= endSecond; i += stepInSeconds)
+        {
+            items.Add(new SelectListItem(i.ToString(), i.ToString()));
+        }
+        seconds = new($"{Model.PropertyName}.Seconds", items)
+        {
+            Readonly = Model.Readonly
+        };
+    }
+    void SetMilliseconds()
+    {
+        int stepInSeconds = (int)step;
+        if (stepInSeconds < 1)
+            stepInSeconds = 1;
+
+        int start = 0;
+        int end = 999;
+        List<SelectListItem> items = new();
+        for (int i = start; i <= end; i += stepInSeconds)
+        {
+            items.Add(new SelectListItem(i.ToString(), i.ToString()));
+        }
+        milliseconds = new($"{Model.PropertyName}.MilliSeconds", items)
+        {
+            Readonly = Model.Readonly
+        };
+    }
+
+    SetHours();
+    SetMinutes();
+    if (Model.Precision == UICTimeonlyEnum.Second|| Model.Precision == UICTimeonlyEnum.Milliseconds)
+        SetSeconds();
+    if (Model.Precision == UICTimeonlyEnum.Milliseconds)
+        SetMilliseconds();
+
+
+    string id = Model.GetId();
+    Model.AddClass("input-group uic-input-time-selectlists");
+    if (Model.Actions.HasValue())
+    {
+        Model.Actions.SetIdentifier($"#{id}");
+    }
+
+}
+
+
+
+<span @Html.Raw(Model.GetHtmlAttributes())>
+    @await Component.InvokeAsync(hours, minutes, seconds, milliseconds)
+</span>
+
+
+@{
+
+    string propertyName = Model.PropertyName;
+    if (Model.DisplayName != null)
+        propertyName = await L.Translate(Model.DisplayName);
+    Model.AddScript(false,@<text>
+                    $('#@id').on('uic-getValue', ()=>{
+                        let hours = (uic.getValue('#@id [name="@(Model.PropertyName).Hours"]') || 0).toString().padStart(2, '0');
+                        let minutes = (uic.getValue('#@id [name="@(Model.PropertyName).Minutes"]') || 0).toString().padStart(2, '0');
+                        let seconds = (uic.getValue('#@id [name="@(Model.PropertyName).Seconds"]') || 0).toString().padStart(2, '0');
+                        let milliseconds = (uic.getValue('#@id [name="@(Model.PropertyName).milliseconds"]') || 0).toString().padStart(3, '0');
+                        return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+                    });
+
+                    $('#@id').on('uic-setValue', (ev, value) => {
+                        ev.stopPropagation();
+                        let momentVal = moment(value);
+                        if (!momentVal._isValid)
+                            momentVal = moment(value, @Html.JsEncode(timeFormat, "'"));
+
+                        uic.setValue('#@id [name="@(Model.PropertyName).Hours"]', momentVal.hour());
+                        uic.setValue('#@id [name="@(Model.PropertyName).Minutes"]', momentVal.minute());
+                        uic.setValue('#@id [name="@(Model.PropertyName).Seconds"]', momentVal.second());
+                        uic.setValue('#@id [name="@(Model.PropertyName).Milliseconds"]', momentVal.millisecond());
+                    });
+
+                    @if(Model.Value != null){
+                        <text>
+                        uic.setValue('#@id', new moment('@Model.Value.Value.ToString(timeFormat)', @Html.JsEncode(timeFormat, "'")));
+                        </text>
+                    }
+
+                    function validateInput() {
+                        let element = $('#@id');
+                        let currentValue = moment(uic.getValue(element), @Html.JsEncode(timeFormat, "'"));
+                        let span = element.parent().parent().find('span.field-validation-valid[data-valmsg-for="@Model.PropertyName"]');
+                        span.text("");
+
+         @if (Model.ValidationMaxTime != null)
+        {
+            <text>
+                if (currentValue > new moment('@Model.ValidationMaxTime.Value.ToString(timeFormat)', @Html.JsEncode(timeFormat, "'")))
+                    span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMaxValue(propertyName, Model.ValidationMaxTime.Value)));
+            </text>
+        }
+
+        @if (Model.ValidationMinTime != null)
+        {
+            <text>
+                                        if (new moment('@Model.ValidationMinTime.Value.ToString(timeFormat)', @Html.JsEncode(timeFormat, "'")) > currentValue)
+                        span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidateMinValue(propertyName, Model.ValidationMinTime.Value)));
+            </text>
+        }
+                @if (Model.ValidationRequired)
+        {
+                    <text>
+                        if (currentValue.length == 0)
+                            span.text(@await Html.TranslateJs(L, TranslationDefaults.ValidationIsRequired(propertyName)));
+                    </text>
+        }
+                                            }
+
+                    $('#@id select').keyup(function () {
+                        validateInput();
+                    });
+                    $('#@id select').change(function () {
+                        validateInput();
+                    });
+                    $('#@id select').blur(function () {
+                        validateInput();
+                    });
+
+    </text>);
+}
+
+
+@await Model.Actions.InvokeAsync(Component)
+@await Model.RenderStylesAndScripts(Component)
