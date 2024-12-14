@@ -32,7 +32,7 @@
 
     string timeFormat = "HH:mm:ss.fff";
 
-
+    Model.AssignCollectionForChildren();
     switch (Model.Precision)
     {
         case UICTimeonlyEnum.Minute:
@@ -145,10 +145,7 @@
     string propertyName = Model.PropertyName;
     if (Model.DisplayName != null)
         propertyName = await L.Translate(Model.DisplayName);
-
-            <script>
-
-                $(document).ready(function () {
+    Model.AddScript(false,@<text>
                     $('#@id').on('uic-getValue', ()=>{
                         let hours = (uic.getValue('#@id [name="@(Model.PropertyName).Hours"]') || 0).toString().padStart(2, '0');
                         let minutes = (uic.getValue('#@id [name="@(Model.PropertyName).Minutes"]') || 0).toString().padStart(2, '0');
@@ -215,9 +212,9 @@
                         validateInput();
                     });
 
-                });
-            </script>
+    </text>);
 }
 
 
 @await Model.Actions.InvokeAsync(Component)
+@await Model.RenderStylesAndScripts(Component)

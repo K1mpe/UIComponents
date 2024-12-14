@@ -1,3 +1,6 @@
+# 2024-12-12 (V1.3.14)
+- Fix required
+
 # 2024-12-11 (V1.3.13)
 - TranslationDefaults Support FluendProperties
 - TranslateProperty support MemberInfo
@@ -7,6 +10,10 @@
 - Option to ignore clientside validation
 - Table has CanInsert, CanUpdate, CanDelete
 - ToastR
+- ButtonPositions can be selected individual
+- ButtonOrder can be selected
+- Custom buttons can be added
+
 
 # 2024-11-28 (V1.3.12)
 - Option to enable clientside validation in generators

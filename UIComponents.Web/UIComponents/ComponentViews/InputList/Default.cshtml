@@ -39,7 +39,7 @@
         Model.AddClass("loading-data"); //this class is removed when the data is finished loading
     if (!Model.Readonly || true)
     {
-        Model.AddScriptDocReady(
+        Model.AddScript(false,
     @<text>
 
         $('#@id').on('uic-help', ()=>{
@@ -159,7 +159,7 @@
 
     </text>);
     }
-    Model.AddScriptDocReady(
+    Model.AddScript(false, 
     @<text>
 
         $('#@id').on('uic-help', ()=>{
@@ -222,14 +222,13 @@
         //Let the document ready run before setting the value
         if(value != undefined){
         busyElements++;
-        setTimeout(()=>{
+        
         $('#@id').trigger('uic-setValue-index', [value, currentChildCount]);
         busyElements--;
         if(busyElements <=0){
         $('#@id').removeClass('loading-data');
         $('#@id').trigger('uic-initialised');
         }
-        },1);
         }
 
         });
