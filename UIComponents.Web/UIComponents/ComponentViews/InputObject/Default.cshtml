@@ -18,6 +18,7 @@
 @using UIComponents.Web.Extensions;
 @model UICInputObject
 @{
+    Model.AssignCollectionForChildren();
     Model.AddClass("object-input");
     if (Model.Readonly)
         Model.FindAllChildrenOfType<UICInput>().ForEach(x => x.Readonly = true);
@@ -25,3 +26,4 @@
 <div @Html.Raw(Model.GetHtmlAttributes())>
     @await Model.Children.InvokeAsync(Component)
 </div>
+@await Model.RenderStylesAndScripts(Component)

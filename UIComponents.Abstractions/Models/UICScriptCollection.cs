@@ -79,6 +79,10 @@ public class UICScriptCollection : IUICScriptCollection
 
     public void MergeIntoOtherColllection(ref IUICScriptCollection otherCollection)
     {
+        foreach (var script in Scripts)
+        {
+            otherCollection.AddToScripts(script);
+        }
         foreach (var script in ScriptsDocReady)
         {
             otherCollection.AddToScriptsDocReady(script);
@@ -87,6 +91,7 @@ public class UICScriptCollection : IUICScriptCollection
         {
             otherCollection.AddToStyles(style);
         }
+        Scripts = new();
         ScriptsDocReady = new();
         Styles = new();
     }

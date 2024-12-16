@@ -23,7 +23,7 @@
 @{
     Model.AddAttribute("class", "form-control");
 
-
+    Model.AssignCollectionForChildren();
     Model.Actions.Renderer = UICActions.ActionsRenderer.Select2;
 
     string id = Model.GetId();
@@ -206,3 +206,4 @@
 
 
 @await Model.Actions.InvokeAsync(Component)
+@await Model.RenderStylesAndScripts(Component)

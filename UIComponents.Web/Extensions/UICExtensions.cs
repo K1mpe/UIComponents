@@ -303,7 +303,11 @@ public static class UICExtensions
         {
             var scriptContent = await script.InvokeAsync(component);
             if (!string.IsNullOrWhiteSpace(scriptContent.RenderHtmlContent().Replace("<script>", "").Replace("</script>", "")))
+            {
+                scriptTag.InnerHtml.Append("{");
                 scriptTag.InnerHtml.AppendHtml(scriptContent);
+                scriptTag.InnerHtml.Append("}");
+            }
         }
 
         if (scriptsDocReady.Any())

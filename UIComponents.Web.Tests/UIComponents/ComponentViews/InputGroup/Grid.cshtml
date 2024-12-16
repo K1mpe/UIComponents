@@ -18,6 +18,7 @@
 @model UICInputGroup
 
 @{
+    Model.AssignCollectionForChildren();
     if (Model.Label.HasValue())
         Model.Label?.AddAttribute("for", Model.Input.GetId());
 
@@ -125,7 +126,7 @@
         }
     </div>
 </div>
-
+@await Model.RenderStylesAndScripts(Component)
 
 
 

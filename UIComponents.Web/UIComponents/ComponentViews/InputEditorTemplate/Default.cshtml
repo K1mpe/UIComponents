@@ -19,5 +19,9 @@
 
 @model UICInputEditorTemplate
 
+@{
+    Model.AssignCollectionForChildren();
+}
 
 @Html.Editor(Model.Expression??Model.PropertyName, Model.TemplateFor, Model.PropertyName, Model.AdditionalData)
+@await Model.RenderStylesAndScripts(Component)

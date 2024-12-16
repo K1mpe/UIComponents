@@ -23,9 +23,7 @@
 
 @{
     Model.AddAttribute("class", "form-control");
-
-
-
+    Model.AssignCollectionForChildren();
 
     string step = "";
 
@@ -121,3 +119,4 @@
 
 
 @await Model.Actions.InvokeAsync(Component)
+@await Model.RenderStylesAndScripts(Component)
