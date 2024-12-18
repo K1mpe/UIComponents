@@ -17,6 +17,8 @@ public class UICValidationService : IUICValidationService
     private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleReadonly> _defaultReadonly;
     private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinLength> _defaultMinLength;
     private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxLength> _defaultMaxLength;
+    private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<byte>> _defaultByteMinValue;
+    private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<byte>> _defaultByteMaxValue;
     private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<short>> _defaultshortMinValue;
     private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<short>> _defaultshortMaxValue;
     private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<int>> _defaultintMinValue;
@@ -37,6 +39,12 @@ public class UICValidationService : IUICValidationService
     private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TimeOnly>> _defaultTimeOnlyMaxValue;
     private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<TimeSpan>> _defaultTimespanMinValue;
     private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TimeSpan>> _defaultTimespanMaxValue;
+    private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<ushort>> _defaultushortMinValue;
+    private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<ushort>> _defaultushortMaxValue;
+    private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<uint>> _defaultuintMinValue;
+    private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<uint>> _defaultuintMaxValue;
+    private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<ulong>> _defaultulongMinValue;
+    private readonly IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<ulong>> _defaultulongMaxValue;
     #endregion
 
     #region Ctor
@@ -68,7 +76,15 @@ public class UICValidationService : IUICValidationService
         IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TimeOnly>> defaultTimeOnlyMaxValue,
         IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<TimeSpan>> defaultTimespanMinValue,
         IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TimeSpan>> defaultTimespanMaxValue
-        )
+,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<byte>> defaultByteMinValue,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<byte>> defaultByteMaxValue,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<ushort>> defaultushortMinValue,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<ushort>> defaultushortMaxValue,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<uint>> defaultuintMinValue,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<uint>> defaultuintMaxValue,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<ulong>> defaultulongMinValue,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<ulong>> defaultulongMaxValue)
     {
         _logger = logger;
         _config = config;
@@ -97,6 +113,14 @@ public class UICValidationService : IUICValidationService
         _defaultTimeOnlyMaxValue = defaultTimeOnlyMaxValue;
         _defaultTimespanMinValue = defaultTimespanMinValue;
         _defaultTimespanMaxValue = defaultTimespanMaxValue;
+        _defaultByteMinValue = defaultByteMinValue;
+        _defaultByteMaxValue = defaultByteMaxValue;
+        _defaultushortMinValue = defaultushortMinValue;
+        _defaultushortMaxValue = defaultushortMaxValue;
+        _defaultuintMinValue = defaultuintMinValue;
+        _defaultuintMaxValue = defaultuintMaxValue;
+        _defaultulongMinValue = defaultulongMinValue;
+        _defaultulongMaxValue = defaultulongMaxValue;
     }
     #endregion
 
@@ -182,6 +206,17 @@ public class UICValidationService : IUICValidationService
                             if((await maxLength.MaxLength(propertyInfo, obj)).HasValue)
                                 validatorResult = await _defaultMaxLength.DefaultValidationErrors(maxLength, propertyInfo, obj);
                         }
+                        else if (validator is IUICPropertyValidationRuleMinValue<byte> minValueByte)
+                        {
+                            if ((await minValueByte.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultByteMinValue.DefaultValidationErrors(minValueByte, propertyInfo, obj);
+                        }
+
+                        else if (validator is IUICPropertyValidationRuleMaxValue<byte> maxValueByte)
+                        {
+                            if ((await maxValueByte.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultByteMaxValue.DefaultValidationErrors(maxValueByte, propertyInfo, obj);
+                        }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<short> minValueShort)
                         {
@@ -217,6 +252,41 @@ public class UICValidationService : IUICValidationService
                         {
                             if((await maxValueLong.MaxValue(propertyInfo, obj)).HasValue)
                                 validatorResult = await _defaultlongMaxValue.DefaultValidationErrors(maxValueLong, propertyInfo, obj);
+                        }
+                        else if (validator is IUICPropertyValidationRuleMinValue<ushort> minValueUShort)
+                        {
+                            if ((await minValueUShort.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultushortMinValue.DefaultValidationErrors(minValueUShort, propertyInfo, obj);
+                        }
+
+                        else if (validator is IUICPropertyValidationRuleMaxValue<ushort> maxValueUShort)
+                        {
+                            if ((await maxValueUShort.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultushortMaxValue.DefaultValidationErrors(maxValueUShort, propertyInfo, obj);
+                        }
+
+                        else if (validator is IUICPropertyValidationRuleMinValue<uint> minValueUInt)
+                        {
+                            if ((await minValueUInt.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultuintMinValue.DefaultValidationErrors(minValueUInt, propertyInfo, obj);
+                        }
+
+                        else if (validator is IUICPropertyValidationRuleMaxValue<uint> maxValueUInt)
+                        {
+                            if ((await maxValueUInt.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultuintMaxValue.DefaultValidationErrors(maxValueUInt, propertyInfo, obj);
+                        }
+
+
+                        else if (validator is IUICPropertyValidationRuleMinValue<ulong> minValueULong)
+                        {
+                            if ((await minValueULong.MinValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultulongMinValue.DefaultValidationErrors(minValueULong, propertyInfo, obj);
+                        }
+                        else if (validator is IUICPropertyValidationRuleMaxValue<ulong> maxValueULong)
+                        {
+                            if ((await maxValueULong.MaxValue(propertyInfo, obj)).HasValue)
+                                validatorResult = await _defaultulongMaxValue.DefaultValidationErrors(maxValueULong, propertyInfo, obj);
                         }
 
                         else if (validator is IUICPropertyValidationRuleMinValue<float> minValueFloat)

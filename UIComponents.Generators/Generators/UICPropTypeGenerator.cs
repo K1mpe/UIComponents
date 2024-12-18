@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.Extensions.Logging;
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
@@ -10,10 +11,11 @@ namespace UIComponents.Generators.Generators;
 public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyType?>
 {
     private readonly UICConfig _uICConfig;
-
-    public UICPropTypeGenerator(UICConfig uICConfig)
+    private readonly ILogger<UICPropTypeGenerator> _logger;
+    public UICPropTypeGenerator(UICConfig uICConfig, ILogger<UICPropTypeGenerator> logger)
     {
         _uICConfig = uICConfig;
+        _logger = logger;
     }
 
     public override double Priority { get; set; } = 1000;
@@ -111,8 +113,12 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
                     if (propertyInfo.Name.ToLower().EndsWith("color"))
                         uicPropertyType = UICPropertyType.HexColor;
                     break;
+                case "int16":
                 case "int32":
                 case "int64":
+                case "uint16":
+                case "uint32":
+                case "uint64":
                 case "byte":
                 case "long":
                     uicPropertyType = UICPropertyType.Number;
@@ -144,6 +150,10 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
                     {
                         uicPropertyType = UICPropertyType.SelectList;
                         break;
+                    }
+                    else if(!type.IsClass)
+                    {
+                        _logger.LogWarning($"{nameof(UICPropertyType)} was not found for {{0}} ({{1}}.{{2}})", type.Name, propertyInfo?.DeclaringType?.Name??null, propertyInfo?.Name??null);
                     }
                     break;
             }

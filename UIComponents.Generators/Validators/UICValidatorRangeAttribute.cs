@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 
 namespace UIComponents.Generators.Validators;
@@ -18,7 +19,7 @@ public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleM
 
     public Task<T?> MaxValue(PropertyInfo propertyInfo, object obj)
     {
-        var rangeAttr = propertyInfo.GetCustomAttribute<RangeAttribute>();
+        var rangeAttr = propertyInfo.GetInheritAttribute<RangeAttribute>();
         if (rangeAttr != null)
         {
             _logger.LogDebug($"{{0}} has maximum value by {nameof(RangeAttribute)}: {{1}}", $"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name}", rangeAttr.Maximum);
@@ -39,7 +40,7 @@ public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleM
 
     public Task<T?> MinValue(PropertyInfo propertyInfo, object obj)
     {
-        var rangeAttr = propertyInfo.GetCustomAttribute<RangeAttribute>();
+        var rangeAttr = propertyInfo.GetInheritAttribute<RangeAttribute>();
         if (rangeAttr != null)
         {
             _logger.LogDebug($"{{0}} has minimum value by {nameof(RangeAttribute)}: {{1}}", $"{propertyInfo.DeclaringType?.Name}.{propertyInfo.Name}", rangeAttr.Minimum);
@@ -59,6 +60,16 @@ public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleM
     }
 }
 
+public class UICValidatorRangeAttributeByte : UICValidatorRangeAttribute<byte>
+{
+    public UICValidatorRangeAttributeByte(
+        ILogger<UICValidatorRangeAttributeByte> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<byte>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<byte>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
 public class UICValidatorRangeAttributeInt : UICValidatorRangeAttribute<int>
 {
     public UICValidatorRangeAttributeInt(
@@ -146,6 +157,35 @@ public class UICValidatorRangeAttributeTimeSpan : UICValidatorRangeAttribute<Tim
     public UICValidatorRangeAttributeTimeSpan(ILogger<UICValidatorRangeAttributeTimeSpan> logger,
         IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<TimeSpan>> minValidator,
         IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TimeSpan>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+
+public class UICValidatorRangeAttributeUInt : UICValidatorRangeAttribute<uint>
+{
+    public UICValidatorRangeAttributeUInt(
+        ILogger<UICValidatorRangeAttributeUInt> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<uint>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<uint>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeULong : UICValidatorRangeAttribute<ulong>
+{
+    public UICValidatorRangeAttributeULong(ILogger<UICValidatorRangeAttributeULong> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<ulong>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<ulong>> maxValidator)
+        : base(logger, minValidator, maxValidator)
+    {
+    }
+}
+public class UICValidatorRangeAttributeUShort : UICValidatorRangeAttribute<ushort>
+{
+    public UICValidatorRangeAttributeUShort(ILogger<UICValidatorRangeAttributeUShort> logger,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<ushort>> minValidator,
+        IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<ushort>> maxValidator)
         : base(logger, minValidator, maxValidator)
     {
     }

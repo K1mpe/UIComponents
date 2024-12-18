@@ -28,8 +28,8 @@ namespace UIComponents.Models.Models.Inputs
         public bool AllowDecimalValues { get; set; } = true;
 
         public bool ValidationRequired { get; set; }
-        public int? ValidationMinValue { get; set; }
-        public int? ValidationMaxValue { get; set; }
+        public decimal? ValidationMinValue { get; set; }
+        public decimal? ValidationMaxValue { get; set; }
 
         public override double? Value { 
             get => base.ValueObject==null? null : double.Parse(base.ValueObject.ToString()); 

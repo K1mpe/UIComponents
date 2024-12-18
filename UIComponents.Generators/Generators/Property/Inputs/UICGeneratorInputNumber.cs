@@ -64,11 +64,11 @@ public class UICGeneratorInputNumber : UICGeneratorProperty
             }
         }
             
-        int? ParseValue(object value)
+        decimal? ParseValue(object value)
         {
             if (value == null)
                 return null;
-            return int.Parse(value.ToString());
+            return decimal.Parse(value.ToString());
         }
         
 

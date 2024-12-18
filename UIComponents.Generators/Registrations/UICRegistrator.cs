@@ -136,23 +136,32 @@ public static class UICConfigure
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxLength>, DefaultCheckValidationErrorsMaxLength>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleReadonly>, DefaultCheckValidationErrorsReadonly>();
 
+        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<byte>>, DefaultCheckValidationErrorsMinValue<byte>>();
+        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<short>>, DefaultCheckValidationErrorsMinValue<short>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<int>>, DefaultCheckValidationErrorsMinValue<int>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<float>>, DefaultCheckValidationErrorsMinValue<float>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<long>>, DefaultCheckValidationErrorsMinValue<long>>();
+        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<uint>>, DefaultCheckValidationErrorsMinValue<uint>>();
+        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<float>>, DefaultCheckValidationErrorsMinValue<float>>();
+        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<ulong>>, DefaultCheckValidationErrorsMinValue<ulong>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<double>>, DefaultCheckValidationErrorsMinValue<double>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<decimal>>, DefaultCheckValidationErrorsMinValue<decimal>>();
-        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<short>>, DefaultCheckValidationErrorsMinValue<short>>();
+        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<ushort>>, DefaultCheckValidationErrorsMinValue<ushort>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<DateOnly>>, DefaultCheckValidationErrorsMinValue<DateOnly>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<DateTime>>, DefaultCheckValidationErrorsMinValue<DateTime>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<TimeOnly>>, DefaultCheckValidationErrorsMinValue<TimeOnly>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<TimeSpan>>, DefaultCheckValidationErrorsMinValue<TimeSpan>>();
 
+        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<byte>>, DefaultCheckValidationErrorsMaxValue<byte>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<int>>, DefaultCheckValidationErrorsMaxValue<int>>();
+        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<uint>>, DefaultCheckValidationErrorsMaxValue<uint>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<float>>, DefaultCheckValidationErrorsMaxValue<float>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<long>>, DefaultCheckValidationErrorsMaxValue<long>>();
+        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<ulong>>, DefaultCheckValidationErrorsMaxValue<ulong>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<double>>, DefaultCheckValidationErrorsMaxValue<double>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<decimal>>, DefaultCheckValidationErrorsMaxValue<decimal>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<short>>, DefaultCheckValidationErrorsMaxValue<short>>();
+        serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<ushort>>, DefaultCheckValidationErrorsMaxValue<ushort>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<DateOnly>>, DefaultCheckValidationErrorsMaxValue<DateOnly>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<DateTime>>, DefaultCheckValidationErrorsMaxValue<DateTime>>();
         serviceCollection.TryAddScoped<IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TimeOnly>>, DefaultCheckValidationErrorsMaxValue<TimeOnly>>();
@@ -165,16 +174,31 @@ public static class UICConfigure
         configOptions.AddAndRegisterValidator<UICValidatorReadonlyAttribute>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorEditPermission>(serviceCollection);
 
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeByte>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeInt>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeUInt>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeFloat>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeLong>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeULong>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDouble>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDecimal>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeShort>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeUShort>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDateOnly>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeDateTime>(serviceCollection);
         configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeTimeOnly>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorRangeAttributeTimeSpan>(serviceCollection);
 
+        configOptions.AddAndRegisterValidator<UICValidatorMinMaxOfTypeByte>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorMinMaxOfTypeShort>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorMinMaxOfTypeInt>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorMinMaxOfTypelong>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorMinMaxOfTypeFloat>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorMinMaxOfTypeDouble>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorMinMaxOfTypeDecimal>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorMinMaxOfTypeUShort>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorMinMaxOfTypeUInt>(serviceCollection);
+        configOptions.AddAndRegisterValidator<UICValidatorMinMaxOfTypeUlong>(serviceCollection);
 
         return configOptions;
     }

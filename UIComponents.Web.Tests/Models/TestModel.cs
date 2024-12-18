@@ -30,8 +30,8 @@ namespace UIComponents.Web.Tests.Models
         public bool? ThreeStateBool { get; set; }
 
         [UICSpan("<span class='text-warning'>Dit</span> <blub>is een <sub>spantekst</sub>  &|é@#\"'([§^è!ç{0})-¨[^$*]ù%´µ``<>\\")]
-        [Range(10, 20)]
-        public int Number { get; set; }
+        
+        public short Number { get; set; }
 
         public double Decimal { get; set; }
 
