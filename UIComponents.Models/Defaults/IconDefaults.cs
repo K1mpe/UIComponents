@@ -12,7 +12,19 @@ public partial class IconDefaults
     public static UICIcon RefreshIcon = new UICIcon("fas fa-sync");
 
     public static UICIcon Add = new UICIcon("fas fa-plus");
-    public static UICIcon Delete = new UICIcon("fas fa-trash-can");
+
+    /// <summary>
+    /// Used for the <see cref="UICButtonSave"/> on creating a new entity
+    /// </summary>
+    public static UICIcon Create = null;
+
+    /// <summary>
+    /// Used for a <see cref="UICButtonSave"/> except when using the <see cref="Create"/>
+    /// </summary>
+    public static UICIcon Save = null;
+    public static UICIcon Edit = null;
+    public static UICIcon CancelEdit = null;
+    public static UICIcon Delete = null;
 
     public static UICIcon ButtonCardCollapse = new UICIcon("fas fa-minus");
     public static UICIcon ButtonCardExpend = new UICIcon("fas fa-plus");

@@ -19,6 +19,16 @@
 
 @{
     string identifier = Model.GetAttribute("formidentifier");
+    if(string.IsNullOrWhiteSpace(identifier)){
+        <text>
+            uic.form.editable($(this).closest('form'));
+        </text>
+    } else{
+        <text>
+            uic.form.editable($('@identifier'));
+        </text>
+        
+    }
 }
 
-uic.form.editable($('@identifier'));
+

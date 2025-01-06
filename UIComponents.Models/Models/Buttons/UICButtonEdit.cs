@@ -5,14 +5,16 @@ public class UICButtonEdit : UIComponent
     #region Ctor
     public UICButtonEdit() : base()
     {
-        ButtonSetEdit = new()
+        ButtonSetEdit = new UICButton()
         {
             ButtonText = TranslationDefaults.ButtonEdit,
+            AppendButtonIcon = new UICIcon(IconDefaults.Edit?.Icon),
             OnClick = new UICActionSetEdit(),
         };
-        ButtonSetReadonly = new()
+        ButtonSetReadonly = new UICButton()
         {
             ButtonText = TranslationDefaults.ButtonReadonly,
+            AppendButtonIcon = new UICIcon(IconDefaults.CancelEdit?.Icon),
             OnClick = new UICActionSetReadonly(),
         };
     }

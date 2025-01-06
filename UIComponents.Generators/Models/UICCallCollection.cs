@@ -53,7 +53,7 @@ public enum UICGeneratorPropertyCallType
     ButtonCreate,
     ButtonSave,
     ButtonEditReadonly,
-    ButtonReadonly,
+    //ButtonReadonly,
     ButtonDelete,
     ButtonToolbar,
 

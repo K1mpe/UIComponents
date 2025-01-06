@@ -52,7 +52,7 @@
                     Header = new UICCardHeader("Forms"),
                     Renderer = UICCardWithTabsRenderer.Vertical
                 }
-        .Add(new UICCard(new Translatable("Card.Create"))
+        .Add(out var createTab,new UICCard(new Translatable("Card.Create"))
             .Add(await UIC.CreateComponentAsync(testModel, new UICOptions()
                     {
                         ReplaceSaveButtonWithCreateButton = true,
@@ -108,6 +108,23 @@
     tabs.Add(new UICCard("factoryComponent").Add(factoryComponent));
 
 
+
+
+
+
+
+    var createButton = await UIC.CreateButtonAsync(UICGeneratorPropertyCallType.ButtonSave, new UICOptions() { ReplaceSaveButtonWithCreateButton = true });
+    var editButton = await UIC.CreateButtonAsync(UICGeneratorPropertyCallType.ButtonEditReadonly);
+    var deleteButton = await UIC.CreateButtonAsync(UICGeneratorPropertyCallType.ButtonDelete, b=> b.Color = new UICColor("Danger"));
+
+    createTab.TryFindFirstOfType<UICForm>(f=>
+        f.Add(new UICGroup()
+            .AddClass("test-custom-buttons")
+            .Add(createButton)
+            //.Add(editButton)
+            .Add(deleteButton)));
 }
+
+
 
 @await tabs.InvokeAsync(Component)

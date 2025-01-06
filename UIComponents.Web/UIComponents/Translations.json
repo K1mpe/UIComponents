@@ -1,5 +1,5 @@
 {
-  "UniqueKeys": 116,
+  "UniqueKeys": 126,
   "Translatables": [
     {
       "Key": "Button.Add",
@@ -1124,6 +1124,55 @@
       ]
     },
     {
+      "Key": "RecurringDate.Button.AddExcluded",
+      "TranslationsList": [],
+      "ArgumentsCount": 0,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\ComponentViews\\InputRecurringDate\\Default.cshtml",
+          "LineNumber": 64
+        }
+      ]
+    },
+    {
+      "Key": "RecurringDate.Button.AddIncluded",
+      "TranslationsList": [],
+      "ArgumentsCount": 0,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\ComponentViews\\InputRecurringDate\\Default.cshtml",
+          "LineNumber": 60
+        }
+      ]
+    },
+    {
+      "Key": "RecurringDate.Excluded",
+      "TranslationsList": [],
+      "ArgumentsCount": 0,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\ComponentViews\\InputRecurringDate\\Default.cshtml",
+          "LineNumber": 152
+        }
+      ]
+    },
+    {
+      "Key": "RecurringDate.Format.ComplexPattern",
+      "TranslationsList": [
+        {
+          "Code": "EN",
+          "Translation": "Complex pattern"
+        }
+      ],
+      "ArgumentsCount": 0,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\ComponentViews\\InputRecurringDate\\Default.cshtml",
+          "LineNumber": 268
+        }
+      ]
+    },
+    {
       "Key": "RecurringDate.Format.Day",
       "TranslationsList": [
         {
@@ -1166,6 +1215,28 @@
         {
           "File": "UIComponents.Web\\UIComponents\\ComponentViews\\RecurringDateTypes\\RecurringCustom.cshtml",
           "LineNumber": 282
+        }
+      ]
+    },
+    {
+      "Key": "RecurringDate.Format.Except",
+      "TranslationsList": [],
+      "ArgumentsCount": 0,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\ComponentViews\\InputRecurringDate\\Default.cshtml",
+          "LineNumber": 277
+        }
+      ]
+    },
+    {
+      "Key": "RecurringDate.Format.From",
+      "TranslationsList": [],
+      "ArgumentsCount": 0,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\ComponentViews\\InputRecurringDate\\Default.cshtml",
+          "LineNumber": 248
         }
       ]
     },
@@ -1234,6 +1305,17 @@
       ]
     },
     {
+      "Key": "RecurringDate.Format.Never",
+      "TranslationsList": [],
+      "ArgumentsCount": 0,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\ComponentViews\\InputRecurringDate\\Default.cshtml",
+          "LineNumber": 271
+        }
+      ]
+    },
+    {
       "Key": "RecurringDate.Format.Of",
       "TranslationsList": [],
       "ArgumentsCount": 0,
@@ -1256,6 +1338,33 @@
       ]
     },
     {
+      "Key": "RecurringDate.Format.Until",
+      "TranslationsList": [],
+      "ArgumentsCount": 0,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\ComponentViews\\InputRecurringDate\\Default.cshtml",
+          "LineNumber": 251
+        }
+      ]
+    },
+    {
+      "Key": "RecurringDate.Format.WithExceptions",
+      "TranslationsList": [
+        {
+          "Code": "EN",
+          "Translation": "With exceptions"
+        }
+      ],
+      "ArgumentsCount": 0,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\ComponentViews\\InputRecurringDate\\Default.cshtml",
+          "LineNumber": 281
+        }
+      ]
+    },
+    {
       "Key": "RecurringDate.Format.Years",
       "TranslationsList": [],
       "ArgumentsCount": 0,
@@ -1271,6 +1380,17 @@
       ]
     },
     {
+      "Key": "RecurringDate.Included",
+      "TranslationsList": [],
+      "ArgumentsCount": 0,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\ComponentViews\\InputRecurringDate\\Default.cshtml",
+          "LineNumber": 140
+        }
+      ]
+    },
+    {
       "Key": "Select.Placeholder",
       "TranslationsList": [
         {
@@ -1282,7 +1402,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Generators\\Helpers\\GeneratorHelper.cs",
-          "LineNumber": 405
+          "LineNumber": 500
         }
       ]
     },
@@ -1318,7 +1438,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Generators\\Helpers\\GeneratorHelper.cs",
-          "LineNumber": 401
+          "LineNumber": 496
         }
       ]
     },
@@ -1350,7 +1470,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Generators\\Helpers\\GeneratorHelper.cs",
-          "LineNumber": 477
+          "LineNumber": 572
         }
       ]
     },
@@ -1366,7 +1486,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Generators\\Helpers\\GeneratorHelper.cs",
-          "LineNumber": 473
+          "LineNumber": 568
         }
       ]
     },

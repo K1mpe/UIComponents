@@ -16,10 +16,19 @@ public class UICGeneratorButtonDelete : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
+        if (existingResult != null)
+            return GeneratorHelper.Next();
+
+        if (args.ClassObject == null)
+            return GeneratorHelper.Success(new UICButtonDelete(), true);
+
         if(args.Configuration.TryGetPermissionService(out var permissionService))
         {
             if (!await permissionService!.CanDeleteObject(args.ClassObject))
+            {
+                _logger.LogDebug("No Deletebutton is created because there is no permission to delete this object {0} ({1})", args.ClassObject.ToString(), args.ClassObject.GetType().Name);
                 return GeneratorHelper.Success<IUIComponent>(null, false);
+            }
         }
         if (args.Options.PostFullModelOnDelete)
         {

@@ -92,6 +92,52 @@ public class UICGenerator : IUIComponentGenerator
     {
         return _configuration.GenerateTableColumn(tableColumn);
     }
+
+    /// <inheritdoc cref="CreateButtonAsync(UICGeneratorPropertyCallType, object, UICOptions?, Action{UICButton})"/>
+    public Task<IUIComponent> CreateButtonAsync(UICGeneratorPropertyCallType buttonType, Action<UICButton> config) => CreateButtonAsync(buttonType, null, null, config);
+
+    /// <summary>
+    /// Use the generator the create a button
+    /// </summary>
+    /// <param name="buttonType">The type of button requested. Other calltypes will give a exception.</param>
+    /// <param name="classobject">Optional object that can be used for specific buttontext or click actions</param>
+    /// <param name="options"></param>
+    /// <param name="configButton">Config only works if the result is a <see cref="UICButton"/></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentStringException"></exception>
+    public async Task<IUIComponent> CreateButtonAsync(UICGeneratorPropertyCallType buttonType, object classobject = null, UICOptions? options = null, Action<UICButton> configButton = null)
+    {
+        var cc = new UICCallCollection(buttonType, null, null);
+        var args = new UICPropertyArgs(classobject, null, null, GetOptions(options), cc, _configuration);
+        IUIComponent result = null;
+        switch (buttonType)
+        {
+            case UICGeneratorPropertyCallType.ButtonCancel:
+                result = await _configuration.ButtonGenerators.GenerateCancelButton(args, null);
+                break;
+            case UICGeneratorPropertyCallType.ButtonCreate:
+                result = await _configuration.ButtonGenerators.GenerateCreateButton(args, null);
+                break;
+            case UICGeneratorPropertyCallType.ButtonSave:
+                result = await _configuration.ButtonGenerators.GenerateSaveButton(args, null);
+                break;
+            case UICGeneratorPropertyCallType.ButtonEditReadonly:
+                result = await _configuration.ButtonGenerators.GenerateEditButton(args, null);
+                break;
+            case UICGeneratorPropertyCallType.ButtonDelete:
+                result = await _configuration.ButtonGenerators.GenerateDeleteButton(args, null);
+                break;
+            default:
+                throw new ArgumentStringException("{0} is not a valid calltype for a button", buttonType);
+        }
+        if (result == null)
+            throw new ArgumentStringException("There is no result for {0}", buttonType);
+        if(result is UICButton buttonResult)
+        {
+            configButton?.Invoke(buttonResult);
+        }
+        return result;
+    }
     #endregion
 
 

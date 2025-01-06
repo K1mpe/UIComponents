@@ -69,4 +69,20 @@ public interface IUIComponentGenerator
         return CreateTableColumnFromProperty(propInfo);
     }
 
+    /// <inheritdoc cref="CreateButtonAsync(UICGeneratorPropertyCallType, object, UICOptions?, Action{UICButton})"/>
+    public Task<IUIComponent> CreateButtonAsync(UICGeneratorPropertyCallType buttonType, Action<UICButton> config = null) => CreateButtonAsync(buttonType, null, config);
+
+    /// <inheritdoc cref="CreateButtonAsync(UICGeneratorPropertyCallType, object, UICOptions?, Action{UICButton})"/>
+    public Task<IUIComponent> CreateButtonAsync(UICGeneratorPropertyCallType buttonType, UICOptions options, Action<UICButton> config = null) => CreateButtonAsync(buttonType, null, options, config);
+
+    /// <summary>
+    /// Use the generator the create a button
+    /// </summary>
+    /// <param name="buttonType">The type of button requested. Other calltypes will give a exception.</param>
+    /// <param name="classobject">Optional object that can be used for specific buttontext or click actions</param>
+    /// <param name="options"></param>
+    /// <param name="configButton">Config only works if the result is a <see cref="UICButton"/></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentStringException"></exception>
+    public Task<IUIComponent> CreateButtonAsync(UICGeneratorPropertyCallType buttonType, object classobject, UICOptions? options = null, Action<UICButton> configButton = null);
 }

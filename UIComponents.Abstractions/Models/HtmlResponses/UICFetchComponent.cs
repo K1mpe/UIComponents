@@ -6,16 +6,15 @@ public class UICFetchComponent : IHtmlResponse
     {
 
     }
-    public UICFetchComponent(string key)
+    public UICFetchComponent(string key, string appendTo)
     {
         ComponentKey = key;
+        AppendTo = appendTo;
     }
 
     public string Type => nameof(UICFetchComponent);
 
     public string ComponentKey { get; set; }
-
-    public object? Arguments { get; set; }
 
     public string AppendTo { get; set; } = "body";
 }

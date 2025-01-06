@@ -1,3 +1,8 @@
+# 2025-01-06 (V1.3.17)
+- IconDefaults for create, edit button etc
+- Generator methods to create a button
+- Adding Synchronous Generators in GeneratorHelper
+
 # 2024-12-18 (V1.3.16)
 - Support for ushort, uint and ulong
 - Validation on numbers Min & Max values

@@ -15,6 +15,8 @@ public class UICGeneratorButtonEditReadonly : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
+        if (existingResult != null)
+            return GeneratorHelper.Next();
         var button = new UICButtonEdit();
         button.ButtonSetReadonly.OnClick = new UICActionSetReadonly()
         {

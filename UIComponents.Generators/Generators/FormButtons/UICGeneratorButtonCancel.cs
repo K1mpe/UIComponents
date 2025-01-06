@@ -17,6 +17,8 @@ public class UICGeneratorButtonCancel : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
+        if (existingResult != null)
+            return GeneratorHelper.Next();
         var button = new UICButtonCancel();
 
         await Task.Delay(0);

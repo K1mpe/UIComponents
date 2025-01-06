@@ -758,7 +758,7 @@ public class UICFileExplorerService : IUICFileExplorerService
 
             using (var ms = new MemoryStream())
             {
-                CreateThumbnailFromPdf.CreateThumbnail(ms, absolutePath);
+                //CreateThumbnailFromPdf.CreateThumbnail(ms, absolutePath);
                 ms.Position = 0;
                 var array = ms.ToArray();
                 string base64 = Convert.ToBase64String(array);

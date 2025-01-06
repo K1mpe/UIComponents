@@ -17,7 +17,6 @@ namespace UIComponents.Generators.Helpers;
 
 public static class GeneratorHelper
 {
-
     /// <summary>
     /// Add a generator that is used for each property
     /// </summary>
@@ -33,6 +32,9 @@ public static class GeneratorHelper
             GetResult = func
         };
     }
+    
+    /// <inheritdoc cref="PropertyGenerator(string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGenerator(string name, double priority, Func<UICPropertyArgs, IUIComponent?, IUICGeneratorResponse<IUIComponent>> func) => PropertyGenerator(name, priority, (args, existing) => Task.FromResult(func(args,existing)));
 
     /// <summary>
     /// Add a generator that only works for the property assigned by the expression
@@ -65,6 +67,11 @@ public static class GeneratorHelper
 
     }
 
+    /// <inheritdoc cref="PropertyGenerator{T}(Expression{Func{T, object}}, string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGenerator<T>(Expression<Func<T, object>> expression, string name, double priority, Func<UICPropertyArgs, IUIComponent?, IUICGeneratorResponse<IUIComponent>> func) where T : class
+    {
+        return PropertyGenerator(expression, name, priority, (args, existing) => Task.FromResult(func(args, existing)));
+    }
 
     /// <summary>
     /// Add a generator that only works for a property with this name
@@ -90,6 +97,12 @@ public static class GeneratorHelper
         return generator;
     }
 
+    /// <inheritdoc cref="PropertyGenerator(string, string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGenerator(string propertyName, string name, double priority, Func<UICPropertyArgs, IUIComponent?, IUICGeneratorResponse<IUIComponent>> func)
+    {
+        return PropertyGenerator(propertyName, name, priority, (args, existing) => Task.FromResult(func(args, existing)));
+    }
+
     /// <summary>
     /// Add a generator that only works when matching the given propertyType
     /// </summary>
@@ -113,11 +126,29 @@ public static class GeneratorHelper
 
         return generator;
     }
+    
+    /// <inheritdoc cref="PropertyGenerator(UICPropertyType, string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGenerator(UICPropertyType propertyType, string name, double priority, Func<UICPropertyArgs, IUIComponent?, IUICGeneratorResponse<IUIComponent>> func)
+    {
+        return PropertyGenerator(propertyType, name, priority, (args, existing) => Task.FromResult(func(args, existing)));
+    }
 
     /// <inheritdoc cref="PropertyGeneratorForPropType(Type, string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>>
     public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGeneratorForPropType<T>(string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> func)
     {
         return PropertyGeneratorForPropType(typeof(T), name, priority, func);
+    }
+
+    /// <inheritdoc cref="PropertyGeneratorForPropType{T}(string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGeneratorForPropType<T>(string name, double priority, Func<UICPropertyArgs, IUIComponent?, IUICGeneratorResponse<IUIComponent>> func)
+    {
+        return PropertyGeneratorForPropType(typeof(T), name, priority, (args, existing) => Task.FromResult(func(args, existing)));
+    }
+
+    /// <inheritdoc cref="PropertyGeneratorForPropType{T}(string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGeneratorForPropType(Type propertyType, string name, double priority, Func<UICPropertyArgs, IUIComponent?, IUICGeneratorResponse<IUIComponent>> func)
+    {
+        return PropertyGeneratorForPropType(propertyType, name, priority, (args, existing) => Task.FromResult(func(args, existing)));
     }
 
     /// <summary>
@@ -167,6 +198,15 @@ public static class GeneratorHelper
         return generator;
     }
 
+    ///<inheritdoc cref="PropertyGroupGenerator(string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyGroupGenerator(string name, double priority, Func<UICPropertyArgs, IUIComponent?, IUICGeneratorResponse<IUIComponent>> func)
+    {
+        return PropertyGroupGenerator(name, priority, (args, existing) => Task.FromResult(func(args, existing)));
+    }
+
+    /// <summary>
+    /// Add a generator for a <see cref="UICInput"/> that works only on this given propertyexpression
+    /// </summary>
     public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyInputGenerator<T>(Expression<Func<T, object>> expression, string name, double priority, Func<UICPropertyArgs, UICInput?, Task<IUICGeneratorResponse<UICInput>>> func)
     {
         var propertyInfo = InternalHelper.GetPropertyInfoFromExpression(expression);
@@ -185,7 +225,13 @@ public static class GeneratorHelper
             }
         };
     }
-    
+
+    /// <inheritdoc cref="PropertyInputGenerator{T}(Expression{Func{T, object}}, string, double, Func{UICPropertyArgs, UICInput?, Task{IUICGeneratorResponse{UICInput}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> PropertyInputGenerator<T>(Expression<Func<T, object>> expression, string name, double priority, Func<UICPropertyArgs, UICInput?, IUICGeneratorResponse<UICInput>> func)
+    {
+        return PropertyInputGenerator(expression, name, priority, (args, existing) => Task.FromResult(func(args, existing)));
+    }
+
     /// <summary>
     /// A generator for that only works for a <see cref="UICInput"/> property with this name and 
     /// </summary>
@@ -210,6 +256,12 @@ public static class GeneratorHelper
                 return await func(args, existing);
             }
         };
+    }
+
+    /// <inheritdoc cref="PropertyInputGenerator(string, string, double, Func{UICPropertyArgs, UICInput?, Task{IUICGeneratorResponse{UICInput}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, UICInput> PropertyInputGenerator(string propertyName, string name, double priority, Func<UICPropertyArgs, UICInput?, IUICGeneratorResponse<UICInput>> func)
+    {
+        return PropertyInputGenerator(propertyName, name, priority, (args, existing) => Task.FromResult(func(args, existing)));
     }
 
     /// <summary>
@@ -253,12 +305,24 @@ public static class GeneratorHelper
         };
     }
 
+    ///<inheritdoc cref="ButtonGenerator(ButtonType, string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> ButtonGenerator(ButtonType buttonType, string name, double priority, Func<UICPropertyArgs, IUIComponent?, IUICGeneratorResponse<IUIComponent>> func)
+    {
+        return ButtonGenerator(buttonType, name, priority, (args, existing) => Task.FromResult(func(args, existing)));
+    }
+
     /// <summary>
     /// <inheritdoc cref="ObjectGenerator(Type, string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
     /// </summary>
     public static UICCustomGenerator<UICPropertyArgs, IUIComponent> ObjectGenerator<T>(string name, double priority, Func<UICPropertyArgs, IUIComponent?, Task<IUICGeneratorResponse<IUIComponent>>> func)
     {
         return ObjectGenerator(typeof(T), name, priority, func);
+    }
+
+    ///<inheritdoc cref="ObjectGenerator{T}(string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> ObjectGenerator<T>(string name, double priority, Func<UICPropertyArgs, IUIComponent?, IUICGeneratorResponse<IUIComponent>> func)
+    {
+        return ObjectGenerator(typeof(T), name, priority, (args, existing) => Task.FromResult(func(args, existing)));
     }
 
     /// <summary>
@@ -287,7 +351,19 @@ public static class GeneratorHelper
         };
     }
 
+    ///<inheritdoc cref="ObjectGenerator(Type, string, double, Func{UICPropertyArgs, IUIComponent?, Task{IUICGeneratorResponse{IUIComponent}}})"/>
+    public static UICCustomGenerator<UICPropertyArgs, IUIComponent> ObjectGenerator(Type objectType, string name, double priority, Func<UICPropertyArgs, IUIComponent?, IUICGeneratorResponse<IUIComponent>> func)
+    {
+        return ObjectGenerator(objectType, name, priority, (args, existing) => Task.FromResult(func(args, existing)));
+    }
 
+    /// <summary>
+    /// Add a generator to define the <see cref="UICPropertyType"/> for a given property
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="priority"></param>
+    /// <param name="func"></param>
+    /// <returns></returns>
     public static UICCustomGenerator<PropertyInfo, UICPropertyType?> PropertyTypeGenerator(string name, double priority, Func<PropertyInfo, UICPropertyType?, Task<IUICGeneratorResponse<UICPropertyType?>>> func) 
     {
         return new UICCustomGenerator<PropertyInfo, UICPropertyType?>()
@@ -298,6 +374,19 @@ public static class GeneratorHelper
         };
     }
 
+    ///<inheritdoc cref="PropertyTypeGenerator(string, double, Func{PropertyInfo, UICPropertyType?, Task{IUICGeneratorResponse{UICPropertyType?}}})"/>
+    public static UICCustomGenerator<PropertyInfo, UICPropertyType?> PropertyTypeGenerator(string name, double priority, Func<PropertyInfo, UICPropertyType?, IUICGeneratorResponse<UICPropertyType?>> func)
+    {
+        return PropertyTypeGenerator(name, priority, (args, existing) => Task.FromResult(func(args, existing)));
+    }
+
+    /// <summary>
+    /// Add a generator to define the foreign key for a property. Foreign key is defined by returning the foreign type.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="priority"></param>
+    /// <param name="func"></param>
+    /// <returns></returns>
     public static UICCustomGenerator<PropertyInfo, Type?> ForeignKeyTypeGenerator(string name, double priority, Func<PropertyInfo, Type?, Task<IUICGeneratorResponse<Type?>>> func)
     {
         return new UICCustomGenerator<PropertyInfo, Type?>()
@@ -306,6 +395,12 @@ public static class GeneratorHelper
             Priority = priority,
             GetResult = func
         };
+    }
+
+    ///<inheritdoc cref="ForeignKeyTypeGenerator(string, double, Func{PropertyInfo, Type?, Task{IUICGeneratorResponse{Type?}}})"/>
+    public static UICCustomGenerator<PropertyInfo, Type?> ForeignKeyTypeGenerator(string name, double priority, Func<PropertyInfo, Type?, IUICGeneratorResponse<Type?>> func)
+    {
+        return ForeignKeyTypeGenerator(name, priority, (args, existing) => Task.FromResult(func(args, existing)));
     }
 
     public static UICCustomGenerator<UICPropertyArgs, Translatable> PropertyToolTip(string name, double priority, Func<UICPropertyArgs, Translatable?, Task<IUICGeneratorResponse<Translatable>>> func)

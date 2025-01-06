@@ -62,8 +62,10 @@ public class StoredComponents : IUICStoredComponents
                 Task.Run(async () =>
                 {
                     await Task.Delay(5000);
-
-                    _components.Remove(key);
+                    lock (_components)
+                    {
+                        _components.Remove(key);
+                    }
                 });
             }
                 
@@ -160,13 +162,13 @@ public class StoredComponents : IUICStoredComponents
 
     #endregion
 
-    public virtual Task SendComponentToUserSignalR(IUIComponent component, object userId)
+    public virtual Task SendComponentToUserSignalR(IUIComponent component, object userId, string appendTo = "body")
     {
         if (userId == null)
             throw new ArgumentNullException(nameof(userId));
-        return SendComponentToUsersSignalR(component, new object[] { userId });
+        return SendComponentToUsersSignalR(component, new object[] { userId }, appendTo);
     }
-    public virtual async Task SendComponentToUsersSignalR(IUIComponent component, IEnumerable<object> userIds)
+    public virtual async Task SendComponentToUsersSignalR(IUIComponent component, IEnumerable<object> userIds, string appendTo = "body")
     {
         if (_signalRService == null)
             throw new Exception($"There is no implementation for {nameof(IUICSignalRService)} registrated.");
@@ -175,7 +177,7 @@ public class StoredComponents : IUICStoredComponents
         var tasks = new List<Task>();
         foreach (var userId in userIds)
         {
-            tasks.Add(_signalRService.SendUIComponentToUser(new(key), userId.ToString()));
+            tasks.Add(_signalRService.SendUIComponentToUser(new(key, appendTo), userId.ToString()));
         }
         await Task.WhenAll(tasks);
     }
