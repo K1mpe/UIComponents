@@ -21,7 +21,7 @@ namespace UIComponents.Models.Models.Inputs
         #endregion
 
         #region Properties
-        public IColor? Color { get; set; } = Defaults.Models.Inputs.UICInputMultiSelect.Color;
+        public IColor? Color { get; set; } = Defaults.Models.Inputs.UICInputMultiSelect.Color?.Invoke();
 
         public List<UICSelectListItem> SelectListItems { get; set; } = new();
 
@@ -118,7 +118,7 @@ namespace UIComponents.Defaults.Models.Inputs
 {
     public class UICInputMultiSelect
     {
-        public static IColor? Color { get; set; }
+        public static Func<IColor> Color { get; set; }
 
         public static List<UICSelectListItem> SelectListItems { get; set; } = new();
 

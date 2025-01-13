@@ -27,7 +27,7 @@ public class UICButton : UIComponent, IUICSupportsTaghelperContent
 
     public Translatable Tooltip { get; set; }
 
-    public IColor? Color { get; set; } = ColorDefaults.ButtonDefault;
+    public IColor? Color { get; set; } = ColorDefaults.ButtonDefault?.Invoke();
 
     /// <summary>
     /// Function triggered when clicking the button

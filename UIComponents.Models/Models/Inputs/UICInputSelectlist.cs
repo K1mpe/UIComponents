@@ -37,7 +37,7 @@ namespace UIComponents.Models.Models.Inputs
 
         #region Properties
 
-        public IColor? Color { get; set; } = Defaults.Models.Inputs.UICInputSelectList.Color;
+        public IColor? Color { get; set; } = Defaults.Models.Inputs.UICInputSelectList.Color?.Invoke();
         /// <summary>
         /// Get a searchfield inside the if there are at least this numer of selectlistitems.
         /// </summary>
@@ -66,7 +66,7 @@ namespace UIComponents.Models.Models.Inputs
         /// <summary>
         /// Action that is triggered on opening the selectlist
         /// </summary>
-        public IUICAction? OnListOpen { get; set; } = Defaults.Models.Inputs.UICInputSelectList.OnListOpen;
+        public IUICAction? OnListOpen { get; set; } = Defaults.Models.Inputs.UICInputSelectList.OnListOpen?.Invoke();
 
         public SelectListRenderer Renderer { get; set; } = Defaults.Models.Inputs.UICInputSelectList.Renderer;
 
@@ -148,12 +148,12 @@ namespace UIComponents.Defaults.Models.Inputs
 {
     public static class UICInputSelectList
     {
-        public static IColor? Color { get; set; }
+        public static Func<IColor> Color { get; set; }
         public static int SearchableIfMinimimResults { get; set; } = -1;
         public static bool ValidationRequired { get; set; }
         public static Translatable NoItemsText { get; set; } = TranslationDefaults.SelectListNoItems;
         public static bool AllowDynamicOptions { get; set; }
-        public static IUICAction? OnListOpen { get; set; }
+        public static Func<IUICAction> OnListOpen { get; set; }
         public static SelectListRenderer Renderer { get; set; } = SelectListRenderer.Select2;
     }
 }

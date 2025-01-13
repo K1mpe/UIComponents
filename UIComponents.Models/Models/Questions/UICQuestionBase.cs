@@ -14,7 +14,7 @@ public abstract class UICQuestionBase : IUIQuestionComponent, IUIComponent
     {
         ButtonSubmit = new UICButton(TranslatableSaver.Save("Button.Send"))
         {
-            Color = ColorDefaults.ButtonSubmit
+            Color = ColorDefaults.ButtonSubmit?.Invoke()
         };
         ButtonCancel = new UICButton(TranslationDefaults.ButtonCancel);
     }

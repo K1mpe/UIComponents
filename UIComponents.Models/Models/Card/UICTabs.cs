@@ -104,7 +104,7 @@ namespace UIComponents.Models.Models.Card
         /// <summary>
         /// Only required if you use this tab as subtab
         /// </summary>
-        public IUICHeader Header { get; set; } = new UICCardHeader(TranslatableSaver.Save("Tab.NoHeader")) { Color = Defaults.Models.Card.UICTabs.HeaderColor };
+        public IUICHeader Header { get; set; } = new UICCardHeader(TranslatableSaver.Save("Tab.NoHeader")) { Color = Defaults.Models.Card.UICTabs.HeaderColor?.Invoke() };
 
         IUICHasAttributes IUICTab.Content => this;
 
@@ -142,7 +142,7 @@ namespace UIComponents.Defaults.Models.Card
 
         public static bool OnlyRenderSingleContent { get; set; }
 
-        public static IColor HeaderColor { get; set; }
+        public static Func<IColor> HeaderColor { get; set; }
         public static UICCardWithTabsRenderer Renderer { get; set; }
         public static UICCardWithTabsStyle TabStyle { get; set; }
     }

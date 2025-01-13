@@ -120,6 +120,7 @@ public class UICPropTypeGenerator : UICGeneratorBase<PropertyInfo, UICPropertyTy
                 case "uint32":
                 case "uint64":
                 case "byte":
+                case "sbyte":
                 case "long":
                     uicPropertyType = UICPropertyType.Number;
                     break;

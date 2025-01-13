@@ -46,7 +46,7 @@ public class TestModelController : Controller
         }
         for(int j= 0; j < items.Count; j++)
         {
-            items[j].Number = (short)j;
+            items[j].Number = (sbyte)j;
         }
         return Json(items);
     }

@@ -239,7 +239,7 @@ public class UICGridColumnGenerator : UICGeneratorBase<UICTableColumn, UICTableC
         {
             if (!args.AddTooltipIconInHeader)
                 return;
-            var icon = new UICIcon(IconDefaults.TooltipIcon.Icon);
+            var icon = IconDefaults.TooltipIcon?.Invoke();
             var tooltipClass = args.PropertyInfo.GetInheritAttribute<UICTooltipIconAttribute>();
             if (tooltipClass != null)
                 icon = new(tooltipClass.IconClass);

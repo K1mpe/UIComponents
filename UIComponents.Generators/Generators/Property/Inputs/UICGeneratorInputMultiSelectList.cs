@@ -70,7 +70,7 @@ public class UICGeneratorInputMultiSelectList : UICGeneratorProperty
                 {
                     inputGroup.AppendInput.Add(new UICButton()
                     {
-                        AppendButtonIcon = IconDefaults.Add,
+                        AppendButtonIcon = IconDefaults.Add?.Invoke(),
                         Tooltip = TranslatableSaver.Save("Button.CreateOfType.Tooltip", "Create a new {0}", TranslationDefaults.TranslateType(propertyType)),
                         OnClick = new UICActionGetPost(UICActionGetPost.ActionTypeEnum.Get, propertyType.Name, "create")
                         {

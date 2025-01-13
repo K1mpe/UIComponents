@@ -45,12 +45,12 @@ public class UICInputList : UICInput<object[]>
     public UICButton AddButton { get; set; } = new UICButton()
     {
         ButtonText = TranslatableSaver.Save("Button.Add"),
-        PrependButtonIcon = new UICIcon(IconDefaults.Add?.Icon)
+        PrependButtonIcon = IconDefaults.Add?.Invoke()
     }.AddClass("hidden-readonly");
 
     public UICButton RemoveButton { get; set; } = new UICButton()
     {
-        PrependButtonIcon = new UICIcon(IconDefaults.Delete?.Icon),
+        PrependButtonIcon = IconDefaults.Delete?.Invoke(),
         Tooltip = TranslationDefaults.ButtonDelete
     }.AddClass("hidden-readonly");
 

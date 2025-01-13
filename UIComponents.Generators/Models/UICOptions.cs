@@ -102,7 +102,7 @@ public class UICOptions
     /// </summary>
     /// <remarks>
     /// result is available as argument, can be changed if <see cref="UICActionGetPost.ResultName"/> is changed</remarks>
-    public IUICAction OnSuccessfullSubmit { get; set; } = OptionDefaults.OnSuccessfullSubmit;
+    public IUICAction OnSuccessfullSubmit { get; set; } = OptionDefaults.OnSuccessfullSubmit?.Invoke();
     
     /// <summary>
     /// Post all properties as <see cref="UICActionGetPost.DefaultData" />. This means that properties that are not visualised, will still post their current value.
@@ -142,7 +142,7 @@ public class UICOptions
     /// <remarks>
     /// delete, cancel, edit, save
     /// </remarks>
-    public string ButtonOrder { get; set; }
+    public string ButtonOrder { get; set; } = OptionDefaults.ButtonOrder;
 
     /// <summary>
     /// Define a button by name, not case sensitive, and add it to the <see cref="UICButtonToolbar"/>
@@ -231,7 +231,7 @@ public class UICOptions
     /// <summary>
     /// The default color assigned to all checkboxes and toggleswitches
     /// </summary>
-    public IColor? CheckboxColor { get; set; } = OptionDefaults.CheckboxColor;
+    public IColor? CheckboxColor { get; set; } = OptionDefaults.CheckboxColor?.Invoke();
 
     /// <summary>
     /// This is used for all checkboxes and checkboxthreestates

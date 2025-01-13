@@ -41,7 +41,8 @@
         Model.AddAttribute("class", "form-control-plaintext");
     if (Model.AllowDynamicOptions)
         Model.SearchableIfMinimimResults = 0;
-
+    if (Model.HasClientSideValidation)
+        Model.AddAttribute("required", "true");
 
     if (Model.Color != null)
     {
@@ -114,6 +115,10 @@
         $('#@id').on('focus', ()=>{
             $('#@id').trigger('uic-open');
         });
+
+        $('#@id').on('change', ()=>{
+
+        })
 
         $('#@id').on('uic-open', (ev)=> ev.stopPropagation());
         

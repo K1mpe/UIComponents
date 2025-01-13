@@ -40,7 +40,7 @@ public class UICGeneratorButtonCreate : UICGeneratorProperty
         var button = new UICButtonSave()
         {
             ButtonText = TranslationDefaults.ButtonCreate,
-            PrependButtonIcon = new UICIcon(IconDefaults.Create?.Icon??null)
+            PrependButtonIcon = IconDefaults.Create?.Invoke()
         }.AddClass("btn-create");
 
         await Task.Delay(0);

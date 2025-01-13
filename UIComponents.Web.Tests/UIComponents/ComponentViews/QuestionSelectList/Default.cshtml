@@ -35,8 +35,8 @@
 
             const @guid = Swal.mixin({
                 customClass: {
-                    confirmButton: 'btn btn-@(Model.ButtonSubmit.Color?.ToLower() ?? UIComponents.Defaults.ColorDefaults.ButtonDefault.ToLower())',
-                    cancelButton: 'btn btn-@(Model.ButtonCancel.Color?.ToLower() ?? UIComponents.Defaults.ColorDefaults.ButtonDefault.ToLower())',
+                    confirmButton: 'btn btn-@(Model.ButtonSubmit.Color?.ToLower() ?? UIComponents.Defaults.ColorDefaults.ButtonDefault?.Invoke()?.ToLower())',
+                    cancelButton: 'btn btn-@(Model.ButtonCancel.Color?.ToLower() ?? UIComponents.Defaults.ColorDefaults.ButtonDefault?.Invoke()?.ToLower())',
                 },
                 buttonsStyling: false
             });

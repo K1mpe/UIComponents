@@ -8,8 +8,8 @@ public class UICButtonDelete : UICButton
     public UICButtonDelete()
     {
         ButtonText = TranslationDefaults.ButtonDelete;
-        Color = ColorDefaults.ButtonDelete;
-        PrependButtonIcon = new UICIcon(UIComponents.Defaults.IconDefaults.Delete?.Icon ?? string.Empty);
+        Color = ColorDefaults.ButtonDelete?.Invoke();
+        PrependButtonIcon = IconDefaults.Delete?.Invoke();
         this.AddAttribute("class", "btn-delete");
     }
 

@@ -17,7 +17,7 @@ public class UICCardHeader : UIComponent, IUICHeader, IUICSupportsTaghelperConte
     }
 
     public Translatable Title { get; set; }
-    public IColor? Color { get; set; } = ColorDefaults.CardHeaderDefault;
+    public IColor? Color { get; set; } = ColorDefaults.CardHeaderDefault?.Invoke();
 
     public List<IUIComponent> PrependTitle { get; set; } = new();
     public List<IUIComponent> AppendTitle { get; set; } = new();
@@ -109,7 +109,7 @@ public class UICCardHeader : UIComponent, IUICHeader, IUICSupportsTaghelperConte
             if (modal.ShowCloseButton)
                 header.Buttons.Add(new UICButton()
                 {
-                    PrependButtonIcon = new UICIcon(IconDefaults.ButtonClose.Icon),
+                    PrependButtonIcon = IconDefaults.ButtonClose?.Invoke(),
                     OnClick = modal.TriggerClose()
                 });
         }

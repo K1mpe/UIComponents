@@ -42,22 +42,8 @@ public class UICValidatorMinMaxOfTypelong : IUICPropertyValidationRuleMinValue<l
 
     public Task<long?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(long.MinValue as long?);
 }
-public class UICValidatorMinMaxOfTypeFloat : IUICPropertyValidationRuleMinValue<float>, IUICPropertyValidationRuleMaxValue<float>
-{
-    public Type? PropertyType => typeof(float);
 
-    public Task<float?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(float.MaxValue as float?);
 
-    public Task<float?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(float.MinValue as float?);
-}
-public class UICValidatorMinMaxOfTypeDouble : IUICPropertyValidationRuleMinValue<double>, IUICPropertyValidationRuleMaxValue<double>
-{
-    public Type? PropertyType => typeof(double);
-
-    public Task<double?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(double.MaxValue as double?);
-
-    public Task<double?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(double.MinValue as double?);
-}
 public class UICValidatorMinMaxOfTypeDecimal : IUICPropertyValidationRuleMinValue<decimal>, IUICPropertyValidationRuleMaxValue<decimal>
 {
     public Type? PropertyType => typeof(decimal);
@@ -83,11 +69,11 @@ public class UICValidatorMinMaxOfTypeUInt : IUICPropertyValidationRuleMinValue<u
 
     public Task<uint?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(uint.MinValue as uint?);
 }
-public class UICValidatorMinMaxOfTypeUlong : IUICPropertyValidationRuleMinValue<ulong>, IUICPropertyValidationRuleMaxValue<ulong>
+public class UICValidatorMinMaxOfTypeUlong : IUICPropertyValidationRuleMinValue<ulong>//, IUICPropertyValidationRuleMaxValue<ulong>
 {
     public Type? PropertyType => typeof(ulong);
 
-    public Task<ulong?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(ulong.MaxValue as ulong?);
+    //public Task<ulong?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(ulong.MaxValue as ulong?);
 
     public Task<ulong?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(ulong.MinValue as ulong?);
 }

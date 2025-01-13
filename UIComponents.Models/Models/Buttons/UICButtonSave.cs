@@ -9,8 +9,8 @@ public class UICButtonSave : UICButton
     public UICButtonSave()
     {
         ButtonText = TranslationDefaults.ButtonSave;
-        PrependButtonIcon = new UICIcon(IconDefaults.Save?.Icon);
-        Color = ColorDefaults.ButtonSubmit ?? ColorDefaults.ButtonDefault;
+        PrependButtonIcon = IconDefaults.Save?.Invoke();
+        Color = ColorDefaults.ButtonSubmit?.Invoke() ?? ColorDefaults.ButtonDefault?.Invoke();
         this.AddAttribute("class", "btn-save");
     }
 }

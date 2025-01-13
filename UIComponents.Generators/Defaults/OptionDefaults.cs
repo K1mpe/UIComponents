@@ -80,6 +80,9 @@ public static class OptionDefaults
     ///<inheritdoc cref="UICOptions.ButtonDistance" />
     public static ButtonDistance ButtonDistance = ButtonDistance.Medium;
 
+    ///<inheritdoc cref="UICOptions.ButtonOrder"/>
+    public static string ButtonOrder;
+
     public static Dictionary<string, Func<UICButtonToolbar, UICPropertyArgs, Task>> ButtonGenerators = new();
     ///<inheritdoc cref="UICOptions.ButtonPosition" />
     public static ButtonPosition? ButtonPosition = null;
@@ -93,10 +96,10 @@ public static class OptionDefaults
     public static ToolbarPosition ToolbarPosition = ToolbarPosition.BelowForm;
 
     ///<inheritdoc cref="UICOptions.CheckboxColor" />
-    public static IColor? CheckboxColor = null;
+    public static Func<IColor?> CheckboxColor = null;
 
     ///<inheritdoc cref="UICOptions.OnSuccessfullSubmit" />
-    public static IUICAction OnSuccessfullSubmit = new UICCustom();
+    public static Func<IUICAction> OnSuccessfullSubmit = ()=> new UICCustom();
 
     ///<inheritdoc cref="UICOptions.StartInCard" />
     public static UICCard? StartInCard = null;

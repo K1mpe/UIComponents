@@ -84,7 +84,7 @@
     &:has(>.card-header .nav-pills) {
         .tab-pane > .uic.card-tabs:only-child, .tab-pane > div:only-child > .uic.card-tabs:only-child, .sub-tabs {
             &:has(>.row>.col-tab-headers .nav-pills) {
-                margin-top: -1rem;
+                margin-top: -3rem;
             }
         }
     }

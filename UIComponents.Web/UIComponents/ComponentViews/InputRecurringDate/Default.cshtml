@@ -139,7 +139,7 @@
         let tr = $('<tr>')
             .append($('<td>').append($('<i>', {class: 'fas fa-plus text-success', title: @await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Included"))})))
                     .append($('<td>').append($('<span>', {class: 'recurring-text'}).text(text)))
-                    .append($('<td>').append($('<i>', {class: '@Html.JsEncode(IconDefaults.Delete?.Icon??string.Empty) text-danger btn-delete-row'})));
+                    .append($('<td>').append($('<i>', {class: '@Html.JsEncode(IconDefaults.Delete?.Invoke()?.Icon??string.Empty) text-danger btn-delete-row'})));
 
                     tr.attr('data-value', data);
                     tr.addClass('included');
@@ -151,7 +151,7 @@
                     let tr = $('<tr>')
             .append($('<td>').append($('<i>', {class: 'fas fa-minus text-warning', title: @await Html.TranslateJs(L, TranslatableSaver.Save("RecurringDate.Excluded"))})))
                     .append($('<td>').append($('<span>', {class: 'recurring-text'}).text(text)))
-                    .append($('<td>').append($('<i>', {class: '@Html.JsEncode(IconDefaults.Delete?.Icon??string.Empty) text-danger btn-delete-row', title: @await Html.TranslateJs(L, TranslationDefaults.ButtonDelete, "'")})));
+                    .append($('<td>').append($('<i>', {class: '@Html.JsEncode(IconDefaults.Delete?.Invoke()?.Icon??string.Empty) text-danger btn-delete-row', title: @await Html.TranslateJs(L, TranslationDefaults.ButtonDelete, "'")})));
 
                     tr.attr('data-value', data);
                     tr.addClass('excluded');

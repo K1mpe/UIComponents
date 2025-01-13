@@ -7,7 +7,7 @@ public class UICButtonRefreshPartial : UICButton
 {
 	public UICButtonRefreshPartial(UICPartial partial)
 	{
-		PrependButtonIcon = new UICIcon(IconDefaults.RefreshIcon.Icon);
+		PrependButtonIcon = IconDefaults.RefreshIcon?.Invoke();
 		ButtonText = TranslationDefaults.ButtonRefresh;
 		PrependButtonIcon.GetId();
 		OnClick = new UICActionRefreshPartial(partial, PrependButtonIcon);

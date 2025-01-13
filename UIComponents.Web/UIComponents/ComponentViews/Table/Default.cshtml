@@ -260,7 +260,7 @@
                 controller: {
                     loadData: async (args) => {
                         args = $('#@id').triggerHandler('uic-getFilters', args) || args; //The 'on.('uic-getFilters')' may change the filter arguments.
-                        $('#@id').trigger('uic-beforeFetch');
+                        $('#@id').trigger('uic-beforeFetch', args);
                         lastFilters = args;
                         @if(Model.SaveFiltersInLocalStorage)
                         {

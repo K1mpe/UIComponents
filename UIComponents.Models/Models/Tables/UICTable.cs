@@ -189,7 +189,7 @@ namespace UIComponents.Models.Models.Tables
         public List<UICSignalR> SignalRRefreshTriggers { get; set; } = new();
 
         #region Events
-        public IUICAction OnInit { get; set; } = Defaults.Models.Table.UICTable.OnInit;
+        public IUICAction OnInit { get; set; } = Defaults.Models.Table.UICTable.OnInit?.Invoke();
 
         /// <summary>
         /// This function is called when data has finished loading.
@@ -199,7 +199,7 @@ namespace UIComponents.Models.Models.Tables
         /// <br>args.grid</br>
         /// <br>args.data</br>
         /// </remarks>
-        public IUICAction OnDataLoaded { get; set; } = Defaults.Models.Table.UICTable.OnDataLoaded;
+        public IUICAction OnDataLoaded { get; set; } = Defaults.Models.Table.UICTable.OnDataLoaded?.Invoke();
 
         /// <summary>
         /// This is called before editing a row
@@ -211,7 +211,7 @@ namespace UIComponents.Models.Models.Tables
         /// <br>args.item</br>
         /// <br>args.itemIndex</br>
         /// </remarks>
-        public IUICAction OnDataEditing { get; set; } = Defaults.Models.Table.UICTable.OnDataEditing;
+        public IUICAction OnDataEditing { get; set; } = Defaults.Models.Table.UICTable.OnDataEditing?.Invoke();
 
         /// <summary>
         /// This function is called when trying to delete a item.
@@ -224,7 +224,7 @@ namespace UIComponents.Models.Models.Tables
         /// <br> args.item</br>
         /// <br> args.itemIndex</br>
         /// </remarks>
-        public IUICAction OnItemDeleting { get; set; } = Defaults.Models.Table.UICTable.OnItemDeleting;
+        public IUICAction OnItemDeleting { get; set; } = Defaults.Models.Table.UICTable.OnItemDeleting?.Invoke();
 
         /// <summary>
         /// When no <see cref="OnRowClick"/> function is provided and editing is true, edit the row that is clicked
@@ -237,7 +237,7 @@ namespace UIComponents.Models.Models.Tables
         /// <br>args.item</br>
         /// <br>args.itemIndex</br>
         /// </summary>
-        public IUICAction OnRowClick { get; set; } = Defaults.Models.Table.UICTable.OnRowClick;
+        public IUICAction OnRowClick { get; set; } = Defaults.Models.Table.UICTable.OnRowClick?.Invoke();
 
         /// <summary>
         /// The function that is used to load the data.
@@ -246,7 +246,7 @@ namespace UIComponents.Models.Models.Tables
         /// Available args:
         /// args => filter arguments
         /// </remarks>
-        public IUICAction LoadData { get; set; } = Defaults.Models.Table.UICTable.LoadData;
+        public IUICAction LoadData { get; set; } = Defaults.Models.Table.UICTable.LoadData?.Invoke();
 
         /// <summary>
         /// Called when a item is inserted.
@@ -254,7 +254,7 @@ namespace UIComponents.Models.Models.Tables
         /// <remarks>
         /// Available args => 'item'
         /// </remarks>
-        public IUICAction OnInsertItem { get; set; } = Defaults.Models.Table.UICTable.OnInsertItem;
+        public IUICAction OnInsertItem { get; set; } = Defaults.Models.Table.UICTable.OnInsertItem?.Invoke();
 
         /// <summary>
         /// Called when a item is deleted.
@@ -262,7 +262,7 @@ namespace UIComponents.Models.Models.Tables
         /// <remarks>
         /// Available args => 'item'
         /// </remarks>
-        public IUICAction OnUpdateItem { get; set; } = Defaults.Models.Table.UICTable.OnUpdateItem;
+        public IUICAction OnUpdateItem { get; set; } = Defaults.Models.Table.UICTable.OnUpdateItem?.Invoke();
 
         /// <summary>
         /// Called when a item is deleted.
@@ -270,17 +270,17 @@ namespace UIComponents.Models.Models.Tables
         /// <remarks>
         /// Available args => 'item'
         /// </remarks>
-        public IUICAction OnDeleteItem { get; set; } = Defaults.Models.Table.UICTable.OnDeleteItem;
+        public IUICAction OnDeleteItem { get; set; } = Defaults.Models.Table.UICTable.OnDeleteItem?.Invoke();
 
         /// <summary>
         /// This function overwrites the default functionality for the insertbutton. This may be used to open a model for inserting instead.
         /// </summary>
-        public IUICAction OnInsertButtonClick { get; set; } = Defaults.Models.Table.UICTable.OnInsertButtonClick;
+        public IUICAction OnInsertButtonClick { get; set; } = Defaults.Models.Table.UICTable.OnInsertButtonClick?.Invoke();
 
         /// <summary>
         /// This runs at the end of the jsGrid configuration, and may overwrite all previous functionality
         /// </summary>
-        public IUICAction AdditionalConfig { get; set; } = Defaults.Models.Table.UICTable.AdditionalConfig;
+        public IUICAction AdditionalConfig { get; set; } = Defaults.Models.Table.UICTable.AdditionalConfig?.Invoke();
 
         /// <summary>
         /// Create a custom renderer for the entire row
@@ -288,7 +288,7 @@ namespace UIComponents.Models.Models.Tables
         /// <remarks>
         /// Available args=> item, index
         /// </remarks>
-        public IUICAction RowRenderer { get; set; } = Defaults.Models.Table.UICTable.RowRenderer;
+        public IUICAction RowRenderer { get; set; } = Defaults.Models.Table.UICTable.RowRenderer?.Invoke();
         #endregion
 
         #endregion
@@ -782,18 +782,18 @@ namespace UIComponents.Defaults.Models.Table
         public static bool SaveOnEnter { get; set; }
         public static List<UIComponents.Models.Models.UICSignalR> SignalRRefreshTriggers { get; set; } = new();
         public static UICActionDelayedAction DelayedAction { get; set; } = new UICActionDelayedAction(1000, UICActionDelayedAction.DelayedActionType.Throttle, null);
-        public static IUICAction OnInit { get; set; } = new UICCustom();
-        public static IUICAction OnDataLoaded { get; set; } = new UICCustom();
-        public static IUICAction OnDataEditing { get; set; } = new UICCustom();
-        public static IUICAction OnItemDeleting { get; set; } = new UICCustom();
+        public static Func<IUICAction> OnInit { get; set; } = () => new UICCustom();
+        public static Func<IUICAction> OnDataLoaded { get; set; } = () => new UICCustom();
+        public static Func<IUICAction> OnDataEditing { get; set; } = () => new UICCustom();
+        public static Func<IUICAction> OnItemDeleting { get; set; } = () => new UICCustom();
         public static bool EditOnRowClick { get; set; } = true;
-        public static IUICAction OnRowClick { get; set; } = new UICCustom();
-        public static IUICAction LoadData { get; set; } = new UICCustom();
-        public static IUICAction OnInsertItem { get; set; } = new UICCustom();
-        public static IUICAction OnUpdateItem { get; set; } = new UICCustom();
-        public static IUICAction OnDeleteItem { get; set; } = new UICCustom();
-        public static IUICAction OnInsertButtonClick { get; set; } = new UICCustom();
-        public static IUICAction AdditionalConfig { get; set; } = new UICCustom();
-        public static IUICAction RowRenderer { get; set; } = new UICCustom();
+        public static Func<IUICAction> OnRowClick { get; set; } = ()=>new UICCustom();
+        public static Func<IUICAction> LoadData { get; set; } = () => new UICCustom();
+        public static Func<IUICAction> OnInsertItem { get; set; } = () => new UICCustom();
+        public static Func<IUICAction> OnUpdateItem { get; set; } = () => new UICCustom();
+        public static Func<IUICAction> OnDeleteItem { get; set; } = () => new UICCustom();
+        public static Func<IUICAction> OnInsertButtonClick { get; set; } = () => new UICCustom();
+        public static Func<IUICAction> AdditionalConfig { get; set; } = () => new UICCustom();
+        public static Func<IUICAction> RowRenderer { get; set; } = () => new UICCustom();
     }
 }

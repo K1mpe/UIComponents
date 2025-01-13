@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using UIComponents.Abstractions.Interfaces.ValidationRules;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
@@ -9,6 +10,7 @@ namespace UIComponents.Generators.Generators.Property.Inputs;
 public class UICGeneratorInputNumber : UICGeneratorProperty
 {
     private readonly IUICValidationService _uicValidationService;
+    
     public UICGeneratorInputNumber(ILogger<UICGeneratorInputNumber> logger, IUICValidationService uicValidationService) : base(logger)
     {
         RequiredCaller = UICGeneratorPropertyCallType.PropertyInput;
@@ -66,9 +68,22 @@ public class UICGeneratorInputNumber : UICGeneratorProperty
             
         decimal? ParseValue(object value)
         {
-            if (value == null)
+            if (value == null ||string.IsNullOrWhiteSpace(value.ToString()))
                 return null;
-            return decimal.Parse(value.ToString());
+            try
+            {
+                if(value is float f)
+                    return Convert.ToDecimal(f);
+                if(value is double d)
+                    return Convert.ToDecimal(d);
+
+                return decimal.Parse(value.ToString());
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Failed to set {0} as validation value", value.ToString());
+                return null;
+            }
         }
         
 

@@ -41,7 +41,7 @@ namespace UIComponents.Models.Models
         /// </summary>
         public bool ColorTabIndicators { get; set; } = Defaults.Models.UICCarousel.ColorTabIndicators;
 
-        public TimeSpan? NextPageInterval { get; set; } = Defaults.Models.UICCarousel.NextPageInterval;
+        public TimeSpan? NextPageInterval { get; set; } = Defaults.Models.UICCarousel.NextPageInterval?.Invoke();
 
         /// <summary>
         /// Render the carousel if there are no <see cref="Children"/> to be rendered
@@ -153,7 +153,7 @@ namespace UIComponents.Defaults.Models
                 
         public static bool ColorTabIndicators { get; set; } = true;
                 
-        public static TimeSpan? NextPageInterval { get; set; } = TimeSpan.FromSeconds(5);
+        public static Func<TimeSpan?> NextPageInterval { get; set; } = ()=>TimeSpan.FromSeconds(5);
                 
         public static bool RenderEmpty { get; set; }
                 

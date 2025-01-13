@@ -10,12 +10,12 @@ public class UICButtonCollapseCard : UICToggleButton
 	{
 		ButtonTrue = new UICButton()
 		{
-			PrependButtonIcon = IconDefaults.ButtonCardExpend,
+			PrependButtonIcon = IconDefaults.ButtonCardExpend?.Invoke(),
 			ButtonText = TranslationDefaults.ButtonCardExpand
 		};
 		ButtonFalse = new UICButton()
 		{
-			PrependButtonIcon = IconDefaults.ButtonCardCollapse,
+			PrependButtonIcon = IconDefaults.ButtonCardCollapse?.Invoke(),
 			ButtonText = TranslationDefaults.ButtonCardCollapse
 		};
 		Card = card;

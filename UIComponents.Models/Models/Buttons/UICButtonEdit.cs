@@ -8,13 +8,13 @@ public class UICButtonEdit : UIComponent
         ButtonSetEdit = new UICButton()
         {
             ButtonText = TranslationDefaults.ButtonEdit,
-            AppendButtonIcon = new UICIcon(IconDefaults.Edit?.Icon),
+            PrependButtonIcon = IconDefaults.Edit?.Invoke(),
             OnClick = new UICActionSetEdit(),
         };
         ButtonSetReadonly = new UICButton()
         {
             ButtonText = TranslationDefaults.ButtonReadonly,
-            AppendButtonIcon = new UICIcon(IconDefaults.CancelEdit?.Icon),
+            PrependButtonIcon = IconDefaults.CancelEdit?.Invoke(),
             OnClick = new UICActionSetReadonly(),
         };
     }

@@ -31,9 +31,10 @@ namespace UIComponents.Web.Tests.Models
 
         [UICSpan("<span class='text-warning'>Dit</span> <blub>is een <sub>spantekst</sub>  &|é@#\"'([§^è!ç{0})-¨[^$*]ù%´µ``<>\\")]
         
-        public short Number { get; set; }
+        public sbyte Number { get; set; }
 
         public double Decimal { get; set; }
+        public float Float { get; set; }
 
         [ReadOnly(true)]
         public TimeSpan TimeSpan { get; set; }

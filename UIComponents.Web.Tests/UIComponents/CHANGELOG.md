@@ -1,3 +1,11 @@
+# 2025-01-13 (V1.3.18.1)
+- Fix float min-max val
+- Minor Fixes
+
+# 2025-01-09 (V1.3.18)
+- Functions for referenced defaults instead of plain objects.
+- Fix for Min / Max double values as validation
+
 # 2025-01-06 (V1.3.17)
 - IconDefaults for create, edit button etc
 - Generator methods to create a button

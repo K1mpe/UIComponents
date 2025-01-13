@@ -14,10 +14,30 @@
                 @include border-right-radius(0);
             }
         }
+
+        .apply-toolbar-dist {
+            position: relative;
+            display: inline-flex;
+            vertical-align: middle;
+
+            input:not(:first-child) {
+                @include border-left-radius(0);
+                margin-left: -1px;
+            }
+
+            input:not(:last-child) {
+                @include border-right-radius(0);
+            }
+        }
     }
 
     &.dist-short {
         > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right {
+            display: flex;
+            gap: map-get($spacers, 1);
+        }
+
+        .apply-toolbar-dist {
             display: flex;
             gap: map-get($spacers, 1);
         }
@@ -28,10 +48,20 @@
             display: flex;
             gap: map-get($spacers, 3);
         }
+
+        .apply-toolbar-dist {
+            display: flex;
+            gap: map-get($spacers, 3);
+        }
     }
 
     &.dist-long {
         > .btn-toolbar-left, .btn-toolbar-center, .btn-toolbar-right {
+            display: flex;
+            gap: map-get($spacers, 5);
+        }
+
+        .apply-toolbar-dist {
             display: flex;
             gap: map-get($spacers, 5);
         }
