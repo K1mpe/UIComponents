@@ -1,3 +1,13 @@
+# 2025-01-22 (V1.3.19)
+- Css Mixins
+- Minor fixes
+- Fix UICGeneratorInputMultiline permission check
+- Fix UICOptions.FormReadonly
+- Select2 set value on change
+- Sidepanel add class to sidebar-header-toolbar
+- partial.js replace triggerHandler('uic-reloaded') to trigger('uic-reloaded')
+- UIC Taghelper does not invoke by default, except when using the "i" property
+
 # 2025-01-13 (V1.3.18.1)
 - Fix float min-max val
 - Minor Fixes

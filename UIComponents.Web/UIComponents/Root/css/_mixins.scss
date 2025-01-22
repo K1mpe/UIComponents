@@ -1,0 +1,78 @@
+﻿/*#region Visible-child*/
+
+
+//Takes the first child element with $child-selector if there is not a visible element before
+@mixin first-visible($child-selector: '*') {
+    :not(:not([hidden], .d-none, :empty, script, style, link, meta, template, [type="hidden"], [style*="display: none"],[style*="visibility: hidden"]) ~ #{$child-selector}) {
+        @content;
+    }
+}
+
+//Takes all children with this selector except the first visible child
+@mixin not-first-visible($child-selector: '*') {
+    :not([hidden], .d-none, :empty, script, style, link, meta, template, [type="hidden"], [style*="display: none"],[style*="visibility: hidden"]) ~ #{$child-selector}{
+        @content;
+    }
+}
+
+//Takes the last child element with $child-selector if there is no visible element after
+@mixin last-visible($child-selector: '*') {
+    #{$child-selector}:not(:has(~ :not([hidden], .d-none, :empty, script, style, link, meta, template, [type="hidden"], [style*="display: none"],[style*="visibility: hidden"]))) {
+        @content;
+    }
+}
+
+//Takes all children with this selector except the last visible child
+@mixin not-last-visible($child-selector: '*') {
+    #{$child-selector}:has(~ :not([hidden], .d-none, :empty, script, style, link, meta, template, [type="hidden"], [style*="display: none"],[style*="visibility: hidden"])) {
+        @content;
+    }
+}
+
+
+
+//Applies a radius on the left side of the first visible child
+@mixin radius-first-left($radius) {
+    @include first-visible {
+        border-top-left-radius: $radius;
+        border-bottom-left-radius: $radius;
+    }
+}
+
+//Applies a radius on the right side of the last visible child
+@mixin radius-last-right($radius) {
+    @include last-visible {
+        border-top-right-radius: $radius;
+        border-bottom-right-radius: $radius;
+    }
+}
+
+//Applies a radius on the top side of the first visible child
+@mixin radius-first-top($radius) {
+    @include first-visible {
+        border-top-left-radius: $radius;
+        border-top-right-radius: $radius;
+    }
+}
+
+//Applies a radius on the bottom of the last visible child
+@mixin radius-last-bottom($radius) {
+    @include last-visible {
+        border-bottom-left-radius: $radius;
+        border-bottom-right-radius: $radius;
+    }
+}
+
+//Applies a radius on the left of the first child and the right of the last child
+@mixin radius-first-last-x($radius){
+    @include radius-first-left($radius);
+    @include radius-last-right($radius);
+}
+
+//Applies a radius on the top of the first child and the bottom of the last child
+@mixin radius-first-last-y($radius) {
+    @include radius-first-top($radius);
+    @include radius-last-bottom($radius);
+}
+
+/*#endregion Visible-child*/

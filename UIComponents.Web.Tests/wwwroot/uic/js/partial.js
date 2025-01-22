@@ -191,7 +191,7 @@
         if (showOverlay)
             uic.partial.hideLoadingOverlay(partial);
 
-        await partial.triggerHandler('uic-reloaded');
+        await partial.trigger('uic-reloaded');
     },
 };
 $(document).ready(() => {

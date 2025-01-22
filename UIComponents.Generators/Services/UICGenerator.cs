@@ -130,8 +130,6 @@ public class UICGenerator : IUIComponentGenerator
             default:
                 throw new ArgumentStringException("{0} is not a valid calltype for a button", buttonType);
         }
-        if (result == null)
-            throw new ArgumentStringException("There is no result for {0}", buttonType);
         if(result is UICButton buttonResult)
         {
             configButton?.Invoke(buttonResult);

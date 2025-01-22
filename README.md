@@ -181,7 +181,8 @@ Rendering a Task< IUIComponent > is also supported
 ```
 There is also a taghelper for rendering components. If your component supports [IUICHasAttributes](#IUICHasAttributes), attributes assigned to the component are applied to the component
 ```cshtml
-<uic c="myComponent" class="my-custom-class"></uic>
+<uic c="myComponent" class="my-custom-class" invoke=true></uic>
+<uic i="myComponent" class="my-custom-class"></uic>
 ```
 If this component implements the [IUICSupportsTaghelperContent](#IUICSupportsTaghelperContent), you can also write content within the tags.
 > For mor info, see [UICTaghelper](#uictaghelper)

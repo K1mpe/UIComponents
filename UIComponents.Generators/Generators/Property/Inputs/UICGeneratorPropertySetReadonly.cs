@@ -24,16 +24,22 @@ public class UICGeneratorPropertySetReadonly : UICGeneratorProperty
 
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
-        if (!args.Options.CheckWritePermissions)
-            return GeneratorHelper.Next();
 
         if(existingResult is UICInput input && !input.Readonly)
         {
+            if(args.Options.FormReadonly)
+            {
+                input.Readonly = true;
+                return GeneratorHelper.Success(existingResult, true);
+            }
+
+            if (!args.Options.CheckWritePermissions)
+                return GeneratorHelper.Next();
             input.Readonly = await _validationService.ValidatePropertyReadonly(args.PropertyInfo, args.ClassObject);
 
-            if(!input.Readonly && args.Configuration.TryGetPermissionService(out var permissionService))
+            if(!input.Readonly &&  args.Configuration.TryGetPermissionService(out var permissionService))
             {
-                input.Readonly = !await permissionService.CanEditProperty(args.ClassObject, args.PropertyName);
+                input.Readonly = !(await permissionService!.CanEditObject(args.ClassObject!) && await permissionService.CanEditProperty(args.ClassObject, args.PropertyName));
                 if(!input.Readonly && UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inherit))
                 {
                     var inheritInstance = Activator.CreateInstance(inherit.ReflectedType);
@@ -46,7 +52,7 @@ public class UICGeneratorPropertySetReadonly : UICGeneratorProperty
                             x.SetValue(inheritInstance, property.GetValue(args.ClassObject));
                     }
 
-                    input.Readonly = !await permissionService!.CanEditProperty(inheritInstance, inherit.Name);
+                    input.Readonly = !(await permissionService!.CanEditObject(inheritInstance) && await permissionService!.CanEditProperty(inheritInstance, inherit.Name));
                 }
             }
             return GeneratorHelper.Success<IUIComponent>(input, true);

@@ -26,7 +26,7 @@ public class UICGeneratorPropertyViewPermission : UICGeneratorProperty
         if (!args.Configuration.TryGetPermissionService(out var permissionService))
             return new UICGeneratorResponseNext<IUIComponent>();
 
-        if (!await permissionService!.CanViewObject(args.ClassObject))
+        if (args.ClassObject != null && !await permissionService!.CanViewObject(args.ClassObject))
             return new UICGeneratorResponseSuccess<IUIComponent>(null, false);
 
       

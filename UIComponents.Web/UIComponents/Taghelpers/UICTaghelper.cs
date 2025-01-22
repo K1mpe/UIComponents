@@ -6,7 +6,7 @@ namespace UIComponents.Web.Taghelpers;
 
 
 /// <summary>
-/// Render a component here unless <see cref="Invoke"/> is false.
+/// Render a component here if <see cref="Invoke"/> is true.
 /// <br>can load child content if <see cref="IUICSupportsTaghelperContent"/> is enabled on the element</br>
 /// <br>applies all htlm attributes if <see cref="IUICHasAttributes"/> is enabled on the element</br>
 /// </summary>
@@ -42,8 +42,22 @@ public class UICTaghelper : TagHelper
     [HtmlAttributeName("c")]
     public IUIComponent C
     {
-        get => UIC; 
+        get => UIC;
         set => UIC = value;
+    }
+    
+    /// <summary>
+    /// a short alias for <see cref="UIC"/>, this also sets <see cref="Invoke"/> on true
+    /// <inheritdoc cref="UIC"/>
+    /// </summary>
+    [HtmlAttributeName("i")]
+    public IUIComponent I
+    {
+        get => UIC;
+        set {
+            UIC = value;
+            Invoke = true;
+        }
     }
 
     /// <summary>
@@ -54,9 +68,10 @@ public class UICTaghelper : TagHelper
 
     /// <summary>
     /// If true, the component is rendered where the taghelper is used. If false, you need to invoke it somewhere else
+    /// <br>If you intend to invoke the component here, you can also use the <see cref="I"/> property.</br>
     /// </summary>
     [HtmlAttributeName("invoke")]
-    public bool Invoke { get; set; } = true;
+    public bool Invoke { get; set; };
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {

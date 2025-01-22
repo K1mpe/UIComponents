@@ -1,5 +1,7 @@
 ﻿.uic.side-panel-container {
     &.horizontal {
+        margin-left: 0;
+
         > .side-panel {
             //transition: width $transition-speed ease-in-out;
 

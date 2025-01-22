@@ -62,3 +62,36 @@
         }
     }
 }
+
+.jsgrid.in-card {
+    margin-left: calc(-#{$card-spacer-x} - 1px);
+    margin-right: calc(-#{$card-spacer-x} - 1px);
+
+    &:first-child {
+    }
+}
+.card-body {
+    @include first-visible(div) {
+        > .jsgrid.in-card {
+            margin-top: calc(-#{$card-spacer-x} - 1px);
+            border-top-left-radius: $card-border-radius;
+            border-top-right-radius: $card-border-radius;
+        }
+    }
+
+    @include last-visible(div) {
+        > .jsgrid.in-card {
+            margin-bottom: calc(-#{$card-spacer-x} - 1px);
+            border-bottom-left-radius: $card-border-radius;
+            border-bottom-right-radius: $card-border-radius;
+        }
+    }
+}
+.radius-x {
+    > * {
+        border-radius: 0;
+    }
+
+    @include radius-first-last-x(10px);
+}
+
