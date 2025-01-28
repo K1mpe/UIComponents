@@ -10,7 +10,7 @@
 
 //Takes all children with this selector except the first visible child
 @mixin not-first-visible($child-selector: '*') {
-    :not([hidden], .d-none, :empty, script, style, link, meta, template, [type="hidden"], [style*="display: none"],[style*="visibility: hidden"]) ~ #{$child-selector}{
+    :not([hidden], .d-none, :empty, script, style, link, meta, template, [type="hidden"], [style*="display: none"],[style*="visibility: hidden"]) ~ #{$child-selector} {
         @content;
     }
 }
@@ -29,7 +29,19 @@
     }
 }
 
-
+//Only works on the selector if it is the only visible child
+@mixin only-child($child-selector: '*') {
+    #{$child-selector}:not(:has(~ :not([hidden], .d-none, :empty, script, style, link, meta, template, [type="hidden"], [style*="display: none"], [style*="visibility: hidden"])))
+    :not(:has(:not([hidden], .d-none, :empty, script, style, link, meta, template, [type="hidden"], [style*="display: none"], [style*="visibility: hidden"]) ~ #{$child-selector})) {
+        @content;
+    }
+}
+//Only works if the selector is the only visible child, css remains on the parent
+@mixin has-only-child($child-selector: '*') {
+    &:has(> #{$child-selector}:first-child:last-child) {
+        @content;
+    }
+}
 
 //Applies a radius on the left side of the first visible child
 @mixin radius-first-left($radius) {
@@ -64,7 +76,7 @@
 }
 
 //Applies a radius on the left of the first child and the right of the last child
-@mixin radius-first-last-x($radius){
+@mixin radius-first-last-x($radius) {
     @include radius-first-left($radius);
     @include radius-last-right($radius);
 }
@@ -76,3 +88,68 @@
 }
 
 /*#endregion Visible-child*/
+
+
+/*#region Tabs*/
+
+//Current tabs is horizontal with tabs (no pills)
+//Only apply this mixin on .card-tabs
+@mixin is-horizontal-tabs() {
+    &:has( > .card-header > .nav-tabs) {
+        @content;
+    }
+}
+//Current tabs is horizontal with pills (no tabs)
+//Only apply this mixin on .card-tabs
+@mixin is-horizontal-pills() {
+    &:has(>.card-header .nav-pills) {
+        @content;
+    }
+}
+//Current tabs is vertical with tabs (no pills)
+//Only apply this mixin on .card-tabs
+@mixin is-vertical-tabs() {
+    &:has(> .row > .col > .nav-tabs) {
+        @content;
+    }
+}
+//Current tabs is vertical with pills (no tabs)
+//Only apply this mixin on .card-tabs
+@mixin is-vertical-pills() {
+    &:has(> .row > .col > .nav-pills) {
+        @content;
+    }
+}
+
+//This selector only has .card-tabs as content
+@mixin has-only-tabs() {
+    @include has-only-child('.card-tabs') {
+        @content;
+    }
+}
+
+//When on .card-tabs, navigate to vertical headers
+@mixin vertical-tabs-headers() {
+    > .row > .col-tab-headers .nav-tabs {
+        @content
+    }
+}
+//When on .card-tabs, navigate to vertical content
+@mixin vertical-tabs-content() {
+    > .row > .col-tab-content > .tab-content > .tab-pane {
+        @content;
+    }
+}
+//When on .card-tabs, navigate to horizontal headers
+@mixin horizontal-tabs-headers() {
+    > .card-header > .card-header-tabs {
+        @content;
+    }
+}
+//When on .card-tabs, navigate to horizontal content
+@mixin horizontal-tabs-content() {
+    > .card-body > .tab-content > .tab-pane {
+        @content;
+    }
+}
+/*#endregion Tabs*/

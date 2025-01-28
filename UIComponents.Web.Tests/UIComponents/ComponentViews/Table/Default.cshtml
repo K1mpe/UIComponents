@@ -445,6 +445,8 @@
                     triggerHeight = null;
                     if(filters.pageSize <= result.data.length)
                         nextPageDisabled = false;
+
+                    $('#@id').trigger('uic-dataLoaded');
                 }
                 $('#@id').on('uic-dataLoaded', ev=> {
                     nextPageDisabled = false;

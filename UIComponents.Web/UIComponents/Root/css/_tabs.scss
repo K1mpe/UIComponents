@@ -1,7 +1,4 @@
 ﻿.uic.card-tabs {
-    .card-header-tabs.nav-pills {
-        margin-bottom: 0;
-    }
 
     a.nav-link {
         margin: -$nav-tabs-border-width;
@@ -18,7 +15,7 @@
         border-bottom: inherit;
     }
 
-    .card-header-tabs {
+    > .card-header > .card-header-tabs {
 
         .tab-title {
             margin-left: auto;
@@ -29,9 +26,12 @@
         }
     }
 
-    .card-header:has(.nav-pills) {
-        border-bottom: 0;
+    > .card-body {
+        &:has(.tab-content > .tab-pane.active > .card:first-child:last-child), &:has(.tab-content > .tab-pane.active > div:first-child:last-child) {
+            padding: 0;
+        }
     }
+
 
     > .row {
         margin-left: 0px;
@@ -41,7 +41,7 @@
             flex-grow: 0;
             min-width: fit-content;
             /*padding-left: 0px;*/
-            margin-left: -2px;
+            //margin-left: -2px;
             padding-right: 0px;
 
             .nav-pills .nav-link:first-child {
@@ -50,24 +50,13 @@
         }
 
         .col-tab-content {
-            padding-left: $card-spacer-x;
-            padding-right: $card-spacer-x;
-            padding-top: $card-spacer-y;
-            padding-bottom: $card-spacer-y;
-        }
-
-        &:has(>.col-tab-headers .nav-tabs) {
-            .col-tab-content {
-                border-top: $nav-tabs-border-width solid $gray-300;
-                margin-top: -$nav-tabs-border-width;
+            &:has(.tab-content > .tab-pane.active >.card:first-child:last-child) {
+                padding: 0;
             }
         }
     }
 
-
     .tab-pane > .uic.card-tabs:only-child, .tab-pane > div:only-child > .uic.card-tabs:only-child, .sub-tabs {
-        margin: calc(-#{$card-spacer-x} + 0px); //1px for $card-border-width but not used by AdminLTE
-        //margin-bottom: calc(-#{$card-spacer-x} + 1px + 1px); //1px for card border and 1px for box-shadow
         border-width: 0;
         box-shadow: none;
 
@@ -80,11 +69,72 @@
             border-top-left-radius: 0;
         }
     }
+    // css for horizontal tabs
+    @include is-horizontal-tabs {
+        @include horizontal-tabs-content {
+            @include has-only-tabs {
+                .card-tabs {
+                    @include is-vertical-tabs {
+                        > .row {
+                            margin-left: -2px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // css for horizontal pills
+    @include is-horizontal-pills {
 
-    &:has(>.card-header .nav-pills) {
-        .tab-pane > .uic.card-tabs:only-child, .tab-pane > div:only-child > .uic.card-tabs:only-child, .sub-tabs {
-            &:has(>.row>.col-tab-headers .nav-pills) {
-                margin-top: -1rem;
+        > .card-header {
+            border-bottom: 0;
+
+            .nav-pills {
+                margin-bottom: 0;
+            }
+        }
+    }
+    // css for vertical tabs
+    @include is-vertical-tabs {
+        @include vertical-tabs-content {
+
+
+            @include has-only-tabs {
+                .card-tabs {
+                    @include is-horizontal-tabs {
+                        @include horizontal-tabs-headers {
+                            margin-left: -$card-spacer-x;
+                        }
+                    }
+
+                    @include is-vertical-tabs {
+                        > .row > .col-tab-headers {
+                            padding: 0;
+                        }
+
+                        @include vertical-tabs-headers {
+                            .nav-link {
+                                border-bottom-left-radius: 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        > .row > .col-tab-content {
+            /*border-top: $nav-tabs-border-width solid $gray-300;
+            margin-top: -$nav-tabs-border-width;*/
+        }
+    }
+    // css for vertical pills
+    @include is-vertical-pills {
+        > .card-body > .tab-content > .tab-pane {
+            > .uic.card-tabs:only-child, > div:only-child > .uic.card-tabs:only-child, > .sub-tabs, div:only-child > .sub-tabs {
+                &:has(> .row > .col > .nav-pills) {
+                    /*margin-top: calc(-#{$card-spacer-x} + 3px);
+                    margin-bottom: calc(-#{$card-spacer-x} + 2px);*/
+                }
             }
         }
     }

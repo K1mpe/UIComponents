@@ -1,3 +1,8 @@
+# 2025-01-28 (V1.3.20)
+- Table infinite loading triggers 'uic-dataLoaded
+- css tabs in tabs
+- Table column button supports async function on click
+
 # 2025-01-22 (V1.3.19)
 - Css Mixins
 - Minor fixes

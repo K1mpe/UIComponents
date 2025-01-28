@@ -71,7 +71,7 @@ public class UICTaghelper : TagHelper
     /// <br>If you intend to invoke the component here, you can also use the <see cref="I"/> property.</br>
     /// </summary>
     [HtmlAttributeName("invoke")]
-    public bool Invoke { get; set; };
+    public bool Invoke { get; set; }
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {

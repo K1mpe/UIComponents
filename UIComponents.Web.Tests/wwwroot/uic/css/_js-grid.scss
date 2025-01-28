@@ -63,14 +63,13 @@
     }
 }
 
-.jsgrid.in-card {
-    margin-left: calc(-#{$card-spacer-x} - 1px);
-    margin-right: calc(-#{$card-spacer-x} - 1px);
 
-    &:first-child {
-    }
-}
 .card-body {
+    .jsgrid.in-card {
+        margin-left: calc(-#{$card-spacer-x} - 1px);
+        margin-right: calc(-#{$card-spacer-x} - 1px);
+    }
+
     @include first-visible(div) {
         > .jsgrid.in-card {
             margin-top: calc(-#{$card-spacer-x} - 1px);
@@ -87,11 +86,3 @@
         }
     }
 }
-.radius-x {
-    > * {
-        border-radius: 0;
-    }
-
-    @include radius-first-last-x(10px);
-}
-
