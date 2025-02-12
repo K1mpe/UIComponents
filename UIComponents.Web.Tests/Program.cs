@@ -51,6 +51,7 @@ builder.Services.AddUIComponentWeb(config =>
     UIComponents.Defaults.OptionDefaults.ToolbarPosition = UIComponents.Generators.Models.ToolbarPosition.AboveForm;
     UIComponents.Defaults.Models.UICUpload.DropzoneCss = "~/lib/dropzone/dropzone.min.css";
     UIComponents.Defaults.Models.UICUpload.DropzoneScript = "/lib/dropzone/dropzone.min.js";
+    UIComponents.Defaults.Models.Graphs.TimeLineGraphDefault.Script_ChartJs_Plugin_Zoom = "/lib/chartjs-plugin-zoom/chartjs-plugin-zoom.js";
     config.AddUpdateMonitor((filepath, newFileStream, overwriteFile) =>
     {
         //Debugger.Break();

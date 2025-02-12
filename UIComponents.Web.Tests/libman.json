@@ -204,7 +204,8 @@
       "library": "chartjs-plugin-zoom@2.0.1",
       "destination": "wwwroot/lib/chartjs-plugin-zoom/",
       "files": [
-        "chartjs-plugin-zoom.min.js"
+        "chartjs-plugin-zoom.min.js",
+        "chartjs-plugin-zoom.js"
       ]
     },
     {

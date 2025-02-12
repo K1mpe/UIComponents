@@ -1093,6 +1093,8 @@
             return uic.getValue(this._grid._container.find(`.jsgrid-edit-row input[name="${this.name}"]`));
         },
         filterTemplate: function () {
+            if (!this.filtering)
+                return "";
             let checkbox = this._renderCheckbox(null, true, true);
             if (this.autosearch)
                 checkbox.on('change', () => { this._grid.search(); });
