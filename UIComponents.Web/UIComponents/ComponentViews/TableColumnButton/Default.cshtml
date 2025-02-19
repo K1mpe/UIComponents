@@ -37,19 +37,34 @@
     @if (Model.OnClick.HasValue())
     {
         <text>
-            onClick: function(value, item){
+            onClick: async function(value, item){
                 @await Model.OnClick.InvokeAsync(Component)
             },
         </text>
     }
 
     itemTemplate(value, item){
+        @if(Model.Validation.HasValue()){
+            <text>
+                let validation = function(value, item){
+                    @await Model.Validation.InvokeAsync(Component)
+                };
+                if(!validation(value, item))
+                    return;
+            </text>
+        }
         let button = this.buttonEl(value, item);
         button = $(button);
-        button.on('click', (ev)=>{
-            ev.stopPropagation();
-            this.onClick(value, item);
-        })
+        @if(Model.OnClick.HasValue())
+        {
+            <text>
+                button.on('click', (ev)=>{
+                    ev.stopPropagation();
+                    this.onClick(value, item);
+                });
+            </text>
+        }
+        
         return button;
     },
 },

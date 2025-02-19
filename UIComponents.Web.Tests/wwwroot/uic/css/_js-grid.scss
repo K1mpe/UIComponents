@@ -41,6 +41,10 @@
             > .custom-switch {
                 margin: 1px;
             }
+
+            &.jsgrid-align-center {
+                padding: 0; //no padding if the content should be centered
+            }
         }
     }
 

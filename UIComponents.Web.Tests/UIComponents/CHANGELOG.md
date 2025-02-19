@@ -1,3 +1,8 @@
+# 2025-02-19 (V1.3.21)
+- Condition for UICTable button
+- UICGraph fix for graph loaded as disabled
+- UICTable center cell no padding
+
 # 2025-01-28 (V1.3.20)
 - Table infinite loading triggers 'uic-dataLoaded
 - css tabs in tabs

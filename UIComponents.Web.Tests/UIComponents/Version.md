@@ -1,4 +1,4 @@
-1.3.20.0
+1.3.21.0
 
 If you remove this file, the UIComponents will rebuild the file on next startup.
 This file is used for UIConfigOptions.$OnlyReplaceNewerVersion if the version number matches

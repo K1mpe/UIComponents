@@ -11,13 +11,16 @@
         PageSize = 20,
         Sorter = new(nameof(TestModel.Number), SortOrder.Desc),
     };
-    // var testButton = new UICButton()
-    // {
-    //     PrependButtonIcon = new("fas fa-user"),
-    //     OnClick= new UICCustom("alert(`${item.TestString} is clicked`);")
-    // };
-    // testButton.OnClick = new UICActionNavigate("/table/details/?teststring=${item.TestString}");
-    // table.AddColumn(new UICTableColumnButton(testButton));
+    var testButton = new UICButton()
+    {
+        PrependButtonIcon = new("fas fa-user"),
+        OnClick= new UICCustom("alert(`${item.TestString} is clicked`);")
+    };
+    testButton.OnClick = new UICActionNavigate("/table/details/?teststring=${item.TestString}");
+    table.AddColumn(new UICTableColumnButton(testButton){
+        Width= "36px",
+        Validation = new UICCustom("return item.Number < 120;")
+    });
     table.AddColumn(new UICTableColumnPartial(new UICActionGet("/table/details"))
     {
         Identifier = "TestString",

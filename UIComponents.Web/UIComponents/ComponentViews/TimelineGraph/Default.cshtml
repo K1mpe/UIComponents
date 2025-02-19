@@ -186,7 +186,7 @@
         if(!Model.LineGraphs.Where(x=>!string.IsNullOrWhiteSpace(x.Source) && x.DisableFutureLoading).Any())
         {
             <text>
-            log('Live update disabled - No graphs with "@nameof(UICTimeLineGraph.LineGraph.Source)" and "@nameof(UICTimeLineGraph.LineGraph.DisableFutureLoading)");
+            log('Live update disabled - No graphs with "@nameof(UICTimeLineGraph.LineGraph.Source)" and "@nameof(UICTimeLineGraph.LineGraph.DisableFutureLoading)"');
             </text>      
         }
     }
@@ -765,6 +765,16 @@
             });
         }
             DrawNowLineRecursive();
+
+            
+         //When initializing a graph, the disabled lines are not marked correctly
+
+        @foreach(var graph in Model.LineGraphs.Where(x=>!x.Enabled))
+        {
+            <text>
+            $('#@guid').trigger('uic-disableGraph', '@graph.LineGraphId');
+            </text>
+        }
     </text>);
 }
 

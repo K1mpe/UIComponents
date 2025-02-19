@@ -97,8 +97,10 @@
     tabs.Add(new UICCard(new UICCardHeader("Chart")).Add(new UICTimeLineGraph(), graph =>
     {
         graph.Start = DateTime.Now.AddMinutes(-1);
-        graph.Add(new("Graph1", "blub", "/home/GetTimelineChartData") { CacheData = true, RemoveCacheOnZoom = true, AdditionalPostData = new { UserId = 1 }, Fill = true });
+        graph.Add(new("Graph1", "blub", "/home/GetTimelineChartData") { CacheData = true, RemoveCacheOnZoom = true, AdditionalPostData = new { UserId = 1 }, Fill = true, Stepped = true });
         graph.Add(new("Graph2", "foo", "/home/GetTimelineChartData"){CacheData = true, RemoveCacheOnZoom = true, Tension=0.5});
+        graph.MinStart = DateTime.Now.AddDays(-1);
+        graph.MaxEnd = DateTime.Now.AddDays(2);
     }));
 
     tabs.Add(new UICCard("FileExplorer").AddPartial("home", "files"));

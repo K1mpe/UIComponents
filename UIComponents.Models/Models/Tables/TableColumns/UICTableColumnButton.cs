@@ -37,6 +37,11 @@ public class UICTableColumnButton : IUICTableColumn, IUICHasScriptCollection
     public IUICAction OnClick { get; set; }
     public IUICScriptCollection ScriptCollection { get; set; } = new UICScriptCollection();
 
+    /// <summary>
+    /// This function takes arguments 'value' and 'item'. If this function returns false, the element is not rendered. 
+    /// </summary>
+    public IUICAction Validation { get; set; }
+
     public bool Render { get; set; } = true;
 
     #endregion
