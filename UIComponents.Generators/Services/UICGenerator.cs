@@ -88,6 +88,8 @@ public class UICGenerator : IUIComponentGenerator
         }
     }
 
+    public Task<UICPropertyType?> GetUICPropertyType(PropertyInfo propertyInfo) => _configuration.GetPropertyTypeAsync(propertyInfo, new UICOptions());
+
     public Task<UICTableColumn> SupplementTableColumn(UICTableColumn tableColumn)
     {
         return _configuration.GenerateTableColumn(tableColumn);

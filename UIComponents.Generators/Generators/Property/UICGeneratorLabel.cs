@@ -37,19 +37,7 @@ public class UICGeneratorLabel : UICGeneratorProperty
         var displayNameAttr = args.PropertyInfo.GetCustomAttribute<DisplayNameAttribute>();
         bool hasInherit = UICInheritAttribute.TryGetInheritPropertyInfo(args.PropertyInfo, out var inheritPropInfo);
 
-        if(hasInherit && displayNameAttr == null) 
-        {
-            displayNameAttr = inheritPropInfo.GetCustomAttribute<DisplayNameAttribute>();
-        }
-
-        if (displayNameAttr != null)
-        {
-            label.LabelText = displayNameAttr.DisplayName;
-        }
-        else
-        {
-            label.LabelText =  TranslationDefaults.TranslateProperty(inheritPropInfo, args.UICPropertyType!.Value);
-        }
+        label.LabelText =  TranslationDefaults.TranslateProperty(inheritPropInfo, args.UICPropertyType!.Value);
 
         var toolTipCC = new UICCallCollection(UICGeneratorPropertyCallType.PropertyTooltip, label, args.CallCollection);
         var toolTipArgs = new UICPropertyArgs(args.ClassObject, args.PropertyInfo, args.UICPropertyType, args.Options, toolTipCC, args.Configuration);

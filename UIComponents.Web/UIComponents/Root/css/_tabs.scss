@@ -27,7 +27,7 @@
     }
 
     > .card-body {
-        &:has(.tab-content > .tab-pane.active > .card:first-child:last-child), &:has(.tab-content > .tab-pane.active > div:first-child:last-child) {
+        &:has(.tab-content > .tab-pane.active > div > .card:first-child:last-child) /*, &:has(.tab-content > .tab-pane.active > div > div:first-child:last-child)*/ {
             padding: 0;
         }
     }
