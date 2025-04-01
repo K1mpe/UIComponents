@@ -131,6 +131,9 @@ public class RecurringDate
 
     #region Serializing
 
+    public static explicit operator string(RecurringDate input) => input.Serialize();
+    public static explicit operator RecurringDate(string input) => RecurringDate.Deserialize(input);
+
     /// <summary>
     /// Convert this object to a string that can be stored in a database.
     /// </summary>

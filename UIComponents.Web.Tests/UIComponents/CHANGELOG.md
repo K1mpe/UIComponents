@@ -1,3 +1,9 @@
+# 2025-04-01 (V1.3.22)
+- RecurringDate can explicit convert from and to string
+- UICInputTable -> use a table as a input
+- UICTable Fixes when using local data
+- Fix Partial reload
+
 # 2025-02-19 (V1.3.21)
 - Condition for UICTable button
 - UICGraph fix for graph loaded as disabled

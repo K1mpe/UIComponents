@@ -138,7 +138,7 @@
         partial.on('uic-reload', (ev) => {
             ev.stopPropagation();
             if (reloadDelay > 0) {
-                uic.delayedAction.run(`partial-Reload-${id}`, reloadDelay, uic.partial.reloadPartial(partial));
+                uic.delayedAction.run(`partial-Reload-${id}`, reloadDelay, ()=> uic.partial.reloadPartial(partial));
                 return;
             }
             uic.partial.reloadPartial(partial);

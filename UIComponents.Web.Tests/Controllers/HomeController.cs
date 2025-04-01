@@ -298,10 +298,8 @@ namespace UIComponents.Web.Tests.Controllers
             item.IntList = new();
             item.ObjectList = new()
             {
-                new(){ Number = 1},
-                new(){
-                    Number = 2,
-                },
+                new(){ TestString="Dit is item 1", Number = 1},
+                new(){ TestString="Dit is item 2", Number = 2, TestModel2Bool = true },
             };
             var component = await _uic.CreateComponentAsync(item, new()
             {
@@ -314,14 +312,32 @@ namespace UIComponents.Web.Tests.Controllers
             component.TryFindInputByPropertyName<UICInputDatetime>(nameof(TestModel.MyDateTime), input =>
             {
                 input.ValidationMinimumDate = new DateTime(2024, 12, 1);
-                input.ValidationMaximumDate = new DateTime(2024, 12, 31);
+                input.ValidationMaximumDate = new DateTime(2025, 12, 31);
                 input.ValidationRequired = true;
             });
             component.TryFindInputByPropertyName<UICInputMultiline>(nameof(TestModel.Description), input =>
             {
                 input.ValidationMinLength = 3;
                 input.ValidationMaxLength = 8;
-                input.ValidationRequired = true;
+                input.ValidationRequired = false;
+            });
+            component.TryFindInputGroupByPropertyName(nameof(TestModel.ObjectList), inputGroup =>
+            {
+                if (inputGroup.Input is UICInputList list)
+                {
+                    var table = new UICTable<TestModel2>().AddAllUndefinedColumns();
+                    table.EnableDelete = true;
+                    table.EnableInsert = true;
+                    table.EnableUpdate = true;
+                    table.OnInsertItem = null;
+                    table.OnUpdateItem = null;
+                    table.OnDeleteItem = null;
+                    var tableInput = new UICInputTable(list.PropertyName, table)
+                    {
+                        Value = list.Value
+                    };
+                    inputGroup.Input = tableInput;
+                }
             });
             return ViewOrPartial(component);
         }

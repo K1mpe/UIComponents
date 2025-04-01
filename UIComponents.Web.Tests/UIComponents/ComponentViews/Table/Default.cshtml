@@ -95,19 +95,23 @@
     if (Model.OnRowClick.HasValue())
         Model.AddClass("has-row-click");
 
+    Model.EnableInsert = (Model.EnableInsert && (Model.OnInsertItem.HasValue() || !Model.LoadData.HasValue())) || Model.OnInsertButtonClick.HasValue();
+    Model.EnableUpdate = Model.EnableUpdate && (Model.OnUpdateItem.HasValue() || !Model.LoadData.HasValue());
+    Model.EnableDelete = Model.EnableDelete && (Model.OnDeleteItem.HasValue() || !Model.LoadData.HasValue());
+
     //When the control column is already defined, or AddControlColumn is true with at least one of the change options enabled
     if (Model.Columns.Any(x => x is UICTableColumnControl) || (Model.AutoAddControlColumn && (Model.EnableInsert || Model.EnableUpdate || Model.EnableDelete)))
     {
         Model.AddControlColumn(x =>
         {
             if(x.Inserting == null)
-                x.Inserting = (Model.EnableInsert && Model.OnInsertItem.HasValue()) || Model.OnInsertButtonClick.HasValue();
+                x.Inserting = Model.EnableInsert;
             
             if(x.EditButton == null)
-                x.EditButton = Model.EnableUpdate && Model.OnUpdateItem.HasValue();
+            x.EditButton = Model.EnableUpdate;
 
             if(x.DeleteButton == null)
-                x.DeleteButton = Model.EnableDelete && Model.OnDeleteItem.HasValue();
+                x.DeleteButton = Model.EnableDelete;
         });
 
     }
@@ -119,8 +123,8 @@
             let canReload = true; //Can the JsGrid Reload
             let tryReload = false; //If Reload Denied, set this true
             let reloadConditions = []; // This is a list of reloadConditions. If all conditions return true, reload is enabled.
-            let lastFilters = null;
-            let currentData = [];
+            let lastFilters = {};
+            let currentData = @Json.Serialize(Model.Data?? new List<object>());
 
             let checkCanReload = async function(){
                 if(!canReload)
@@ -191,18 +195,30 @@
                 return $('#@id').triggerHandler('uic-currentData');
             });
             $('#@id').on('uic-setValue', (ev, ...data)=>{
+                ev.stopPropagation();
                 $('#@id').jsGrid('option', 'data', data);
             });
-
+            $('#@id').on('uic-insert', (ev, item)=>{
+                ev.stopPropagation();
+                $('#@id').jsGrid("insertItem", item);
+            });
+            $('#@id').on('uic-update', (ev, item) =>{
+                ev.stopPropagation();
+                $('#@id').jsGrid("editItem", item);
+            });
+            $('#@id').on('uic-delete', (ev, item)=>{
+                ev.stopPropagation();
+                $('#@id').jsGrid("deleteItem", item);
+            });
             $('#@id').jsGrid({
                 height: @Html.JsEncode(Model.Height, "'"),
                 width: @Html.JsEncode(Model.Width,"'"),
 
                 selecting: @Json.Serialize(Model.Selecting), 
                 filtering : @Json.Serialize(Model.Filtering),
-                inserting: @Json.Serialize(Model.EnableInsert && Model.OnInsertItem.HasValue()),
-                editing: @Json.Serialize(Model.EnableUpdate && Model.OnUpdateItem.HasValue()),
-                deleting: @Json.Serialize(Model.EnableDelete && Model.OnDeleteItem.HasValue()),
+                inserting: @Json.Serialize(Model.EnableInsert),
+                editing: @Json.Serialize(Model.EnableUpdate),
+                deleting: @Json.Serialize(Model.EnableDelete),
                 sorting: @Json.Serialize(Model.Sorting),
                 paging: true,
                 pageLoading: true,
@@ -261,6 +277,11 @@
                     loadData: async (args) => {
                         args = $('#@id').triggerHandler('uic-getFilters', args) || args; //The 'on.('uic-getFilters')' may change the filter arguments.
                         $('#@id').trigger('uic-beforeFetch', args);
+                        if(args["sortOrder"] == undefined)
+                            args["sortOrder"] = lastFilters["sortOrder"];
+                        if(args["sortField"] == undefined)
+                            args["sortField"] = lastFilters["sortField"];
+
                         lastFilters = args;
                         @if(Model.SaveFiltersInLocalStorage)
                         {
@@ -272,19 +293,25 @@
                         }
                         return await getPagedData(args);
                     },
-                    @if(Model.EnableInsert && Model.OnInsertItem.HasValue()){
+                    @if(Model.EnableInsert){
                         if(Model.OnInsertItem is UICActionGetPost getpost && !getpost.GetVariableData.HasValue()){
                             getpost.GetVariableData = new UICCustom("item");
                         }
                         <text>
                         insertItem: async function(item){
                             $('#@id').trigger('uic-beforeInsert', item);
-                            @await Model.OnInsertItem.InvokeAsync(Component)
+                            @if(Model.OnInsertItem.HasValue()){
+                                @await Model.OnInsertItem.InvokeAsync(Component)
+                            } else{
+                                <text>
+                                    currentData.push(item);
+                                </text>
+                            }
                             $('#@id').trigger('uic-afterInsert', item);
                         },
                         </text>
                     }
-                    @if(Model.EnableUpdate && Model.OnUpdateItem.HasValue()){
+                    @if(Model.EnableUpdate){
                         if(Model.OnUpdateItem is UICActionGetPost getpost && !getpost.GetVariableData.HasValue()){
                             getpost.GetVariableData = new UICCustom("item");
                         }
@@ -296,14 +323,27 @@
                         },
                         </text>
                     }
-                    @if(Model.EnableDelete && Model.OnDeleteItem.HasValue()){
+                    @if(Model.EnableDelete){
                         if(Model.OnDeleteItem is UICActionGetPost getpost && !getpost.GetVariableData.HasValue()){
                             getpost.GetVariableData = new UICCustom("item");
                         }
                         <text>
                          deleteItem: async function(item){
                             $('#@id').trigger('uic-beforeDelete');
-                            @await Model.OnDeleteItem.InvokeAsync(Component)
+                             @if(Model.OnDeleteItem.HasValue()){
+                                <text>
+                                    @await Model.OnDeleteItem.InvokeAsync(Component)
+                                </text>
+                            } else{
+                                <text>
+
+                                let index = currentData.indexOf(item);
+                                if (index > 0)
+                                    currentData.splice(index,1);
+
+                                </text>
+                            }
+                            
                             $('#@id').trigger('uic-afterDelete');
                         },
                         </text>
@@ -385,13 +425,13 @@
             });
 
             let getPagedData = async function(args){
-                @if(Model.Data != null && Model.Data.Any()){
+                @if(!Model.LoadData.HasValue()){
                     <text>
-                        let result = uic.jsgrid.filterClientSide(args, @Json.Serialize(Model.Data));
+                        let result = uic.jsgrid.filterClientSide(args, currentData);
                         result = uic.jsgrid.pageClientSide(result, args.pageIndex, args.pageSize);
                                 
                         $('#@id').trigger('uic-afterFetch', [result, args]);
-                        currentData = result.data;
+
                         return result;
                     </text>
                 } else if(Model.LoadData is UICActionGetPost getpost){
@@ -411,6 +451,7 @@
                             }
                             </text>
                         }
+                        currentData = @Html.JsEncode(getpost.ResultName)
 
                         @Html.JsEncode(getpost.ResultName) =  uic.jsgrid.pageClientSide(@Html.JsEncode(getpost.ResultName), args.pageIndex, args.pageSize);
                         
@@ -451,8 +492,6 @@
                 $('#@id').on('uic-dataLoaded', ev=> {
                     nextPageDisabled = false;
                     triggerHeight = null;
-
-                    pageIndex = 1;
                 });
 
             $('#@id').on('uic-initialized', ()=>{
