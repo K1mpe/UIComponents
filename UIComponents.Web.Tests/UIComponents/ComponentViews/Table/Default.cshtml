@@ -144,7 +144,7 @@
                     @await Model.DelayedAction.InvokeAsync(Component)
                 } else{
                      <text>
-                    if(checkCanReload()){
+                    if(await checkCanReload()){
                         $('#@id').trigger('uic-forceReload')
                     } else{
                         tryReload = true;
@@ -158,11 +158,11 @@
                 $('#@id').jsGrid('loadData');
             });
 
-            $('#@id').on('uic-reloadConditionChanged', (ev)=>{
+            $('#@id').on('uic-reloadConditionChanged', async (ev)=>{
                 ev.stopPropagation();
                 if(!tryReload)
                     return;
-                if(!checkCanReload())
+                if(!await checkCanReload())
                     return;
 
                 tryReload = false;
@@ -472,7 +472,7 @@
                 let nextPageDisabled = true;
                 let triggerHeight = null;
                 let loadNextPage = async function(){
-                    if(nextPageDisabled)
+                    if(nextPageDisabled || !await checkCanReload())
                         return;
                     nextPageDisabled = true;
                     let filters = $('#@id').triggerHandler('uic-getLastFilters');

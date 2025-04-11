@@ -1,3 +1,7 @@
+# 2025-04-11 (V1.3.23)
+- ToString op TaskResult
+- BugFix Table ReloadCondition
+
 # 2025-04-01 (V1.3.22)
 - RecurringDate can explicit convert from and to string
 - UICInputTable -> use a table as a input

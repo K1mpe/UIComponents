@@ -95,6 +95,14 @@ public class TaskResult<T> : TaskResult
         Data.Add(key, value);
         return this;
     }
+    public override string ToString()
+    {
+        if (IsValid)
+            return Value.ToString();
+        else if (Errors.Count == 1)
+            return Errors.Select(x => string.Format(x.Message, x.Args)).First();
+        return base.ToString();
+    }
 
     public static implicit operator T(TaskResult<T> result) => result.Value;
     public static implicit operator TaskResult<T>(T result) => new(result);
