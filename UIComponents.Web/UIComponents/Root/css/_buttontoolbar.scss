@@ -5,12 +5,12 @@
             display: inline-flex;
             vertical-align: middle;
 
-            input:not(:first-child) {
+            input:not(:first-child), .btn:not(:first-child) {
                 @include border-left-radius(0);
                 margin-left: -1px;
             }
 
-            input:not(:last-child) {
+            input:not(:last-child), .btn:not(:last-child) {
                 @include border-right-radius(0);
             }
         }
@@ -20,12 +20,12 @@
             display: inline-flex;
             vertical-align: middle;
 
-            input:not(:first-child) {
+            input:not(:first-child), .btn:not(:first-child) {
                 @include border-left-radius(0);
                 margin-left: -1px;
             }
 
-            input:not(:last-child) {
+            input:not(:last-child), .btn:not(:last-child) {
                 @include border-right-radius(0);
             }
         }

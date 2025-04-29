@@ -25,12 +25,17 @@
         /// <summary>
         /// On loading, set the focus on the first input field
         /// </summary>
-        public bool SetFocusOnFirstInput { get; set; } = UIComponents.Defaults.Models.UICForm.SetFocusOnFirstInput;
+        public bool SetFocusOnFirstInput { get; set; } = Defaults.Models.UICForm.SetFocusOnFirstInput;
 
         /// <summary>
         /// Disable posting the current form when the user presses the "Enter" key on the keyboard.
         /// </summary>
-        public bool DisablePostOnEnterClick { get; set; } = UIComponents.Defaults.Models.UICForm.DisablePostOnEnterClick;
+        public bool DisablePostOnEnterClick { get; set; } = Defaults.Models.UICForm.DisablePostOnEnterClick;
+
+        /// <summary>
+        /// While the form is posting, the submit button cannot be pressed again.
+        /// </summary>
+        public bool DisablePostButtonsDuringPost { get; set; } = Defaults.Models.UICForm.DisablePostButtonsDuringPost;
 
         /// <summary>
         /// Set the form as readonly. This will disable the submit buttons
@@ -75,6 +80,7 @@ namespace UIComponents.Defaults.Models
         public static bool SetFocusOnFirstInput { get; set; } = true;
 
         public static bool DisablePostOnEnterClick { get; set; }
+        public static bool DisablePostButtonsDuringPost { get; set; } = true;
     }
 }
 

@@ -154,6 +154,9 @@ public class RecurringDate
     /// </summary>
     public static RecurringDate Deserialize(string serialized)
     {
+        if(string.IsNullOrWhiteSpace(serialized))
+            return null;
+
         var dict = RecurringDateItem.DeserializeDict(serialized);
 
         var result = new RecurringDate();

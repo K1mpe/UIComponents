@@ -88,18 +88,42 @@
                 ev.preventDefault();
                 ev.stopPropagation();
 
-                if(!await uic.form.warnUserForConflicts($('#@id')))
-                    return;
+                @if(Model.DisablePostButtonsDuringPost){
+                    <text>
+                    let submitButtons =  $('#@id')
+                      .find('button[type=submit]')
+                      .filter((index, btn)=>{
+                        let $btn = $(btn);
+                        if($btn.attr('disabled'))
+                            return false;
 
-                $('#@id').triggerHandler('uic-beforeSubmit');
+                        // only keep buttons whose *nearest* form ancestor is #@id itself
+                        return $btn.closest('form').is('#@id');
+                      });
+                      submitButtons.each((index, btn)=> $(btn).attr('disabled', true));
+                    </text>
+                }
+                try{
+                    if(!await uic.form.warnUserForConflicts($('#@id')))
+                        return;
 
-                @await Model.Submit.InvokeAsync(Component)
+                    $('#@id').triggerHandler('uic-beforeSubmit');
 
-                let myResult = await $('#@id').triggerHandler('uic-afterSubmit', @Html.Raw(Model.Submit.ResultName));
+                    @await Model.Submit.InvokeAsync(Component)
 
-                if(myResult != undefined)
-                    return myResult;
-                return @Html.Raw(Model.Submit.ResultName);
+                    let myResult = await $('#@id').triggerHandler('uic-afterSubmit', @Html.Raw(Model.Submit.ResultName));
+
+                    if(myResult != undefined)
+                        return myResult;
+                    return @Html.Raw(Model.Submit.ResultName);
+                }
+                finally{
+                    @if(Model.DisablePostButtonsDuringPost){
+                        <text>
+                        submitButtons.each((index, btn)=> $(btn).attr('disabled', false));
+                        </text>
+                    }
+                }
             } )
             </text>
         );
