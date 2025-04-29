@@ -208,7 +208,7 @@
     selectlistItems: {
 
         //Method is not yet completed!
-        convertJsonToSelectOptions: function (selectListItems, sorting=0, noItemText="No items available") {
+        convertJsonToSelectOptions: function (selectListItems, sorting, noItemText) {
 
             let results = [];
 

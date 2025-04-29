@@ -555,6 +555,9 @@ uic.parse = function (input) {
             return input;
         if (input.startsWith('{') && input.endsWith('}'))
             return JSON.parse(input);
+
+        if (input.startsWith('[') && input.endsWith(']'))
+            return JSON.parse(input);
         return input;
     } catch {
         return input;
