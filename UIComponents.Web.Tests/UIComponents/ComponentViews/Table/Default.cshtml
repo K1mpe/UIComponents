@@ -199,6 +199,7 @@
             });
             $('#@id').on('uic-setValue', (ev, ...data)=>{
                 ev.stopPropagation();
+                currentData = data;
                 $('#@id').jsGrid('option', 'data', data);
             });
             $('#@id').on('uic-insert', (ev, item)=>{
@@ -341,7 +342,7 @@
                                 <text>
 
                                 let index = currentData.indexOf(item);
-                                if (index > 0)
+                                if (index > -1)
                                     currentData.splice(index,1);
 
                                 </text>

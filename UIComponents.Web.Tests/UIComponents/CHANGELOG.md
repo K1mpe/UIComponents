@@ -1,3 +1,7 @@
+# 2025-04-30 (V1.3.25)
+- table localDelete for firstItem fix
+- fix uic.markChanges
+
 # 2025-04-29 (V1.3.24)
 - uic.parse supports arrays
 - minor css fix buttontoolbar

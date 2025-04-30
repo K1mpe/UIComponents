@@ -185,10 +185,9 @@ uic.markChanges = function (element, newValue) {
 }
 
 uic.markChangesOptions = {
-    applyMark: async function (element, oldValue, newValue) {
+    applyMark: function (element, oldValue, newValue) {
         let mark = uic.markChangesOptions.markChangesIcon.clone();
-        let tooltip = await uic.markChangesOptions.markChangesTooltip(element, oldValue, newValue);
-
+        
         let elementId = element.attr('id');
         let visualElement = element;
         if (element.prop('tagName') == "SELECT") {
@@ -237,7 +236,8 @@ uic.markChangesOptions = {
         return await uic.translation.translate(translatable);
     },
     onClickMark: function (element, oldValue, newValue, visualElement, mark) {
-        mark.click(async () => {
+        mark.click(async (ev) => {
+            ev.stopPropagation();
             let modal = $('<div>', { class: "modal fade show" })
                 .append($('<div>', { class: "modal-dialog" })
                     .append($('<div>', { class: "modal-content" })
