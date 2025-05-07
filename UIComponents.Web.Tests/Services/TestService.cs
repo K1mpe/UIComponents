@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CeloxWortelen.DA.DataTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,11 +16,13 @@ namespace UIComponents.Web.Tests.Services
         public event EventHandler<TestEventArgs> OnChange;
         public int CurrentCount { get; set; } = 0;
 
+        public PropWatcher<int> SecondCounter { get; set; } = new PropWatcher<int>(1);
 
         public void IncreaseNumberByOne()
         {
             
             CurrentCount++;
+            SecondCounter.Value = SecondCounter * 2;
             OnChange?.Invoke(this, new TestEventArgs() { Count= CurrentCount});
         }
     }

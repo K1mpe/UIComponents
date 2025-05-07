@@ -204,10 +204,14 @@ uic.markChangesOptions = {
                 mark.attr('title', result);
             });
         }
-        if (elementId.length) {
-            $(`.uic-value-changed[data-for=${elementId}]`).remove();
-            mark.attr('data-for', elementId);
+        if (elementId == null || elementId == undefined) {
+            let guid = 'G' + crypto.randomUUID();
+            guid = guid.toLowerCase().replaceAll('-', '');
+            element.attr('id', guid);
+            elementId = guid;
         }
+        $(`.uic-value-changed[data-for=${elementId}]`).remove();
+        mark.attr('data-for', elementId);
         uic.markChangesOptions.onClickMark(element, oldValue, newValue, visualElement, mark);
 
         visualElement.each((index, item) => {

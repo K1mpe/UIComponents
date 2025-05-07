@@ -16,6 +16,9 @@ public class UICGeneratorInputEditorTemplate : UICGeneratorProperty
     public override async Task<IUICGeneratorResponse<IUIComponent>> GetResponseAsync(UICPropertyArgs args, IUIComponent? existingResult)
     {
         await Task.Delay(0);
+        if (args.PropertyInfo == null)
+            return GeneratorHelper.Next();
+
         var uiHintAttr = args.PropertyInfo.GetCustomAttribute<UIHintAttribute>();
         if (uiHintAttr == null)
             return GeneratorHelper.Next();

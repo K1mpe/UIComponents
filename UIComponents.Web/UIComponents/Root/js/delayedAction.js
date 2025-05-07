@@ -44,14 +44,16 @@
         else if (uic.delayedAction._throttle[key] === true)
             return;
 
-        action();
         uic.delayedAction._throttle[key] = false;
-
-        setTimeout(() => {
-            if (uic.delayedAction._throttle[key] === true)
-                action();
-            delete uic.delayedAction._throttle[key];
-        }, timeout);
+        try {
+            action();
+        } finally {
+            setTimeout(() => {
+                if (uic.delayedAction._throttle[key] === true)
+                    action();
+                delete uic.delayedAction._throttle[key];
+            }, timeout);
+        }
     },
 
     //Execute the function after a period of inactivity

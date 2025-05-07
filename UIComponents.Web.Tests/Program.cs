@@ -15,6 +15,13 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
 using System.Diagnostics;
+using CeloxWortelen.DA.DataTypes;
+using Microsoft.VisualBasic;
+using UIComponents.Generators.Models.Arguments;
+using UIComponents.Generators.Models;
+using System;
+using Newtonsoft.Json.Schema;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +66,48 @@ builder.Services.AddUIComponentWeb(config =>
     });
     config.AddDefaultGenerators(builder.Services);
     config.AddDefaultValidators(builder.Services);
+
+    config.AddGenerator(GeneratorHelper.PropertyGenerator("PropWatcherInput", 999, async (args, existing) =>
+    {
+        if (existing != null)
+            return GeneratorHelper.Next();
+
+        if (args.CallCollection.CurrentCallType != UIComponents.Generators.Models.UICGeneratorPropertyCallType.PropertyInput)
+            return GeneratorHelper.Next();
+
+        if (args.PropertyValue == null)
+            return GeneratorHelper.Next();
+
+        if (!args.PropertyValue.GetType()?.IsAssignableTo(typeof(PropWatcher)) ?? true)
+            return GeneratorHelper.Next();
+
+        var value = args.PropertyValue as PropWatcher;
+
+        var valueType = value.ValueType;
+
+        var valuePropInfo = value.GetType().GetProperties().Where(x=>x.Name == (nameof(PropWatcher.Value))).First();
+
+        var uicPropertyType = await args.Configuration.GetPropertyTypeAsync(valuePropInfo, args.Options);
+        var cc = new UICCallCollection(UICGeneratorPropertyCallType.PropertyInput, args.CallCollection.Caller, args.CallCollection);
+        var newArgs = new UICPropertyArgs(args.ClassObject, valuePropInfo, uicPropertyType, args.Options, cc, args.Configuration)
+            .SetPropertyType(valueType)
+            .SetPropertyValue(value.Value);
+        var input = await args.Configuration.GetGeneratedResultAsync<UICPropertyArgs, IUIComponent, UICInput>($"Input for Propwatcher", newArgs, args.Options);
+        if (input == null)
+            return GeneratorHelper.Next();
+
+        var serverResponse = new UICActionServerResponse(false, (args) =>
+        {
+            var value = JsonSerializer.Deserialize(args["Value"], valueType);
+        });
+        serverResponse.GetVariableData = new UICCustom($"{{Value: uic.getValue($('#{input.GetId()}'))}};");
+        input.Actions.AfterChange = serverResponse;
+
+        var eventListener = UICEvent<PropChangedEventArgs>.Create(handler => value.AfterValueChanged += handler, handler => value.AfterValueChanged -= handler);
+        eventListener.Action = new UICCustom($"debugger; uic.setValue('#{input.GetId()}', args.NewValue);");
+        input.AddScriptDocReady(eventListener);
+        return GeneratorHelper.Success(input, true);
+    }));
 });
 Console.WriteLine("");
 Console.WriteLine("-- Components are generated --");
@@ -76,6 +125,7 @@ builder.Services.AddSignalR(options =>
 builder.Services.AddSingleton<IUICSignalRService, SignalRService>();
 builder.Services.AddSingleton<SignalRService>();
 builder.Services.AddSingleton<MainHub>();
+builder.Services.AddSingleton<IUICSignalRHub, MainHub>(provider => provider.GetService<MainHub>());
 builder.Services.AddScoped<TestModelValidator>();
 builder.Services.AddScoped<TestComponentFactory>();
 builder.Services.AddSingleton<TestService>();

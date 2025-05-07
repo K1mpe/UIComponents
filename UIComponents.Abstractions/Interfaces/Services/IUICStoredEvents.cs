@@ -17,4 +17,8 @@ public interface IUICStoredEvents
     /// <param name="data">Dictionary of data that is posted</param>
     public Task IncommingSignalRTrigger(string key, Dictionary<string, string> data);
 
+
+    public string SubscribeOnEvent<TArgs>(Action<EventHandler<TArgs>> subscribe, Action<EventHandler<TArgs>> unsubscribe, string? eventId = null) where TArgs : EventArgs;
+
+
 }

@@ -119,6 +119,7 @@ namespace UIComponents.Web.Tests.Controllers
             try
             {
                 _testService.IncreaseNumberByOne();
+                return Json(true);
                 var validation = _validator.Validate(post);
                 if (!validation.IsValid)
                 {

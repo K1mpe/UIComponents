@@ -26,6 +26,6 @@ public interface IUICSignalRService
     /// <param name="sender"></param>
     /// <param name="args"></param>
     /// <returns></returns>
-    public Task EventHandler(string key, object sender,  EventArgs args);
+    public Task EventHandler(string key, object sender,  object args);
 
 }

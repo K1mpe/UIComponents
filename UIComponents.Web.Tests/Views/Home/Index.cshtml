@@ -15,11 +15,12 @@
 @using UIComponents.Models.Models.Texts
 @using UIComponents.Web.Extensions;
 @using UIComponents.Web.Tests.Factory
+@using UIComponents.Web.Tests.Services
 
 @{
     ViewData["Title"] = "Home Page";
 }
-
+@inject TestService testService
 @inject IUIComponentGenerator UIC
 @{
     var testModel = new TestModel();
@@ -125,8 +126,11 @@
             .Add(createButton)
             .Add(editButton)
             .Add(deleteButton)));
+
+    var counter = await UIC.CreateComponentAsync(testService, x=>x.SecondCounter);
 }
 
 
 
 @await tabs.InvokeAsync(Component)
+@await counter.InvokeAsync(Component)
