@@ -714,6 +714,8 @@
 
             chart.render();
             let scale = chart.scales.y;
+            if(scale == undefined)
+                return;
             context.beginPath();
             context.strokeStyle = @Html.JsEncode(Model.NowIndicatorColor, "'");
             context.moveTo(lineLeftOffset, scale.top);

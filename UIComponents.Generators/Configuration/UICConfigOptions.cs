@@ -348,7 +348,7 @@ public partial class UicConfigOptions
     }
 
 
-    public IList<IUICPropertyValidationRule> GetPropertyValidators(ILogger logger, IServiceScope scope)
+    public IList<IUICPropertyValidationRule> GetPropertyValidators(ILogger logger, IServiceProvider provider)
     {
         List<IUICPropertyValidationRule> rules = new List<IUICPropertyValidationRule>();
         rules.AddRange(_propertyValidationRules);
@@ -356,7 +356,7 @@ public partial class UicConfigOptions
         {
             try
             {
-                var instance = (IUICPropertyValidationRule)scope.ServiceProvider.GetService(type);
+                var instance = (IUICPropertyValidationRule)provider.GetService(type);
                 rules.Add(instance);
             }
             catch(Exception ex)

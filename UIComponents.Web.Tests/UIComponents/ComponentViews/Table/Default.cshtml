@@ -341,10 +341,12 @@
                             } else{
                                 <text>
 
-                                let index = currentData.indexOf(item);
+                                let data = $('#@id').triggerHandler('uic-currentData');
+                                let index = data.indexOf(item);
                                 if (index > -1)
-                                    currentData.splice(index,1);
+                                    data.splice(index,1);
 
+                                currentData = data;
                                 </text>
                             }
                             
@@ -431,7 +433,7 @@
             let getPagedData = async function(args){
                 @if(!Model.LoadData.HasValue()){
                     <text>
-                        let result = uic.jsgrid.filterClientSide(args, currentData);
+                        let result = uic.jsgrid.filterClientSide(args, $('#@id').triggerHandler('uic-currentData'));
                         result = uic.jsgrid.pageClientSide(result, args.pageIndex, args.pageSize);
                                 
                         $('#@id').trigger('uic-afterFetch', [result, args]);

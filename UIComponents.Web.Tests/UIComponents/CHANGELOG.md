@@ -1,3 +1,11 @@
+# 2025-05-19 (V1.3.26)
+- UICSignalRHub
+- IFormattedException
+- ValidationService gebruikt huidige scope
+- Fix UICTable
+- Fix nowIndicator in TimelineGraph
+- Catch in getpost.js
+
 # 2025-04-30 (V1.3.25)
 - table localDelete for firstItem fix
 - fix uic.markChanges

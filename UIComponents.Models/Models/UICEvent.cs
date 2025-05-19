@@ -11,6 +11,11 @@ public class UICEvent : UICEvent<EventArgs>
 {
 
 }
+
+/// <summary>
+/// Listens to a event backend and transforms it to signalR
+/// </summary>
+/// <typeparam name="TArgs"></typeparam>
 public class UICEvent<TArgs> : IUICAction, IUICConditionalRender, IUICSupportsTaghelperContent, IUICGetComponent
     where TArgs: EventArgs
 {
@@ -20,6 +25,12 @@ public class UICEvent<TArgs> : IUICAction, IUICConditionalRender, IUICSupportsTa
         
     }
 
+    /// <summary>
+    /// Create a new instance with a subscribe and unsubscribe of a event
+    /// </summary>
+    /// <param name="subscribeOnEvent">handler => _myService.MyEvent += handler</param>
+    /// <param name="unsubscriveFromEvent">handler => _myService.MyEvent -= handler</param>
+    /// <param name="action">a javascript function containing sender and args</param>
     public UICEvent(Action<EventHandler<TArgs>> subscribeOnEvent, Action<EventHandler<TArgs>> unsubscriveFromEvent, IUICAction action = null)
     {
         SubscribeOnEvent = subscribeOnEvent;
@@ -29,6 +40,12 @@ public class UICEvent<TArgs> : IUICAction, IUICConditionalRender, IUICSupportsTa
             Action = action;
     }
 
+    /// <summary>
+    /// Create a new instance with the <see cref="EventInfo"/> of a object
+    /// </summary>
+    /// <param name="service">The service containing the event</param>
+    /// <param name="eventInfo">the <see cref="EventInfo"/> from the event in the service</param>
+    /// <param name="action">a javascript function containing sender and args</param>
     public UICEvent(object service, EventInfo eventInfo, IUICAction action = null)
     {
         SubscribeOnEvent = handler => eventInfo.AddEventHandler(service, handler);

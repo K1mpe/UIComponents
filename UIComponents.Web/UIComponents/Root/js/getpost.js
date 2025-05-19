@@ -3,13 +3,25 @@
         get : {
             cancelPreviousRequests: true,
             loadType: null,
-            handlers : []
+            handlers: [],
+            catch: function (...ex) {
+                console.log('Failed! Server error', ex);
+                if (ex[0].responseJSON != null)
+                    return ex[0].responseJSON;
+                return { type: 'Exception', exception: ex };
+            }
         },
 
         post : {
             cancelPreviousRequests: false,
             loadType: null,
-            handlers : []
+            handlers: [],
+            catch: function (...ex) {
+                console.log('Failed! Server error', ex);
+                if (ex[0].responseJSON != null)
+                    return ex[0].responseJSON;
+                return { type: 'Exception', exception: ex };
+            }
         },
     },
     defaultHandlers: {
@@ -119,10 +131,7 @@
             }
         } catch { }
 
-        uic.getpost._getRequests[url] = $.get(url, data, null, options.loadType).catch(function (...ex) {
-            console.log('Failed! Server error', ex);
-            return { type: 'Exception', exception: ex };
-        });
+        uic.getpost._getRequests[url] = $.get(url, data, null, options.loadType).catch(options.catch);
 
         let response = await uic.getpost._getRequests[url];
         uic.getpost._getRequests[url] = undefined;
@@ -143,10 +152,7 @@
             }
         } catch { }
 
-        uic.getpost._postRequests[url] = $.post(url, data, null, options.loadType).catch(function (...ex) {
-            console.log('Failed! Server error', ex);
-            return { type: 'Exception', exception: ex };
-        });
+        uic.getpost._postRequests[url] = $.post(url, data, null, options.loadType).catch(options.catch);
 
         let response = await uic.getpost._postRequests[url];
         uic.getpost._postRequests[url] = undefined;

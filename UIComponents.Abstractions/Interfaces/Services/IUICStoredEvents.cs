@@ -18,6 +18,14 @@ public interface IUICStoredEvents
     public Task IncommingSignalRTrigger(string key, Dictionary<string, string> data);
 
 
+    /// <summary>
+    /// Used for the UICEvent to manage and store subscriptions
+    /// </summary>
+    /// <typeparam name="TArgs"></typeparam>
+    /// <param name="subscribe"></param>
+    /// <param name="unsubscribe"></param>
+    /// <param name="eventId"></param>
+    /// <returns></returns>
     public string SubscribeOnEvent<TArgs>(Action<EventHandler<TArgs>> subscribe, Action<EventHandler<TArgs>> unsubscribe, string? eventId = null) where TArgs : EventArgs;
 
 

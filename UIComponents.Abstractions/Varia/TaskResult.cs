@@ -81,7 +81,7 @@ public class TaskResult<T> : TaskResult
         get
         {
             if (!IsValid)
-                throw new Exception("The result is invalid, cannot return a valid result");
+                throw new TaskResultInvalidException("The result is invalid, cannot return a valid result: {0}", this);
             return _value;
         }
         set
@@ -108,4 +108,14 @@ public class TaskResult<T> : TaskResult
     public static implicit operator TaskResult<T>(T result) => new(result);
     public static implicit operator Task<TaskResult<T>>(TaskResult<T> taskResult) => Task.FromResult(taskResult);
     public static implicit operator Task<T>(TaskResult<T> taskResult) => Task.FromResult(taskResult.Value);
+}
+
+public class TaskResultInvalidException : ArgumentStringException
+{
+    public TaskResultInvalidException(string message, TaskResult taskResult) : base(message, string.Join($". {Environment.NewLine}", taskResult.Errors))
+    {
+        TaskResult = taskResult;
+    }
+
+    public TaskResult TaskResult { get; private set; }
 }
