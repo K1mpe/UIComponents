@@ -68,7 +68,14 @@
         console.log("$('#@id').on('uic-open', ()=>{...}) Triggered when opening the selectlist");
         });
         $('#@id').on('uic-getValue', (ev)=>{
-        return $('#@id').val() || $('#@id').attr('value');
+            let value = $('#@id').val();
+            if (value == null || value == undefined)
+                value = $('#@id').attr('value');
+
+            if (typeof value === 'string' && value.length && !isNaN(value)) {
+                return Number(value);
+            }
+            return value;
         });
 
         uic.partial.onDispose('#@id', ()=> {

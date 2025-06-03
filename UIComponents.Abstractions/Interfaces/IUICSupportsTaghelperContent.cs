@@ -22,4 +22,28 @@ namespace UIComponents.Abstractions.Interfaces
         /// </remarks>
         public Task SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes);
     }
+
+    /// <summary>
+    /// This interface has a property that may be used as a <see cref="IUICSupportsTaghelperContent"/>
+    /// </summary>
+    public interface IUICSupportsTaghelperContentPassThrough : IUICSupportsTaghelperContent
+    {
+        public object PassThroughToChild { get; }
+
+        bool IUICSupportsTaghelperContent.CallWithEmptyContent
+        {
+            get
+            {
+                if(PassThroughToChild is IUICSupportsTaghelperContent support)
+                    return support.CallWithEmptyContent;
+                return false;
+            }
+        }
+
+        async Task IUICSupportsTaghelperContent.SetTaghelperContent(string taghelperContent, Dictionary<string, object> attributes)
+        {
+            if (PassThroughToChild is IUICSupportsTaghelperContent support)
+                await support.SetTaghelperContent(taghelperContent, attributes);
+        }
+    }
 }

@@ -78,20 +78,20 @@ builder.Services.AddUIComponentWeb(config =>
         if (args.PropertyValue == null)
             return GeneratorHelper.Next();
 
-        if (!args.PropertyValue.GetType()?.IsAssignableTo(typeof(PropWatcher)) ?? true)
+        if (!args.PropertyValue.GetType()?.IsAssignableTo(typeof(PropWatcherBase)) ?? true)
             return GeneratorHelper.Next();
 
-        var value = args.PropertyValue as PropWatcher;
+        var value = args.PropertyValue as PropWatcherBase;
 
         var valueType = value.ValueType;
 
-        var valuePropInfo = value.GetType().GetProperties().Where(x=>x.Name == (nameof(PropWatcher.Value))).First();
+        var valuePropInfo = value.GetType().GetProperties().Where(x=>x.Name == (nameof(PropWatcherBase.ObjectValue))).First();
 
         var uicPropertyType = await args.Configuration.GetPropertyTypeAsync(valuePropInfo, args.Options);
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.PropertyInput, args.CallCollection.Caller, args.CallCollection);
         var newArgs = new UICPropertyArgs(args.ClassObject, valuePropInfo, uicPropertyType, args.Options, cc, args.Configuration)
             .SetPropertyType(valueType)
-            .SetPropertyValue(value.Value);
+            .SetPropertyValue(value.ObjectValue);
         var input = await args.Configuration.GetGeneratedResultAsync<UICPropertyArgs, IUIComponent, UICInput>($"Input for Propwatcher", newArgs, args.Options);
         if (input == null)
             return GeneratorHelper.Next();

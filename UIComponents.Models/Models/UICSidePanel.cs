@@ -5,7 +5,7 @@ using UIComponents.Models.Models.Icons;
 
 namespace UIComponents.Models.Models;
 
-public class UICSidePanel : UIComponent
+public class UICSidePanel : UIComponent, IUICSupportsTaghelperContentPassThrough
 {
     #region Fields
 
@@ -20,7 +20,10 @@ public class UICSidePanel : UIComponent
         MainContent = mainContent;
         SidePanelContent = sidepanelContent;
 
-
+    }
+    public UICSidePanel(IUIComponent sidepanelContent)
+    {
+        SidePanelContent = sidepanelContent;
     }
 
     public UICSidePanel()
@@ -36,9 +39,9 @@ public class UICSidePanel : UIComponent
     /// <summary>
     /// The content where the sidepanel overlaps
     /// </summary>
-    public IUIComponent MainContent { get; set; }
+    public IUIComponent MainContent { get; set; } = new UICCustom();
 
-    public IUIComponent SidePanelContent { get; set; }
+    public IUIComponent SidePanelContent { get; set; } = new UICCustom();
 
     /// <summary>
     /// Optional: If this property is set, this will be used as a identifier to remember the previous state when reloading the page.
@@ -98,6 +101,9 @@ public class UICSidePanel : UIComponent
 
     public IUICAction BeforePinned { get; set; }
     public IUICAction AfterPinned { get; set; }
+
+    object IUICSupportsTaghelperContentPassThrough.PassThroughToChild => MainContent;
+
 
     #endregion
 

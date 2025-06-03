@@ -1,32 +1,88 @@
-﻿namespace CeloxWortelen.DA.DataTypes;
-public class PropWatcher
-{
-    private object _value;
-    public object Value
-    {
-        get
-        {
-            LastGet = DateTime.Now;
-            return _value;
-        }
-        set
-        {
-            LastUpdate = DateTime.Now;
-            var oldValue = _value;
-            BeforeValueChanged?.Invoke(this, new(oldValue, value));
-            _value = value;
-            AfterValueChanged?.Invoke(this, new(oldValue, value));
-        }
-    }
-    public DateTime LastGet { get; set; }
-    public DateTime LastUpdate { get; set; }
+﻿using System.Diagnostics;
 
-    public virtual Type ValueType { get; }
+namespace CeloxWortelen.DA.DataTypes;
+public abstract class PropWatcherBase
+{
+    public abstract object ObjectValue { get; }
+
+    public long LastGetTick { get; protected set; }
+    public long LastUpdateTick { get; protected set; }
+
+    public TimeSpan? LastGet => LastGetTick == 0 ? null : new(Stopwatch.GetTimestamp() - LastGetTick);
+    public TimeSpan? LastUpdate => LastUpdateTick == 0 ? null : new(Stopwatch.GetTimestamp() - LastUpdateTick);
 
     public event EventHandler<PropChangedEventArgs> BeforeValueChanged;
     public event EventHandler<PropChangedEventArgs> AfterValueChanged;
 
+    protected virtual void OnBeforeValueChanged(object oldValue, object newValue)
+    {
+        BeforeValueChanged?.Invoke(this, new PropChangedEventArgs(oldValue, newValue));
+    }
+
+    protected virtual void OnAfterValueChanged(object oldValue, object newValue)
+    {
+        AfterValueChanged?.Invoke(this, new PropChangedEventArgs(oldValue, newValue));
+    }
+
+    public virtual Type ValueType => null;
 }
+
+public class PropWatcher<T> : PropWatcherBase
+{
+    private T _value;
+
+    public PropWatcher(T initialValue = default)
+    {
+        _value = initialValue;
+    }
+
+    public override Type ValueType => typeof(T);
+
+    public T Value
+    {
+        get
+        {
+            LastGetTick = Stopwatch.GetTimestamp();
+            return _value;
+        }
+        set
+        {
+            LastUpdateTick = Stopwatch.GetTimestamp();
+            var oldValue = _value;
+
+            if (EqualityComparer<T>.Default.Equals(oldValue, value))
+                return;
+
+            OnBeforeValueChanged(oldValue, value);
+            _value = value;
+            OnAfterValueChanged(oldValue, value);
+        }
+    }
+
+    /// <summary>
+    /// Gets the value as an object (boxed if T is a value type).
+    /// Use this only when you really need object representation.
+    /// </summary>
+    public override object ObjectValue => Value!;
+
+    public event EventHandler<PropChangedEventArgs<T>> BeforeValueChangedTyped;
+    public event EventHandler<PropChangedEventArgs<T>> AfterValueChangedTyped;
+
+    protected override void OnBeforeValueChanged(object oldValue, object newValue)
+    {
+        base.OnBeforeValueChanged(oldValue, newValue);
+        BeforeValueChangedTyped?.Invoke(this, new PropChangedEventArgs<T>((T)oldValue, (T)newValue));
+    }
+
+    protected override void OnAfterValueChanged(object oldValue, object newValue)
+    {
+        base.OnAfterValueChanged(oldValue, newValue);
+        AfterValueChangedTyped?.Invoke(this, new PropChangedEventArgs<T>((T)oldValue, (T)newValue));
+    }
+
+    public static implicit operator T(PropWatcher<T> watcher) => watcher.Value;
+}
+
 public class PropChangedEventArgs : EventArgs
 {
     public PropChangedEventArgs(object oldValue, object newValue)
@@ -35,53 +91,19 @@ public class PropChangedEventArgs : EventArgs
         NewValue = newValue;
     }
 
-    public object OldValue { get; init; }
-    public object NewValue { get; init; }
+    public object OldValue { get; }
+    public object NewValue { get; }
 
-    public bool ValueChanged => !OldValue.Equals(NewValue);
-
+    public bool ValueChanged => !Equals(OldValue, NewValue);
 }
 
 public class PropChangedEventArgs<T> : PropChangedEventArgs
 {
-    public PropChangedEventArgs(object oldValue, object newValue) : base(oldValue, newValue)
+    public PropChangedEventArgs(T oldValue, T newValue) : base(oldValue, newValue)
     {
     }
+
     public new T OldValue => (T)base.OldValue;
     public new T NewValue => (T)base.NewValue;
-}
-
-public class PropWatcher<T> : PropWatcher
-{
-    public PropWatcher(T value = default(T))
-    {
-        Value = value;
-
-        base.BeforeValueChanged += PropWatcher_BeforeValueChanged;
-        base.AfterValueChanged += PropWatcher_AfterValueChanged;
-    }
-
-
-    public override Type ValueType => typeof(T);
-
-    public new T Value { get => (T)base.Value; set => base.Value = value; }
-
-    public new event EventHandler<PropChangedEventArgs<T>> BeforeValueChanged;
-    public new event EventHandler<PropChangedEventArgs<T>> AfterValueChanged;
-
-    public static implicit operator T(PropWatcher<T> watcher) => watcher.Value;
-
-    private void PropWatcher_BeforeValueChanged(object sender, PropChangedEventArgs e)
-    {
-        BeforeValueChanged?.Invoke(sender, ConvertArgs(e));
-    }
-    private void PropWatcher_AfterValueChanged(object sender, PropChangedEventArgs e)
-    {
-        AfterValueChanged?.Invoke(sender, ConvertArgs(e));
-    }
-    private PropChangedEventArgs<T> ConvertArgs(PropChangedEventArgs args)
-    {
-        return new PropChangedEventArgs<T>((T)args.OldValue, (T)args.NewValue);
-    }
 }
 
