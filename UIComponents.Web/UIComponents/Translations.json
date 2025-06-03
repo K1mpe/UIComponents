@@ -1502,7 +1502,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\UICSidePanel.cs",
-          "LineNumber": 79
+          "LineNumber": 82
         }
       ]
     },
@@ -1518,7 +1518,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\UICSidePanel.cs",
-          "LineNumber": 73
+          "LineNumber": 76
         }
       ]
     },
@@ -1534,7 +1534,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\UICSidePanel.cs",
-          "LineNumber": 67
+          "LineNumber": 70
         }
       ]
     },

@@ -63,7 +63,7 @@ public class PropWatcher<T> : PropWatcherBase
     /// Gets the value as an object (boxed if T is a value type).
     /// Use this only when you really need object representation.
     /// </summary>
-    public override object ObjectValue => Value!;
+    public override object ObjectValue => Value;
 
     public event EventHandler<PropChangedEventArgs<T>> BeforeValueChangedTyped;
     public event EventHandler<PropChangedEventArgs<T>> AfterValueChangedTyped;

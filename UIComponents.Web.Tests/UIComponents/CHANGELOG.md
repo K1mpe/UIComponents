@@ -1,3 +1,9 @@
+# 2025-06-03 (V1.3.27)
+- IUICSupportsTaghelperContentPassThrough
+- UICSidepanel now supports TaghelperContent
+- uic.getValue on select2 parses numbers if possible
+- Propwatcher performance
+
 # 2025-05-19 (V1.3.26)
 - UICSignalRHub
 - IFormattedException

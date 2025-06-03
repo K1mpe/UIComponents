@@ -85,7 +85,7 @@ builder.Services.AddUIComponentWeb(config =>
 
         var valueType = value.ValueType;
 
-        var valuePropInfo = value.GetType().GetProperties().Where(x=>x.Name == (nameof(PropWatcherBase.ObjectValue))).First();
+        var valuePropInfo = value.GetType().GetProperties().Where(x=>x.Name == (nameof(PropWatcher<string>.Value))).First();
 
         var uicPropertyType = await args.Configuration.GetPropertyTypeAsync(valuePropInfo, args.Options);
         var cc = new UICCallCollection(UICGeneratorPropertyCallType.PropertyInput, args.CallCollection.Caller, args.CallCollection);
