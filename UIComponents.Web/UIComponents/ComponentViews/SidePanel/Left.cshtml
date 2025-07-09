@@ -37,8 +37,53 @@
 {
     Model.AddScriptDocReady(
     @<text>
-    uic.sidePanel.initialize($('#@id'), @((int)Model.DefaultState));
-</text>);
+
+        @if(Model.BeforePinned.HasValue())
+        {
+            <text>
+                $('#@Model.GetId()').on('uic-before-pinned', async(ev)=>{
+                    @await Model.BeforePinned.InvokeAsync(Component)
+                });
+            </text>
+        }
+        @if(Model.AfterPinned.HasValue())
+        {
+            <text>
+                $('#@Model.GetId()').on('uic-after-pinned', async(ev)=>{
+                    @await Model.AfterPinned.InvokeAsync(Component)
+                });
+            </text>
+        }
+        @if(Model.BeforeCollapsed.HasValue()){
+            <text>
+                $('#@Model.GetId()').on('uic-before-collapsed', async(ev)=>{
+                    @await Model.BeforeCollapsed.InvokeAsync(Component)
+                });
+            </text>
+        }
+        @if(Model.AfterCollapsed.HasValue()){
+            <text>
+                $('#@Model.GetId()').on('uic-after-collapsed', async(ev)=>{
+                    @await Model.AfterCollapsed.InvokeAsync(Component)
+                });
+            </text>
+        }
+        @if(Model.BeforeOverlay.HasValue()){
+            <text>
+                $('#@Model.GetId()').on('uic-before-overlay', async(ev)=>{
+                    @await Model.BeforeOverlay.InvokeAsync(Component)
+                });
+            </text>
+        }
+        @if(Model.AfterOverlay.HasValue()){
+            <text>
+                $('#@Model.GetId()').on('uic-after-overlay', async(ev)=>{
+                    @await Model.AfterOverlay.InvokeAsync(Component)
+                });
+            </text>
+        }
+        uic.sidePanel.initialize($('#@id'), @((int)Model.DefaultState));
+    </text>);
     <div @Html.Raw(Model.GetHtmlAttributes())>
         <div class="side-panel col col-1 d-none">
             <div class="card">
@@ -53,6 +98,7 @@
             @await Model.MainContent.InvokeAsync(Component)
         </div>
     </div>
+
 }
 else
 {

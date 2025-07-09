@@ -1,3 +1,6 @@
+# 2025-07-09 (V1.3.28)
+- Implementing events sidepanel
+
 # 2025-06-03 (V1.3.27)
 - IUICSupportsTaghelperContentPassThrough
 - UICSidepanel now supports TaghelperContent

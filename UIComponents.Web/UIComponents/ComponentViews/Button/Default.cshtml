@@ -62,7 +62,7 @@
         Model.AddAttribute("class", $"btn-{Model.Color.ToLower()}");
 
 }
-@if (Model.OnClick != null && Model.OnClick is UICActionNavigate navigate)
+@if (Model.OnClick.HasValue() && Model.OnClick is UICActionNavigate navigate)
 {
     <a href="@navigate.Href" @Html.Raw(Model.GetHtmlAttributes())>
         @await Model.PrependButtonIcon.InvokeAsync(Component)
@@ -77,7 +77,7 @@ else
         @await Html.TranslateHtml(L, Model.ButtonText)
         @await Model.AppendButtonIcon.InvokeAsync(Component)
 
-        @if (Model.OnClick != null)
+        @if (Model.OnClick.HasValue())
         {
             Model.AddScriptDocReady(
             @<text>

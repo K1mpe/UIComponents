@@ -89,18 +89,18 @@ public class UICSidePanel : UIComponent, IUICSupportsTaghelperContentPassThrough
     /// <summary>
     /// Action triggered before the sidePanel switches to Overlay state.
     /// </summary>
-    public IUICAction BeforeOverlay { get; set; }
+    public IUICAction BeforeOverlay { get; set; } = new UICCustom();
 
     /// <summary>
     /// Action triggered after the sidePanel has switched to OverlayState.
     /// </summary>
-    public IUICAction AfterOverlay { get; set; }
+    public IUICAction AfterOverlay { get; set; } = new UICCustom();
 
-    public IUICAction BeforeCollapsed { get; set; }
-    public IUICAction AfterCollapsed { get; set; }
+    public IUICAction BeforeCollapsed { get; set; } = new UICCustom();
+    public IUICAction AfterCollapsed { get; set; } = new UICCustom();
 
-    public IUICAction BeforePinned { get; set; }
-    public IUICAction AfterPinned { get; set; }
+    public IUICAction BeforePinned { get; set; } = new UICCustom();
+    public IUICAction AfterPinned { get; set; } = new UICCustom();
 
     object IUICSupportsTaghelperContentPassThrough.PassThroughToChild => MainContent;
 

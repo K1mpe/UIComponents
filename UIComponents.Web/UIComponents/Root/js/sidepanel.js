@@ -103,6 +103,7 @@
     },
     setCollapse: function (container) {
         let sidePanel = container.find('.side-panel');
+        sidePanel.trigger('uic-before-collapsed');
         sidePanel.removeClass('col col-1 fit-content');
 
         sidePanel.removeClass('overlay fixed');
@@ -110,9 +111,11 @@
 
         container.find('.btn-sidebar-open').removeClass('d-none');
         uic.sidePanel.saveState(container, 0);
+        sidePanel.trigger('uic-after-collapsed');
     },
     setOverlay: function (container) {
         let sidePanel = container.find('.side-panel');
+        sidePanel.trigger('uic-before-overlay');
         sidePanel.removeClass('col col-1 fit-content');
 
         sidePanel.removeClass('collapsed fixed');
@@ -122,10 +125,12 @@
         container.find('.btn-sidebar-open').addClass('d-none');
         uic.sidePanel.setHeight(container);
         uic.sidePanel.saveState(container, 1);
+        sidePanel.trigger('uic-after-overlay');
     },
     setPinned: function (container) {
 
         let sidePanel = container.find('.side-panel');
+        sidePanel.trigger('uic-before-pinned');
         sidePanel.addClass('col col-1 fit-content');
         sidePanel.css('height', '');
         sidePanel.removeClass('collapsed overlay');
@@ -134,5 +139,6 @@
         sidePanel.find('.btn-sidebar-fixed').addClass('d-none');
         container.find('.btn-sidebar-open').addClass('d-none');
         uic.sidePanel.saveState(container, 2);
+        sidePanel.trigger('uic-after-pinned');
     }
 };
