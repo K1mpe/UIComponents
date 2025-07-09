@@ -111,6 +111,14 @@
     {
         @await component.InvokeAsync(Component)
     }
+        @if(!string.IsNullOrWhiteSpace(Model.Id))
+    {
+        <text>
+            'state':{
+            'key': 'jstree-@Model.Id'
+            },
+        </text>
+    }
 
         @if (plugins.Any())
     {

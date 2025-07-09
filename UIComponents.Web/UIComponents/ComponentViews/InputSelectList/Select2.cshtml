@@ -97,7 +97,7 @@
         </text>
     }
         });
-        @if(Model.Placeholder != null && hasEmptyItem){
+        @if(Model.Placeholder != null && hasEmptyItem && (string.IsNullOrEmpty(Model.Value) || !Model.SelectListItems.Where(x=>x.Value?.ToString() == Model.Value).Any())){
         <text>
             //manually set the placeholder because select2 refuses to show the option with empty value when using the placeholder
             if(uic.getValue('#@id') ==''){

@@ -112,7 +112,7 @@ public class TaskResult<T> : TaskResult
 
 public class TaskResultInvalidException : ArgumentStringException
 {
-    public TaskResultInvalidException(string message, TaskResult taskResult) : base(message, string.Join($". {Environment.NewLine}", taskResult.Errors))
+    public TaskResultInvalidException(string message, TaskResult taskResult) : base(message, string.Join($". {Environment.NewLine}", taskResult.Errors.FirstOrDefault().Message, taskResult.Errors.FirstOrDefault().Args))
     {
         TaskResult = taskResult;
     }
