@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.3.28</Version>
+	<Version>1.3.29</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -151,6 +151,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UIComponents.Generators\UIComponents.Generators.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="UIComponents\ComponentViews\FileExplorer\ImageViewer.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

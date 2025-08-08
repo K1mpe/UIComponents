@@ -152,7 +152,7 @@ namespace UIComponents.Defaults.Models
         public static int ParallelUploads { get; set; } = 0;
 
 
-        public static string DropzoneCss { get; set; } = "~/lib/dropzone/dist/dropzone.min.css";
+        public static string DropzoneCss { get; set; } = "/lib/dropzone/dist/dropzone.min.css";
 
         /// <summary>
         /// The location of the dropzone.js script file

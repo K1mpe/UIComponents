@@ -152,7 +152,7 @@ namespace UIComponents.Web.Helpers
 
         /// <summary>
         /// This methods saves all files from the <see cref="HttpContent"/> and saves them in the target directory.
-        /// <br>If Dropzone is used with chinking, This method can stream download the files</br>
+        /// <br>If Dropzone is used with chunking, This method can stream download the files</br>
         /// </summary>
         /// <remarks>
         /// All existing files with the same name will be removed before the upload! make sure to check all of them before calling this method!
@@ -162,6 +162,7 @@ namespace UIComponents.Web.Helpers
         /// <returns></returns>
         public static async Task UploadFilesFromDropzoneStream(HttpContext httpContext, string targetDirectory, Func<string, Stream, Task> saveUploadFunc, ILogger logger = null)
         {
+            
             var form = httpContext.Request.Form;
             if (form.ContainsKey("dzchunkindex"))
             {
@@ -179,17 +180,24 @@ namespace UIComponents.Web.Helpers
                 using (logger?.BeginScopeKvp(
                     new("FilePath", finalFilePath),
                     new("FileSize", fileSize)))
-                { 
-                    try
+                {
+
+                    if (chunkIndex == 0 && logger != null)
                     {
-                        if (chunkIndex == 0 && logger != null)
+                        if (logger != null)
                         {
                             logger.LogInformation("Start uploading file stream");
-                            lock (StartUploadingFiles)
-                            {
-                                StartUploadingFiles[finalFilePath] = DateTime.Now;
-                            }
                         }
+                        lock (StartUploadingFiles)
+                        {
+                            if (StartUploadingFiles.ContainsKey(finalFilePath))
+                                throw new ArgumentStringException("There is currently another file uploading with the name {0}", filename);
+                            StartUploadingFiles[finalFilePath] = DateTime.Now;
+                        }
+                    }
+                    try
+                    {
+                        
 
 
                         // Append the current chunk to the file on the server

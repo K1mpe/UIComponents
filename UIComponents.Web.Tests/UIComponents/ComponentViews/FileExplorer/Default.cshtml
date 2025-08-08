@@ -32,7 +32,7 @@
     Model.RootDirectory = Model.RootDirectory.Replace("\\", "/");
 
     var relPath = _pathMapper.GetRelativePath(Model.RootDirectory);
-    string GetRelPath(string input) => input.Replace(Model.RootDirectory, relPath.RelativePath);
+    string GetRelPath(string input) => input.Replace("\\", "/").Replace(Model.RootDirectory, relPath.RelativePath);
     Model.AssignCollectionForChildren();
     Model
         .AddAttribute("data-controller", Model.ControllerName)

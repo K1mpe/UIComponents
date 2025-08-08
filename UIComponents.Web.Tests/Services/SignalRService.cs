@@ -69,17 +69,17 @@ public class SignalRService : IUICSignalRService
 
     public async Task RemoveUIComponentWithId(string id)
     {
-        await SignalRHub.Clients.All.RemoveUIComponentWithId(id);
+        await SignalRHub.Clients?.All.RemoveUIComponentWithId(id);
     }
 
     public async Task SendUIComponentToUser(UICFetchComponent fetchComponent, string userId)
     {
-        await SignalRHub.Clients.All.SendUIComponentToUser(fetchComponent, userId);
+        await SignalRHub.Clients?.All.SendUIComponentToUser(fetchComponent, userId);
     }
 
     public Task EventHandler(string key, object sender, object args)
     {
-        return SignalRHub.Clients.Group(key).EventHandler(key, sender, args);
+        return SignalRHub.Clients?.Group(key).EventHandler(key, sender, args);
     }
 
 }

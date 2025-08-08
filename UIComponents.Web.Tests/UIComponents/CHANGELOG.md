@@ -1,3 +1,7 @@
+# 2025-08-08 (V1.3.29)
+- Fix contextmenu in FileExplorer
+- QuestionText supports multiline text & clientside validation
+
 # 2025-07-09 (V1.3.28)
 - Implementing events sidepanel
 

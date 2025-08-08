@@ -67,6 +67,9 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var question = UICQuestionText.Create("Test", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
+            question.ValidateMaxLength = 3;
+            return ViewOrPartial(question);
             return View();
             var testModel = new TestModel();
             var component = await _uic.CreateComponentAsync(testModel, new()
@@ -89,6 +92,9 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Test()
         {
+            var question = UICQuestionText.Create("Test", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
+            question.ValidateMaxLength = 3;
+            var answered = await _uicQuestionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(10));
             //var component = await _uic.CreateComponentAsync(new TestModel());
             //return ViewOrPartial(component);
             await Task.Delay(500);

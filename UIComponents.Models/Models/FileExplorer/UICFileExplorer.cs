@@ -164,14 +164,14 @@ namespace UIComponents.Models.Models.FileExplorer
             contextMenuItems.Add(folderGroup);
 
 
-            var createDirectory = new UICContextMenuItem($"#{fileExplorer.GetId()} .can-create", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.CreateDirectory")) { Icon = IconDefaults.CreateFolder?.Invoke() }, new UICCustom("uic.fileExplorer.createDirectory(target);"))
+            var createDirectory = new UICContextMenuItem($"#{fileExplorer.GetId()}:has(.can-create)", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.CreateDirectory")) { Icon = IconDefaults.CreateFolder?.Invoke() }, new UICCustom("uic.fileExplorer.createDirectory(target);"))
             {
                 Id = "FileExplorer.Actions.CreateDirectory",
                 Category = folderGroup.CategoryId
             };
             contextMenuItems.Add(createDirectory);
 
-            var upload = new UICContextMenuItem($"#{fileExplorer.GetId()} .can-create", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Upload")) { Icon = IconDefaults.Upload?.Invoke() }, new UICCustom("uic.fileExplorer.uploadPage(target);"))
+            var upload = new UICContextMenuItem($"#{fileExplorer.GetId()}:has(.can-create)", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Upload")) { Icon = IconDefaults.Upload?.Invoke() }, new UICCustom("uic.fileExplorer.uploadPage(target);"))
             {
 
                 Id = "FileExplorer.Actions.Upload",
@@ -218,7 +218,7 @@ namespace UIComponents.Models.Models.FileExplorer
             };
             contextMenuItems.Add(copy);
 
-            var paste = new UICContextMenuItem($"#{fileExplorer.GetId()} .can-create", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Paste")) { Icon = IconDefaults.Paste?.Invoke() }, new UICCustom("uic.fileExplorer.pasteSelected(clickedElement);"))
+            var paste = new UICContextMenuItem($"#{fileExplorer.GetId()}:has(.can-create)", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Paste")) { Icon = IconDefaults.Paste?.Invoke() }, new UICCustom("uic.fileExplorer.pasteSelected(clickedElement);"))
             {
                 Id = "FileExplorer.Actions.Paste",
                 Category = fileGroup.CategoryId,

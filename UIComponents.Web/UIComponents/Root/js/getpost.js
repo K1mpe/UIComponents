@@ -183,7 +183,7 @@
                 var prop = postProperties[i];
                 var val = data[prop];
                 if (!isNaN(val) && val !== null)
-                    data[prop] = val.toString().replace(".", ",");
+                    data[prop] = val.toString().replace(",", ".");
                 else if (typeof val == "object")
                     data[prop] = uic.getpost.formatNumbersForDecimalStrings(val);
             }

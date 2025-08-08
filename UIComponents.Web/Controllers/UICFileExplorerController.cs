@@ -7,6 +7,7 @@ using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -228,10 +229,18 @@ public class UICFileExplorerController : Controller, IUICFileExplorerController
         try
         {
             var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
-            if (_permissionService != null && await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath))
+            if (_permissionService != null && !await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath))
                 return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFiles", "You do not have access to upload files in {0}", directoryPathModel.RelativePath));
 
             var modal = new UICModal(directoryPathModel.RelativePath);
+
+            var uploader = await _fileExplorerService.GetUploadFileComponent(directoryPathModel);
+            if(uploader != null)
+            {
+                modal.Add(uploader);
+                return ViewOrPartial(modal);
+            }
+
             modal.Add(new UICUpload(Url.Action(nameof(UploadFiles))), upload =>
             {
                 upload.AllowChunking = true;
@@ -257,7 +266,7 @@ public class UICFileExplorerController : Controller, IUICFileExplorerController
         {
             var files = Request.Form.Files;
             var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
-            if (_permissionService != null && await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath))
+            if (_permissionService != null && !await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath))
                 return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFiles", "You do not have access to upload files in {0}", directoryPathModel.RelativePath));
 
             foreach (var file in files)

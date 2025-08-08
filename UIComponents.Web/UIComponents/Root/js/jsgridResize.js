@@ -24,7 +24,8 @@
         var table = aTable;
         var connectedTable = aConnectedTable;
 
-        if (table.tagName != 'TABLE') return;
+        if (table == null || table == undefined || table.tagName != 'TABLE')
+            return;
 
         this.id = table.id;
 

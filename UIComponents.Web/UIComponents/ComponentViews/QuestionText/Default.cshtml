@@ -24,7 +24,7 @@
 @{
     string guid = "Question" + Guid.NewGuid().ToString("n");
     bool canCancel = Model.CanCancel;
-    string selection = await L.Translate(new("QuestionSelectList.SelectInput"));
+    string selection = await L.Translate(new("QuestionText.Input"));
 }
 <div id="@Model.Id">
     <script>
@@ -45,7 +45,7 @@
                 title: @await Html.TranslateJs(L, Model.Title, "'"),
                 text: @await Html.TranslateJs(L, Model.Message, "'"),
                 showCloseButton: @Json.Serialize(canCancel && Model.ShowClosebutton),
-                input: 'text',
+                input: '@Html.Raw(Model.Multiline?"textarea":"text")',
                 icon: @Html.JsEncode(Model.Icon?.ToString().ToLower() ?? string.Empty, "'"),
                 timer: '@(Model.RemoveAfterTimeout?.TotalMilliseconds)',
                 reverseButtons: @Json.Serialize(Model.InvertButtons),
@@ -56,13 +56,33 @@
                 confirmButtonText: `@await Model.ButtonSubmit.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonSubmit.ButtonText, string.Empty) @await Model.ButtonSubmit.AppendButtonIcon.InvokeAsync(Component)`,
                 denyButtonText: `@await Model.ButtonCancel.PrependButtonIcon.InvokeAsync(Component) @await Html.TranslateJs(L, Model.ButtonCancel.ButtonText, string.Empty) @await Model.ButtonCancel.AppendButtonIcon.InvokeAsync(Component)`,
                 inputValidator: (value) => {
-                    return new Promise((resolve) => {
-                        if (value === "NULL") {
-                            resolve(@await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidationIsRequired(selection), "'"));
-                        } else {
-                            resolve();
+                    debugger;
+                    @if(Model.ValidateRequired) {
+                        <text>
+                        if (!value || value.trim() === "") {
+                            return @await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidationIsRequired(selection), "'");
                         }
-                    });
+                        </text>
+                    }
+                    @if(Model.ValidateMinLength.HasValue) {
+                        <text>
+                        if (@Json.Serialize(Model.ValidateMinLength.Value) > value.length) {
+                            return @await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateMinLength(selection, Model.ValidateMinLength.Value), "'");
+                        }
+                        </text>
+                    }
+                    @if(Model.ValidateMaxLength.HasValue) {
+                        <text>
+                        if (value.length > @Json.Serialize(Model.ValidateMaxLength)) {
+                            return @await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateMaxLength(selection, Model.ValidateMaxLength.Value), "'");
+                        }
+                        </text>
+                    }
+
+                    @if(Model.TextValidation.HasValue())
+                    {
+                        @await Model.TextValidation.InvokeAsync(Component)
+                    }
                 }
             })).then(async (result) => {
                 if (result.isConfirmed) {
