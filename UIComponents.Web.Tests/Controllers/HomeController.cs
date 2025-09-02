@@ -107,16 +107,11 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> TestQuestion()
         {
-            var selectList = new List<SelectListItem>()
-            {
-                new(){Value="1", Text="One"},
-                new(){Value="2", Text="Two"},
-                new(){Value="3", Text="Three"},
-                new(){Value="4", Text="Four"},
-                new(){Value="5", Text="Five"},
-            };
+            
 
-            var question = UICQuestionSelectList.Create("Test", "Wilt u deze vraag beantwoorden?", selectList, _uicQuestionService);
+            var question = UICQuestionText.Create("Test", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
+            question.Multiline = true;
+            question.DefaultValue = "blub";
             var response = await _uicQuestionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1));
             Console.WriteLine(response.Result);
             return Json(true);

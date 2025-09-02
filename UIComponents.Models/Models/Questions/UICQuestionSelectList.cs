@@ -29,7 +29,6 @@ public class UICQuestionSelectList : UICQuestionBase<string>
 
     public Translatable EmptyText { get; set; }
 
-    public UICQuestionRenderer Renderer { get; set; } = UICQuestionRenderer.Modal;
     #endregion
 
     #region Methods

@@ -19,6 +19,7 @@
 	  <Content Remove="UIComponents\ComponentViews\FileExplorer\FilePreview.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\InputTime\Default.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\InputTime\SelectLists.cshtml" />
+	  <Content Remove="UIComponents\ComponentViews\QuestionText\Modal.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\RenderMultiple.cshtml" />
 	  <EmbeddedResource Include="UIComponents\ChangeLog\**" />
   </ItemGroup>
