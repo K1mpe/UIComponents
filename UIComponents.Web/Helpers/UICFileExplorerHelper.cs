@@ -90,7 +90,7 @@ namespace UIComponents.Web.Helpers
                     return new EmptyResult(); // Exit after sending the single file
                 }
             }
-            
+
             // Create the ZipArchive directly in the response stream
             await logger.LogFunction("Creating Zip file", true, async () =>
             {
@@ -100,7 +100,7 @@ namespace UIComponents.Web.Helpers
                     {
                         if (File.Exists(file))
                         {
-                            using(logger.BeginScopeKvp("FilePath", file))
+                            using (logger.BeginScopeKvp("FilePath", file))
                             {
                                 await logger.LogFunction("Adding file to Zip", true, async () =>
                                 {
@@ -148,7 +148,7 @@ namespace UIComponents.Web.Helpers
         }
 
 
-        private static Dictionary<string, DateTime> StartUploadingFiles = new();
+        private static Dictionary<string, UploadData> StartUploadingFiles = new();
 
         /// <summary>
         /// This methods saves all files from the <see cref="HttpContent"/> and saves them in the target directory.
@@ -162,7 +162,7 @@ namespace UIComponents.Web.Helpers
         /// <returns></returns>
         public static async Task UploadFilesFromDropzoneStream(HttpContext httpContext, string targetDirectory, Func<string, Stream, Task> saveUploadFunc, ILogger logger = null)
         {
-            
+
             var form = httpContext.Request.Form;
             if (form.ContainsKey("dzchunkindex"))
             {
@@ -190,14 +190,35 @@ namespace UIComponents.Web.Helpers
                         }
                         lock (StartUploadingFiles)
                         {
-                            if (StartUploadingFiles.ContainsKey(finalFilePath))
+                            var disposed = StartUploadingFiles.Where(x => x.Value.DisposeAt != null && x.Value.DisposeAt < DateTime.Now);
+                            foreach (var dispose in disposed)
+                            {
+                                StartUploadingFiles.Remove(dispose.Key);
+                            }
+
+
+                            if (StartUploadingFiles.TryGetValue(filePath, out var data) && data.DisposeAt == null)
                                 throw new ArgumentStringException("There is currently another file uploading with the name {0}", filename);
-                            StartUploadingFiles[finalFilePath] = DateTime.Now;
+                            StartUploadingFiles[filePath] = new()
+                            {
+                                TempPath = filePath,
+                                TargetPath = finalFilePath,
+                                UploadStart = DateTime.Now,
+                            };
                         }
+                    }
+                    UploadData uploadData;
+                    lock (StartUploadingFiles)
+                    {
+                        if (!StartUploadingFiles.TryGetValue(filePath, out uploadData))
+                            throw new ArgumentStringException("Uploaddata is missing. Upload has been interupted or corrupted");
+                        else if (uploadData.ServerHandlingException != null)
+                            throw uploadData.ServerHandlingException;
+
                     }
                     try
                     {
-                        
+
 
 
                         // Append the current chunk to the file on the server
@@ -207,38 +228,44 @@ namespace UIComponents.Web.Helpers
                         }
 
                         // Check if this is the last chunk, if so we can finalize the upload
-                        if (chunkIndex == totalChunks-1)
+                        if (chunkIndex == totalChunks - 1)
                         {
-                            using(var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                            using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
                             {
-                                await saveUploadFunc(finalFilePath, stream);
+                                try
+                                {
+                                    await saveUploadFunc(finalFilePath, stream);
+                                }
+                                catch (Exception ex)
+                                {
+                                    uploadData.ServerHandlingException = ex;
+                                    uploadData.DisposeAt = DateTime.Now.AddMinutes(1);
+                                    throw;
+                                }
                             }
                             File.Delete(filePath);
 
-                            if(StartUploadingFiles.TryGetValue(finalFilePath, out var dateTime))
+                            var timePassed = DateTime.Now - uploadData.UploadStart;
+                            lock (StartUploadingFiles)
                             {
-                                var timePassed = DateTime.Now - dateTime;
-                                var formatted = FormatDefaults.FormatTimespan(timePassed);
-                                logger?.LogInformation("Finished uploading file stream in {0}", formatted);
+                                StartUploadingFiles.Remove(filePath);
                             }
+
+                            var formatted = FormatDefaults.FormatTimespan(timePassed);
+                            logger?.LogInformation("Finished uploading file stream in {0}", formatted);
                         }
                     }
-                    catch (OperationCanceledException)
+                    catch (OperationCanceledException ex)
                     {
                         logger?.LogInformation("Uploading file has been canceled");
-                        lock (StartUploadingFiles)
-                        {
-                            StartUploadingFiles.Remove(filePath);
-                        }
+                        uploadData.ServerHandlingException = ex;
+                        uploadData.DisposeAt = DateTime.Now.AddMinutes(1);
                         throw;
                     }
                     catch
                     {
                         logger?.LogError("Error while uploading file stream");
-                        lock (StartUploadingFiles)
-                        {
-                            StartUploadingFiles.Remove(filePath);
-                        }
+                        uploadData.DisposeAt = DateTime.Now.AddMinutes(1);
                         throw;
                     }
                 }
@@ -264,6 +291,15 @@ namespace UIComponents.Web.Helpers
                     }
                 }
             }
+        }
+
+        private class UploadData
+        {
+            public string TempPath { get; set; }
+            public string TargetPath { get; set; }
+            public DateTime UploadStart { get; set; }
+            public DateTime? DisposeAt { get; set; }
+            public Exception? ServerHandlingException { get; set; }
         }
     }
 }
