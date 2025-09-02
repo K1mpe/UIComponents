@@ -544,7 +544,8 @@ public class UICFileExplorerService : IUICFileExplorerService
         if (!await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
             throw new AccessViolationException();
 
-        result.CanCreateInDirectory = await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath);
+        result.CanCreateFileInDirectory = await _permissionService.CurrentUserCanCreateFileInThisDirectory(absolutePath);
+        result.CanCreateFolderInDirectory = await _permissionService.CurrentUserCanCreateFolderInThisDirectory(absolutePath);
 
         if (!filterModel.FilesOnly)
         {

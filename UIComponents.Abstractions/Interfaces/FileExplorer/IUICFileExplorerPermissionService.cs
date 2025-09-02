@@ -21,7 +21,15 @@ namespace UIComponents.Abstractions.Interfaces.FileExplorer
         /// <summary>
         /// Check if the current user can upload, move or copy files to this directory
         /// </summary>
-        Task<bool> CurrentUserCanCreateInThisDirectory(string path);
+        Task<bool> CurrentUserCanCreateFileInThisDirectory(string path);
+
+
+        /// <summary>
+        /// Check if the current user can create a new folder in this directory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        Task<bool> CurrentUserCanCreateFolderInThisDirectory(string path);
 
         /// <summary>
         /// Check if the current user can create a file with this name. This may be a result of a upload, move or copy of a file

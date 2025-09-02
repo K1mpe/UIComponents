@@ -9,7 +9,12 @@ public class FilePermissionService : IUICFileExplorerPermissionService
         return Task.FromResult(true);
     }
 
-    public Task<bool> CurrentUserCanCreateInThisDirectory(string path)
+    public Task<bool> CurrentUserCanCreateFileInThisDirectory(string path)
+    {
+        return Task.FromResult(true);
+    }
+
+    public Task<bool> CurrentUserCanCreateFolderInThisDirectory(string path)
     {
         return Task.FromResult(true);
     }

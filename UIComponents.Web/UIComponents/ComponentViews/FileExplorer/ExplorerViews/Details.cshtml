@@ -23,7 +23,7 @@
 
 @model GetFilesForDirectoryResultModel
 
-<table class="table @(Model.CanCreateInDirectory?"can-create":"")">
+<table class="table @(Model.CanCreateFileInDirectory ? "can-create-file" : "") @(Model.CanCreateFolderInDirectory ? "can-create-folder" : "")">
     <thead>
         <tr>
             <th name="Icon">@await Html.TranslateHtml(L, TranslatableSaver.Save("FileExplorer.Icon"))</th>
@@ -57,7 +57,7 @@
                 <td>@Html.Raw(item.Icon)</td>
                 <td>@Html.Raw(item.FileName)</td>
                 <td>@Html.Raw(item.FileType??item.Extension)</td>
-                <td>@Html.Raw(item.LastModified.ToString())</td>
+                <td>@Html.Raw(item.LastModified.ToString("yyyy/MM/dd HH:mm:ss"))</td>
                 <td>@Html.Raw(item.Size)</td>
             </tr>
         }

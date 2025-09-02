@@ -229,7 +229,7 @@ public class UICFileExplorerController : Controller, IUICFileExplorerController
         try
         {
             var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
-            if (_permissionService != null && !await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath))
+            if (_permissionService != null && !await _permissionService.CurrentUserCanCreateFileInThisDirectory(absolutePath))
                 return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFiles", "You do not have access to upload files in {0}", directoryPathModel.RelativePath));
 
             var modal = new UICModal(directoryPathModel.RelativePath);
@@ -266,7 +266,7 @@ public class UICFileExplorerController : Controller, IUICFileExplorerController
         {
             var files = Request.Form.Files;
             var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
-            if (_permissionService != null && !await _permissionService.CurrentUserCanCreateInThisDirectory(absolutePath))
+            if (_permissionService != null && !await _permissionService.CurrentUserCanCreateFileInThisDirectory(absolutePath))
                 return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFiles", "You do not have access to upload files in {0}", directoryPathModel.RelativePath));
 
             foreach (var file in files)
