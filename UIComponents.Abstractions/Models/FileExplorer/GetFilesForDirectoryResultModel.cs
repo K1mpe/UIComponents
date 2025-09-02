@@ -3,6 +3,7 @@
 public class GetFilesForDirectoryResultModel
 {
     public List<UICFileInfo> Files { get; set; } = new();
-    public bool CanCreateInDirectory { get; set; }
+    public bool CanCreateFileInDirectory { get; set; }
+    public bool CanCreateFolderInDirectory { get; set; }
 
 }
