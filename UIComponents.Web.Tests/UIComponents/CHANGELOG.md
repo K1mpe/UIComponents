@@ -1,3 +1,9 @@
+# 2025-09-02 (V1.4.0)
+- UICQuestions in modals instead of SweetAlert
+- FileExplorer permissions split for creating folder & uploading file
+- FileExplorer formatting DateTime
+- FileExplorer validate folder exists on folder create
+
 # 2025-08-08 (V1.3.29)
 - Fix contextmenu in FileExplorer
 - QuestionText supports multiline text & clientside validation
