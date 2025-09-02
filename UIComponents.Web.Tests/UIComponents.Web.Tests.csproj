@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	  <DebugType>portable</DebugType>
+	  <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\UIComponents.Abstractions\UIComponents.Abstractions.csproj" />
+    <ProjectReference Include="..\UIComponents.Generators\UIComponents.Generators.csproj" />
+    <ProjectReference Include="..\UIComponents.Models\UIComponents.Models.csproj" />
     <ProjectReference Include="..\UIComponents.Web\UIComponents.Web.csproj" />
   </ItemGroup>
 	<ItemGroup>

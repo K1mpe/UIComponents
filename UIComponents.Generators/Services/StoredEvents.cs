@@ -77,17 +77,24 @@ public class StoredEvents : IUICStoredEvents
         _ = ClearStorageRecurring();
     }
 
-    public virtual Task IncommingSignalRTrigger(string key, Dictionary<string, string> data)
+    public virtual Task IncommingSignalRTrigger(string key, Dictionary<string, string> data, bool ignoreKeyNotFound)
     {
         Func<Dictionary<string, string>, Task> func = null;
         lock (_storedEventsTriggers)
         {
             if (!_storedEventsTriggers.ContainsKey(key))
+            {
+                if (ignoreKeyNotFound)
+                    return Task.CompletedTask;
+
                 throw new KeyNotFoundException();
+            }
             var storedEvent = _storedEventsTriggers[key];
             if (storedEvent.MaxLifetime < DateTime.Now)
             {
                 _storedEventsTriggers.Remove(key);
+                if (ignoreKeyNotFound)
+                    return Task.CompletedTask;
                 throw new KeyNotFoundException();
             }
             if (storedEvent.SingleUse)

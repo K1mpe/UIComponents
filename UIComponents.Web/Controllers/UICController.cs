@@ -25,11 +25,11 @@ public class UICController : Controller
     #endregion
 
     [HttpPost]
-    public async Task<IActionResult> PostEvent(string key, Dictionary<string, string> values)
+    public async Task<IActionResult> PostEvent(string key, Dictionary<string, string> values, bool ignoreKeyNotFound)
     {
         try
         {
-            await _storedEvents.IncommingSignalRTrigger(key, values);
+            await _storedEvents.IncommingSignalRTrigger(key, values, ignoreKeyNotFound);
             return Json(true);
         }
         catch (Exception ex)

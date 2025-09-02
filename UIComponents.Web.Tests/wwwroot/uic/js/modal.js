@@ -55,6 +55,8 @@
                 await modal.triggerHandler('uic-beforeClose');
             }
             modal.modal('hide');
+            $(`#${modal.attr('id') + "scripts"}`).next('.modal-backdrop').removeClass('show');
+            $('body').removeClass('modal-open');
         });
         modal.on('uic-destroy', (ev)=>{
             let id = modal.attr('id');
@@ -62,7 +64,12 @@
             modal.trigger('uic-close');
             modal.modal('dispose');
             modal.remove();
-            $(`#${id+"scripts"}`).remove();
+
+            setTimeout(() => {
+                $(`#${id + "scripts"}`).next('.modal-backdrop').remove();
+                $(`#${id + "scripts"}`).remove();
+            }, 1000);
+            
         });
         modal.on('hidden.bs.modal', (ev)=>{
             modal.trigger('uic-closed');

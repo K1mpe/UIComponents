@@ -1,6 +1,7 @@
 ﻿@using UIComponents.Abstractions;
 @using UIComponents.Abstractions.DataTypes.RecurringDates.Selectors
 @using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Interfaces.Services
 @using UIComponents.Abstractions.Models
 @using UIComponents.Generators.Helpers
 @using UIComponents.Generators.Interfaces;
@@ -12,6 +13,7 @@
 @using UIComponents.Models.Models.Graphs.TimeLineGraph
 @using UIComponents.Models.Models.Icons
 @using UIComponents.Models.Models.Inputs
+@using UIComponents.Models.Models.Questions
 @using UIComponents.Models.Models.Texts
 @using UIComponents.Web.Extensions;
 @using UIComponents.Web.Tests.Factory
@@ -22,6 +24,7 @@
 }
 @inject TestService testService
 @inject IUIComponentGenerator UIC
+@inject IUICQuestionService _questionService;
 @{
     var testModel = new TestModel();
     testModel.RecurringDate = new();
@@ -58,7 +61,7 @@
                     {
                         ReplaceSaveButtonWithCreateButton = true,
                         ShowEditButton = false,
-                        //IncludedProperties = "teststring, number, decimal, checkbox, enum, recurringDate,SubClass",
+                //IncludedProperties = "teststring, number, decimal, checkbox, enum, recurringDate,SubClass",
                         PostForm = new UICActionPost("home", "post"),
                         SelectlistAddEmptyItem = false,
                         ToolbarPosition = ToolbarPosition.BelowForm,
@@ -127,10 +130,22 @@
             .Add(editButton)
             .Add(deleteButton)));
 
-    var counter = await UIC.CreateComponentAsync(testService, x=>x.SecondCounter);
+    //var counter = await UIC.CreateComponentAsync(testService, x=>x.SecondCounter);
+
+
+    
 }
 
 
 
 @await tabs.InvokeAsync(Component)
-@await counter.InvokeAsync(Component)
+@* @await counter.InvokeAsync(Component) *@
+
+
+    <script>
+        $(document).ready(()=>{
+            setTimeout(async()=>{
+                uic.getpost.post('/home/TestQuestion');
+            },1000);
+        })
+    </script>

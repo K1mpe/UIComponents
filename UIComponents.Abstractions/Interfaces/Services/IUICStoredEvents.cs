@@ -15,7 +15,7 @@ public interface IUICStoredEvents
     /// </summary>
     /// <param name="key">The unique key linked to the method</param>
     /// <param name="data">Dictionary of data that is posted</param>
-    public Task IncommingSignalRTrigger(string key, Dictionary<string, string> data);
+    public Task IncommingSignalRTrigger(string key, Dictionary<string, string> data, bool ignoreKeyNotFound);
 
 
     /// <summary>

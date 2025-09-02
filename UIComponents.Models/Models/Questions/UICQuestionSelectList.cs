@@ -7,7 +7,7 @@ public class UICQuestionSelectList : UICQuestionBase<string>
 {
     #region Fields
 
-    public override string RenderLocation => UIComponent.DefaultIdentifier(nameof(UICQuestionSelectList));
+    public override string RenderLocation => UIComponent.DefaultIdentifier(nameof(UICQuestionSelectList), Renderer);
 
     #endregion
 
