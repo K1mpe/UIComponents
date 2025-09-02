@@ -40,7 +40,7 @@
     input.Placeholder = Model.EmptyText;
 
     var btnToolbar = new UICButtonToolbar().AddClass("question-toolbar");
-    btnToolbar.Distance = ButtonDistance.Long;
+    btnToolbar.Distance = ButtonDistance.Medium;
     if(Model.ButtonSubmit.OnClick is UICActionServerResponse serverResponse)
     {
         serverResponse.GetVariableData = new UICCustom($"{{value: uic.getValue('#{input.GetId()}')}}");

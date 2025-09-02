@@ -109,10 +109,13 @@ namespace UIComponents.Web.Tests.Controllers
         {
             
 
-            var question = UICQuestionText.Create("Test", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
-            question.Multiline = true;
-            question.DefaultValue = "blub";
-            var response = await _uicQuestionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1));
+            var question = UICQuestionYesNo.Create("Test", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
+            var response = await _uicQuestionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(100));
+            Console.WriteLine(response.Result);
+
+            var question2 = UICQuestionText.Create("Test2", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
+            question2.ValidateMinLength = 3;
+            var response2 = await _uicQuestionService.TryAskQuestionToCurrentUser(question2, TimeSpan.FromMinutes(100));
             Console.WriteLine(response.Result);
             return Json(true);
         }

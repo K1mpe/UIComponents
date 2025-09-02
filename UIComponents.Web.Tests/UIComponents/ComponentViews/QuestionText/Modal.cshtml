@@ -25,6 +25,7 @@
 @{
     string guid = "Question" + Guid.NewGuid().ToString("n");
     bool canCancel = Model.CanCancel;
+    string selection = await L.Translate(new("QuestionText.Input"));
 
     var modal = new UICModal().AddClass("question-modal question-text");
     modal.DisableCloseOnClickout = true;
@@ -33,13 +34,64 @@
     var input = new UICInputText("input");
     input.Value = Model.DefaultValue;
 
-    
+    var inputGroup = new UICInputGroup();
+    if (Model.Multiline)
+        inputGroup.Input = input.CovertToMultiline();
+    else
+        inputGroup.Input = input;
+
 
     var btnToolbar = new UICButtonToolbar().AddClass("question-toolbar");
-    btnToolbar.Distance = ButtonDistance.Long;
+    btnToolbar.Distance = ButtonDistance.Medium;
     if(Model.ButtonSubmit.OnClick is UICActionServerResponse serverResponse)
     {
-        serverResponse.GetVariableData = new UICCustom($"{{value: uic.getValue('#{input.GetId()}')}}");
+        serverResponse.GetVariableData = new UICCustom(@<text>
+            async function(){
+                let value= uic.getValue('#@input.GetId()');
+
+                let validationSpan = $('#@inputGroup.GetId() .field-validation-valid');
+                @if(Model.ValidateRequired){
+                    <text>
+                    if(value == null || value == undefined || value.length ==0){
+                        validationSpan.text(@await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidationIsRequired(selection)))
+                        throw validationSpan.text();
+                    }
+                    </text>
+                }
+                @if(Model.ValidateMaxLength.HasValue){
+                    <text>
+                    if(value.length > @Json.Serialize(Model.ValidateMaxLength.Value)){
+                        validationSpan.text(@await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateMaxLength(selection, Model.ValidateMaxLength.Value)))
+                        throw validationSpan.text();
+                    }
+                    </text>
+                }
+                @if(Model.ValidateMinLength.HasValue){
+                    <text>
+                    if(@Json.Serialize(Model.ValidateMinLength.Value) > value.length){
+                        validationSpan.text(@await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateMinLength(selection, Model.ValidateMinLength.Value)))
+                        throw validationSpan.text();
+                    }
+                    </text>
+                }
+
+                @if(Model.TextValidation.HasValue()){
+                    <text>
+                    let validateText = async function(){
+                        @await Model.TextValidation.InvokeAsync(Component)
+                    };
+                    let validationResult = await validateText();
+                    if(validationResult != null && validationResult != undefined && validationResult.length){
+                        validationSpan.text(validationResult);
+                        throw validationResult;
+                    }
+                    </text>
+                }
+
+                return {value: value};
+            }
+            </text>);
+        
     }
 
     if(Model.InvertButtons)
@@ -61,12 +113,7 @@
             @await Html.TranslateHtml(L, Model.Message)
         </div>
         <div class="question-input">
-        @{
-            if (Model.Multiline)
-                @await input.CovertToMultiline().InvokeAsync(Component)
-            else
-                @await input.InvokeAsync(Component)
-        }
+            @await inputGroup.InvokeAsync(Component)
         </div>
             @await btnToolbar.InvokeAsync(Component)
 

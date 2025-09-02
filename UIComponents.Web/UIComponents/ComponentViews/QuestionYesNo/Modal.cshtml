@@ -20,40 +20,33 @@
 
 
 @inject IUICLanguageService L
-@model UICQuestionSelectList
+@model UICQuestionYesNo
 
 @{
     string guid = "Question" + Guid.NewGuid().ToString("n");
     bool canCancel = Model.CanCancel;
-    string selection = await L.Translate(new("QuestionSelectList.SelectInput"));
 
-    var modal = new UICModal().AddClass("question-modal question-selectlist");
+    var modal = new UICModal().AddClass("question-modal question-yesno");
     modal.DisableCloseOnClickout = true;
-    modal.DisableEscapeKeyToClickout = !Model.CanCancel;
-    var selectlist = new List<UICSelectListItem>();
-    foreach(var item in Model.SelectListItems)
-    {
-        selectlist.Add(new(await L.Translate(item.Text), item.Value));   
-    }
+    modal.DisableEscapeKeyToClickout = !canCancel;
 
-    var input = new UICInputSelectList("input", selectlist);
-    input.Placeholder = Model.EmptyText;
+
+    
 
     var btnToolbar = new UICButtonToolbar().AddClass("question-toolbar");
     btnToolbar.Distance = ButtonDistance.Medium;
-    if(Model.ButtonSubmit.OnClick is UICActionServerResponse serverResponse)
-    {
-        serverResponse.GetVariableData = new UICCustom($"{{value: uic.getValue('#{input.GetId()}')}}");
-    }
+    
 
     if(Model.InvertButtons)
     {
         btnToolbar.AddCenter(Model.ButtonCancel);
+        btnToolbar.AddCenter(Model.ButtonNo);
         btnToolbar.AddCenter(Model.ButtonSubmit);
     }
     else
     {
         btnToolbar.AddCenter(Model.ButtonSubmit);
+        btnToolbar.AddCenter(Model.ButtonNo);
         btnToolbar.AddCenter(Model.ButtonCancel);
     }
     modal.Add(new UICCustom($"<div id={Model.Id}></div>"));
@@ -64,9 +57,7 @@
         <div class="question-message">
             @await Html.TranslateHtml(L, Model.Message)
         </div>
-        <div class="question-input">
-            @await input.InvokeAsync(Component)
-        </div>
+        
             @await btnToolbar.InvokeAsync(Component)
 
         <script>
@@ -76,11 +67,6 @@
                 ev.preventDefault();
                 $('#@modal.GetId()').trigger('uic-destroy');
             });
-            // $('#@Model.ButtonSubmit.GetId(), #@Model.ButtonCancel.GetId()').on('click', ()=>{
-            //     setTimeout(()=>{
-            //         $('#@modal.GetId()').trigger('uic-destroy');
-            //     },200);
-            // });
             $('#@modal.GetId()').on('uic-beforeClose', ()=>{
                 $('#@Model.ButtonCancel.GetId()').trigger('click');
             });

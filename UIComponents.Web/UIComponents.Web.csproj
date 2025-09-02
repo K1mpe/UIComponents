@@ -38,6 +38,7 @@
 	
   <ItemGroup>
     <EmbeddedResource Remove="UIComponents\ComponentViews\FileExplorer\ImageViewer.cshtml" />
+    <EmbeddedResource Remove="UIComponents\ComponentViews\QuestionYesNo\Modal.cshtml" />
     <EmbeddedResource Remove="UIComponents\ComponentViews\ValidationTexts.cshtml" />
   </ItemGroup>
 	
