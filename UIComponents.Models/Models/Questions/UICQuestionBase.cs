@@ -5,7 +5,7 @@ namespace UIComponents.Models.Models.Questions;
 public abstract class UICQuestionBase : IUIQuestionComponent, IUIComponent
 {
     #region Fields
-    public virtual string RenderLocation => this.CreateDefaultIdentifier();
+    public virtual string RenderLocation => this.CreateDefaultIdentifier(Renderer);
     public virtual string Id { get; set; } = Guid.NewGuid().ToString("n");
     #endregion
 
@@ -51,6 +51,9 @@ public abstract class UICQuestionBase : IUIQuestionComponent, IUIComponent
     public bool CanClickOutSideModalToClose { get; set; } = true;
 
     public string DebugIdentifier => Title?.ToString()??Message.ToString()??string.Empty;
+
+
+    public UICQuestionRenderer Renderer { get; set; } = UICQuestionRenderer.Modal;
     #endregion
 
     #region Methods
@@ -59,11 +62,13 @@ public abstract class UICQuestionBase : IUIQuestionComponent, IUIComponent
         ButtonSubmit.OnClick = new UICActionServerResponse(true, (data) =>
         {
             questionService.AnswerQuestion(Id, data["value"] ?? null);
-        }){ GetVariableData = new UICCustom("result") };
+        })
+        { GetVariableData = new UICCustom("result"), IgnoreKeyNotFound = true };
         ButtonCancel.OnClick = new UICActionServerResponse(true, (data) =>
         {
             questionService.CancelQuestion(Id);
-        });
+        })
+        { IgnoreKeyNotFound = true};
     }
     #endregion
 }

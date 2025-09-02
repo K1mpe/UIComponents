@@ -14,6 +14,8 @@ public class UICQuestionText : UICQuestionBase<string>
 
     public bool Multiline { get; set; }
 
+    public string DefaultValue { get; set; }
+
     /// <summary>
     /// Validate the text result before submitting.
     /// return a string if there is a validation error
@@ -26,6 +28,7 @@ public class UICQuestionText : UICQuestionBase<string>
     public bool ValidateRequired { get; set; } = true;
     public int? ValidateMinLength { get; set; } 
     public int? ValidateMaxLength { get; set; }
+
 
     public override string MapResponse(string response) => response;
 

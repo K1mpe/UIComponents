@@ -25,6 +25,7 @@ public class UICActionServerResponse : IUICAction
     public Func<Dictionary<string, string>, Task> Function { get; set; }
     public bool SingleUse { get; set; }
 
+    public bool IgnoreKeyNotFound { get; set; }
     /// <summary>
     /// This is the maximum time this connection can exist. Cleaning up the connection after this time.
     /// </summary>

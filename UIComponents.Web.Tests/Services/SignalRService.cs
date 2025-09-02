@@ -53,7 +53,7 @@ public class MainHub : Hub<IUICSignalRService>, IUICSignalRHub
 public class SignalRService : IUICSignalRService
 {
     #region Ctor
-    public SignalRService(MainHub signalRHub)
+    public SignalRService(IHubContext<MainHub, IUICSignalRService> signalRHub)
     {
         SignalRHub = signalRHub;
     }
@@ -62,7 +62,7 @@ public class SignalRService : IUICSignalRService
 
     #region Properties
 
-    public MainHub SignalRHub { get; set; }
+    public IHubContext<MainHub, IUICSignalRService> SignalRHub { get; set; }
 
 
     #endregion

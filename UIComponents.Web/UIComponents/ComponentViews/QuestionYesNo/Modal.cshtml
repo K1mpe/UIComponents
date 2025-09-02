@@ -1,0 +1,79 @@
+@using UIComponents.Abstractions;
+@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Models.Models.Questions;
+@using UIComponents.Web.Extensions;
+
+
+@inject IUICLanguageService L
+@model UICQuestionYesNo
+
+@{
+    string guid = "Question" + Guid.NewGuid().ToString("n");
+    bool canCancel = Model.CanCancel;
+
+    var modal = new UICModal().AddClass("question-modal question-yesno");
+    modal.DisableCloseOnClickout = true;
+    modal.DisableEscapeKeyToClickout = !canCancel;
+
+
+    
+
+    var btnToolbar = new UICButtonToolbar().AddClass("question-toolbar");
+    btnToolbar.Distance = ButtonDistance.Medium;
+    
+
+    if(Model.InvertButtons)
+    {
+        btnToolbar.AddCenter(Model.ButtonCancel);
+        btnToolbar.AddCenter(Model.ButtonNo);
+        btnToolbar.AddCenter(Model.ButtonSubmit);
+    }
+    else
+    {
+        btnToolbar.AddCenter(Model.ButtonSubmit);
+        btnToolbar.AddCenter(Model.ButtonNo);
+        btnToolbar.AddCenter(Model.ButtonCancel);
+    }
+    modal.Add(new UICCustom($"<div id={Model.Id}></div>"));
+    modal.Add(new UICCustom(@<text>
+        <div class="question-title">
+            @await Html.TranslateHtml(L, Model.Title)
+        </div>
+        <div class="question-message">
+            @await Html.TranslateHtml(L, Model.Message)
+        </div>
+        
+            @await btnToolbar.InvokeAsync(Component)
+
+        <script>
+        $(document).ready(()=>{
+            $(`#@Model.Id`).on('uic-remove', (ev)=>{
+                ev.stopPropagation();
+                ev.preventDefault();
+                $('#@modal.GetId()').trigger('uic-destroy');
+            });
+            $('#@modal.GetId()').on('uic-beforeClose', ()=>{
+                $('#@Model.ButtonCancel.GetId()').trigger('click');
+            });
+        })</script>
+        </text>
+    ));
+}
+
+@await modal.InvokeAsync(Component)
+

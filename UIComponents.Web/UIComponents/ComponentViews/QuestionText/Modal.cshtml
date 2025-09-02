@@ -1,0 +1,136 @@
+@using UIComponents.Abstractions;
+@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Models.Models.Questions;
+@using UIComponents.Web.Extensions;
+
+
+@inject IUICLanguageService L
+@model UICQuestionText
+
+@{
+    string guid = "Question" + Guid.NewGuid().ToString("n");
+    bool canCancel = Model.CanCancel;
+    string selection = await L.Translate(new("QuestionText.Input"));
+
+    var modal = new UICModal().AddClass("question-modal question-text");
+    modal.DisableCloseOnClickout = true;
+    modal.DisableEscapeKeyToClickout = !canCancel;
+
+    var input = new UICInputText("input");
+    input.Value = Model.DefaultValue;
+
+    var inputGroup = new UICInputGroup();
+    if (Model.Multiline)
+        inputGroup.Input = input.CovertToMultiline();
+    else
+        inputGroup.Input = input;
+
+
+    var btnToolbar = new UICButtonToolbar().AddClass("question-toolbar");
+    btnToolbar.Distance = ButtonDistance.Medium;
+    if(Model.ButtonSubmit.OnClick is UICActionServerResponse serverResponse)
+    {
+        serverResponse.GetVariableData = new UICCustom(@<text>
+            async function(){
+                let value= uic.getValue('#@input.GetId()');
+
+                let validationSpan = $('#@inputGroup.GetId() .field-validation-valid');
+                @if(Model.ValidateRequired){
+                    <text>
+                    if(value == null || value == undefined || value.length ==0){
+                        validationSpan.text(@await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidationIsRequired(selection)))
+                        throw validationSpan.text();
+                    }
+                    </text>
+                }
+                @if(Model.ValidateMaxLength.HasValue){
+                    <text>
+                    if(value.length > @Json.Serialize(Model.ValidateMaxLength.Value)){
+                        validationSpan.text(@await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateMaxLength(selection, Model.ValidateMaxLength.Value)))
+                        throw validationSpan.text();
+                    }
+                    </text>
+                }
+                @if(Model.ValidateMinLength.HasValue){
+                    <text>
+                    if(@Json.Serialize(Model.ValidateMinLength.Value) > value.length){
+                        validationSpan.text(@await Html.TranslateJs(L, UIComponents.Defaults.TranslationDefaults.ValidateMinLength(selection, Model.ValidateMinLength.Value)))
+                        throw validationSpan.text();
+                    }
+                    </text>
+                }
+
+                @if(Model.TextValidation.HasValue()){
+                    <text>
+                    let validateText = async function(){
+                        @await Model.TextValidation.InvokeAsync(Component)
+                    };
+                    let validationResult = await validateText();
+                    if(validationResult != null && validationResult != undefined && validationResult.length){
+                        validationSpan.text(validationResult);
+                        throw validationResult;
+                    }
+                    </text>
+                }
+
+                return {value: value};
+            }
+            </text>);
+        
+    }
+
+    if(Model.InvertButtons)
+    {
+        btnToolbar.AddCenter(Model.ButtonCancel);
+        btnToolbar.AddCenter(Model.ButtonSubmit);
+    }
+    else
+    {
+        btnToolbar.AddCenter(Model.ButtonSubmit);
+        btnToolbar.AddCenter(Model.ButtonCancel);
+    }
+    modal.Add(new UICCustom($"<div id={Model.Id}></div>"));
+    modal.Add(new UICCustom(@<text>
+        <div class="question-title">
+            @await Html.TranslateHtml(L, Model.Title)
+        </div>
+        <div class="question-message">
+            @await Html.TranslateHtml(L, Model.Message)
+        </div>
+        <div class="question-input">
+            @await inputGroup.InvokeAsync(Component)
+        </div>
+            @await btnToolbar.InvokeAsync(Component)
+
+        <script>
+        $(document).ready(()=>{
+            $(`#@Model.Id`).on('uic-remove', (ev)=>{
+                ev.stopPropagation();
+                ev.preventDefault();
+                $('#@modal.GetId()').trigger('uic-destroy');
+            });
+            $('#@modal.GetId()').on('uic-beforeClose', ()=>{
+                $('#@Model.ButtonCancel.GetId()').trigger('click');
+            });
+        })</script>
+        </text>
+    ));
+}
+
+@await modal.InvokeAsync(Component)
+
