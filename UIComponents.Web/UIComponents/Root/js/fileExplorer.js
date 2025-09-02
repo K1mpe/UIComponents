@@ -350,6 +350,7 @@
             TranslatableSaver.Save("FileExplorer.CreateDirectory.Title", "Create Directory"),
             TranslatableSaver.Save("FileExplorer.CreateDirectory.Message", "Give a name for the new directory"),
             TranslatableSaver.Save("FileExplorer.CreateDirectory.Create", "Create"),
+            TranslatableSaver.Save("FileExplorer.CreateDirectory.FolderExists", "This folder already exists"),
             TranslatableSaver.Save("Button.Cancel"),
         ]);
 
@@ -364,10 +365,16 @@
                 allowEscapeKey: true,
                 confirmButtonText: translations["FileExplorer.CreateDirectory.Create"],
                 cancelButtonText: translations["Button.Cancel"],
+                inputValidator: (value) => {
+                    if (container.find(`.explorer-folder[data-relativepath$="${value}/"]`).length)
+                        return translations["FileExplorer.CreateDirectory.FolderExists"];
+                }
             })).then(async result => {
                 if (!result.isConfirmed)
                     return;
                 let dirName = result.value;
+
+                
 
                 let filterModel = container.triggerHandler('uic-getFilterModel');
                 let absolutePath = container.attr('data-rootabsolutepath');
