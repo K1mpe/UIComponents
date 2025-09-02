@@ -41,4 +41,4 @@ else
     </text>
 }
 let data = $.extend({}, variableContent, @Json.Serialize(Model.Data));
-await uic.getpost.post('/uic/PostEvent', {key: @Html.JsEncode(key,"'"), values: data});
+return await uic.getpost.post('/uic/PostEvent', {key: @Html.JsEncode(key,"'"), values: data});

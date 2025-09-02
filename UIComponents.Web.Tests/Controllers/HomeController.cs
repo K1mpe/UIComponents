@@ -67,9 +67,7 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var question = UICQuestionText.Create("Test", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
-            question.ValidateMaxLength = 3;
-            return ViewOrPartial(question);
+            
             return View();
             var testModel = new TestModel();
             var component = await _uic.CreateComponentAsync(testModel, new()
@@ -92,9 +90,9 @@ namespace UIComponents.Web.Tests.Controllers
 
         public async Task<IActionResult> Test()
         {
-            var question = UICQuestionText.Create("Test", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
-            question.ValidateMaxLength = 3;
-            var answered = await _uicQuestionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(10));
+            //var question = UICQuestionText.Create("Test", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
+            //question.ValidateMaxLength = 3;
+            //var answered = await _uicQuestionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(10));
             //var component = await _uic.CreateComponentAsync(new TestModel());
             //return ViewOrPartial(component);
             await Task.Delay(500);
@@ -107,6 +105,22 @@ namespace UIComponents.Web.Tests.Controllers
             return View();
         }
 
+        public async Task<IActionResult> TestQuestion()
+        {
+            var selectList = new List<SelectListItem>()
+            {
+                new(){Value="1", Text="One"},
+                new(){Value="2", Text="Two"},
+                new(){Value="3", Text="Three"},
+                new(){Value="4", Text="Four"},
+                new(){Value="5", Text="Five"},
+            };
+
+            var question = UICQuestionSelectList.Create("Test", "Wilt u deze vraag beantwoorden?", selectList, _uicQuestionService);
+            var response = await _uicQuestionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(1));
+            Console.WriteLine(response.Result);
+            return Json(true);
+        }
 
         public async Task<IActionResult> JsTreeItems(string id, bool initial)
         {

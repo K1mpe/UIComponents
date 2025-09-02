@@ -48,7 +48,6 @@
 }
 <script>
     $(document).ready(()=>{
-        debugger;
         toastr['@Model.Type.ToString().ToLower()'](
             @await Html.TranslateJs(L, Model.Message),
             @await Html.TranslateJs(L, Model.Title),
