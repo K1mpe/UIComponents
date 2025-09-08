@@ -354,15 +354,15 @@ public partial class UicConfigOptions
         rules.AddRange(_propertyValidationRules);
         foreach(var type in _propertyValidators)
         {
-            try
-            {
+            //try
+            //{
                 var instance = (IUICPropertyValidationRule)provider.GetService(type);
                 rules.Add(instance);
-            }
-            catch(Exception ex)
-            {
-                logger.LogError(ex, $"Failed to create instance of {type.FullName}");
-            }
+            //}
+            //catch(Exception ex)
+            //{
+            //    logger.LogError(ex, $"Failed to create instance of {type.FullName}");
+            //}
         }
         return rules;
 
