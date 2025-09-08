@@ -105,6 +105,8 @@
                 <text>
                 this.on("complete", async function(file){
                     @await Model.OnSuccess.InvokeAsync(Component)
+
+                    $('#@id').trigger('uic-upload-complete', file);
                 });
                 </text>
             }
@@ -116,20 +118,24 @@
                     if(hasErrors)
                         return;
                     @await Model.OnSuccessAll.InvokeAsync(Component)
+                    $('#@id').trigger('uic-upload-complete-all', file);
                 });
                 this.on("error", async function(file, message){
                     hasErrors = true;
-
+                        
                     @await Model.OnError.InvokeAsync(Component)
+
+                    $('#@id').trigger('uic-upload-error', {file, message});
                     
-                    let handlers = uic.getpost.defaultHandlers.post.concat(uic.getpost.defaultHandlers.both);
-                    return await uic.getpost.handleResponse(handlers, message);
-                })
+                });
                 </text>
             } else if(Model.OnError.HasValue()){
                 <text>
                 this.on("error", async function(file, message){
                     @await Model.OnError.InvokeAsync(Component)
+
+                    $('#@id').trigger('uic-upload-error', {file, message});
+                    return message;
                 })
                 </text>
             }
