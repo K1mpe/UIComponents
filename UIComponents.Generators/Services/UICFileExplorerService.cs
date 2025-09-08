@@ -648,7 +648,7 @@ public class UICFileExplorerService : IUICFileExplorerService
        
     }
 
-    public Task<IUIComponent?> GetUploadFileComponent(RelativePathModel pathModel)
+    public virtual Task<IUIComponent?> GetUploadFileComponent(RelativePathModel pathModel)
     {
         return Task.FromResult<IUIComponent?>(null);
     }
