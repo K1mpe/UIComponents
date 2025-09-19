@@ -7,8 +7,17 @@
         console.log(`$('#${id}').trigger('uic-enableReload') => Enable reloading the table. Will also trigger reload if a reload has failed`);
         console.log(`$('#${id}').trigger('uic-addReloadCondition', ()=> {...}) => Add a new function that is checked on each reload. Returning false will disable the reload`);
         console.log(`$('#${id}').trigger('uic-reloadConditionChanged') => One or more of the reload conditions have changed.`);
+
+        console.log(`$('#${id}').trigger('uic-firstpage') => Go to the first page`);
+        console.log(`$('#${id}').trigger('uic-prevpage') => Go to the previous page (if possible)`);
+        console.log(`$('#${id}').trigger('uic-nextpage') => Go to the next page (if possible)`);
+        console.log(`$('#${id}').trigger('uic-lastpage') => Go to the last page`);
+        console.log(`$('#${id}').trigger('uic-movepage' [number]) => Move the paging with this amount of pages (negative number is back)`);
+        console.log(`$('#${id}').trigger('uic-gotopage' [number]) => Move the paging with this page`);
         console.log(`$('#${id}').triggerHandler('uic-currentData') => Get the data that is currently displayed in the table`);
         console.log(`$('#${id}').triggerHandler('uic-getLastFilters') => Get the last used filters for loading data`);
+        console.log(`$('#${id}').triggerHandler('uic-currentPage') => Returns the current page of the jsgrid`);
+        console.log(`$('#${id}').triggerHandler('uic-totalPages') => Returns the current page of the jsgrid`);
         console.log(`$('#${id}').on('uic-getFilters', (ev, args)=> {... return args}) => Called before loading data. Using this callback you can overwrite the filter data or sorting.`);
         console.log(`$('#${id}').on('uic-beforeFetch', (ev, args)=> {...}) => Triggered just before the LoadData function is called.`);
         console.log(`$('#${id}').on('uic-afterFetch', (ev, data, args)=> {...}) => Triggered after the LoadData function is called.`);
@@ -34,8 +43,41 @@
             } catch (ex) {
                 console.error('Failed to save userPreference', ex);
             }
-
         }
+
+        $(`#${id}`).on('uic-currentPage', () => { return $(`#${id}`).jsGrid("option", "pageIndex"); });
+        $(`#${id}`).on('uic-totalPages', () => {
+            let grid = $(`#${id}`).data("JSGrid");
+            let itemsCount = grid._itemsCount();
+            let pageSize = $(`#${id}`).jsGrid("option", "pageSize");
+            return Math.ceil(itemsCount / pageSize);
+        });
+        $(`#${id}`).on('uic-firstpage', (ev) => {
+            $(`#${id}`).trigger('uic-gotopage', 1);
+        });
+        $(`#${id}`).on('uic-prevpage', (ev) => {
+            $(`#${id}`).trigger('uic-movepage', -1);
+        });
+        $(`#${id}`).on('uic-nextpage', (ev) => {
+            $(`#${id}`).trigger('uic-movepage', 1);
+        });
+        $(`#${id}`).on('uic-lastpage', (ev) => {
+            let pages = $(`#${id}`).triggerHandler('uic-totalPages');
+            $(`#${id}`).trigger('uic-gotopage', pages);
+        });
+        $(`#${id}`).on('uic-gotopage', (ev, pageNumber) => {
+            let totalPages = $(`#${id}`).triggerHandler('uic-totalPages');
+            pageNumber = Math.max(1, Math.min(totalPages, pageNumber)); //Clamp the number between 1 and totalPages
+            $(`#${id}`).jsGrid("option", "pageIndex", pageNumber)
+        });
+        $(`#${id}`).on('uic-movepage', (ev, pageOffset) => {
+            let currentPage = $(`#${id}`).triggerHandler('uic-currentPage');
+            let totalPages = $(`#${id}`).triggerHandler('uic-totalPages');
+            let pageNumber = currentPage + pageOffset;
+            pageNumber = Math.max(1, Math.min(pageNumber, totalPages)); //Clamp the number between 1 and totalPages
+            $(`#${id}`).jsGrid("option", "pageIndex", pageNumber);
+        });
+
         setTimeout(() => {
             //console.log('grid-filters', loadedFilter, filterJson);
             $(args.grid.fields).each(function (index, item) {

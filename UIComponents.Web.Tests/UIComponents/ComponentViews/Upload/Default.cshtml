@@ -41,7 +41,7 @@
                     {
                         <span class="fs-7 fw-semibold text-gray-400">@await Html.TranslateHtml(L, TranslationDefaults.FileUploadMaxFiles(Model.MaxFileCount))</span>
                     }
-                    
+
                 </div>
                 <!--end::Info-->
             </div>
@@ -60,84 +60,90 @@
         var myDropzone = new Dropzone("#@id .dropzone", {
             url: @Json.Serialize(Model.PostUrl), // Set the url for your upload script location
             paramName: "files", // The name that will be used to transfer the file
-    
-    @if(!Model.AllowChunking)
+
+    @if (!Model.AllowChunking)
     {
-        <text>
-            uploadMultiple: @Json.Serialize(Model.MaxFileCount>1),
-        </text>
+            <text>
+                uploadMultiple: @Json.Serialize(Model.MaxFileCount > 1),
+            </text>
     }
-    
-            
+
+
             maxFiles: @Model.MaxFileCount,
             maxFilesize: @Model.MaxFileSize, // MB
     @if (!string.IsNullOrEmpty(Model.AcceptedFiles))
     {
-        <text>
-            acceptedFiles: @Json.Serialize(Model.AcceptedFiles),
-        </text>
+            <text>
+                acceptedFiles: @Json.Serialize(Model.AcceptedFiles),
+            </text>
     }
-    
+
     @Html.Conditional(Model.ParallelUploads > 0, $"parallelUploads: {Model.ParallelUploads},")
     @if (Model.AllowChunking)
     {
-        <text>
-            chunking: true,
-            chunkSize: @Json.Serialize(Model.ChunkSizeMB * 1024 * 1024),
-            parallelChunkUploads: false,
-            retryChunks: true,
-            retryChunksLimit: 3,
-            addRemoveLinks: true,
-        </text>
+            <text>
+                chunking: true,
+                chunkSize: @Json.Serialize(Model.ChunkSizeMB * 1024 * 1024),
+                parallelChunkUploads: false,
+                retryChunks: true,
+                retryChunksLimit: 3,
+                addRemoveLinks: true,
+            </text>
     }
     init: function(){
         console.log('dropzone script');
-            @if(Model.PostData.Any()){
-                <text>
-                this.on("sending", function(file, xhr, formData){
-                    @Model.PostData.FlattenDictionary((key, value)=> $"formData.append('{key}', '{value}');");
-            
-            });
-                </text>
+            @if (Model.PostData.Any())
+            {
+                    <text>
+                    this.on("sending", function(file, xhr, formData){
+                        @Model.PostData.FlattenDictionary((key, value) => $"formData.append('{key}', '{value}');");
+
+                });
+                    </text>
             }
             @if (Model.OnSuccess.HasValue())
             {
-                <text>
-                this.on("complete", async function(file){
-                    @await Model.OnSuccess.InvokeAsync(Component)
+                    <text>
+                    this.on("complete", async function(file){
+                        @await Model.OnSuccess.InvokeAsync(Component)
 
-                    $('#@id').trigger('uic-upload-complete', file);
-                });
-                </text>
+                        $('#@id').trigger('uic-upload-complete', file);
+                    });
+                    </text>
             }
             @if (Model.OnSuccessAll.HasValue())
             {
-                <text>
-                let hasErrors = false;
-                this.on("queuecomplete", async function(){
-                    if(hasErrors)
-                        return;
-                    @await Model.OnSuccessAll.InvokeAsync(Component)
-                    $('#@id').trigger('uic-upload-complete-all', file);
-                });
-                this.on("error", async function(file, message){
-                    hasErrors = true;
-                        
-                    @await Model.OnError.InvokeAsync(Component)
+                    <text>
+                    let hasErrors = false;
+                    this.on("queuecomplete", async function(){
+                        if(hasErrors)
+                            return;
+                        @await Model.OnSuccessAll.InvokeAsync(Component)
+                        $('#@id').trigger('uic-upload-complete-all', file);
+                    });
+                    this.on("error", async function(file, message){
+                        hasErrors = true;
 
-                    $('#@id').trigger('uic-upload-error', {file, message});
-                    
-                });
-                </text>
-            } else if(Model.OnError.HasValue()){
-                <text>
-                this.on("error", async function(file, message){
-                    @await Model.OnError.InvokeAsync(Component)
+                        @await Model.OnError.InvokeAsync(Component)
 
-                    $('#@id').trigger('uic-upload-error', {file, message});
-                    return message;
-                })
-                </text>
+                        $('#@id').trigger('uic-upload-error', {file, message});
+
+                        message = await uic.translation.translate(message?.Notification?.Message || message);
+                        $(file.previewElement).find('.dz-error-message').text(message);
+
+                    });
+                    </text>
+            }
+            else if (Model.OnError.HasValue())
+            {
+                    <text>
+                    this.on("error", async function(file, message){
+                        @await Model.OnError.InvokeAsync(Component)
+
+                        $('#@id').trigger('uic-upload-error', {file, message});
+                        return message;
+                    })
+                    </text>
             }
         },
 

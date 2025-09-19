@@ -1,3 +1,9 @@
+# 2025-09-18 (V1.4.0)
+- IUICFileExplorer tries to keep the same root for relative paths.
+- Relative paths now have base64 serialize methods.
+- FileUpload supports diffrent name after upload.
+- Jsgrid has page triggers.
+
 # 2025-09-02 (V1.4.0)
 - UICQuestions in modals instead of SweetAlert
 - FileExplorer permissions split for creating folder & uploading file

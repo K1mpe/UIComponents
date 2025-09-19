@@ -173,10 +173,16 @@ namespace UIComponents.Web.Helpers
                 var file = form.Files.FirstOrDefault();
                 if (file == null)
                     return;
-                var filename = form["dzuuid"] + "_" + file.FileName;
+                var targetFileName = file.FileName;
+                if (form.TryGetValue($"fileinfo.{targetFileName}.newname", out var newName) && !string.IsNullOrWhiteSpace(newName))
+                {
+                    targetFileName = newName;
+                }
+                var filename = form["dzuuid"] + "_" + targetFileName;
+
 
                 var filePath = Path.Combine(Path.GetTempPath(), filename);
-                var finalFilePath = Path.Combine(targetDirectory, file.FileName);
+                var finalFilePath = Path.Combine(targetDirectory, targetFileName);
                 using (logger?.BeginScopeKvp(
                     new("FilePath", finalFilePath),
                     new("FileSize", fileSize)))

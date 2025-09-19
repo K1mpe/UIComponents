@@ -24,7 +24,7 @@ public interface IUICFileExplorerPathMapper
     /// </summary>
     /// <param name="absolutePath"></param>
     /// <returns></returns>
-    public T GetRelativePath<T>(string absolutePath) where T : class, IRelativePath;
+    public T GetRelativePath<T>(string absolutePath, string? preferredRoot = null) where T : class, IRelativePath;
 
 
     /// <summary>
@@ -40,8 +40,8 @@ public interface IUICFileExplorerPathMapper
 
 public static class IFileExplorerPathMapperExtensions
 {
-    public static RelativePathModel GetRelativePath(this IUICFileExplorerPathMapper pathMapper, string absolutePath)
+    public static RelativePathModel GetRelativePath(this IUICFileExplorerPathMapper pathMapper, string absolutePath, string? preferredRoot = null)
     {
-        return pathMapper.GetRelativePath<RelativePathModel>(absolutePath);
+        return pathMapper.GetRelativePath<RelativePathModel>(absolutePath, preferredRoot);
     }
 }

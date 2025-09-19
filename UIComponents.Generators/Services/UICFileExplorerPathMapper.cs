@@ -44,7 +44,7 @@ public class UICFileExplorerPathMapper : IUICFileExplorerPathMapper
     }
 
 
-    public virtual T GetRelativePath<T>(string absolutePath) where T : class, IRelativePath
+    public virtual T GetRelativePath<T>(string absolutePath, string? preferredRoot = null) where T : class, IRelativePath
     {
         lock (PathMapper)
         {
@@ -60,6 +60,9 @@ public class UICFileExplorerPathMapper : IUICFileExplorerPathMapper
 
             //Take the longest matching path
             var longest = dictValues.OrderByDescending(x => x.Value.Length).First();
+            if(!string.IsNullOrWhiteSpace(preferredRoot) && dictValues.Any(x => x.Key == preferredRoot))
+                longest = dictValues.First(x => x.Key == preferredRoot); //Take the preferred root if available
+
             instance.AbsolutePathReference = longest.Key;
             instance.RelativePath = ReplaceRoot(absolutePath, longest.Value, "~").Replace("\\", "/");
             return instance;

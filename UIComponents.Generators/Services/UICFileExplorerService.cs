@@ -584,7 +584,7 @@ public class UICFileExplorerService : IUICFileExplorerService
         if (!File.Exists(filepath))
             throw new ArgumentNullException();
 
-        var info = _pathMapper.GetRelativePath<UICFileInfo>(filepath);
+        var info = _pathMapper.GetRelativePath<UICFileInfo>(filepath, filterModel.AbsolutePathReference);
 
         var fileInfo = new FileInfo(filepath);
         info.Created = fileInfo.CreationTime;
@@ -608,17 +608,21 @@ public class UICFileExplorerService : IUICFileExplorerService
         if (!Directory.Exists(filepath))
             throw new ArgumentNullException();
 
-        var info = _pathMapper.GetRelativePath<UICFileInfo>(filepath);
+        var info = _pathMapper.GetRelativePath<UICFileInfo>(filepath, filterModel.AbsolutePathReference);
         info.DirectoryHasSubdirectories = Directory.GetDirectories(filepath).Length > 0;
         var fileInfo = new DirectoryInfo(filepath);
         info.Created = fileInfo.CreationTime;
         info.LastModified = fileInfo.LastWriteTime;
 
         info.SizeValue = 0;
-        foreach(var file in fileInfo.GetFiles("*", SearchOption.AllDirectories))
-        {
-            info.SizeValue += file.Length;
-        }
+        var subFiles = fileInfo.GetFiles("*", SearchOption.AllDirectories);
+        if(subFiles.Count() > 1000) // only calculate size if there are less than 1000 files
+            info.SizeValue = null;
+        else
+            foreach (var file in subFiles)
+            {
+                info.SizeValue += file.Length;
+            }
 
         info.CanOpen = await _permissionService.CurrentUserCanOpenFileOrDirectory(filepath);
         info.CanMove = await _permissionService.CurrentUserCanMoveFileOrDirectory(filepath);
