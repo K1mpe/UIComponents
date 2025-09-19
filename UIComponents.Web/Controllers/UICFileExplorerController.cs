@@ -272,6 +272,8 @@ public class UICFileExplorerController : Controller, IUICFileExplorerController
             foreach (var file in files)
             {
                 var fileName = Path.GetFileName(file.FileName);
+                if (Request.Form.TryGetValue($"fileinfo.{fileName}.newname", out var newName) && !string.IsNullOrWhiteSpace(newName))
+                    fileName = newName.ToString();
                 string filepath = Path.Combine(absolutePath, fileName);
 
                 if (_permissionService != null && !await _permissionService.CurrentUserCanCreateOrEditFile(filepath))
