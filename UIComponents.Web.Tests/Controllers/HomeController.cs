@@ -367,15 +367,12 @@ namespace UIComponents.Web.Tests.Controllers
         {
             var fileBrowser = new UICFileExplorer()
             {
-                RootDirectory = "C:\\Jonas",
+                RootDirectory = "Z:\\",
+                RenderMethod = UICFileExplorer.Renderers.JsGrid
+
             }.AddAllAddons();
-            _pathMapper.RegisterPath("C:");
+            _pathMapper.RegisterPath("Z:");
 
-            UICFileExplorerService.IsDirectory("C:\\Jonas", false);
-            UICFileExplorerService.IsDirectory("C:\\Jonas\\blub", false);
-
-            var a1 = new DirectoryInfo("C:\\Jonas\\");
-            var a2 = new DirectoryInfo("C:\\Jonas");
 
             return ViewOrPartial(fileBrowser);
         }

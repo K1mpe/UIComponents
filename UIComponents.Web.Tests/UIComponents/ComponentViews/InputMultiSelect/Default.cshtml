@@ -35,8 +35,12 @@
             item.Selected = true;
         }
     }
+    else
+    {
 
-    Model.Value = Model.SelectListItems.Where(x => x.Selected).Select(x => x.Value?.ToString() ?? string.Empty).ToArray();
+        Model.Value = Model.SelectListItems.Where(x => x.Selected).Select(x => x.Value?.ToString() ?? string.Empty).ToArray();
+    }
+
 
 
     var style = Model.GetAttribute("style");
@@ -46,17 +50,17 @@
 
         Model.AddStyle(
     @<text>
-        #@id + span .select2-selection__choice{
-        background-color: var(--@Model.Color.ToLower()) !important;
-        border-color: var(--@Model.Color.ToLower()) !important;
-        }
-        #@id + span.select2-container--focus .select2-selection--multiple {
-        border-color: var(--@Model.Color.ToLower()) !important;
-        }
-        .select2-container--open[data-for=@id] .select2-results__option--highlighted{
-        background-color: var(--@Model.Color.ToLower()) !important;
-        }
-    </text>
+    #@id + span .select2-selection__choice{
+    background-color: var(--@Model.Color.ToLower()) !important;
+    border-color: var(--@Model.Color.ToLower()) !important;
+    }
+    #@id + span.select2-container--focus .select2-selection--multiple {
+    border-color: var(--@Model.Color.ToLower()) !important;
+    }
+    .select2-container--open[data-for=@id] .select2-results__option--highlighted{
+    background-color: var(--@Model.Color.ToLower()) !important;
+    }
+</text>
         );
     }
 
@@ -141,45 +145,64 @@
 
 
 @{
-    Model.AddScript(false,@<text>
-        $('#@id').on('uic-setValue', function(event, ...values){
-            $('#@id').val(values).change();
-        });
+    if (Model.AllowDynamicOptions)
+    {
+        Model.AddScript(false,@<text>
+            $('#@id').on('uic-setValue', function(event, ...values){
+            let $select = $('#@id');
+            values.forEach(function(value) {
+            if ($select.find("option[value='" + value + "']").length === 0) {
+            // Create new option (marked as selected by default)
+            var newOption = new Option(value, value, true, true);
+            $select.append(newOption);
+            }
+            });
+            $select.val(values).change();
+            });
         </text>);
+    }
+    else
+    {
+        Model.AddScript(false,@<text>
+            $('#@id').on('uic-setValue', function(event, ...values){
+            $('#@id').val(values).change();
+            });
+        </text>);
+    }
+
     Model.AddScript(true, @<text>
         $('#@id').select2({
-            multiple: true,
-            closeOnSelect: @Json.Serialize(Model.CloseOnSelect),
-            matcher: uic.form.select2.searchMethod,
-            templateResult: uic.form.select2.resultRenderer,
-            tags: @Json.Serialize(Model.AllowDynamicOptions),
-            allowClear: true,
-            placeholder: @Html.JsEncode(placeholder, "'"),
-            dropdownParent: $('#@id').closest('form, .card, body')
+        multiple: true,
+        closeOnSelect: @Json.Serialize(Model.CloseOnSelect),
+        matcher: uic.form.select2.searchMethod,
+        templateResult: uic.form.select2.resultRenderer,
+        tags: @Json.Serialize(Model.AllowDynamicOptions),
+        allowClear: true,
+        placeholder: @Html.JsEncode(placeholder, "'"),
+        dropdownParent: $('#@id').closest('form, .card, body')
         });
 
         $('#@id').data('select2').$dropdown.attr('data-for', '@id').addClass('include-items');
-        
-        @if(Model.ClearInputAfterSelecting)
+
+    @if (Model.ClearInputAfterSelecting)
     {
-        <text>
-            $('#@id').on('select2:select', (ev) =>{
-            $('#@id').next().find('.selection input').val('');
-            });
-            $('#@id').on('select2:unselect', (ev) =>{
-            console.log('unselecting');
-            setTimeout(()=>{
-            $('#@id').next().find('.selection input').val('');
-            },1);
+            <text>
+                $('#@id').on('select2:select', (ev) =>{
+                $('#@id').next().find('.selection input').val('');
+                });
+                $('#@id').on('select2:unselect', (ev) =>{
+                console.log('unselecting');
+                setTimeout(()=>{
+                $('#@id').next().find('.selection input').val('');
+                },1);
 
-            });
-        </text>
+                });
+            </text>
     }
+    uic.setValue('#@id', @Json.Serialize(Model.Value));
 
-        $('#@id').val(@Json.Serialize(Model.Value)).change();
-
-        $('#@id').next().attr('style', @Html.JsEncode(style, "'"));
-    </text>
+    $('#@id').next().attr('style', @Html.JsEncode(style, "'"));
+</text>
     );
 }
 

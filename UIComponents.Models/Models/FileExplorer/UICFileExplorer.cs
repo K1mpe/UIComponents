@@ -68,6 +68,7 @@ namespace UIComponents.Models.Models.FileExplorer
         public static class Renderers
         {
             public static string Details => "details";
+            public static string JsGrid => "jsgrid";
         }
 
     }
@@ -100,7 +101,7 @@ namespace UIComponents.Models.Models.FileExplorer
                 AppendButtonIcon = IconDefaults.DirectoryUp?.Invoke(),
                 Tooltip = TranslatableSaver.Save("Button.FileExplorer.DirectoryUp.Tooltip", "Click to move the directory up"),
                 OnClick = new UICCustom($"uic.fileExplorer.directoryGoUp($('#{fileExplorer.GetId()}'));")
-            };
+            }.AddClass("uic-fe-directory-up");
         }
         public static UICToggleButton ToggleJsTreeButton(UICFileExplorer fileExplorer)
         {
@@ -120,7 +121,7 @@ namespace UIComponents.Models.Models.FileExplorer
                     OnClick = click
                 },
                 Value = true
-            };
+            }.AddClass("uic-fe-toggle-jstree");
             fileExplorer.AddScriptDocReady(new UICCustom()
                 .AddLine($"$('#{fileExplorer.GetId()}').on('uic-showhide-jstree', (ev, visible)=>{{")
                 .AddLine($"     uic.setValue('#{toggle.GetId()}', visible);")
@@ -145,7 +146,7 @@ namespace UIComponents.Models.Models.FileExplorer
                     OnClick = click
                 },
                 Value = true
-            };
+            }.AddClass("uic-fe-toggle-preview");
             fileExplorer.AddScriptDocReady(new UICCustom()
                 .AddLine($"$('#{fileExplorer.GetId()}').on('uic-showhide-preview', (ev, visible)=>{{")
                 .AddLine($"     uic.setValue('#{toggle.GetId()}', visible);")

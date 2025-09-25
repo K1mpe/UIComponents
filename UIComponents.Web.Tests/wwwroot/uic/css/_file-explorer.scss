@@ -68,11 +68,11 @@
     .explorer-item {
         user-select: none;
 
-        &.selected {
+        &.selected *{
             background-color: $uic-file-explorer-selected-background-color;
         }
 
-        &:not(.selected):hover {
+        &:not(.selected):hover *{
             background-color: $uic-file-explorer-hover-background-color;
         }
 

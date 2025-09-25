@@ -1,7 +1,6 @@
-﻿
-using UIComponents.Abstractions.Interfaces.FileExplorer;
+﻿using UIComponents.Abstractions.Interfaces.FileExplorer;
 
-namespace UIComponents.Generators.Services;
+namespace UIComponents.Generators.Services.FileExplorer;
 
 public class UICFileExplorerPathMapper : IUICFileExplorerPathMapper
 {

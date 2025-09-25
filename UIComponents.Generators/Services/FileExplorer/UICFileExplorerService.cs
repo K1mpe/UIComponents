@@ -10,10 +10,10 @@ using UIComponents.Abstractions.Models.FileExplorer;
 using UIComponents.Abstractions.Varia;
 using UIComponents.Generators.Helpers;
 using UIComponents.Models.Models.Questions;
-using UIComponents.Models.Extensions; 
+using UIComponents.Models.Extensions;
 using UICFileInfo = UIComponents.Abstractions.Models.FileExplorer.UICFileInfo;
 
-namespace UIComponents.Generators.Services;
+namespace UIComponents.Generators.Services.FileExplorer;
 
 public static class IUICQuestionServiceExtensions
 {
@@ -28,12 +28,14 @@ public class UICFileExplorerService : IUICFileExplorerService
     private readonly IUICFileExplorerPermissionService _permissionService;
     private readonly IUICQuestionService _questionService;
     private readonly IUICLanguageService _languageService;
+    private readonly IEnumerable<IUICFileExplorerFileInfoManipulator> _manipulators;
     public UICFileExplorerService(IUICFileExplorerPathMapper pathMapper,
                                   ILogger<UICFileExplorerService> logger,
                                   IUICFileExplorerExecuteActions executeActions,
                                   IUICQuestionService questionService,
                                   IUICLanguageService languageService,
-                                  IUICFileExplorerPermissionService permissionService)
+                                  IUICFileExplorerPermissionService permissionService,
+                                  IEnumerable<IUICFileExplorerFileInfoManipulator> manipulators)
     {
         _pathMapper = pathMapper;
         _logger = logger;
@@ -42,14 +44,12 @@ public class UICFileExplorerService : IUICFileExplorerService
         _languageService = languageService;
         _questionService = questionService;
 
-        if (!FileExplorerGenerators.Any())
-            AddDefaultGenerators();
+        _manipulators = manipulators;
     }
 
 
     #region FileExplorerService
 
-    public static List<FileExplorerGenerator> FileExplorerGenerators { get; set; } = new();
 
     #region Actions
     public async virtual Task CreateDirectory(RelativePathModel pathModel)
@@ -472,7 +472,7 @@ public class UICFileExplorerService : IUICFileExplorerService
             if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
                 throw new AccessViolationException();
 
-            if (System.IO.File.Exists(absolutePath))
+            if (File.Exists(absolutePath))
             {
                 FileInfo fileInfo = new FileInfo(absolutePath);
 
@@ -538,6 +538,7 @@ public class UICFileExplorerService : IUICFileExplorerService
 
         var result = new GetFilesForDirectoryResultModel();
 
+        var fileInfos = new List<UICFileInfo>();
         if (!Directory.Exists(absolutePath))
             return result;
 
@@ -546,6 +547,7 @@ public class UICFileExplorerService : IUICFileExplorerService
 
         result.CanCreateFileInDirectory = await _permissionService.CurrentUserCanCreateFileInThisDirectory(absolutePath);
         result.CanCreateFolderInDirectory = await _permissionService.CurrentUserCanCreateFolderInThisDirectory(absolutePath);
+
 
         if (!filterModel.FilesOnly)
         {
@@ -556,7 +558,8 @@ public class UICFileExplorerService : IUICFileExplorerService
                     continue;
 
                 var info = await CreateFileInfoFromDirectoryPath(subDirectory, filterModel);
-                result.Files.Add(info);
+                if(info != null)
+                    fileInfos.Add(info);
             }
         }
 
@@ -570,12 +573,31 @@ public class UICFileExplorerService : IUICFileExplorerService
                 if (!await _permissionService.CurrentUserCanViewFileOrDirectory(file))
                     continue;
                 var info = await CreateFileInfoFromFilePath(file, filterModel);
-
-                result.Files.Add(info);
+                if(info != null)
+                    fileInfos.Add(info);
             }
         }
 
-
+        var manipulators = await InitializeManipulators(result.Files, filterModel);
+        foreach(var file in fileInfos)
+        {
+            var fileInfo = file;
+            foreach(var manipulator in manipulators)
+            {
+                try
+                {
+                    fileInfo = await manipulator.ManipulateFileInfo(fileInfo);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                }
+            }
+            fileInfo.FileInfo = null;
+            fileInfo.DirectoryInfo = null;
+            result.Files.Add(fileInfo);
+        }
+        await DestroyManipulators();
         return result;
     }
 
@@ -586,18 +608,19 @@ public class UICFileExplorerService : IUICFileExplorerService
 
         var info = _pathMapper.GetRelativePath<UICFileInfo>(filepath, filterModel.AbsolutePathReference);
 
-        var fileInfo = new FileInfo(filepath);
-        info.Created = fileInfo.CreationTime;
-        info.LastModified = fileInfo.LastWriteTime;
-        info.SizeValue = fileInfo.Length;
+        info.FileInfo = new FileInfo(filepath);
+        info.Created = info.FileInfo.CreationTime;
+        info.LastModified = info.FileInfo.LastWriteTime;
+        info.SizeValue = info.FileInfo.Length;
 
+        if (!filterModel.ShowHiddenFiles && info.FileInfo.Attributes.HasFlag(FileAttributes.Hidden))
+            return null;
 
         info.CanOpen = await _permissionService.CurrentUserCanOpenFileOrDirectory(filepath);
         info.CanMove = await _permissionService.CurrentUserCanMoveFileOrDirectory(filepath);
         info.CanDelete = await _permissionService.CurrentUserCanDeleteFileOrDirectory(filepath);
         info.CanRename = await _permissionService.CurrentUserCanRenameFileOrDirectory(filepath, null);
 
-        info = await RunFileInfoGeneratorsAsync(info, filterModel, filepath);
 
         return info;
     }
@@ -609,46 +632,84 @@ public class UICFileExplorerService : IUICFileExplorerService
             throw new ArgumentNullException();
 
         var info = _pathMapper.GetRelativePath<UICFileInfo>(filepath, filterModel.AbsolutePathReference);
-        info.DirectoryHasSubdirectories = Directory.GetDirectories(filepath).Length > 0;
-        var fileInfo = new DirectoryInfo(filepath);
-        info.Created = fileInfo.CreationTime;
-        info.LastModified = fileInfo.LastWriteTime;
 
-        info.SizeValue = 0;
-        var subFiles = fileInfo.GetFiles("*", SearchOption.AllDirectories);
-        if(subFiles.Count() > 1000) // only calculate size if there are less than 1000 files
-            info.SizeValue = null;
-        else
+
+        info.DirectoryHasSubdirectories = true;
+        info.DirectoryInfo = new DirectoryInfo(filepath);
+
+        if (!filterModel.ShowHiddenFiles && info.DirectoryInfo.Attributes.HasFlag(FileAttributes.Hidden))
+            return null;
+
+        info.Created = info.DirectoryInfo.CreationTime;
+        info.LastModified = info.DirectoryInfo.LastWriteTime;
+
+        if (filterModel.CalcFolderSize)
+        {
+            info.SizeValue = 0;
+            var subFiles = info.DirectoryInfo.GetFiles("*", SearchOption.AllDirectories);
             foreach (var file in subFiles)
             {
                 info.SizeValue += file.Length;
             }
-
+        }
+        
         info.CanOpen = await _permissionService.CurrentUserCanOpenFileOrDirectory(filepath);
         info.CanMove = await _permissionService.CurrentUserCanMoveFileOrDirectory(filepath);
         info.CanDelete = await _permissionService.CurrentUserCanDeleteFileOrDirectory(filepath);
         info.CanRename = await _permissionService.CurrentUserCanRenameFileOrDirectory(filepath, null);
-        info = await RunFileInfoGeneratorsAsync(info, filterModel, filepath);
         return info;
     }
 
     public async virtual Task<UICFileInfo> GetFilePreviewAsync(RelativePathModel pathModel, CancellationToken cancellationToken)
     {
         var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
+        var filterModel = new GetFilesForDirectoryFilterModel()
+        {
+            UseThumbnails = true,
+            RelativePath = pathModel.RelativePath,
+            AbsolutePathReference = absolutePath,
+            ShowHiddenFiles = true,
+            CalcFolderSize = true,
+        };
         await Task.Delay(0);
+
+        UICFileInfo info = null;
         if(File.Exists(absolutePath))
         {
-            return await CreateFileInfoFromFilePath(absolutePath, new()
-            {
-                UseThumbnails = true,
-            });
+            info = await CreateFileInfoFromFilePath(absolutePath, filterModel);
         }else if (Directory.Exists(absolutePath))
         {
-            return await CreateFileInfoFromDirectoryPath(absolutePath, new() { 
-                UseThumbnails = true, 
-            });
+            info = await CreateFileInfoFromDirectoryPath(absolutePath, filterModel);
         }
-        return null;
+
+        var manipulators = await InitializeManipulators(new() { info }, filterModel);
+
+        foreach (var manipulator in manipulators)
+        {
+            try
+            {
+                if (info.IsFolder)
+                {
+                    if(manipulator.AllowDirectories)
+                        info = await manipulator.ManipulateFileInfo(info);
+                } else
+                {
+                    if(manipulator.AllowFiles)
+                        info = await manipulator.ManipulateFileInfo(info);
+                }                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+        }
+
+        await DestroyManipulators();
+
+
+        info.FileInfo = null;
+        info.DirectoryInfo = null;
+        return info;
        
     }
 
@@ -660,179 +721,17 @@ public class UICFileExplorerService : IUICFileExplorerService
 
     #region FileExplorerGenerators
 
-    private static string FileExplorerImgRoot => $"{Directory.GetCurrentDirectory()}\\wwwroot\\uic\\img\\file-explorer\\"; 
-    private static string ImgTag(string filePathInRoot)
+    public static string FileExplorerImgRoot => $"{Directory.GetCurrentDirectory()}\\wwwroot\\uic\\img\\file-explorer\\"; 
+    public static string ImgTag(string filePathInRoot)
     {
         var relativePath = filePathInRoot.Replace($"{Directory.GetCurrentDirectory()}\\wwwroot", "").Replace("\\", "/");
         return $"<img src=\"{relativePath}\">";
     }
-    public virtual void AddGenerator(string name, double priority, Func<UICFileInfo, GetFilesForDirectoryFilterModel, string, Task> function)
-    {
-        lock (FileExplorerGenerators)
-        {
-            FileExplorerGenerators.Add(new()
-            {
-                Name = name,
-                Score = priority,
-                Function = function
-            });
-            FileExplorerGenerators = FileExplorerGenerators.OrderBy(x=>x.Score).ToList();
-        }
-    }
-    public void AddGenerator(string name, double priority, Action<UICFileInfo, GetFilesForDirectoryFilterModel, string> action)
-    {
-        AddGenerator(name, priority, (fileInfo, filterModel, absolutePath)=>
-        {
-            action.Invoke(fileInfo, filterModel, absolutePath);
-            return Task.CompletedTask;
-        });
-    }
     #endregion
 
-    private async Task<UICFileInfo> RunFileInfoGeneratorsAsync(UICFileInfo fileInfo, GetFilesForDirectoryFilterModel filterModel, string absolutePath)
-    {
-        var generators = new List<FileExplorerGenerator>();
-        lock (FileExplorerGenerators)
-        {
-            generators = FileExplorerGenerators.OrderBy(x => x.Score).ToList();
-        }
-        foreach(var generator in generators)
-        {
-            try
-            {
-                await generator.Function(fileInfo, filterModel, absolutePath);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-            }
-        }
-        return fileInfo;
-    }
 
-    /// <summary>
-    /// Provide this function with the path to the all.css file from font awesome. If .fa-file.[ext] exists, this will be used as icon
-    /// </summary>
-    /// <param name="fontAwesomeFilePath"></param>
-    /// <param name="priority"></param>
-    public virtual void UseFontAwesomeIcons(string fontAwesomeFilePath, double priority)
-    {
-        AddGenerator("FontAwesomeIcons", priority, (fileInfo, filterMode, absolutePath) =>
-        {
-            if (!string.IsNullOrWhiteSpace(fileInfo.Icon))
-                return;
+    
 
-            if(string.IsNullOrEmpty(FontAwesomeCssContent) && File.Exists(fontAwesomeFilePath))
-            {
-                FontAwesomeCssContent = File.ReadAllText(fontAwesomeFilePath);
-            }
-            if (FontAwesomeCssContent.Contains($".fa-file-{fileInfo.Extension}"))
-                fileInfo.Icon = $"<i class=\"fa-file-{fileInfo.Extension}\"></i>";
-
-        });
-    }
-    private string FontAwesomeCssContent;
-
-    private void AddDefaultGenerators()
-    {
-        AddGenerator("ImageThumbnails", 1000, (fileInfo, filterModel, absolutePath) =>{
-            if (!filterModel.UseThumbnails)
-                return;
-
-            if (!string.IsNullOrEmpty(fileInfo.Thumbnail))
-                return;
-            switch (fileInfo.Extension.ToUpper())
-            {
-                case "JPG":
-                case "JPEG":
-                case "PNG":
-                case "BMP":
-                    break;
-                default:
-                    return;
-            }
-
-
-            fileInfo.Thumbnail = $"<img src=\"data:image/png;base64,{CreateThumbnailFromImage.Create(absolutePath, 200, 200)}\">";
-        });
-        AddGenerator("PdfThumbnail", 1000, (fileInfo, filterModel, absolutePath) =>
-        {
-            if (!filterModel.UseThumbnails)
-                return;
-            if (!string.IsNullOrEmpty(fileInfo.Thumbnail))
-                return;
-
-            List<string> extensions = new() { "pdf" };
-            if (!extensions.Contains(fileInfo.Extension.ToLower()))
-                return;
-
-            using (var ms = new MemoryStream())
-            {
-                //CreateThumbnailFromPdf.CreateThumbnail(ms, absolutePath);
-                ms.Position = 0;
-                var array = ms.ToArray();
-                string base64 = Convert.ToBase64String(array);
-                if(!string.IsNullOrWhiteSpace(base64))
-                    fileInfo.Thumbnail = $"<img src=\"data:image/png;base64,{base64}\">";
-            }
-        });
-
-        AddGenerator("ImageIcons", 1000, (fileInfo, filterModel, absolutePath) => 
-        {
-            if (!string.IsNullOrEmpty(fileInfo.Icon))
-                return;
-            switch (fileInfo.Extension.ToUpper())
-            {
-                case "JPG":
-                case "JPEG":
-                case "PNG":
-                case "BNP":
-                    break;
-                default:
-                    return;
-            }
-            if(!fileInfo.Data.ContainsKey("class"))
-                fileInfo.Data["class"] = string.Empty;
-            fileInfo.Data["class"] += "explorer-img";
-
-            var photoIcon = $"{FileExplorerImgRoot}photo.png";
-            if (File.Exists(photoIcon))
-                fileInfo.Icon = ImgTag(photoIcon);
-        });
-        AddGenerator("ExtensionIcons", 1001, (fileInfo, filterModel, absolutePath) =>
-        {
-            if (!string.IsNullOrEmpty(fileInfo.Icon) || string.IsNullOrWhiteSpace(fileInfo.Extension))
-                return;
-
-            var fileExplorerImgs = FileExplorerImgRoot;
-            var extensionsImgs = $"{fileExplorerImgs}extensions\\";
-            Directory.CreateDirectory(fileExplorerImgs);
-            Directory.CreateDirectory(extensionsImgs);
-
-            string filePath = Path.Combine(extensionsImgs, fileInfo.Extension.ToLower());
-
-            string foundExtensionPath = string.Empty;
-            if (File.Exists(filePath + ".png"))
-                foundExtensionPath = filePath + ".png";
-            else if (File.Exists(filePath + ".bnp"))
-                foundExtensionPath = filePath + ".bnp";
-            else if (File.Exists(filePath + ".jpg"))
-                foundExtensionPath = filePath + ".jpg";
-            else if (File.Exists(filePath + ".jpeg"))
-                foundExtensionPath = filePath + ".jpeg";
-
-            if (string.IsNullOrEmpty(foundExtensionPath))
-            {
-                if (File.Exists(fileExplorerImgs + "unknown-file.png"))
-                    foundExtensionPath = fileExplorerImgs + "unknown-file.png";
-            }
-
-            if (!string.IsNullOrEmpty(foundExtensionPath)){
-                //string relativePath = foundExtensionPath.Replace(fileExplorerImgs, "/uic/img/fileExplorer/").Replace("\\", "/");
-                fileInfo.Icon = ImgTag(foundExtensionPath);
-            }
-        });
-    }
 
     
     #region Permissions
@@ -860,5 +759,37 @@ public class UICFileExplorerService : IUICFileExplorerService
 
     #endregion
 
+    protected async Task<List<IUICFileExplorerFileInfoManipulator>> InitializeManipulators(List<UICFileInfo> fileInfo, GetFilesForDirectoryFilterModel filterModel)
+    {
+        var manipulators = new List<IUICFileExplorerFileInfoManipulator>();
+        foreach (var manipulator in _manipulators)
+        {
+            try
+            {
+                await manipulator.Initialize(filterModel, fileInfo);
+                manipulators.Add(manipulator);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+        }
 
+        return manipulators.Where(x=>x.AllowFiles || x.AllowDirectories).OrderBy(x=>x.Priority).ToList();
+    }
+
+    protected async Task DestroyManipulators()
+    {
+        foreach (var manipulator in _manipulators)
+        {
+            try
+            {
+                await manipulator.Destroy();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+        }
+    }
 }

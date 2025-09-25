@@ -37,6 +37,7 @@
 	
 	
   <ItemGroup>
+    <EmbeddedResource Remove="UIComponents\ComponentViews\FileExplorer\ExplorerViews\jsgrid.cshtml" />
     <EmbeddedResource Remove="UIComponents\ComponentViews\FileExplorer\ImageViewer.cshtml" />
     <EmbeddedResource Remove="UIComponents\ComponentViews\QuestionYesNo\Modal.cshtml" />
     <EmbeddedResource Remove="UIComponents\ComponentViews\ValidationTexts.cshtml" />
@@ -162,6 +163,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="UIComponents\ComponentViews\FileExplorer\ExplorerViews\jsgrid.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Update="UIComponents\Root\js\jsgrid.js">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

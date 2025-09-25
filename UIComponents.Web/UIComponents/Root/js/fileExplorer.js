@@ -5,6 +5,7 @@
             uic.fileExplorer.initialize.jsTree(container);
             uic.fileExplorer.initialize.path(container);
             uic.fileExplorer.initialize.previewWindow(container);
+            uic.fileExplorer.initialize.listenToKeyPress(container);
         },
         //.explorer-tree
         jsTree: function (container) {
@@ -200,8 +201,79 @@
 
             };
             container.on('click', '.explorer-item', eventFunction);
-        }
+        },
 
+        _lastKeyPress: 0,
+        _currentKeyWord:'', 
+        listenToKeyPress: function (container) {
+            let mainWindow = container.find('.file-explorer-main');
+            mainWindow.on('keydown', ev => {
+                console.log('container', ev.key);
+                ev.stopPropagation();
+                ev.preventDefault();
+
+                let momentValue = moment().valueOf();
+                if (momentValue - 5000 > this._lastKeyPress)
+                    this._currentKeyWord = '';
+
+                this._lastKeyPress = momentValue;
+                switch (ev.which) {
+                    case 8: //backspace
+                        uic.fileExplorer.directoryGoUp(container);
+                        break;
+                    case 13: //enter key: open file/folder
+                        let selecte = $(mainWindow.find('.explorer-item.selected')[0]);
+                        if (!selecte.length)
+                            break;
+                        uic.fileExplorer.openItem(selecte);
+                        break;
+                    case 27: //esc: clearWork
+                        this._currentKeyWord = '';
+                        break;
+                    case 37: //left
+                        break;
+                    case 38: //up: select file above
+                        let selected = mainWindow.find('.explorer-item.selected');
+                        if (selected.length == 0)
+                            break;
+                        let firstSelected = $(selected[0]);
+                        let prev = firstSelected.prev('.explorer-item');
+                        prev.click();
+                        break;
+                    case 39: //right:
+                        break;
+                    case 40: //down: select file below
+                        let selected2 = mainWindow.find('.explorer-item.selected');
+                        if (selected2.length == 0) {  //if nothing is selected, select the first
+                            $(mainWindow.find('.explorer-item')[0]).click();
+                            break;
+                        }
+                            
+                        let lastSelected = $(selected2[selected2.length - 1]);
+                        let next = lastSelected.next('.explorer-item');
+                        next.click();
+                        break;
+                    default:
+                        this._currentKeyWord += ev.key.toLowerCase();
+                        let selectorWText = mainWindow.find('.explorer-item [data-name=FileName]').filter((index, item) => {
+                            return $(item).text().trim().toLowerCase().startsWith(uic.fileExplorer.initialize._currentKeyWord)
+                        })
+                        if (!selectorWText.length) {
+                            //If no file or folder is found, try again with only the last character
+                            this._currentKeyWord += ev.key.toLowerCase();
+                            selectorWText = mainWindow.find('.explorer-item [data-name=FileName]').filter((index, item) => {
+                                return $(item).text().trim().toLowerCase().startsWith(uic.fileExplorer.initialize._currentKeyWord)
+                            })
+                        }
+                        if (selectorWText.length) {
+                            console.log('found explorer item with', this._currentKeyWord);
+                            selectorWText.closest('.explorer-item').click();
+                        }
+                        return;
+                }
+                this._currentKeyWork = '';
+            });
+        }
     },
     showhide: {
         jstree: function (container, showhide) {
@@ -314,7 +386,9 @@
 
         container.find('.explorer-item').on('dblclick', (ev) => {
             this.openItem($(ev.target).closest('.explorer-item'));
-        })
+        });
+
+        
         this.addCuttingClass(container);
     },
     copySelected: function (container) {
@@ -474,6 +548,12 @@
                 RelativePath: file.attr('data-relativepath')
             })
         }
+
+        if (!files.length) {
+            //If no files are selected, download the current directory
+            files.push(container.triggerHandler('uic-getFilterModel'));
+        }
+
         await uic.fileExplorer.download(`/${controller}/Download`, { pathModels: files });
     },
     download: async function (source, data) {

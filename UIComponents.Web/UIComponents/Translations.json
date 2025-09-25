@@ -23,19 +23,19 @@
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 354
+          "LineNumber": 428
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 409
+          "LineNumber": 483
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 431
+          "LineNumber": 505
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 693
+          "LineNumber": 773
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\form.js",
@@ -123,11 +123,11 @@
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 408
+          "LineNumber": 482
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 430
+          "LineNumber": 504
         }
       ]
     },
@@ -181,7 +181,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 101
+          "LineNumber": 102
         }
       ]
     },
@@ -197,7 +197,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 138
+          "LineNumber": 139
         }
       ]
     },
@@ -213,7 +213,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 113
+          "LineNumber": 114
         }
       ]
     },
@@ -229,7 +229,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 144
+          "LineNumber": 145
         }
       ]
     },
@@ -245,7 +245,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 119
+          "LineNumber": 120
         }
       ]
     },
@@ -294,7 +294,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 692
+          "LineNumber": 772
         }
       ]
     },
@@ -426,7 +426,7 @@
       "ArgumentsCount": 1,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 202
         }
       ]
@@ -442,7 +442,7 @@
       "ArgumentsCount": 2,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 200
         }
       ]
@@ -458,7 +458,7 @@
       "ArgumentsCount": 1,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 204
         }
       ]
@@ -474,7 +474,7 @@
       "ArgumentsCount": 0,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 199
         }
       ]
@@ -490,7 +490,7 @@
       "ArgumentsCount": 2,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 424
         }
       ]
@@ -506,7 +506,7 @@
       "ArgumentsCount": 0,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 423
         }
       ]
@@ -518,7 +518,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 214
+          "LineNumber": 215
         }
       ]
     },
@@ -529,7 +529,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 167
+          "LineNumber": 168
         }
       ]
     },
@@ -545,7 +545,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 352
+          "LineNumber": 426
         }
       ]
     },
@@ -561,7 +561,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 353
+          "LineNumber": 427
         }
       ]
     },
@@ -577,7 +577,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 351
+          "LineNumber": 425
         }
       ]
     },
@@ -593,7 +593,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 350
+          "LineNumber": 424
         }
       ]
     },
@@ -604,7 +604,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 208
+          "LineNumber": 209
         }
       ]
     },
@@ -615,7 +615,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 235
+          "LineNumber": 236
         }
       ]
     },
@@ -631,7 +631,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 429
+          "LineNumber": 503
         }
       ]
     },
@@ -647,7 +647,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 407
+          "LineNumber": 481
         }
       ]
     },
@@ -658,7 +658,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 202
+          "LineNumber": 203
         }
       ]
     },
@@ -749,11 +749,11 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 189
+          "LineNumber": 190
         },
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 196
+          "LineNumber": 197
         }
       ]
     },
@@ -780,7 +780,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 221
+          "LineNumber": 222
         }
       ]
     },
@@ -791,7 +791,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 241
+          "LineNumber": 242
         }
       ]
     },
@@ -807,7 +807,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 691
+          "LineNumber": 771
         }
       ]
     },
@@ -833,11 +833,11 @@
       "ArgumentsCount": 0,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 166
         },
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 391
         }
       ]
@@ -853,11 +853,11 @@
       "ArgumentsCount": 1,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 157
         },
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 382
         }
       ]
@@ -873,11 +873,11 @@
       "ArgumentsCount": 1,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 161
         },
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 386
         }
       ]
@@ -893,11 +893,11 @@
       "ArgumentsCount": 0,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 165
         },
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 390
         }
       ]
@@ -913,11 +913,11 @@
       "ArgumentsCount": 0,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 156
         },
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 381
         }
       ]
@@ -933,11 +933,11 @@
       "ArgumentsCount": 0,
       "FilesAndLinesUsed": [
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 171
         },
         {
-          "File": "UIComponents.Generators\\Services\\UICFileExplorerService.cs",
+          "File": "UIComponents.Generators\\Services\\FileExplorer\\UICFileExplorerService.cs",
           "LineNumber": 396
         }
       ]
@@ -949,7 +949,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Models\\Models\\FileExplorer\\UICFileExplorer.cs",
-          "LineNumber": 174
+          "LineNumber": 175
         }
       ]
     },

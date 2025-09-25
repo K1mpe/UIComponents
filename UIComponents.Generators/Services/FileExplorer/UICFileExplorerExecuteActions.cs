@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using UIComponents.Abstractions.Extensions;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
 
-namespace UIComponents.Generators.Services
+namespace UIComponents.Generators.Services.FileExplorer
 {
     public class UICFileExplorerExecuteActions : IUICFileExplorerExecuteActions
     {

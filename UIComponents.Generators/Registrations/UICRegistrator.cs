@@ -11,6 +11,8 @@ using UIComponents.Generators.Generators.Property.Inputs;
 using UIComponents.Generators.Helpers;
 using UIComponents.Generators.Interfaces;
 using UIComponents.Generators.Services;
+using UIComponents.Generators.Services.FileExplorer;
+using UIComponents.Generators.Services.FileExplorer.FileInfoManipulators;
 using UIComponents.Generators.Services.Internal;
 using UIComponents.Generators.Validators;
 using UIComponents.Generators.Validators.DefaultValidators;
@@ -221,6 +223,10 @@ public static class UICConfigure
         serviceCollection.TryAddScoped<IUICFileExplorerExecuteActions, UICFileExplorerExecuteActions>();
         serviceCollection.TryAddScoped<IUICFileExplorerService, UICFileExplorerService>();
         serviceCollection.TryAddScoped<IUICFileExplorerPermissionService, UICFileExplorerPermissionService>();
+        serviceCollection.AddScoped<IUICFileExplorerFileInfoManipulator, ExtensionIconFileManipulator>();
+        serviceCollection.AddScoped<IUICFileExplorerFileInfoManipulator, ImageThumbnailsFileManipulator>();
+        serviceCollection.AddScoped<IUICFileExplorerFileInfoManipulator, PhotoIconFileInfoManipulator>();
+        serviceCollection.AddScoped<IUICFileExplorerFileInfoManipulator, UnknownFileIconFileManipulator>();
         return configOptions;
     }
 
