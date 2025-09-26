@@ -138,21 +138,32 @@
                 }
                 return true;
             };
-            $('#@id').on('uic-reload', (ev)=>{
-                ev.stopPropagation();
-                @if(Model.DelayedAction != null && Model.DelayedAction.Miliseconds > 0){
-                    @await Model.DelayedAction.InvokeAsync(Component)
+            @if(Model.LoadData.HasValue()){
+                <text>
+                $('#@id').on('uic-reload', (ev)=>{
+                </text>
                 } else{
-                     <text>
-                    if(await checkCanReload()){
+                <text>
+                $('#@id').one('uic-reload', (ev)=>{
+                </text>
+            }
+                ev.stopPropagation();
+                @if (Model.DelayedAction != null && Model.DelayedAction.Miliseconds > 0)
+                {
+                    @await Model.DelayedAction.InvokeAsync(Component)
+                }
+                else
+                {
+                    <text>
+                        if(await checkCanReload()){
                         $('#@id').trigger('uic-forceReload')
-                    } else{
+                        } else{
                         tryReload = true;
-                    }
+                        }
                     </text>
                 }
-                
-            });
+                });
+            
             $('#@id').on('uic-forceReload', (ev)=>{
                 ev.stopPropagation();
                 $('#@id').jsGrid('loadData');

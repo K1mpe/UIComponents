@@ -12,6 +12,7 @@ File Explorer:
 Other
 - Fix dynamic options in InputMultiSelect
 - Table fix for clientside filtering	
+- QuestionText now places focus on input
 
 
 

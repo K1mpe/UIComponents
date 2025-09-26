@@ -50,7 +50,7 @@
     var tabs = new UICTabs("TestTabs")
             {
                 OnlyRenderSingleContent = true
-            }
+            }.AddCss("height", "600px")
         .Add(out var formTabs, new UICTabs("FormTabs")
                 {
                     Header = new UICCardHeader("Forms"),

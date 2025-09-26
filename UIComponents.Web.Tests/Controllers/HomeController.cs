@@ -109,14 +109,14 @@ namespace UIComponents.Web.Tests.Controllers
         {
             
 
-            var question = UICQuestionYesNo.Create("Test", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
-            var response = await _uicQuestionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(100));
-            Console.WriteLine(response.Result);
+            //var question = UICQuestionYesNo.Create("Test", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
+            //var response = await _uicQuestionService.TryAskQuestionToCurrentUser(question, TimeSpan.FromMinutes(100));
+            //Console.WriteLine(response.Result);
 
-            var question2 = UICQuestionText.Create("Test2", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
-            question2.ValidateMinLength = 3;
-            var response2 = await _uicQuestionService.TryAskQuestionToCurrentUser(question2, TimeSpan.FromMinutes(100));
-            Console.WriteLine(response.Result);
+            //var question2 = UICQuestionText.Create("Test2", "Wilt u deze vraag beantwoorden?", _uicQuestionService);
+            //question2.ValidateMinLength = 3;
+            //var response2 = await _uicQuestionService.TryAskQuestionToCurrentUser(question2, TimeSpan.FromMinutes(100));
+            //Console.WriteLine(response.Result);
             return Json(true);
         }
 
@@ -367,11 +367,11 @@ namespace UIComponents.Web.Tests.Controllers
         {
             var fileBrowser = new UICFileExplorer()
             {
-                RootDirectory = "Z:\\",
+                RootDirectory = "C:\\",
                 RenderMethod = UICFileExplorer.Renderers.JsGrid
 
             }.AddAllAddons();
-            _pathMapper.RegisterPath("Z:");
+            _pathMapper.RegisterPath("C:");
 
 
             return ViewOrPartial(fileBrowser);
