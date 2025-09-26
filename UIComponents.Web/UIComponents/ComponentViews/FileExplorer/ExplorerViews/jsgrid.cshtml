@@ -33,6 +33,7 @@
                 Filtering = true,
                 Data = Model.Files,
                 Sorting = true,
+                Height= ""
             };
 
     table
@@ -78,7 +79,6 @@
             
         @*item = current entityItem with all fields (F.e. Customer)*@
         this._eachField(function(field) {
-            debugger;
             let $cell = this._createCell(item, field);
             $cell.attr('data-name', field.name);
             $result.append($cell);

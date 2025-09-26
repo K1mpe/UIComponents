@@ -259,15 +259,29 @@
                             return $(item).text().trim().toLowerCase().startsWith(uic.fileExplorer.initialize._currentKeyWord)
                         })
                         if (!selectorWText.length) {
+                            return; //ignore if file or folder not found
                             //If no file or folder is found, try again with only the last character
-                            this._currentKeyWord += ev.key.toLowerCase();
+                            this._currentKeyWord = ev.key.toLowerCase();
                             selectorWText = mainWindow.find('.explorer-item [data-name=FileName]').filter((index, item) => {
                                 return $(item).text().trim().toLowerCase().startsWith(uic.fileExplorer.initialize._currentKeyWord)
                             })
                         }
                         if (selectorWText.length) {
                             console.log('found explorer item with', this._currentKeyWord);
-                            selectorWText.closest('.explorer-item').click();
+
+                            let alreadySelectedWText = selectorWText.closest('.explorer-item.selected')
+                            if (selectorWText.length > 1 && this._currentKeyWord.length == 1 && alreadySelectedWText.length) { 
+                                //when only 1 character is searched, and there are multiple result including the currently selected one, take the next item that matches the character
+                                let index = selectorWText.index(alreadySelectedWText.find('[data-name=FileName]')) +1;
+                                if (index == selectorWText.length) //if the last one is selected, select the first
+                                    index = 0;
+
+                                selectorWText = $(selectorWText[index]);
+                                console.log('selecting next', selectorWText);
+                            }
+                            $(selectorWText[0]).closest('.explorer-item').click();
+                            
+
                         }
                         return;
                 }
@@ -375,6 +389,10 @@
                 container.find('.explorer-item').removeClass('selected');
                 $(ev.target).closest('.explorer-item').addClass('selected');
             }
+            ev.target.scrollIntoView({
+                behavior: 'auto',  // smooth scroll (optional)
+                block: 'nearest'     // align so it's just enough to make it visible
+            });
         });
         container.find('.explorer-item').on('contextmenu', (ev) => {
             let currentItem = $(ev.target).closest('.explorer-item');

@@ -23,19 +23,19 @@
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 428
+          "LineNumber": 446
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 483
+          "LineNumber": 501
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 505
+          "LineNumber": 523
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 773
+          "LineNumber": 791
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\form.js",
@@ -123,11 +123,11 @@
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 482
+          "LineNumber": 500
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 504
+          "LineNumber": 522
         }
       ]
     },
@@ -294,7 +294,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 772
+          "LineNumber": 790
         }
       ]
     },
@@ -545,7 +545,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 426
+          "LineNumber": 444
         }
       ]
     },
@@ -561,7 +561,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 427
+          "LineNumber": 445
         }
       ]
     },
@@ -577,7 +577,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 425
+          "LineNumber": 443
         }
       ]
     },
@@ -593,7 +593,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 424
+          "LineNumber": 442
         }
       ]
     },
@@ -631,7 +631,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 503
+          "LineNumber": 521
         }
       ]
     },
@@ -647,7 +647,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 481
+          "LineNumber": 499
         }
       ]
     },
@@ -807,7 +807,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 771
+          "LineNumber": 789
         }
       ]
     },

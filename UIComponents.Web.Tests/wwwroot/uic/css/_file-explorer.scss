@@ -1,4 +1,7 @@
 ﻿.uic.file-explorer-container {
+    display: flex;
+    flex-direction: column;
+    
     img {
         max-width: 100%;
         max-height: 100%;
@@ -7,15 +10,21 @@
 
     .file-explorer-body {
         display: flex;
-
-        > :not(.file-explorer-left,.file-explorer-right) {
+        flex:1;
+        flex-shrink: 1;
+        min-height: 0;
+        /*> :not(.file-explorer-left,.file-explorer-right) {
             flex-grow: 1;
-        }
+        }*/
 
+        *:has(.explorer-tree){
+            height: 100%;
+        }
         .explorer-tree {
-            max-width: 250px;
-            resize: auto;
+            //max-width: 250px;
+            //resize: auto;
             overflow: auto;
+            height: 100%
         }
 
         .explorer-preview {
@@ -34,9 +43,14 @@
             flex-grow: 1;
         }
     }
+    .file-explorer-left{
+        max-width: 30%;
+    }
 
     .file-explorer-main {
-        min-height: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+        display:flex;
 
         &[data-renderer='large'] {
             .explorer-thumbnail {
@@ -63,16 +77,31 @@
                 vertical-align: middle;
             }
         }
+        &[data-renderer='jsgrid']{
+            *:has(.jsgrid){
+                display: flex;
+                flex: 1;
+                .jsgrid{
+                    flex:1;
+                    display: flex;
+                    flex-direction: column;
+                    .jsgrid-grid-body{
+                        flex-grow:1;
+                        flex:1;
+                    }
+                }
+            }
+        }
     }
 
     .explorer-item {
         user-select: none;
 
-        &.selected *{
+        &.selected * {
             background-color: $uic-file-explorer-selected-background-color;
         }
 
-        &:not(.selected):hover *{
+        &:not(.selected):hover * {
             background-color: $uic-file-explorer-hover-background-color;
         }
 
