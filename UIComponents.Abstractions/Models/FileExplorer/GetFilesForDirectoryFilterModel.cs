@@ -20,4 +20,8 @@ public class GetFilesForDirectoryFilterModel : IRelativePath
     public bool UseThumbnails { get; set; }
 
     public string RenderLocation { get; set; }
+
+    public bool ShowHiddenFiles { get; set; }
+
+    public bool CalcFolderSize { get; set; }
 }

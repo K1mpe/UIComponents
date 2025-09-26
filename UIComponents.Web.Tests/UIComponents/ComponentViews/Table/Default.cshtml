@@ -186,8 +186,10 @@
                 return lastFilters;
             });
 
-            $('#@id').on('uic-currentData', ev=>{
+            $('#@id').on('uic-currentData', (ev, unfiltered)=>{
                 ev.stopPropagation();
+                if(unfiltered)
+                    return currentData;
                 let data = $('#@id').jsGrid('option', 'data');
                 if(data.length == 0 && currentData.length > 0)
                     return currentData;
@@ -433,7 +435,7 @@
             let getPagedData = async function(args){
                 @if(!Model.LoadData.HasValue()){
                     <text>
-                        let result = uic.jsgrid.filterClientSide(args, $('#@id').triggerHandler('uic-currentData'));
+                        let result = uic.jsgrid.filterClientSide(args, $('#@id').triggerHandler('uic-currentData', true));
                         result = uic.jsgrid.pageClientSide(result, args.pageIndex, args.pageSize);
                                 
                         $('#@id').trigger('uic-afterFetch', [result, args]);

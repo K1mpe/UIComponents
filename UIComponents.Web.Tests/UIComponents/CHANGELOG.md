@@ -1,3 +1,20 @@
+# 2025-09-26 (V1.5.0)
+File Explorer:
+- IUICFileExplorerFileInfoManipulators
+- option for calcFolderSize
+- option for ShowHiddenFiles
+- UICFileInfo has AddClass method
+- classes on togglebuttons
+- jsgrid view
+- css changes
+- keypressnavigation
+
+Other
+- Fix dynamic options in InputMultiSelect
+- Table fix for clientside filtering	
+
+
+
 # 2025-09-18 (V1.4.0)
 - IUICFileExplorer tries to keep the same root for relative paths.
 - Relative paths now have base64 serialize methods.

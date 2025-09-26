@@ -68,6 +68,7 @@ namespace UIComponents.Models.Models.FileExplorer
         public static class Renderers
         {
             public static string Details => "details";
+            public static string JsGrid => "jsgrid";
         }
 
     }
@@ -78,7 +79,7 @@ namespace UIComponents.Models.Models.FileExplorer
             fileExplorer.Left.Add(JsTree());
             fileExplorer.Right.Add(Preview());
             fileExplorer.TopContainer.Add(Toolbar(fileExplorer));
-            ContextMenu(fileExplorer).ForEach(x => fileExplorer.BottomContainer.Add(x));
+            ContextMenu(fileExplorer, true).ForEach(x => fileExplorer.BottomContainer.Add(x));
             return fileExplorer;
         }
         public static UICGroup JsTree() => new UICGroup() { RenderWithoutContent = true }.AddClass("explorer-tree");
@@ -100,7 +101,7 @@ namespace UIComponents.Models.Models.FileExplorer
                 AppendButtonIcon = IconDefaults.DirectoryUp?.Invoke(),
                 Tooltip = TranslatableSaver.Save("Button.FileExplorer.DirectoryUp.Tooltip", "Click to move the directory up"),
                 OnClick = new UICCustom($"uic.fileExplorer.directoryGoUp($('#{fileExplorer.GetId()}'));")
-            };
+            }.AddClass("uic-fe-directory-up");
         }
         public static UICToggleButton ToggleJsTreeButton(UICFileExplorer fileExplorer)
         {
@@ -120,7 +121,7 @@ namespace UIComponents.Models.Models.FileExplorer
                     OnClick = click
                 },
                 Value = true
-            };
+            }.AddClass("uic-fe-toggle-jstree");
             fileExplorer.AddScriptDocReady(new UICCustom()
                 .AddLine($"$('#{fileExplorer.GetId()}').on('uic-showhide-jstree', (ev, visible)=>{{")
                 .AddLine($"     uic.setValue('#{toggle.GetId()}', visible);")
@@ -145,14 +146,14 @@ namespace UIComponents.Models.Models.FileExplorer
                     OnClick = click
                 },
                 Value = true
-            };
+            }.AddClass("uic-fe-toggle-preview");
             fileExplorer.AddScriptDocReady(new UICCustom()
                 .AddLine($"$('#{fileExplorer.GetId()}').on('uic-showhide-preview', (ev, visible)=>{{")
                 .AddLine($"     uic.setValue('#{toggle.GetId()}', visible);")
                 .AddLine($"}});"));
             return toggle;
         }
-        public static List<IUIComponent> ContextMenu(UICFileExplorer fileExplorer)
+        public static List<IUIComponent> ContextMenu(UICFileExplorer fileExplorer, bool includeCutCopyPaste)
         {
             var contextMenuItems = new List<IUIComponent>();
 
@@ -205,32 +206,36 @@ namespace UIComponents.Models.Models.FileExplorer
                 Category = fileGroup.CategoryId
             };
             contextMenuItems.Add(download);
-            var cut = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item.can-move", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Cut")) { Icon = IconDefaults.Cut?.Invoke() }, new UICCustom("uic.fileExplorer.cutSelected(target);"))
+            if (includeCutCopyPaste)
             {
-                Id = "FileExplorer.Actions.Cut",
-                Category = fileGroup.CategoryId
-            };
-            contextMenuItems.Add(cut);
-            var copy = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item:not(.cannot-open)", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Copy")) { Icon = IconDefaults.Copy?.Invoke() }, new UICCustom("uic.fileExplorer.copySelected(target);"))
-            {
-                Id = "FileExplorer.Actions.Copy",
-                Category = fileGroup.CategoryId
-            };
-            contextMenuItems.Add(copy);
+                var cut = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item.can-move", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Cut")) { Icon = IconDefaults.Cut?.Invoke() }, new UICCustom("uic.fileExplorer.cutSelected(target);"))
+                {
+                    Id = "FileExplorer.Actions.Cut",
+                    Category = fileGroup.CategoryId
+                };
+                contextMenuItems.Add(cut);
+                var copy = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item:not(.cannot-open)", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Copy")) { Icon = IconDefaults.Copy?.Invoke() }, new UICCustom("uic.fileExplorer.copySelected(target);"))
+                {
+                    Id = "FileExplorer.Actions.Copy",
+                    Category = fileGroup.CategoryId
+                };
+                contextMenuItems.Add(copy);
 
-            var paste = new UICContextMenuItem($"#{fileExplorer.GetId()}:has(.can-create-file)", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Paste")) { Icon = IconDefaults.Paste?.Invoke() }, new UICCustom("uic.fileExplorer.pasteSelected(clickedElement);"))
-            {
-                Id = "FileExplorer.Actions.Paste",
-                Category = fileGroup.CategoryId,
-                Attributes = new UICCustom()
-                    .AddLine("function(){")
-                    .AddLine("let attr= {};")
-                    .AddLine("if(!uic.fileExplorer._copiedFiles.length)")
-                    .AddLine("  attr.disabled = true;")
-                    .AddLine("return attr;")
-                    .AddLine("}")
-            };
-            contextMenuItems.Add(paste);
+                var paste = new UICContextMenuItem($"#{fileExplorer.GetId()}:has(.can-create-file)", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Paste")) { Icon = IconDefaults.Paste?.Invoke() }, new UICCustom("uic.fileExplorer.pasteSelected(clickedElement);"))
+                {
+                    Id = "FileExplorer.Actions.Paste",
+                    Category = fileGroup.CategoryId,
+                    Attributes = new UICCustom()
+                        .AddLine("function(){")
+                        .AddLine("let attr= {};")
+                        .AddLine("if(!uic.fileExplorer._copiedFiles.length)")
+                        .AddLine("  attr.disabled = true;")
+                        .AddLine("return attr;")
+                        .AddLine("}")
+                };
+                contextMenuItems.Add(paste);
+            }
+            
 
             var delete = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item.can-delete", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Delete")) { Icon = IconDefaults.Delete?.Invoke() }, new UICCustom("uic.fileExplorer.deleteSelected(target);"))
             {

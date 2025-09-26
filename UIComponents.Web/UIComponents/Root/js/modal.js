@@ -2,7 +2,6 @@
     help: function(id){
         console.log($(`#${id}`));
         console.log(`$('#${id}').trigger('uic-open') => Open this modal`);
-        console.log(`$('#${id}').trigger('uic-openend') => Open this modal`);
         console.log(`$('#${id}').trigger('uic-close') => Close this modal`);
         console.log(`$('#${id}').trigger('uic-destroy') => Destroy the modal and remove the html`);
         console.log(`$('#${id}').on('uic-showing') => Triggered when the modal is opening`);

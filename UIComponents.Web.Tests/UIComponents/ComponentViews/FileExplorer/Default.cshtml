@@ -97,7 +97,7 @@
         </div>
         <div>
             @await Model.TopMain.InvokeAsync(Component)
-            <div class="file-explorer-main" data-renderer="@Html.Raw(Model.RenderMethod)">
+            <div class="file-explorer-main" tabindex="0" data-renderer="@Html.Raw(Model.RenderMethod)">
             </div>
             @await Model.BottomMain.InvokeAsync(Component)
         </div>

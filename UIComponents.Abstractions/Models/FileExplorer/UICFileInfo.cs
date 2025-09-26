@@ -12,6 +12,8 @@ namespace UIComponents.Abstractions.Models.FileExplorer
         {
             get
             {
+                if (RelativePath == null)
+                    return null;
                 if (Extension == "folder")
                 {
                     var parts = RelativePath.Split("/");
@@ -27,7 +29,9 @@ namespace UIComponents.Abstractions.Models.FileExplorer
         {
             get
             {
-                if (RelativePath.EndsWith("/"))
+                if (RelativePath == null)
+                    return null;
+                if (RelativePath?.EndsWith("/") ?? false)
                     return "folder";
                 return RelativePath.Split(".").Last();
             }
@@ -75,6 +79,26 @@ namespace UIComponents.Abstractions.Models.FileExplorer
         /// You can pass additional properties here. These are not mapped to data- properties
         /// </summary>
         public Dictionary<string, string> Options { get; set; } = new();
+
+
+        /// <summary>
+        /// The fileinfo is cleared before sending clientside to prevent exposing full datapaths
+        /// </summary>
+        public FileInfo? FileInfo { get; set; }
+
+        /// <summary>
+        /// The fileinfo is cleared before sending clientside to prevent exposing full datapaths
+        /// </summary>
+        public DirectoryInfo? DirectoryInfo{ get; set; }
+
+        public UICFileInfo AddClass(string className)
+        {
+            if(!Data.ContainsKey("class"))
+                Data.Add("class", className);
+            else
+                Data["class"] += " "+className;
+            return this;
+        }
     }
 }
 

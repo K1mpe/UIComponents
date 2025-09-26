@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using UIComponents.Abstractions.Interfaces.FileExplorer;
 
-namespace UIComponents.Generators.Services;
+namespace UIComponents.Generators.Services.FileExplorer;
 
 public class UICFileExplorerPermissionService : IUICFileExplorerPermissionService
 {

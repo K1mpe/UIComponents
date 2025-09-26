@@ -1,0 +1,92 @@
+﻿@using UIComponents.Abstractions;
+@using UIComponents.Abstractions.Attributes;
+@using UIComponents.Abstractions.Enums
+@using UIComponents.Abstractions.Interfaces;
+@using UIComponents.Abstractions.Interfaces.Services;
+@using UIComponents.Abstractions.Models;
+@using UIComponents.Abstractions.Extensions;
+@using UIComponents.Abstractions.Models.FileExplorer
+@using UIComponents.Abstractions.Varia
+@using UIComponents.Defaults;
+@using UIComponents.Models;
+@using UIComponents.Models.Models;
+@using UIComponents.Models.Models.Actions;
+@using UIComponents.Models.Models.Buttons;
+@using UIComponents.Models.Models.Card;
+@using UIComponents.Models.Models.Dropdown;
+@using UIComponents.Models.Models.Icons;
+@using UIComponents.Models.Models.Inputs;
+@using UIComponents.Models.Models.Tables
+@using UIComponents.Models.Models.Texts;
+@using UIComponents.Web.Extensions;
+
+@inject IUICLanguageService L
+
+@model GetFilesForDirectoryResultModel
+
+@{
+    var table = new UICTable<UICFileInfo>()
+            {
+                EnableDelete = false,
+                EnableInsert = false,
+                EnableUpdate = false,
+                Filtering = true,
+                Data = Model.Files,
+                Sorting = true,
+                Height= ""
+            };
+
+    table
+        .AddColumn(x => x.Icon, column =>
+        {
+            column.Filtering = false;
+            column.Width = "25px";
+        })
+        .AddColumn(x => x.FileName)
+        .AddColumn(x => x.Extension)
+        .AddColumn(x => x.LastModified)
+        .AddColumn(x => x.Size);
+    table.OnDataLoaded = new UICCustom($"uic.fileExplorer.setMainEvents($('#{table.GetId()}').closest('.file-explorer-container'))");
+    table.RowRenderer = new UICCustom(@<text>
+        let $result = $('<tr>');
+
+        let data = item.@nameof(UICFileInfo.Data);
+        let dataProperties = Object.getOwnPropertyNames(data);
+
+        for(let i=0; dataProperties.length > i; i++){
+            let prop = dataProperties[i];
+            let val = data[prop];
+            $result.attr(prop, val);
+        }
+
+        $result.attr('data-AbsolutePath', item.@nameof(UICFileInfo.AbsolutePathReference))
+        $result.attr('data-RelativePath', item.@nameof(UICFileInfo.RelativePath))
+        $result.attr('data-Extension', item.@nameof(UICFileInfo.Extension))
+
+        $result.addClass('explorer-item');
+        if(item.@nameof(UICFileInfo.IsFolder))
+            $result.addClass('explorer-folder');
+
+        if(!item.@nameof(UICFileInfo.CanOpen))
+            $result.addClass('cannot-open');
+
+        if(item.@nameof(UICFileInfo.CanMove))
+            $result.addClass('can-move');
+        if(item.@nameof(UICFileInfo.CanDelete))
+            $result.addClass('can-delete');
+        if(item.@nameof(UICFileInfo.CanRename))
+            $result.addClass('can-rename');
+            
+        @*item = current entityItem with all fields (F.e. Customer)*@
+        this._eachField(function(field) {
+            let $cell = this._createCell(item, field);
+            $cell.attr('data-name', field.name);
+            $result.append($cell);
+        });
+        return $result;
+        </text>
+    );
+}
+
+
+@await table.InvokeAsync(Component)

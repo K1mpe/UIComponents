@@ -30,6 +30,16 @@
         &:has(.tab-content > .tab-pane.active > div > .card:first-child:last-child) /*, &:has(.tab-content > .tab-pane.active > div > div:first-child:last-child)*/ {
             padding: 0;
         }
+
+        > .tab-content{
+            display: flex;
+            height: 100%;
+
+            .tab-pane{
+                height: 100%;
+                overflow: auto;
+            }
+        }
     }
 
 
