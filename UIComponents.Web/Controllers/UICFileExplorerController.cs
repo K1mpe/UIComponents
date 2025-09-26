@@ -251,7 +251,7 @@ public class UICFileExplorerController : Controller, IUICFileExplorerController
                 upload.PostData["directoryPathModel"] = directoryPathModel;
                 upload.OnSuccessAll = new UICCustom()
                     .AddLine($"$('#{modal.GetId()}').trigger('uic-close');")
-                    .AddLine($"$('.file-explorer-container').trigger('uic-reload');");
+                    .AddLine($"$('.file-explorer-container').trigger('uic-reloadCurrent');");
             });
             return ViewOrPartial(modal);
         }

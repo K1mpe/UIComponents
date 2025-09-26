@@ -1,3 +1,7 @@
+# 2025-09-26 (V1.5.1)
+- UICFileExplorer jsgrid max pagesize
+- UICFileExplorer prevent unnessesary loading
+
 # 2025-09-26 (V1.5.0)
 File Explorer:
 - IUICFileExplorerFileInfoManipulators
@@ -12,6 +16,7 @@ File Explorer:
 Other
 - Fix dynamic options in InputMultiSelect
 - Table fix for clientside filtering	
+- QuestionText now places focus on input
 
 
 

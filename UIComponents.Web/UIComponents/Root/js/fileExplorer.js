@@ -155,7 +155,17 @@
                 
                 
             });
-            container.on('uic-reload', (ev) => {
+            container.on('uic-reload', (ev, pathModel) => {
+                if (pathModel != undefined && pathModel != null && pathModel.AbsolutePathReference != undefined){
+                    let absolutePath = pathModel.AbsolutePathReference;
+                    let relativePath = pathModel.RelativePath;
+
+                    let node = tree.find(`li[data-absolutepath='${absolutePath}'][data-relativepath='${relativePath}']`);
+                    if(!node.length)
+                        return;
+                    tree.jstree(true).refresh_node(node.attr('id'));
+                    return;
+                }
                 tree.jstree(true).refresh();
             })
         },
@@ -174,7 +184,6 @@
                     uic.fileExplorer.loadRelativeDir(container, value);
                 })
             });
-
         },
         //.explorer-preview
         previewWindow: function (container) {

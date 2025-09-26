@@ -53,10 +53,23 @@
 
         });
 
-        $('#@id').on('uic-reload', (ev)=>{
+        $('#@id').on('uic-reload', (ev, pathModel)=>{
             ev.stopPropagation();
+            if(pathModel != undefined && pathModel != null && pathModel.@nameof(IRelativePath.AbsolutePathReference) != undefined){
+                let absolutePath = pathModel.@nameof(IRelativePath.AbsolutePathReference);
+                let relativePath = pathModel.@nameof(IRelativePath.RelativePath);
+                if(absolutePath != filterModel.@nameof(IRelativePath.AbsolutePathReference))
+                    return;
+                if(relativePath != filterModel.@nameof(IRelativePath.RelativePath))
+                    return;
+            }
             uic.fileExplorer.loadRelativeDir($('#@id'), filterModel.RelativePath);
         });
+
+        $('#@id').on('uic-reloadCurrent', (ev)=>{
+            ev.stopPropagation();
+            $('#@id').trigger('uic-reload', filterModel);
+        })
 
         $('#@id').on('uic-getFilterModel', ()=>{
             return filterModel;

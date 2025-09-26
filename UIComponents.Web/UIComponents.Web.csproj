@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.5.0</Version>
+	<Version>1.5.2</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -16,6 +16,7 @@
 	  <None Include="..\README.md" Pack="true" PackagePath="\" />
 	  <EmbeddedResource Include="UIComponents\ComponentViews\**\*.cshtml" Pack="true" />
 	  <EmbeddedResource Include="UIComponents\Root\**" Pack="true" />
+	  <Content Remove="UIComponents\ComponentViews\FileExplorer\ExplorerViews\jsgrid.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\FileExplorer\FilePreview.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\InputTime\Default.cshtml" />
 	  <Content Remove="UIComponents\ComponentViews\InputTime\SelectLists.cshtml" />
@@ -36,7 +37,6 @@
 	
 	
   <ItemGroup>
-    <EmbeddedResource Remove="UIComponents\ComponentViews\FileExplorer\ExplorerViews\jsgrid.cshtml" />
     <EmbeddedResource Remove="UIComponents\ComponentViews\FileExplorer\ImageViewer.cshtml" />
     <EmbeddedResource Remove="UIComponents\ComponentViews\QuestionText\Modal.cshtml" />
     <EmbeddedResource Remove="UIComponents\ComponentViews\QuestionYesNo\Modal.cshtml" />
@@ -163,9 +163,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="UIComponents\ComponentViews\FileExplorer\ExplorerViews\jsgrid.cshtml">
+    <EmbeddedResource Update="UIComponents\ComponentViews\FileExplorer\ExplorerViews\jsgrid.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
     <EmbeddedResource Update="UIComponents\Root\js\jsgrid.js">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
