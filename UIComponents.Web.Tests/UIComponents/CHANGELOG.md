@@ -1,3 +1,7 @@
+# 2025-09-26 (V1.5.1)
+- UICFileExplorer jsgrid max pagesize
+- UICFileExplorer prevent unnessesary loading
+
 # 2025-09-26 (V1.5.0)
 File Explorer:
 - IUICFileExplorerFileInfoManipulators
