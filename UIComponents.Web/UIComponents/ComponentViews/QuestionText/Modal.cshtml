@@ -119,7 +119,13 @@
 
         <script>
         $(document).ready(()=>{
-            $(`#@Model.Id`).on('uic-remove', (ev)=>{
+            debugger;
+            $('#@modal.GetId()').one('uic-opened', (ev)=>{
+                debugger;
+                $('#@input.GetId()').focus();
+            });
+
+            $(`#@modal.GetId()`).on('uic-remove', (ev)=>{
                 ev.stopPropagation();
                 ev.preventDefault();
                 $('#@modal.GetId()').trigger('uic-destroy');
@@ -127,6 +133,7 @@
             $('#@modal.GetId()').on('uic-beforeClose', ()=>{
                 $('#@Model.ButtonCancel.GetId()').trigger('click');
             });
+
         })</script>
         </text>
     ));
