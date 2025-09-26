@@ -144,6 +144,16 @@
                 }
                 tree.jstree('deselect_all');
                 tree.jstree('select_node', lastNode);
+                if (lastNode != null && lastNode.length) {
+                    setTimeout(() => {
+                        lastNode[0].scrollIntoView({
+                            behavior: 'smooth',  // smooth scroll (optional)
+                            block: 'start'     // align so it's just enough to make it visible
+                        });
+                    }, 10)
+                }
+                
+                
             });
             container.on('uic-reload', (ev) => {
                 tree.jstree(true).refresh();
@@ -209,11 +219,13 @@
             let mainWindow = container.find('.file-explorer-main');
             mainWindow.on('keydown', ev => {
                 console.log('container', ev.key);
+                if (ev.target.tagName == "INPUT")
+                    return;
                 ev.stopPropagation();
                 ev.preventDefault();
 
                 let momentValue = moment().valueOf();
-                if (momentValue - 5000 > this._lastKeyPress)
+                if (momentValue - 2000 > this._lastKeyPress)
                     this._currentKeyWord = '';
 
                 this._lastKeyPress = momentValue;

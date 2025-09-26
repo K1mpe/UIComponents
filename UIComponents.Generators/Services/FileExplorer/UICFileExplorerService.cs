@@ -579,6 +579,7 @@ public class UICFileExplorerService : IUICFileExplorerService
         }
 
         var manipulators = await InitializeManipulators(result.Files, filterModel);
+        
         foreach(var file in fileInfos)
         {
             var fileInfo = file;
@@ -586,6 +587,8 @@ public class UICFileExplorerService : IUICFileExplorerService
             {
                 try
                 {
+                    if((file.IsFolder && manipulator.AllowDirectories) ||
+                        (!file.IsFolder && manipulator.AllowFiles))
                     fileInfo = await manipulator.ManipulateFileInfo(fileInfo);
                 }
                 catch(Exception ex)

@@ -21,11 +21,7 @@ namespace UIComponents.Generators.Services.FileExplorer.FileInfoManipulators
 
         public Task Initialize(GetFilesForDirectoryFilterModel filterModel, List<UICFileInfo> fileInfo)
         {
-            if (!filterModel.UseThumbnails)
-            {
-                AllowFiles = false;
-            }
-            AllowFiles = true;
+            AllowFiles = filterModel.UseThumbnails;
 
             return Task.CompletedTask;
         }
