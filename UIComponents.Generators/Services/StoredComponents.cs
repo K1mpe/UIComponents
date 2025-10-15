@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using UIComponents.Abstractions.Helpers;
 using UIComponents.Abstractions.Interfaces.Services;
 
 namespace UIComponents.Generators.Services;
@@ -75,7 +77,7 @@ public class StoredComponents : IUICStoredComponents
                 return null;
             }    
 
-            return result.StoredComponent;
+            return InternalHelper.CloneObject(result.StoredComponent, true);
         }
     }
 

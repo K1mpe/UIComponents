@@ -1,3 +1,9 @@
+# 2025-10-15 (V1.5.2)
+- Fix question only works on one tab
+- UICTable (JsGrid) now also includes sorting when applying stored filters, but only when not specific filtering is applied
+- FileExplorer jsgrid now remembers filtering and sorting when navigating away and back
+- Minor css rollbacks (bad flexbox behavior in some browsers)
+
 # 2025-09-26 (V1.5.1)
 - UICFileExplorer jsgrid max pagesize
 - UICFileExplorer prevent unnessesary loading

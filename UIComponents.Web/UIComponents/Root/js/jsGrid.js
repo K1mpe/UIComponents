@@ -39,6 +39,8 @@
                 var filterJson = localStorage.getItem(`Grid.${id}.Filters`) || '{}';
                 loadedFilter = $.parseJSON(filterJson);
 
+                if (sorter == null && !!loadedFilter.sortField)
+                    sorter = { field: loadedFilter.sortField, order: loadedFilter.sortOrder };
 
             } catch (ex) {
                 console.error('Failed to save userPreference', ex);

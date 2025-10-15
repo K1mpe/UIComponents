@@ -32,12 +32,12 @@
         }
 
         > .tab-content{
-            display: flex;
+            //display: flex;
             height: 100%;
 
             .tab-pane{
                 height: 100%;
-                overflow: auto;
+                //overflow: auto;
             }
         }
     }

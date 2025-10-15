@@ -537,7 +537,11 @@ public class UICFileExplorerService : IUICFileExplorerService
         string absolutePath = _pathMapper.GetAbsolutePath(filterModel);
 
         var result = new GetFilesForDirectoryResultModel();
-
+        result.PathModel = new()
+        {
+            RelativePath = filterModel.RelativePath,
+            AbsolutePathReference = filterModel.AbsolutePathReference
+        };
         var fileInfos = new List<UICFileInfo>();
         if (!Directory.Exists(absolutePath))
             return result;
@@ -632,7 +636,7 @@ public class UICFileExplorerService : IUICFileExplorerService
         if (!filepath.EndsWith("\\"))
             filepath += "\\";
         if (!Directory.Exists(filepath))
-            throw new ArgumentNullException();
+            throw new DirectoryNotFoundException();
 
         var info = _pathMapper.GetRelativePath<UICFileInfo>(filepath, filterModel.AbsolutePathReference);
 

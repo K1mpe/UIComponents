@@ -107,7 +107,7 @@
         graph.MaxEnd = DateTime.Now.AddDays(2);
     }));
 
-    tabs.Add(new UICCard("FileExplorer").AddPartial("home", "files"));
+    tabs.Add(new UICCard("FileExplorer").AddPartial(new UICPartial("home", "files").AddClass("d-flex")));
 
     var factoryComponent = new UICFactory<TestComponentFactory>(f => f.CreateComponentAsync(2));
     factoryComponent = new UICFactory<TestComponentFactory>("/Views/Home/TestViewModelFromFactory", async f => await f.CreateViewModelAsync(2));

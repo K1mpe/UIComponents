@@ -6,4 +6,5 @@ public class GetFilesForDirectoryResultModel
     public bool CanCreateFileInDirectory { get; set; }
     public bool CanCreateFolderInDirectory { get; set; }
 
+    public RelativePathModel PathModel { get; set; }
 }

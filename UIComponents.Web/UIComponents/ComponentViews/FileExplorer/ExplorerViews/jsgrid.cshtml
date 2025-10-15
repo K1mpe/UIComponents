@@ -35,7 +35,13 @@
                 Sorting = true,
                 Height= "",
                 PageSize = int.MaxValue,
-            };
+            }.SetId($"FileExplorerDetails-{Model.PathModel.RelativePath.Replace("~", "").Replace(" ", "_").Replace("/", "-")}");
+
+
+    if (Model.CanCreateFileInDirectory)
+        table.AddClass("can-create-file");
+    if (Model.CanCreateFolderInDirectory)
+        table.AddClass("can-create-folder");
 
     table
         .AddColumn(x => x.Icon, column =>
@@ -43,10 +49,24 @@
             column.Filtering = false;
             column.Width = "25px";
         })
-        .AddColumn(x => x.FileName)
-        .AddColumn(x => x.Extension)
-        .AddColumn(x => x.LastModified)
-        .AddColumn(x => x.Size);
+        .AddColumn(x => x.FileName, col => col.Width = "auto")
+        .AddColumn(x => x.Extension, col =>
+            {
+                col.ColumnVisibility = UICTableColumnVisibility.HideSmallerThanMd;
+                col.Width = "50px";
+            })
+        .AddColumn(x => x.LastModified, col =>
+        {
+            col.Width = "100px";
+            col.ColumnVisibility = UICTableColumnVisibility.HideSmallerThanMd;
+        })
+        .AddColumn(x => x.SizeValue, col =>
+        {
+            col.ColumnVisibility = UICTableColumnVisibility.HideSmallerThanMd;
+            col.Width = "100px";
+            col.Filtering = false;
+            col.ItemTemplate = new UICCustom("return item.Size");
+        });
     table.OnDataLoaded = new UICCustom($"uic.fileExplorer.setMainEvents($('#{table.GetId()}').closest('.file-explorer-container'))");
     table.RowRenderer = new UICCustom(@<text>
         let $result = $('<tr>');
