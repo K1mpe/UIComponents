@@ -570,8 +570,11 @@
             root = root.substring(0, root.length - 1);
         if (root == dir)
             return;
+
         if (dir.includes('/')) {
             dir = dir.substring(0, dir.lastIndexOf('/'));
+            if (dir.length <= root.length)
+                dir = container.attr('data-rootdirectory');
             await this.loadRelativeDir(container, dir);
         }
     },

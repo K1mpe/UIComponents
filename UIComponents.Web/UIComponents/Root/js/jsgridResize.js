@@ -58,7 +58,7 @@
         this.changeColumnWidth = function (no, w) {
             if (!dragColumns) return false;
 
-            if (no < 0) return false;
+            if (no < 0 || no == undefined) return false;
             if (dragColumns.length < no) return false;
 
             if (parseInt(dragColumns[no].style.width) <= -w) return false;
