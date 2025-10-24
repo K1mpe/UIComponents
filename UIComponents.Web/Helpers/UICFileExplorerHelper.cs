@@ -281,6 +281,10 @@ namespace UIComponents.Web.Helpers
                 foreach (var file in form.Files)
                 {
                     var fileName = Path.GetFileName(file.FileName);
+                    if (form.TryGetValue($"fileinfo.{fileName}.newname", out var newName) && !string.IsNullOrWhiteSpace(newName))
+                    {
+                        fileName = newName;
+                    }
                     string filepath = Path.Combine(targetDirectory, fileName);
                     if (System.IO.File.Exists(filepath))
                         System.IO.File.Delete(filepath);

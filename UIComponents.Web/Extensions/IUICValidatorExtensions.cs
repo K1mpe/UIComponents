@@ -37,6 +37,30 @@ public static class IUICValidatorExtensions
         }
     }
 
+    /// <inheritdoc cref="ValidateModel{T}(IUICValidationService, AbstractValidator{T}, IUICLanguageService)"/>
+    public static void ValidateModelAsync<T>(this IUICValidationService validationService, AbstractValidator<T> validator, IUICLanguageService languageService)
+    {
+        var properties = typeof(T).GetProperties();
+        foreach (var property in properties)
+        {
+            var expression = DynamicExpressionParser.ParseLambda<T, object>(null, false, "@" + property.Name);
+            validator.RuleFor(expression)
+                .MustAsync(async (model, value, context, cancellationToken) =>
+                {
+                    var result = await validationService.ValidateObjectProperty(property, model, cancellationToken);
+                    if(result.HasValidationErrors)
+                    {
+                        var errorResult = result.ValidationErrors.FirstOrDefault();
+                        var message = await TranslationDefaults.TranslateWithPlaceholders(errorResult.ErrorMessage, errorResult.Arguments, languageService);
+                        context.MessageFormatter.AppendArgument("message", message);
+                        return false;
+                    }
+                    
+                    return !result.HasValidationErrors;
+                }).WithMessage((model) => "{message}");
+        }
+    }
+
 
     public static IActionResult ValidationErrors(this Controller controller, FluentValidation.Results.ValidationResult validationResult=null)
     {

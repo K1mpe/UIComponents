@@ -5,16 +5,16 @@ namespace UIComponents.Generators.Validators.CustomValidators;
 
 public class CustomValidatorPropertyMaxLength : IUICPropertyValidationRuleMaxLength
 {
-    public Func<PropertyInfo, object, Task<int?>> MaxLengthFunc { get; set; }
+    public Func<PropertyInfo, object, CancellationToken, Task<int?>> MaxLengthFunc { get; set; }
 
     public Type? PropertyType => typeof(object);
 
 
-    public Task<int?> MaxLength(PropertyInfo propertyInfo, object obj)
+    public Task<int?> MaxLength(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         if (MaxLengthFunc == null)
             throw new ArgumentNullException(nameof(MaxLengthFunc));
 
-        return MaxLengthFunc(propertyInfo, obj);
+        return MaxLengthFunc(propertyInfo, obj, cancellationToken);
     }
 }

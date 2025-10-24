@@ -6,16 +6,16 @@ namespace UIComponents.Generators.Validators.CustomValidators;
 public class CustomValidatorPropertyMinLength : IUICPropertyValidationRuleMinLength
 {
     
-    public Func<PropertyInfo, object, Task<int?>> MinLengthFunc { get; set; }
+    public Func<PropertyInfo, object, CancellationToken, Task<int?>> MinLengthFunc { get; set; }
 
     public Type? PropertyType => typeof(object);
 
 
-    public Task<int?> MinLength(PropertyInfo propertyInfo, object obj)
+    public Task<int?> MinLength(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         if (MinLengthFunc == null)
             throw new ArgumentNullException(nameof(MinLengthFunc));
 
-        return MinLengthFunc(propertyInfo, obj);
+        return MinLengthFunc(propertyInfo, obj, cancellationToken);
     }
 }
