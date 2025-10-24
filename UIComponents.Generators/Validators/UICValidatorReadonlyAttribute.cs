@@ -22,7 +22,7 @@ namespace UIComponents.Generators.Validators
 
         public Type? PropertyType => typeof(object);
 
-        public async Task<bool> IsReadonly(PropertyInfo propertyInfo, object obj)
+        public async Task<bool> IsReadonly(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
         {
             await Task.Delay(0);
             if (!propertyInfo.CanWrite)

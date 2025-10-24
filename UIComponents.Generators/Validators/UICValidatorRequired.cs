@@ -18,9 +18,8 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
 
     public Type? PropertyType => typeof(object);
 
-    public async Task<bool> IsRequired(PropertyInfo propertyInfo, object obj)
+    public async Task<bool> IsRequired(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
-        await Task.Delay(0);
         var v1 = propertyInfo.GetCustomAttribute<RequiredAttribute>();
         if (v1 != null)
         {
@@ -95,6 +94,7 @@ public class UICValidatorRequired : IUICPropertyValidationRuleRequired
         //    return true;
         //}
 
+        await Task.Yield();
         return false;
     }
 }

@@ -22,8 +22,14 @@
 @inject IUICLanguageService L
 
 @model GetFilesForDirectoryResultModel
+@{
+    if (Model.CanCreateFileInDirectory)
+        Model.AddClass("can-create-file");
+    if (Model.CanCreateFolderInDirectory)
+        Model.AddClass("can-create-folder");
+}
 
-<table class="table @(Model.CanCreateFileInDirectory ? "can-create-file" : "") @(Model.CanCreateFolderInDirectory ? "can-create-folder" : "")">
+<table class="table @(Model.Classes)">
     <thead>
         <tr>
             <th name="Icon">@await Html.TranslateHtml(L, TranslatableSaver.Save("FileExplorer.Icon"))</th>

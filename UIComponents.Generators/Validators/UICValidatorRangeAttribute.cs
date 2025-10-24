@@ -17,7 +17,7 @@ public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleM
     public Type? PropertyType => typeof(T);
 
 
-    public Task<T?> MaxValue(PropertyInfo propertyInfo, object obj)
+    public Task<T?> MaxValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         var rangeAttr = propertyInfo.GetInheritAttribute<RangeAttribute>();
         if (rangeAttr != null)
@@ -38,7 +38,7 @@ public abstract class UICValidatorRangeAttribute<T>: IUICPropertyValidationRuleM
         return Task.FromResult(default(T?));
     }
 
-    public Task<T?> MinValue(PropertyInfo propertyInfo, object obj)
+    public Task<T?> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         var rangeAttr = propertyInfo.GetInheritAttribute<RangeAttribute>();
         if (rangeAttr != null)

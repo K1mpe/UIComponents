@@ -12,7 +12,7 @@ namespace UIComponents.Web.Tests
     {
         public Type? PropertyType => throw new NotImplementedException();
 
-        public Task<bool> IsReadonly(PropertyInfo propertyInfo, object obj)
+        public Task<bool> IsReadonly(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

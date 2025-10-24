@@ -21,7 +21,7 @@ namespace UIComponents.Generators.Validators
 
         public Type? PropertyType => typeof(object);
 
-        public async Task<bool> IsReadonly(PropertyInfo propertyInfo, object obj)
+        public async Task<bool> IsReadonly(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
         {
             bool readOnly = false;
             if (_config.TryGetPermissionService(out var permissionService))

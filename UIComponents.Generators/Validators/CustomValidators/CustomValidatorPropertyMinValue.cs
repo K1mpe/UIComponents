@@ -6,17 +6,17 @@ namespace UIComponents.Generators.Validators.CustomValidators;
 public class CustomValidatorPropertyMinValue<TValue> : IUICPropertyValidationRuleMinValue<TValue> where TValue : struct, IComparable
 {
    
-    public Func<PropertyInfo, object, Task<Nullable<TValue>>> MinValueFunc { get; set; }
+    public Func<PropertyInfo, object, CancellationToken, Task<Nullable<TValue>>> MinValueFunc { get; set; }
 
     public Type? PropertyType => typeof(object);
 
 
-    public Task<Nullable<TValue>> MinValue(PropertyInfo propertyInfo, object obj)
+    public Task<Nullable<TValue>> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         if (MinValueFunc == null)
             throw new ArgumentNullException(nameof(MinValueFunc));
 
-        return MinValueFunc(propertyInfo, obj);
+        return MinValueFunc(propertyInfo, obj, cancellationToken);
     }
 
 }

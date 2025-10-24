@@ -8,7 +8,7 @@ namespace UIComponents.Generators.Validators.DefaultValidators;
 
 public class DefaultCheckValidationErrorsRequired : IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleRequired>
 {
-    public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleRequired validator, PropertyInfo propertyInfo, object obj)
+    public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleRequired validator, PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         if (!await validator.IsRequired(propertyInfo, obj))
             return ValidationRuleResult.IsValid();
@@ -31,7 +31,7 @@ public class DefaultCheckValidationErrorsRequired : IUICDefaultCheckValidationEr
 
 public class DefaultCheckValidationErrorsMinValue<TValue> : IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinValue<TValue>> where TValue : struct, IComparable
 {
-    public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleMinValue<TValue> validator, PropertyInfo propertyInfo, object obj)
+    public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleMinValue<TValue> validator, PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         var type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
         if (!type.IsAssignableTo(typeof(TValue)))
@@ -61,7 +61,7 @@ public class DefaultCheckValidationErrorsMinValue<TValue> : IUICDefaultCheckVali
 
 public class DefaultCheckValidationErrorsMaxValue<TValue> : IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxValue<TValue>> where TValue : struct, IComparable
 {
-    public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleMaxValue<TValue> validator, PropertyInfo propertyInfo, object obj)
+    public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleMaxValue<TValue> validator, PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         var type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
         if (!type.IsAssignableTo(typeof(TValue)))
@@ -90,7 +90,7 @@ public class DefaultCheckValidationErrorsMaxValue<TValue> : IUICDefaultCheckVali
 
 public class DefaultCheckValidationErrorsMinLength : IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMinLength>
 {
-    public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleMinLength validator, PropertyInfo propertyInfo, object obj)
+    public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleMinLength validator, PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         int? minLength = await validator.MinLength(propertyInfo, obj);
         if (minLength == null)
@@ -110,7 +110,7 @@ public class DefaultCheckValidationErrorsMinLength : IUICDefaultCheckValidationE
 }
 public class DefaultCheckValidationErrorsMaxLength : IUICDefaultCheckValidationErrors<IUICPropertyValidationRuleMaxLength>
 {
-    public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleMaxLength validator, PropertyInfo propertyInfo, object obj)
+    public async Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleMaxLength validator, PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         int? maxLength = await validator.MaxLength(propertyInfo, obj);
         if (maxLength == null)
@@ -141,7 +141,7 @@ public class DefaultCheckValidationErrorsReadonly : IUICDefaultCheckValidationEr
 
     private static bool HasChecked { get; set; }
 
-    public Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleReadonly validator, PropertyInfo propertyInfo, object obj)
+    public Task<ValidationRuleResult> DefaultValidationErrors(IUICPropertyValidationRuleReadonly validator, PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default)
     {
         if (!_uicConfigOptions.CheckPropertyValidatorReadonly)
         {

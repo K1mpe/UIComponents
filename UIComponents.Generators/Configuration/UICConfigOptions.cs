@@ -218,7 +218,7 @@ public partial class UicConfigOptions
     /// <param name="isRequiredFunc">Used by <see cref="UICInput"/> to set required property</param>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyRequired(
-        Func<PropertyInfo, object, Task<bool>> isRequiredFunc
+        Func<PropertyInfo, object, CancellationToken, Task<bool>> isRequiredFunc
         )
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyRequired()
@@ -235,7 +235,7 @@ public partial class UicConfigOptions
     /// <param name="minValueFunc">Used by <see cref="UICInput"/> to set MinValue property</param>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyMinValue<TValue>(
-        Func<PropertyInfo, object, Task<Nullable<TValue>>> minValueFunc
+        Func<PropertyInfo, object, CancellationToken, Task<Nullable<TValue>>> minValueFunc
         ) where TValue : struct, IComparable
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyMinValue<TValue>()
@@ -252,7 +252,7 @@ public partial class UicConfigOptions
     /// <param name="maxValueFunc">Used by <see cref="UICInput"/> to set MaxValue property</param>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyMaxValue<TValue>(
-        Func<PropertyInfo, object, Task<Nullable<TValue>>> maxValueFunc
+        Func<PropertyInfo, object, CancellationToken, Task<Nullable<TValue>>> maxValueFunc
         ) where TValue : struct, IComparable
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyMaxValue<TValue>()
@@ -269,7 +269,7 @@ public partial class UicConfigOptions
     /// <param name="minLengthFunc">Used by <see cref="UICInputText.ValidationMinLength"/></param>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyMinLength(
-        Func<PropertyInfo, object, Task<int?>> minLengthFunc
+        Func<PropertyInfo, object, CancellationToken, Task<int?>> minLengthFunc
         )
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyMinLength()
@@ -286,7 +286,7 @@ public partial class UicConfigOptions
     /// <param name="maxLengthFunc">Used by <see cref="UICInputText.ValidationMinLength"/></param>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyMaxLength(
-        Func<PropertyInfo, object, Task<int?>> maxLengthFunc
+        Func<PropertyInfo, object, CancellationToken, Task<int?>> maxLengthFunc
         )
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyMaxLength()
@@ -307,7 +307,7 @@ public partial class UicConfigOptions
     /// </remarks>
     /// <returns></returns>
     public UicConfigOptions AddValidatorPropertyReadonly(
-        Func<PropertyInfo, object, Task<bool>> readonlyFunc
+        Func<PropertyInfo, object, CancellationToken, Task<bool>> readonlyFunc
         )
     {
         _propertyValidationRules.Add(new CustomValidatorPropertyReadonly()

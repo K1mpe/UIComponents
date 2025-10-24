@@ -1,4 +1,9 @@
-# 2025-10-15 (V1.5.2)
+# 2025-10-24 (V1.5.4)
+- Classes can be added in FileExplorerResults
+- IUICValidationService can add async rules
+- Validation rules all take a Cancellationtoken
+
+# 2025-10-15 (V1.5.3)
 - Fix question only works on one tab
 - UICTable (JsGrid) now also includes sorting when applying stored filters, but only when not specific filtering is applied
 - FileExplorer jsgrid now remembers filtering and sorting when navigating away and back

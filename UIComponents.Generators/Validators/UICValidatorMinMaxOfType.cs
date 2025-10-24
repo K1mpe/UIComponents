@@ -14,33 +14,33 @@ public class UICValidatorMinMaxOfTypeByte : IUICPropertyValidationRuleMinValue<b
 {
     public Type? PropertyType => typeof(byte);
 
-    public Task<byte?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(byte.MaxValue as byte?);
+    public Task<byte?> MaxValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(byte.MaxValue as byte?);
 
-    public Task<byte?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(byte.MinValue as byte?);
+    public Task<byte?> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(byte.MinValue as byte?);
 }
 public class UICValidatorMinMaxOfTypeShort : IUICPropertyValidationRuleMinValue<short>, IUICPropertyValidationRuleMaxValue<short>
 {
     public Type? PropertyType => typeof(short);
 
-    public Task<short?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(short.MaxValue as short?);
+    public Task<short?> MaxValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(short.MaxValue as short?);
 
-    public Task<short?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(short.MinValue as short?);
+    public Task<short?> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(short.MinValue as short?);
 }
 public class UICValidatorMinMaxOfTypeInt : IUICPropertyValidationRuleMinValue<int>, IUICPropertyValidationRuleMaxValue<int>
 {
     public Type? PropertyType => typeof(int);
 
-    public Task<int?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(int.MaxValue as int?);
+    public Task<int?> MaxValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(int.MaxValue as int?);
 
-    public Task<int?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(int.MinValue as int?);
+    public Task<int?> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(int.MinValue as int?);
 }
 public class UICValidatorMinMaxOfTypelong : IUICPropertyValidationRuleMinValue<long>, IUICPropertyValidationRuleMaxValue<long>
 {
     public Type? PropertyType => typeof(long);
 
-    public Task<long?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(long.MaxValue as long?);
+    public Task<long?> MaxValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(long.MaxValue as long?);
 
-    public Task<long?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(long.MinValue as long?);
+    public Task<long?> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(long.MinValue as long?);
 }
 
 
@@ -48,26 +48,26 @@ public class UICValidatorMinMaxOfTypeDecimal : IUICPropertyValidationRuleMinValu
 {
     public Type? PropertyType => typeof(decimal);
 
-    public Task<decimal?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(decimal.MaxValue as decimal?);
+    public Task<decimal?> MaxValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(decimal.MaxValue as decimal?);
 
-    public Task<decimal?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(decimal.MinValue as decimal?);
+    public Task<decimal?> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(decimal.MinValue as decimal?);
 }
 
 public class UICValidatorMinMaxOfTypeUShort : IUICPropertyValidationRuleMinValue<ushort>, IUICPropertyValidationRuleMaxValue<ushort>
 {
     public Type? PropertyType => typeof(ushort);
 
-    public Task<ushort?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(ushort.MaxValue as ushort?);
+    public Task<ushort?> MaxValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(ushort.MaxValue as ushort?);
 
-    public Task<ushort?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(ushort.MinValue as ushort?);
+    public Task<ushort?> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(ushort.MinValue as ushort?);
 }
 public class UICValidatorMinMaxOfTypeUInt : IUICPropertyValidationRuleMinValue<uint>, IUICPropertyValidationRuleMaxValue<uint>
 {
     public Type? PropertyType => typeof(uint);
 
-    public Task<uint?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(uint.MaxValue as uint?);
+    public Task<uint?> MaxValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(uint.MaxValue as uint?);
 
-    public Task<uint?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(uint.MinValue as uint?);
+    public Task<uint?> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(uint.MinValue as uint?);
 }
 public class UICValidatorMinMaxOfTypeUlong : IUICPropertyValidationRuleMinValue<ulong>//, IUICPropertyValidationRuleMaxValue<ulong>
 {
@@ -75,5 +75,5 @@ public class UICValidatorMinMaxOfTypeUlong : IUICPropertyValidationRuleMinValue<
 
     //public Task<ulong?> MaxValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(ulong.MaxValue as ulong?);
 
-    public Task<ulong?> MinValue(PropertyInfo propertyInfo, object obj) => Task.FromResult(ulong.MinValue as ulong?);
+    public Task<ulong?> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default) => Task.FromResult(ulong.MinValue as ulong?);
 }

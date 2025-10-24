@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
 using UIComponents.Defaults;
 
 namespace UIComponents.Abstractions.Interfaces.ValidationRules;
@@ -13,7 +14,7 @@ public interface IUICPropertyValidationRule
 }
 public interface IUICPropertyValidationValidationResultsImplementation
 {
-    public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj);
+    public Task<ValidationRuleResult> CheckValidationErrors(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default);
 }
 
 public interface IUICPropertyValidationRule<T> : IUICPropertyValidationRule
@@ -23,35 +24,35 @@ public interface IUICPropertyValidationRule<T> : IUICPropertyValidationRule
 
 public interface IUICPropertyValidationRuleRequired : IUICPropertyValidationRule
 {
-    public Task<bool> IsRequired(PropertyInfo propertyInfo, object obj);
+    public Task<bool> IsRequired(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default);
 
 }
 
 public interface IUICPropertyValidationRuleMinValue<TValueType> : IUICPropertyValidationRule<TValueType> where TValueType : struct, IComparable
 {
-    Task<Nullable<TValueType>> MinValue(PropertyInfo propertyInfo, object obj);
+    Task<Nullable<TValueType>> MinValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default);
 
 }
 
 public interface IUICPropertyValidationRuleMaxValue<TValueType> : IUICPropertyValidationRule<TValueType> where TValueType : struct, IComparable
 {
-    Task<Nullable<TValueType>> MaxValue(PropertyInfo propertyInfo, object obj);
+    Task<Nullable<TValueType>> MaxValue(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default);
 
 }
 
 public interface IUICPropertyValidationRuleMinLength : IUICPropertyValidationRule<string>
 {
-    Task<int?> MinLength(PropertyInfo propertyInfo, object obj);
+    Task<int?> MinLength(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default);
 
 }
 
 public interface IUICPropertyValidationRuleMaxLength : IUICPropertyValidationRule<string>
 {
-    Task<int?> MaxLength(PropertyInfo propertyInfo, object obj);
+    Task<int?> MaxLength(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default);
 
 }
 
 public interface IUICPropertyValidationRuleReadonly : IUICPropertyValidationRule
 {
-    Task<bool> IsReadonly(PropertyInfo propertyInfo, object obj);
+    Task<bool> IsReadonly(PropertyInfo propertyInfo, object obj, CancellationToken cancellationToken = default);
 }

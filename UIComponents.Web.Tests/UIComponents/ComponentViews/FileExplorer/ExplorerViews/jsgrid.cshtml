@@ -43,6 +43,8 @@
     if (Model.CanCreateFolderInDirectory)
         table.AddClass("can-create-folder");
 
+        table.AddClass(Model.Classes);
+
     table
         .AddColumn(x => x.Icon, column =>
         {

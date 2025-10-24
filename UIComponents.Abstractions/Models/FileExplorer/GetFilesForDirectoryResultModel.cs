@@ -6,5 +6,21 @@ public class GetFilesForDirectoryResultModel
     public bool CanCreateFileInDirectory { get; set; }
     public bool CanCreateFolderInDirectory { get; set; }
 
+    /// <summary>
+    /// These classes are added to the partial containing the files
+    /// </summary>
+    public string Classes { get; set; } = string.Empty;
+
+    public GetFilesForDirectoryResultModel AddClass(string className)
+    {
+        if(Classes.Contains(className)) 
+            return this;
+
+        if (string.IsNullOrEmpty(Classes))
+            Classes += " ";
+        Classes += className;
+        return this;
+    }
+
     public RelativePathModel PathModel { get; set; }
 }
