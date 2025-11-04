@@ -154,6 +154,7 @@ namespace UIComponents.Models.Models.Tables
         /// Save the last filters in the localstorage from that browser. This requires the Id to be set to a constant value.
         /// </summary>
         public bool SaveFiltersInLocalStorage { get; set; } = Defaults.Models.Table.UICTable.SaveFiltersInLocalStorage;
+        public bool SaveSortingInLocalStorage { get; set; } = Defaults.Models.Table.UICTable.SaveSortingInLocalStorage;
 
 
         /// <summary>
@@ -777,6 +778,7 @@ namespace UIComponents.Defaults.Models.Table
         public static bool Minimal { get; set; } = true;
         public static bool ReplaceLoadingIndicator { get; set; } = true;
         public static bool SaveFiltersInLocalStorage { get; set; } = true;
+        public static bool SaveSortingInLocalStorage { get; set; } = true;
         public static bool ShowAllSelectFilters { get; set; }
         public static bool SaveOnBlur { get; set; }
         public static bool SaveOnEnter { get; set; }

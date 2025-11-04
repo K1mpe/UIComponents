@@ -26,7 +26,10 @@
 
     bool hasId = !String.IsNullOrEmpty(Model.GetAttribute("id"));
     if (!hasId || Model.GetId().StartsWith("uic"))
+    {
         Model.SaveFiltersInLocalStorage = false;
+        Model.SaveSortingInLocalStorage = false;
+    }
 
     if (Model.Selecting)
         Model.AddClass("has-selecting");
@@ -252,7 +255,7 @@
                             defaultFilterObject[column.PropertyInfo.Name] = column.DefaultFilter;
                         }
                         <text>
-                        let result = await uic.jsgrid.onInit('@id', @Json.Serialize(Model.SaveFiltersInLocalStorage), args, @Html.Raw(Model.Sorter?.ToString()??"null"), @Json.Serialize(defaultFilterObject));
+                        let result = await uic.jsgrid.onInit('@id', args, @Html.Raw(Model.Sorter?.ToString() ?? "null"), @Json.Serialize(defaultFilterObject), @Json.Serialize(Model.SaveFiltersInLocalStorage), @Json.Serialize(Model.SaveSortingInLocalStorage));
                         </text>
                     }
                     $('#@id').trigger('uic-initialized');
@@ -300,7 +303,7 @@
                             args["sortField"] = lastFilters["sortField"];
 
                         lastFilters = args;
-                        @if(Model.SaveFiltersInLocalStorage)
+                        @if(Model.SaveFiltersInLocalStorage || Model.SaveSortingInLocalStorage)
                         {
                         <text>
                         try{

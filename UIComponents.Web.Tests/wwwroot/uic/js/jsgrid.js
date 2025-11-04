@@ -31,19 +31,23 @@
         console.log(`$('#${id}').on('uic-editingData', (args)=> {...}) => Triggered when opening a edit row.`);
         console.log(`$('#${id}').on('uic-dataLoadedAndFiltered') => Triggered after the selectlists are filtered.`);
     },
-    onInit: async function (id, loadUserPreference, args, sorter, defaultFilter) {
-        var loadedFilter = defaultFilter;
-        if (loadUserPreference) {
+    onInit: async function (id, args, sorter, defaultFilter, loadFilter, loadSorter) {
+        let filter = defaultFilter;
+        if (loadFilter || loadSorter) {
             try {
                 //Download users last filters and set them in the filter row
-                var filterJson = localStorage.getItem(`Grid.${id}.Filters`) || '{}';
-                loadedFilter = $.parseJSON(filterJson);
+                let filterJson = localStorage.getItem(`Grid.${id}.Filters`) || '{}';
+                let loadedFilter = $.parseJSON(filterJson);
 
-                if (sorter == null && !!loadedFilter.sortField)
-                    sorter = { field: loadedFilter.sortField, order: loadedFilter.sortOrder };
-
+                if (loadFilter) {
+                    $.extend(filter, loadedFilter);
+                }
+                if (loadSorter) {
+                    if (!!loadedFilter.sortField)
+                        sorter = { field: loadedFilter.sortField, order: loadedFilter.sortOrder };
+                }
             } catch (ex) {
-                console.error('Failed to save userPreference', ex);
+                console.error('Failed to load filters', ex);
             }
         }
 
@@ -86,7 +90,7 @@
                 {
                     try {
                         var fieldName = item.name || '';
-                        $.each(loadedFilter, function (key, value) {
+                        $.each(filter, function (key, value) {
                             {
                                 if (key == fieldName && value != '') {
                                     if (item.filterControl != undefined) {

@@ -1,3 +1,6 @@
+# 2025-10-30 (V1.5.5)
+- Giving exception when failing to get validator from provider
+
 # 2025-10-24 (V1.5.4)
 - Classes can be added in FileExplorerResults
 - IUICValidationService can add async rules

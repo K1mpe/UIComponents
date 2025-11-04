@@ -79,6 +79,7 @@ namespace UIComponents.Web.Helpers
                         {
                             using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
                             {
+                                httpContext.RequestAborted.ThrowIfCancellationRequested();
                                 // Directly copy the file stream to the output stream (the response)
                                 await fileStream.CopyToAsync(httpContext.Response.Body);
                             }
@@ -131,6 +132,7 @@ namespace UIComponents.Web.Helpers
                                         {
                                             using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
                                             {
+                                                httpContext.RequestAborted.ThrowIfCancellationRequested();
                                                 await fileStream.CopyToAsync(entryStream);  // Stream each file directly into the ZIP
                                             }
                                         }
