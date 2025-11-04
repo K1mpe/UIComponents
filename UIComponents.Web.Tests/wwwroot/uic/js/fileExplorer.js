@@ -6,6 +6,23 @@
             uic.fileExplorer.initialize.path(container);
             uic.fileExplorer.initialize.previewWindow(container);
             uic.fileExplorer.initialize.listenToKeyPress(container);
+
+
+
+            function loadByHash() {
+                let filterModel = container.triggerHandler('uic-getFilterModel');
+
+                let hash = location.hash.split('#').filter(x => x.length && x.startsWith('expl:'));
+                if (!hash.length)
+                    return;
+                let relativePath = atob(hash[0].substring(5));
+                if (relativePath != filterModel.RelativePath)
+                    uic.fileExplorer.loadRelativeDir(container, relativePath);
+            }
+            window.addEventListener('hashchange', () => {
+                loadByHash();
+            });
+            loadByHash();
         },
         //.explorer-tree
         jsTree: function (container) {
@@ -309,6 +326,8 @@
                 this._currentKeyWork = '';
             });
         }
+
+
     },
     showhide: {
         jstree: function (container, showhide) {
@@ -345,7 +364,15 @@
     loadRelativeDir: async function (container, directory) {
         let controller = container.data('controller');
         let filterModel = container.triggerHandler('uic-getFilterModel');
+
         filterModel.RelativePath = directory;
+        let base64 = btoa(directory);
+        let hashes = location.hash.split('#').filter(x => x.length && !x.startsWith('expl:'))
+        hashes.push(`expl:${base64}`);
+        let hash = '#' + hashes.join('#');
+        if (location.hash != hash)
+            location.hash = hash;
+
         await this.loadMainWindow(container, controller, filterModel);
     },
 
