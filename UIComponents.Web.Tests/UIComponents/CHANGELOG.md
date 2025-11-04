@@ -1,6 +1,7 @@
 # 2025-11-04 (V1.6.0)
 - UICFileExplorer does not remember filtertext but does remember sorting
 - Table has seperate properties for saving filter and sorting
+- UICFileExplorer adds hash for current directory
 
 # 2025-10-30 (V1.5.5)
 - Giving exception when failing to get validator from provider

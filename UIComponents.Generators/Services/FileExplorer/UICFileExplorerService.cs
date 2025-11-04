@@ -459,76 +459,33 @@ public class UICFileExplorerService : IUICFileExplorerService
         
     }
 
-    public async virtual Task DownloadFilesAndDirectories(List<RelativePathModel> pathModels, Stream outputStream)
+    public async virtual Task<List<string>> GetDownloadableFilePaths(List<RelativePathModel> pathModels)
     {
-        if (!pathModels.Any())
-            throw new ArgumentNullException(nameof(pathModels));
-
-        if (pathModels.Count() == 1)
+        var filepaths = new List<string>();
+        foreach(var pathModel in pathModels)
         {
-            var pathModel = pathModels[0];
-
             string absolutePath = _pathMapper.GetAbsolutePath(pathModel);
-            if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
-                throw new AccessViolationException();
-
             if (File.Exists(absolutePath))
             {
-                FileInfo fileInfo = new FileInfo(absolutePath);
+                if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
+                    continue;
+                filepaths.Add(absolutePath);
+            }
+            else if (Directory.Exists(absolutePath))
+            {
+                if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
+                    continue;
 
-                using (var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
+                var files = Directory.GetFiles(absolutePath, "*.*", SearchOption.AllDirectories);
+                foreach(var file in files)
                 {
-                    // Directly copy the file stream to the output stream (the response)
-                    await fileStream.CopyToAsync(outputStream);
+                    if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(file))
+                        continue;
+                    filepaths.Add(file);
                 }
-
-                // Flush the output stream to ensure the response is sent to the client
-                await outputStream.FlushAsync();
-                return; // Exit after sending the single file
             }
         }
-
-        // Create the ZipArchive directly in the outputStream (i.e., response stream)
-        await _logger.LogFunction("Creating Zip file", true, async () =>
-        {
-            using (var archive = new ZipArchive(outputStream, ZipArchiveMode.Create, leaveOpen: true))
-            {
-                foreach (var pathModel in pathModels)
-                {
-                    var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
-
-                    if (File.Exists(absolutePath))
-                    {
-                        var fileInfo = new FileInfo(absolutePath);
-                        var fileEntry = archive.CreateEntry(fileInfo.Name);
-
-                        using (var entryStream = fileEntry.Open())
-                        using (var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
-                        {
-                            await fileStream.CopyToAsync(entryStream);  // Stream each file directly into the ZIP
-                        }
-                    }
-                    else if (Directory.Exists(absolutePath))
-                    {
-                        var dirInfo = new DirectoryInfo(absolutePath);
-                        foreach (var filePath in Directory.GetFiles(absolutePath, "*", SearchOption.AllDirectories))
-                        {
-                            var relativePath = _pathMapper.ReplaceRoot(filePath, absolutePath, $"{dirInfo.Name}\\");
-                            var fileEntry = archive.CreateEntry(relativePath);
-
-                            using (var entryStream = fileEntry.Open())
-                            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
-                            {
-                                await fileStream.CopyToAsync(entryStream);  // Stream each file directly into the ZIP
-                            }
-                        }
-                    }
-                }
-            }
-        }, LogLevel.Information);
-
-        // Flush the output stream to ensure all data is sent to the client
-        await outputStream.FlushAsync();
+        return filepaths;
     }
     #endregion
 
