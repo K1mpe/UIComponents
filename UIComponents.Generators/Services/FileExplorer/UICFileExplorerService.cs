@@ -508,7 +508,7 @@ public class UICFileExplorerService : IUICFileExplorerService
 
         result.CanCreateFileInDirectory = await _permissionService.CurrentUserCanCreateFileInThisDirectory(absolutePath);
         result.CanCreateFolderInDirectory = await _permissionService.CurrentUserCanCreateFolderInThisDirectory(absolutePath);
-
+        result.CanDownloadCurrentDirectory = await _permissionService.CurrentUserCanDownloadFileOrDirectory(absolutePath);
 
         if (!filterModel.FilesOnly)
         {
@@ -581,6 +581,7 @@ public class UICFileExplorerService : IUICFileExplorerService
             return null;
 
         info.CanOpen = await _permissionService.CurrentUserCanOpenFileOrDirectory(filepath);
+        info.CanDownload = await _permissionService.CurrentUserCanDownloadFileOrDirectory(filepath);
         info.CanMove = await _permissionService.CurrentUserCanMoveFileOrDirectory(filepath);
         info.CanDelete = await _permissionService.CurrentUserCanDeleteFileOrDirectory(filepath);
         info.CanRename = await _permissionService.CurrentUserCanRenameFileOrDirectory(filepath, null);
@@ -618,6 +619,7 @@ public class UICFileExplorerService : IUICFileExplorerService
         }
         
         info.CanOpen = await _permissionService.CurrentUserCanOpenFileOrDirectory(filepath);
+        info.CanDownload = await _permissionService.CurrentUserCanDownloadFileOrDirectory(filepath);
         info.CanMove = await _permissionService.CurrentUserCanMoveFileOrDirectory(filepath);
         info.CanDelete = await _permissionService.CurrentUserCanDeleteFileOrDirectory(filepath);
         info.CanRename = await _permissionService.CurrentUserCanRenameFileOrDirectory(filepath, null);

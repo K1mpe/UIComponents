@@ -267,6 +267,7 @@
                         break;
                     case 27: //esc: clearWork
                         this._currentKeyWord = '';
+                        mainWindow.find('.explorer-item.selected').removeClass('selected');
                         break;
                     case 37: //left
                         break;
@@ -607,7 +608,7 @@
     },
     downloadSelected: async function (container) {
         container = container.closest('.file-explorer-container');
-        let selectedFiles = container.find('.explorer-item.selected');
+        let selectedFiles = container.find('.explorer-item.selected.can-download');
         let controller = container.data('controller');
         let files = [];
         for (let i = 0; i < selectedFiles.length; i++) {

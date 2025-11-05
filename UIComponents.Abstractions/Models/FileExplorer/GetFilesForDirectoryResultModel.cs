@@ -6,6 +6,8 @@ public class GetFilesForDirectoryResultModel
     public bool CanCreateFileInDirectory { get; set; }
     public bool CanCreateFolderInDirectory { get; set; }
 
+    public bool CanDownloadCurrentDirectory { get; set; }
+
     /// <summary>
     /// These classes are added to the partial containing the files
     /// </summary>

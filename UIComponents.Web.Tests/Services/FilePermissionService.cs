@@ -31,6 +31,11 @@ public class FilePermissionService : IUICFileExplorerPermissionService
         return Task.FromResult(true);
     }
 
+    public Task<bool> CurrentUserCanDownloadFileOrDirectory(string path)
+    {
+        return Task.FromResult(true);
+    }
+
     public Task<bool> CurrentUserCanMoveFileOrDirectory(string path)
     {
         return Task.FromResult(true);

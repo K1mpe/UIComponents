@@ -22,7 +22,7 @@ namespace UIComponents.Web.Helpers
         /// </remarks>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static async Task<IActionResult> DownloadFileOrZipStream(IEnumerable<string> files, HttpContext httpContext, ILogger? logger, LogLevel logLevel = LogLevel.Information, LogLevel loglevelZippedFiles = LogLevel.Debug, CompressionLevel zipCompressionLevel = CompressionLevel.NoCompression)
+        public static async Task<IActionResult> DownloadFileOrZipStream(IEnumerable<string> files, HttpContext httpContext, ILogger? logger, Func<Task>? whenDownloadFinished= null, LogLevel logLevel = LogLevel.Information, LogLevel loglevelZippedFiles = LogLevel.Debug, CompressionLevel zipCompressionLevel = CompressionLevel.NoCompression)
         {
             if (!files.Any())
                 throw new ArgumentNullException(nameof(files));
@@ -147,6 +147,8 @@ namespace UIComponents.Web.Helpers
 
             // Flush the output stream to ensure all data is sent to the client
             await httpContext.Response.Body.FlushAsync();
+
+            await whenDownloadFinished?.Invoke();
             return new EmptyResult();
         }
 

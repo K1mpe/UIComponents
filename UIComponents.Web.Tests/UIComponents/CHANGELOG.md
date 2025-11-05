@@ -1,7 +1,10 @@
-# 2025-11-04 (V1.6.0)
+# 2025-11-05 (V1.6.0)
 - UICFileExplorer does not remember filtertext but does remember sorting
 - Table has seperate properties for saving filter and sorting
 - UICFileExplorer adds hash for current directory
+- UICFileExplorer download can cancel ongoing downloads
+- UICFileExplorer gets seperate permission for downloading files
+- Escape now deselects files in UICFileExplorer
 
 # 2025-10-30 (V1.5.5)
 - Giving exception when failing to get validator from provider
