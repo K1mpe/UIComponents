@@ -22,7 +22,7 @@ namespace UIComponents.Web.Helpers
         /// </remarks>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static async Task<IActionResult> DownloadFileOrZipStream(IEnumerable<string> files, HttpContext httpContext, ILogger? logger, LogLevel logLevel = LogLevel.Information, LogLevel loglevelZippedFiles = LogLevel.Debug, CompressionLevel zipCompressionLevel = CompressionLevel.NoCompression)
+        public static async Task<IActionResult> DownloadFileOrZipStream(IEnumerable<string> files, HttpContext httpContext, ILogger? logger, Func<Task>? whenDownloadFinished= null, LogLevel logLevel = LogLevel.Information, LogLevel loglevelZippedFiles = LogLevel.Debug, CompressionLevel zipCompressionLevel = CompressionLevel.NoCompression)
         {
             if (!files.Any())
                 throw new ArgumentNullException(nameof(files));
@@ -44,7 +44,7 @@ namespace UIComponents.Web.Helpers
             }
             httpContext.Response.Headers.Add("Estimated-Content-Length", size.ToString());
 
-            string fileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.zip";
+            string fileName = $"{(GetCommonParentFolderName(files)??Assembly.GetExecutingAssembly().GetName().Name)}.zip";
 
             // Determine the filename based on the provided files
             if (files.Count() == 1)
@@ -79,6 +79,7 @@ namespace UIComponents.Web.Helpers
                         {
                             using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
                             {
+                                httpContext.RequestAborted.ThrowIfCancellationRequested();
                                 // Directly copy the file stream to the output stream (the response)
                                 await fileStream.CopyToAsync(httpContext.Response.Body);
                             }
@@ -110,6 +111,7 @@ namespace UIComponents.Web.Helpers
                                     using (var entryStream = fileEntry.Open())
                                     using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
                                     {
+                                        httpContext.RequestAborted.ThrowIfCancellationRequested();
                                         await fileStream.CopyToAsync(entryStream);  // Stream each file directly into the ZIP
                                     }
                                 }, loglevelZippedFiles);
@@ -125,12 +127,13 @@ namespace UIComponents.Web.Helpers
                                 var fileEntry = archive.CreateEntry(relativePath);
                                 using (logger.BeginScopeKvp("FilePath", file))
                                 {
-                                    await logger.LogFunction("Adding file to Zip", true, async () =>
+                                    await logger.LogFunction($"Adding {relativePath} to {fileName}", true, async () =>
                                     {
                                         using (var entryStream = fileEntry.Open())
                                         {
                                             using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
                                             {
+                                                httpContext.RequestAborted.ThrowIfCancellationRequested();
                                                 await fileStream.CopyToAsync(entryStream);  // Stream each file directly into the ZIP
                                             }
                                         }
@@ -144,9 +147,43 @@ namespace UIComponents.Web.Helpers
 
             // Flush the output stream to ensure all data is sent to the client
             await httpContext.Response.Body.FlushAsync();
+
+            await whenDownloadFinished?.Invoke();
             return new EmptyResult();
         }
 
+        public static string? GetCommonParentFolderName(IEnumerable<string> filePaths)
+        {
+            if (filePaths == null || filePaths.Count() == 0)
+                return null;
+
+            // Normalize and split all paths into segments
+            var splitPaths = filePaths
+                .Select(p => Path.GetFullPath(p)
+                    .TrimEnd(Path.DirectorySeparatorChar)
+                    .Split(Path.DirectorySeparatorChar))
+                .ToList();
+
+            // Find the longest common prefix of directory parts
+            var first = splitPaths.First();
+            int commonLength = 0;
+            for (int i = 0; i < first.Length; i++)
+            {
+                if (splitPaths.All(p => p.Length > i &&
+                                        string.Equals(p[i], first[i], StringComparison.OrdinalIgnoreCase)))
+                {
+                    commonLength++;
+                }
+                else break;
+            }
+
+            // No common folder
+            if (commonLength == 0)
+                return null;
+
+            // Return the name of the last common folder
+            return first[commonLength - 1];
+        }
 
         private static Dictionary<string, UploadData> StartUploadingFiles = new();
 

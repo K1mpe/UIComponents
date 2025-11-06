@@ -53,6 +53,7 @@ namespace UIComponents.Abstractions.Models.FileExplorer
 
 
         public bool CanOpen { get; set; }
+        public bool CanDownload { get; set; }
         public bool CanMove { get; set; }
         public bool CanDelete { get; set; }
         public bool CanRename { get; set; }

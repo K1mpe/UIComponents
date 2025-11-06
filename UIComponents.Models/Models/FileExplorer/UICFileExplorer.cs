@@ -200,7 +200,7 @@ namespace UIComponents.Models.Models.FileExplorer
                 Category = fileGroup.CategoryId
             };
             contextMenuItems.Add(openFolder);
-            var download = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item:not(.cannot-open)", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Download")) { Icon = IconDefaults.Download?.Invoke() }, new UICCustom("uic.fileExplorer.downloadSelected(target);"))
+            var download = new UICContextMenuItem($"#{fileExplorer.GetId()} .explorer-item:.can-download", new UICDropdownItem(TranslatableSaver.Save("FileExplorer.Download")) { Icon = IconDefaults.Download?.Invoke() }, new UICCustom("uic.fileExplorer.downloadSelected(target);"))
             {
                 Id = "FileExplorer.Actions.Download",
                 Category = fileGroup.CategoryId

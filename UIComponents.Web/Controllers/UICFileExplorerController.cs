@@ -47,15 +47,8 @@ public class UICFileExplorerController : Controller, IUICFileExplorerController
 
     public virtual async Task<IActionResult> CopyFiles(RelativePathModel[] FromPath, RelativePathModel ToPath)
     {
-        try
-        {
-            await _fileExplorerService.CopyFilesAsync(FromPath.ToList(), ToPath);
-            return Json(true);
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+        await _fileExplorerService.CopyFilesAsync(FromPath.ToList(), ToPath);
+        return Json(true);
     }
 
     public virtual async Task<IActionResult> CreateDirectory(RelativePathModel pathModel)
@@ -73,223 +66,135 @@ public class UICFileExplorerController : Controller, IUICFileExplorerController
 
     public virtual async Task<IActionResult> DeleteFiles(RelativePathModel[] pathModel)
     {
-        try
-        {
-            await _fileExplorerService.DeleteFilesAsync(pathModel.ToList());
-            return Json(true);
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+        await _fileExplorerService.DeleteFilesAsync(pathModel.ToList());
+        return Json(true);
     }
 
     public virtual async Task<IActionResult> Download(RelativePathModel[] pathModels)
     {
-        try
-        {
-            var files = pathModels.Select(x => _pathMapper.GetAbsolutePath(x));
-            return await UICFileExplorerHelper.DownloadFileOrZipStream(files, HttpContext, _logger);
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+        var files = await _fileExplorerService.GetDownloadableFilePaths(pathModels.ToList());
+
+        return await UICFileExplorerHelper.DownloadFileOrZipStream(files, HttpContext, _logger);
     }
 
     [HttpPost]
     public virtual async Task<IActionResult> GetFilesForDirectoryPartial(GetFilesForDirectoryFilterModel fm)
     {
-        try
-        {
-            var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
-            string renderLocation = fm.RenderLocation;
-            if (!renderLocation.Contains("/"))
-                renderLocation = "/UIComponents/ComponentViews/FileExplorer/ExplorerViews/" + renderLocation;
-            return ViewComponent(typeof(UICViewComponent), new UICViewModel(renderLocation, result));
-        }
-        catch (OperationCanceledException)
-        {
-            return Json(false);
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+        var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
+        string renderLocation = fm.RenderLocation;
+        if (!renderLocation.Contains("/"))
+            renderLocation = "/UIComponents/ComponentViews/FileExplorer/ExplorerViews/" + renderLocation;
+        return ViewComponent(typeof(UICViewComponent), new UICViewModel(renderLocation, result));
     }
     [HttpPost]
     public virtual async Task<IActionResult> GetFilesForDirectoryJson(GetFilesForDirectoryFilterModel fm)
     {
-        try
-        {
-            var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
-            return Json(result);
-        }
-        catch (OperationCanceledException)
-        {
-            return Json(false);
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+        var result = await _fileExplorerService.GetFilesFromDirectoryAsync(fm, Request.HttpContext.RequestAborted);
+        return Json(result);
     }
 
     public virtual async Task<IActionResult> MoveFiles(RelativePathModel[] FromPath, RelativePathModel ToPath)
     {
-        try
-        {
-            await _fileExplorerService.MoveFilesAsync(FromPath.ToList(), ToPath);
-            return Json(true);
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+        await _fileExplorerService.MoveFilesAsync(FromPath.ToList(), ToPath);
+        return Json(true);
     }
 
 
     [HttpGet]
     public virtual async Task<IActionResult> OpenFile(string base64)
     {
-        try
-        {
-            base64 = base64.Replace(" ", "+");
-            var json = UTF8Encoding.UTF8.GetString(Convert.FromBase64String(base64));
-            var pathModel = JsonSerializer.Deserialize<RelativePathModel>(json);
+        base64 = base64.Replace(" ", "+");
+        var json = UTF8Encoding.UTF8.GetString(Convert.FromBase64String(base64));
+        var pathModel = JsonSerializer.Deserialize<RelativePathModel>(json);
 
-            var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
-            if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
-                return await Error(TranslatableSaver.Save("FileExplorer.OpenFile.AccessDenied", "You do not have access to open {0}", pathModel.RelativePath));
-            var memstream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
+        var absolutePath = _pathMapper.GetAbsolutePath(pathModel);
+        if (_permissionService != null && !await _permissionService.CurrentUserCanOpenFileOrDirectory(absolutePath))
+            return await Error(TranslatableSaver.Save("FileExplorer.OpenFile.AccessDenied", "You do not have access to open {0}", pathModel.RelativePath));
+        var memstream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
 
-            return File(memstream, GetMimeType(absolutePath));
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+        return File(memstream, GetMimeType(absolutePath));
     }
 
     public virtual async Task<IActionResult> OpenImage(RelativePathModel pathModel, string explorerId)
     {
-        try
+        var vm = new ImageViewerViewModel()
         {
-            var vm = new ImageViewerViewModel()
-            {
-                FilePath = pathModel,
-                ExplorerContainerId = explorerId,
-                ControllerName = this.GetType().Name
-            };
-            if (vm.ControllerName.EndsWith("Controller"))
-                vm.ControllerName = vm.ControllerName.Remove(vm.ControllerName.LastIndexOf("Controller"));
-            return PartialView("/UIComponents/ComponentViews/FileExplorer/ImageViewer.cshtml", vm);
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+            FilePath = pathModel,
+            ExplorerContainerId = explorerId,
+            ControllerName = this.GetType().Name
+        };
+        if (vm.ControllerName.EndsWith("Controller"))
+            vm.ControllerName = vm.ControllerName.Remove(vm.ControllerName.LastIndexOf("Controller"));
+        return PartialView("/UIComponents/ComponentViews/FileExplorer/ImageViewer.cshtml", vm);
     }
 
     [HttpPost]
     public virtual async Task<IActionResult> Preview(RelativePathModel pathModel)
     {
-        try
-        {
-            var result = await _fileExplorerService.GetFilePreviewAsync(pathModel, HttpContext.RequestAborted);
-            if (result == null)
-                return Json(false);
-            return ViewOrPartial(new UICViewModel("/UIComponents/ComponentViews/FileExplorer/FilePreview", result));
-        }
-        catch (OperationCanceledException)
-        {
+        var result = await _fileExplorerService.GetFilePreviewAsync(pathModel, HttpContext.RequestAborted);
+        if (result == null)
             return Json(false);
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+        return ViewOrPartial(new UICViewModel("/UIComponents/ComponentViews/FileExplorer/FilePreview", result));
     }
 
     public virtual async Task<IActionResult> Rename(RelativePathModel pathModel, string newName)
     {
-        try
-        {
-            await _fileExplorerService.RenameFileOrDirectoryAsync(pathModel, newName);
-            return Json(true);
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+        await _fileExplorerService.RenameFileOrDirectoryAsync(pathModel, newName);
+        return Json(true);
     }
 
     public virtual async Task<IActionResult> UploadPartial(RelativePathModel directoryPathModel)
     {
-        try
+        var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
+        if (_permissionService != null && !await _permissionService.CurrentUserCanCreateFileInThisDirectory(absolutePath))
+            return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFiles", "You do not have access to upload files in {0}", directoryPathModel.RelativePath));
+
+        var modal = new UICModal(directoryPathModel.RelativePath);
+
+        var uploader = await _fileExplorerService.GetUploadFileComponent(directoryPathModel);
+        if(uploader != null)
         {
-            var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
-            if (_permissionService != null && !await _permissionService.CurrentUserCanCreateFileInThisDirectory(absolutePath))
-                return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFiles", "You do not have access to upload files in {0}", directoryPathModel.RelativePath));
-
-            var modal = new UICModal(directoryPathModel.RelativePath);
-
-            var uploader = await _fileExplorerService.GetUploadFileComponent(directoryPathModel);
-            if(uploader != null)
-            {
-                modal.Add(uploader);
-                return ViewOrPartial(modal);
-            }
-
-            modal.Add(new UICUpload(Url.Action(nameof(UploadFiles))), upload =>
-            {
-                upload.AllowChunking = true;
-                upload.ParallelUploads = 5;
-                upload.MaxFileCount = 100;
-                upload.ChunkSizeMB = 25;
-                upload.DisplayFileCountMessage = false;
-                upload.PostData["directoryPathModel"] = directoryPathModel;
-                upload.OnSuccessAll = new UICCustom()
-                    .AddLine($"$('#{modal.GetId()}').trigger('uic-close');")
-                    .AddLine($"$('.file-explorer-container').trigger('uic-reloadCurrent');");
-            });
+            modal.Add(uploader);
             return ViewOrPartial(modal);
         }
-        catch (Exception ex)
+
+        modal.Add(new UICUpload(Url.Action(nameof(UploadFiles))), upload =>
         {
-            return await Error(ex);
-        }
+            upload.AllowChunking = true;
+            upload.ParallelUploads = 5;
+            upload.MaxFileCount = 100;
+            upload.ChunkSizeMB = 25;
+            upload.DisplayFileCountMessage = false;
+            upload.PostData["directoryPathModel"] = directoryPathModel;
+            upload.OnSuccessAll = new UICCustom()
+                .AddLine($"$('#{modal.GetId()}').trigger('uic-close');")
+                .AddLine($"$('.file-explorer-container').trigger('uic-reloadCurrent');");
+        });
+        return ViewOrPartial(modal);
     }
     public virtual async Task<IActionResult> UploadFiles(RelativePathModel directoryPathModel)
     {
-        try
-        {
-            var files = Request.Form.Files;
-            var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
-            if (_permissionService != null && !await _permissionService.CurrentUserCanCreateFileInThisDirectory(absolutePath))
-                return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFiles", "You do not have access to upload files in {0}", directoryPathModel.RelativePath));
+        var files = Request.Form.Files;
+        var absolutePath = _pathMapper.GetAbsolutePath(directoryPathModel);
+        if (_permissionService != null && !await _permissionService.CurrentUserCanCreateFileInThisDirectory(absolutePath))
+            return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFiles", "You do not have access to upload files in {0}", directoryPathModel.RelativePath));
 
-            foreach (var file in files)
+        foreach (var file in files)
+        {
+            var fileName = Path.GetFileName(file.FileName);
+            if (Request.Form.TryGetValue($"fileinfo.{fileName}.newname", out var newName) && !string.IsNullOrWhiteSpace(newName))
+                fileName = newName.ToString();
+            string filepath = Path.Combine(absolutePath, fileName);
+
+            if (_permissionService != null && !await _permissionService.CurrentUserCanCreateOrEditFile(filepath))
             {
-                var fileName = Path.GetFileName(file.FileName);
-                if (Request.Form.TryGetValue($"fileinfo.{fileName}.newname", out var newName) && !string.IsNullOrWhiteSpace(newName))
-                    fileName = newName.ToString();
-                string filepath = Path.Combine(absolutePath, fileName);
-
-                if (_permissionService != null && !await _permissionService.CurrentUserCanCreateOrEditFile(filepath))
-                {
-                    var relativePath = _pathMapper.GetRelativePath(filepath);
-                    return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFile", "You do not have access to upload file in {0}", directoryPathModel.RelativePath));
-                }
+                var relativePath = _pathMapper.GetRelativePath(filepath);
+                return await Error(TranslatableSaver.Save("FileExplorer.NoAccessToUploadFile", "You do not have access to upload file in {0}", directoryPathModel.RelativePath));
             }
-            await UICFileExplorerHelper.UploadFilesFromDropzoneStream(HttpContext, absolutePath, (target, stream) => _actions.AddFile(target, stream), _logger);
+        }
+        await UICFileExplorerHelper.UploadFilesFromDropzoneStream(HttpContext, absolutePath, (target, stream) => _actions.AddFile(target, stream), _logger);
 
-            return Json(true);
-        }
-        catch (Exception ex)
-        {
-            return await Error(ex);
-        }
+        return Json(true);
     }
 
 

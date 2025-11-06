@@ -22,7 +22,13 @@ namespace UIComponents.Abstractions.Interfaces.FileExplorer
 
         Task RenameFileOrDirectoryAsync(RelativePathModel pathModel, string newName);
 
-        Task DownloadFilesAndDirectories(List<RelativePathModel> pathModels, Stream outputStream);
+        /// <summary>
+        /// Returns a list of all the absolute paths inside these pathModels that may be downloaded by this user.
+        /// </summary>
+        /// <param name="pathModels"></param>
+        /// <param name="outputStream"></param>
+        /// <returns></returns>
+        Task<List<string>> GetDownloadableFilePaths(List<RelativePathModel> pathModels);
 
         /// <summary>
         /// When trying to upload a file, this method can provide a override of the file uploader. return Task.FromResult(null) to use the default file uploader.

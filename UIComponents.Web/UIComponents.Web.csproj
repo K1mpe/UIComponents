@@ -7,7 +7,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<Title>UIComponents.Web</Title>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<Version>1.5.5</Version>
+	<Version>1.6.0</Version>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -163,6 +163,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="UIComponents\ComponentViews\FileExplorer\ExplorerViews\Details.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Update="UIComponents\ComponentViews\FileExplorer\ExplorerViews\jsgrid.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

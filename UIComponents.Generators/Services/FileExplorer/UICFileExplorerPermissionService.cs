@@ -41,6 +41,12 @@ public class UICFileExplorerPermissionService : IUICFileExplorerPermissionServic
         return Task.FromResult(false);
     }
 
+    public Task<bool> CurrentUserCanDownloadFileOrDirectory(string path)
+    {
+        AlertInvalidImplementation();
+        return Task.FromResult(false);
+    }
+
     public Task<bool> CurrentUserCanMoveFileOrDirectory(string path)
     {
         AlertInvalidImplementation();

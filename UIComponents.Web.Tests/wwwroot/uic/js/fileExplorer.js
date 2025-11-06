@@ -6,6 +6,23 @@
             uic.fileExplorer.initialize.path(container);
             uic.fileExplorer.initialize.previewWindow(container);
             uic.fileExplorer.initialize.listenToKeyPress(container);
+
+
+
+            function loadByHash() {
+                let filterModel = container.triggerHandler('uic-getFilterModel');
+
+                let hash = location.hash.split('#').filter(x => x.length && x.startsWith('expl:'));
+                if (!hash.length)
+                    return;
+                let relativePath = atob(hash[0].substring(5));
+                if (relativePath != filterModel.RelativePath)
+                    uic.fileExplorer.loadRelativeDir(container, relativePath);
+            }
+            window.addEventListener('hashchange', () => {
+                loadByHash();
+            });
+            loadByHash();
         },
         //.explorer-tree
         jsTree: function (container) {
@@ -250,6 +267,7 @@
                         break;
                     case 27: //esc: clearWork
                         this._currentKeyWord = '';
+                        mainWindow.find('.explorer-item.selected').removeClass('selected');
                         break;
                     case 37: //left
                         break;
@@ -309,6 +327,8 @@
                 this._currentKeyWork = '';
             });
         }
+
+
     },
     showhide: {
         jstree: function (container, showhide) {
@@ -345,7 +365,15 @@
     loadRelativeDir: async function (container, directory) {
         let controller = container.data('controller');
         let filterModel = container.triggerHandler('uic-getFilterModel');
+
         filterModel.RelativePath = directory;
+        let base64 = btoa(directory);
+        let hashes = location.hash.split('#').filter(x => x.length && !x.startsWith('expl:'))
+        hashes.push(`expl:${base64}`);
+        let hash = '#' + hashes.join('#');
+        if (location.hash != hash)
+            location.hash = hash;
+
         await this.loadMainWindow(container, controller, filterModel);
     },
 
@@ -580,7 +608,7 @@
     },
     downloadSelected: async function (container) {
         container = container.closest('.file-explorer-container');
-        let selectedFiles = container.find('.explorer-item.selected');
+        let selectedFiles = container.find('.explorer-item.selected.can-download');
         let controller = container.data('controller');
         let files = [];
         for (let i = 0; i < selectedFiles.length; i++) {
@@ -599,6 +627,9 @@
         await uic.fileExplorer.download(`/${controller}/Download`, { pathModels: files });
     },
     download: async function (source, data) {
+
+        let indicator = uic.fileExplorer.getDownloadIndicator();
+        $('body').append(indicator);
         //https://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post
         let response = await $.ajax({
             type: "POST",
@@ -610,6 +641,10 @@
             xhr: function () {
                 // Create a new XMLHttpRequest object
                 const xhr = new window.XMLHttpRequest();
+
+                indicator.on('uic-cancel', () => {
+                    xhr.abort();
+                })
                 let completed = -1;
                 // Event listener for tracking progress
                 xhr.onprogress = (ev => {
@@ -621,13 +656,11 @@
                         let percentComplete = Math.round((ev.loaded / estimatedSize) * 100);
                         if (percentComplete != completed) {
                             completed = percentComplete;
-                            $('.file-explorer-progress-indicator').remove();
-                            let indicator = $('<div>', { class: 'file-explorer-progress-indicator' })
-                                .append($('<div>')
-                                    .append($('<span>').html(`Downloading...`))
-                                    .append($('<span>').html(`${percentComplete} %`)))
-                                .append($('<div>', { class: 'progress-bar', width: `${percentComplete}%` }));
-                            $('body').append(indicator);
+                            indicator.trigger('uic-progressChanged', {
+                                loaded: ev.loaded,
+                                estimatedSize: estimatedSize,
+                                percentComplete: percentComplete
+                            });                            
                         }
                     }
                 })
@@ -668,19 +701,56 @@
                     }
 
                     setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
-                    $('.file-explorer-progress-indicator').remove();
-                    makeToast("Success", "File successfully downloaded");
+
+                    indicator.trigger('uic-onSuccess');
                 }
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                $('.file-explorer-progress-indicator').remove();
-                let indicator = $('<div>', { class: 'file-explorer-progress-indicator' }).text('Failed!')
-                $('body').append(indicator);
-                setTimeout(() => {
-                    indicator.remove();
-                }, 10000);
+                indicator.trigger('uic-onError', { XMLHttpRequest, textStatus, errorThrown });
             }
         });
     },
+
+    //returns a jquery element that is a indicator for the downloadprogress
+    //These events can be set on the indicator:
+    //.on('uic-progressChanged', (ev, {loaded, estimatedSize, percentComplete}))
+    //.on('uic-onError', (ev, {xmlHttpRequest, textStatus, errorThrown}))
+    //.on('uic-onSuccess')
+    //.trigger('uic-cancel')
+    getDownloadIndicator: function () {
+        let indicator = $('<div>', { class: 'file-explorer-progress-indicator' })
+            .append($('<div>')
+                .append($('<span>', { class: 'current-percent' }).html(`Preparing download...`))
+                .append($('<a>', { href: '#', class: 'btn btn-none btn-cancel' }).text('x')
+                )
+            )
+            .append($('<div>', { class: 'progress-bar', width: `0%` }));
+        indicator.on('uic-progressChanged', (ev, args) => {
+            let percent = args.percentComplete;
+            indicator.find('span.current-percent').html(`Downloading... ${percent} %`);
+            indicator.find('.progress-bar').css('width', `${percent}%`);
+        });
+        indicator.on('uic-onError', (ev, args) => {
+            console.log(args);
+
+            let message = args.errorThrown;
+            if (!message.length)
+                message = args.textStatus;
+            let content = $('<div>', { class: 'bg-danger' }).text(message);
+            indicator.html(content);
+            setTimeout(() => {
+                indicator.remove();
+            }, 5000);
+        });
+        indicator.on('uic-onSuccess', () => {
+            indicator.remove();
+        });
+
+        indicator.find('.btn-cancel').on('click', () => {
+            indicator.trigger('uic-cancel');
+        });
+        return indicator;
+    },
+
     //When opening a file, these handlers are checked until one returns true.
     //If no handler returns true, the 'downloadSelected' will be used.
     openHandlers: [

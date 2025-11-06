@@ -27,6 +27,8 @@
         Model.AddClass("can-create-file");
     if (Model.CanCreateFolderInDirectory)
         Model.AddClass("can-create-folder");
+    if (Model.CanDownloadCurrentDirectory)
+        Model.AddClass("can-download");
 }
 
 <table class="table @(Model.Classes)">
@@ -52,6 +54,8 @@
                 item.Data["class"] += " explorer-folder";
             if (!item.CanOpen)
                 item.Data["class"] += " cannot-open";
+            if (item.CanDownload)
+                item.Data["class"] += " can-download";
             if (item.CanMove)
                 item.Data["class"] += " can-move";
             if (item.CanDelete)

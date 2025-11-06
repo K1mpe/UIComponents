@@ -31,6 +31,8 @@
                 EnableInsert = false,
                 EnableUpdate = false,
                 Filtering = true,
+                SaveSortingInLocalStorage = true,
+                SaveFiltersInLocalStorage = false,
                 Data = Model.Files,
                 Sorting = true,
                 Height= "",
@@ -42,8 +44,10 @@
         table.AddClass("can-create-file");
     if (Model.CanCreateFolderInDirectory)
         table.AddClass("can-create-folder");
+    if (Model.CanDownloadCurrentDirectory)
+        table.AddClass("can-download");
 
-        table.AddClass(Model.Classes);
+    table.AddClass(Model.Classes);
 
     table
         .AddColumn(x => x.Icon, column =>
@@ -93,6 +97,8 @@
         if(!item.@nameof(UICFileInfo.CanOpen))
             $result.addClass('cannot-open');
 
+        if(item.@nameof(UICFileInfo.CanDownload))
+            $result.addClass('can-download');
         if(item.@nameof(UICFileInfo.CanMove))
             $result.addClass('can-move');
         if(item.@nameof(UICFileInfo.CanDelete))

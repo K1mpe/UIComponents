@@ -14,9 +14,16 @@ namespace UIComponents.Abstractions.Interfaces.FileExplorer
         Task<bool> CurrentUserCanViewFileOrDirectory(string path);
 
         /// <summary>
-        /// Check if the user can open or download this file
+        /// Check if the user can open this file
         /// </summary>
         Task<bool> CurrentUserCanOpenFileOrDirectory(string path);
+
+        /// <summary>
+        /// Check if the current user can download this file or directory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        Task<bool> CurrentUserCanDownloadFileOrDirectory(string path);
 
         /// <summary>
         /// Check if the current user can upload, move or copy files to this directory

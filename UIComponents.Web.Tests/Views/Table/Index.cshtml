@@ -1,4 +1,4 @@
-﻿@using UIComponents.Models.Models.Tables.TableColumns
+﻿@using UIComponents.Models.Models.Tables.TableColumns;
 @{
 
     var table = new UICTable<TestModel>(new UICActionGet("testmodel", "LoadData"))
@@ -10,7 +10,8 @@
         InfinitePaging = true,
         PageSize = 20,
         Sorter = new(nameof(TestModel.Number), SortOrder.Desc),
-    };
+        SaveSortingInLocalStorage = false
+    }.SetId("testTable");
     var testButton = new UICButton()
     {
         PrependButtonIcon = new("fas fa-user"),

@@ -131,7 +131,11 @@ public static class LoggerExtensions
                 await function();
                 logger.Log(logLevel, eventId, "Finished {0}", name);
             }
-
+        }
+        catch (OperationCanceledException)
+        {
+            logger.Log(LogLevel.Warning, eventId, "Canceled {0}", name);
+            throw;
         }
         catch (Exception ex)
         {
