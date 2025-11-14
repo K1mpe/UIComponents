@@ -25,6 +25,10 @@
 @model GetFilesForDirectoryResultModel
 
 @{
+    //The id is set with the current relative path, this is to store the sorting in local storage.
+    //The id is converted to a base64 string to prevent issues with special characters in the name
+    var base64Id = Convert.ToBase64String(Encoding.UTF8.GetBytes(Model.PathModel.RelativePath.ToLowerInvariant()));
+    var id = $"FileExplorerDetails-{base64Id.Replace("=", "")}";
     var table = new UICTable<UICFileInfo>()
             {
                 EnableDelete = false,
@@ -37,7 +41,7 @@
                 Sorting = true,
                 Height= "",
                 PageSize = int.MaxValue,
-            }.SetId($"FileExplorerDetails-{Model.PathModel.RelativePath.Replace("~", "").Replace(" ", "_").Replace("/", "-")}");
+            }.SetId(id);
 
 
     if (Model.CanCreateFileInDirectory)

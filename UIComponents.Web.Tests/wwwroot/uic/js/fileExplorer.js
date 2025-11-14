@@ -619,7 +619,8 @@
             })
         }
 
-        if (!files.length) {
+        let downloadableContainer = container.find('.can-download:not(.explorer-item)');
+        if (!files.length && downloadableContainer.length) {
             //If no files are selected, download the current directory
             files.push(container.triggerHandler('uic-getFilterModel'));
         }
