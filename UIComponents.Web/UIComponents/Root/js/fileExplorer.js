@@ -15,7 +15,7 @@
                 let hash = location.hash.split('#').filter(x => x.length && x.startsWith('expl:'));
                 if (!hash.length)
                     return;
-                let relativePath = atob(hash[0].substring(5));
+                let relativePath = uic.base64Decode(hash[0].substring(5));
                 if (relativePath != filterModel.RelativePath)
                     uic.fileExplorer.loadRelativeDir(container, relativePath);
             }
@@ -367,7 +367,7 @@
         let filterModel = container.triggerHandler('uic-getFilterModel');
 
         filterModel.RelativePath = directory;
-        let base64 = btoa(directory);
+        let base64 = uic.base64Encode(directory);
         let hashes = location.hash.split('#').filter(x => x.length && !x.startsWith('expl:'))
         hashes.push(`expl:${base64}`);
         let hash = '#' + hashes.join('#');
@@ -492,6 +492,7 @@
             TranslatableSaver.Save("FileExplorer.CreateDirectory.Message", "Give a name for the new directory"),
             TranslatableSaver.Save("FileExplorer.CreateDirectory.Create", "Create"),
             TranslatableSaver.Save("FileExplorer.CreateDirectory.FolderExists", "This folder already exists"),
+            TranslatableSaver.Save("FileExplorer.CreateDirectory.InvalidCharacter", `These characters are invalid: '\  /  :  *  ?  " <  >  | '`),
             TranslatableSaver.Save("Button.Cancel"),
         ]);
 
@@ -507,6 +508,9 @@
                 confirmButtonText: translations["FileExplorer.CreateDirectory.Create"],
                 cancelButtonText: translations["Button.Cancel"],
                 inputValidator: (value) => {
+                    if (value.includes("\"") || value.includes("/") || value.includes(":") || value.includes("*") || value.includes("?") || value.includes('"') || value.includes("<") || value.includes(">") || value.includes("|"))
+                        return translations["FileExplorer.CreateDirectory.InvalidCharacter"];
+
                     if (container.find(`.explorer-folder[data-relativepath$="${value}/"]`).length)
                         return translations["FileExplorer.CreateDirectory.FolderExists"];
                 }
@@ -812,7 +816,7 @@
             RelativePath: relativePath
         };
         let json = JSON.stringify(data);
-        let base64 = btoa(json); // convert to base64 string
+        let base64 = uic.base64Encode(json); // convert to base64 string
         window.open(`/${controller}/OpenFile/?base64=${base64}`, '_blank');
     },
     openImageViewer: async function (explorerItem) {
@@ -883,7 +887,8 @@
         let translations = await uic.translation.translateMany([
             TranslatableSaver.Save("FileExplorer.Rename.Title", "Rename file or directory"),
             TranslatableSaver.Save("Button.Rename", "Rename"),
-            TranslatableSaver.Save("Button.Cancel", "Cancel")
+            TranslatableSaver.Save("Button.Cancel", "Cancel"),
+            TranslatableSaver.Save("FileExplorer.CreateDirectory.InvalidCharacter", `These characters are invalid: '\  /  :  *  ?  " <  >  | '`)
         ]);
 
         Swal.fire($.extend(true, {}, uic.defaults.swal,
@@ -897,6 +902,11 @@
                 allowEscapeKey: true,
                 confirmButtonText: translations["Button.Rename"],
                 cancelButtonText: translations["Button.Cancel"],
+                inputValidator: (value) => {
+                    if (value.includes("\"") || value.includes("/") || value.includes(":") || value.includes("*") || value.includes("?") || value.includes('"') || value.includes("<") || value.includes(">") || value.includes("|"))
+                        return translations["FileExplorer.CreateDirectory.InvalidCharacter"];
+
+                }
             })).then(async result => {
                 if (!result.isConfirmed)
                     return;

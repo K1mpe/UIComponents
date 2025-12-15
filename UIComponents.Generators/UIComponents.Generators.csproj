@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>UIComponents.Generators</Title>
-    <Version>1.6.0</Version>
+    <Version>1.6.2</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>

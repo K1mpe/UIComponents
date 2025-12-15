@@ -1,5 +1,5 @@
 {
-  "UniqueKeys": 127,
+  "UniqueKeys": 128,
   "Translatables": [
     {
       "Key": "Button.Add",
@@ -23,19 +23,19 @@
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 495
+          "LineNumber": 496
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 550
+          "LineNumber": 554
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 572
+          "LineNumber": 576
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 886
+          "LineNumber": 890
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\form.js",
@@ -123,11 +123,11 @@
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 549
+          "LineNumber": 553
         },
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 571
+          "LineNumber": 575
         }
       ]
     },
@@ -294,7 +294,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 885
+          "LineNumber": 889
         }
       ]
     },
@@ -566,6 +566,21 @@
       ]
     },
     {
+      "Key": "FileExplorer.CreateDirectory.InvalidCharacter",
+      "TranslationsList": [],
+      "ArgumentsCount": 1,
+      "FilesAndLinesUsed": [
+        {
+          "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
+          "LineNumber": 495
+        },
+        {
+          "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
+          "LineNumber": 891
+        }
+      ]
+    },
+    {
       "Key": "FileExplorer.CreateDirectory.Message",
       "TranslationsList": [
         {
@@ -631,7 +646,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 570
+          "LineNumber": 574
         }
       ]
     },
@@ -647,7 +662,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 548
+          "LineNumber": 552
         }
       ]
     },
@@ -807,7 +822,7 @@
       "FilesAndLinesUsed": [
         {
           "File": "UIComponents.Web\\UIComponents\\Root\\js\\fileExplorer.js",
-          "LineNumber": 884
+          "LineNumber": 888
         }
       ]
     },

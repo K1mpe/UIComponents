@@ -94,7 +94,13 @@
         });
 
         uic.fileExplorer.initialize.start($('#@id'));
-        uic.fileExplorer.loadRelativeDir($('#@id'), @Html.JsEncode(GetRelPath(Model.StartDirectory??Model.RootDirectory),"'"));
+
+        let hash = location.hash.split('#').filter(x => x.length && x.startsWith('expl:'));
+        if (!hash.length) //Only load the startdirectory if there is no relative directory being loaded
+        {
+            uic.fileExplorer.loadRelativeDir($('#@id'), @Html.JsEncode(GetRelPath(Model.StartDirectory??Model.RootDirectory),"'"));
+        }
+
         uic.fileExplorer.showhide.preview($('#@id'), false);
         </text>);
 }
