@@ -1,3 +1,7 @@
+# 2025-12-15 (V1.6.2)
+- base64 encoding supports non-ASCII characters
+- creating directory validates on illegal characters
+
 # 2025-11-05 (V1.6.0)
 - UICFileExplorer does not remember filtertext but does remember sorting
 - Table has seperate properties for saving filter and sorting

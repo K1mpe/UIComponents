@@ -569,3 +569,16 @@ uic.parse = function (input) {
     
 }
 
+// Take a string and encode it to base64. This method also handles non-ASCII characters
+uic.base64Encode = function (str) {
+    return btoa(
+        new TextEncoder().encode(str)
+            .reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+}
+
+// Take a base64 string and decode. This method also handles non-ASCII characters
+uic.base64Decode = function (base64) {
+    const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+}

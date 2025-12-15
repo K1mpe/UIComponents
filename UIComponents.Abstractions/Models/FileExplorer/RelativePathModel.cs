@@ -1,4 +1,5 @@
-﻿using UIComponents.Abstractions.Interfaces.FileExplorer;
+﻿using System.Buffers.Text;
+using UIComponents.Abstractions.Interfaces.FileExplorer;
 
 namespace UIComponents.Abstractions.Models.FileExplorer
 {
@@ -11,6 +12,7 @@ namespace UIComponents.Abstractions.Models.FileExplorer
 
         public static RelativePathModel FromBase64String(string base64String)
         {
+            base64String = base64String.Replace(" ", "+");
             var jsonString = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(base64String));
             return System.Text.Json.JsonSerializer.Deserialize<RelativePathModel>(jsonString);
         }
