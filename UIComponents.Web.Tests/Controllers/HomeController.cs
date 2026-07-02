@@ -37,7 +37,7 @@ using UIComponents.Web.Tests.Validators;
 
 namespace UIComponents.Web.Tests.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUIComponentGenerator _uic;
@@ -209,23 +209,6 @@ namespace UIComponents.Web.Tests.Controllers
         }
 
 
-        public IActionResult ViewOrPartial(IUIComponent component)
-        {
-            if (IsAjaxRequest(Request))
-                return PartialView("ComponentRender", component);
-            return View("ComponentRender", component);
-        }
-
-        public static bool IsAjaxRequest(HttpRequest request)
-        {
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
-
-            if (request.Headers != null)
-                return request.Headers["X-Requested-With"] == "XMLHttpRequest";
-
-            return false;
-        }
 
         public IActionResult SelectList()
         {
